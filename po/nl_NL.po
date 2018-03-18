@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-10 19:43+0100\n"
 "Last-Translator: Erik Oomen <oomen.e@gmail.com>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
@@ -617,9 +617,6 @@ msgstr "Bewerk map"
 msgid "New folder"
 msgstr "Nieuwe map"
 
-msgid "Sub folder"
-msgstr "Submap"
-
 msgid "Folder name already exists!"
 msgstr "Map bestaat al"
 
@@ -734,6 +731,9 @@ msgstr "Programmagids"
 
 msgid "Can't switch channel!"
 msgstr "Kan geen kanaal wisselen!"
+
+msgid "Schedule"
+msgstr "Programmagids"
 
 #, c-format
 msgid "Schedule - %s"
@@ -868,6 +868,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -956,6 +962,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Altijd mappen eerst sorteren"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1392,9 +1401,6 @@ msgstr "Werkelijk opnieuw starten?"
 msgid " Stop recording "
 msgstr " Stop opnemen "
 
-msgid "Schedule"
-msgstr "Programmagids"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Stop afspelen"
@@ -1602,14 +1608,14 @@ msgstr "VDR zal later uitschakelen - Druk 'Power' om te forceren"
 msgid "Press any key to cancel shutdown"
 msgstr "Druk een toets om shutdown af te breken"
 
-msgid "Switching primary DVB..."
-msgstr "Eerste DVB-kaart wordt omgeschakeld..."
-
 msgid "Editing process failed!"
 msgstr "Bewerken is mislukt!"
 
 msgid "Editing process finished"
 msgstr "Bewerken is klaar"
+
+msgid "Switching primary DVB..."
+msgstr "Eerste DVB-kaart wordt omgeschakeld..."
 
 msgid "Press any key to cancel restart"
 msgstr "Druk een willekeurige toets om herstarten af te breken"

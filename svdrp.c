@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.22 2017/06/30 09:49:39 kls Exp $
+ * $Id: svdrp.c 4.36 2018/03/18 10:43:53 kls Exp $
  */
 
 #include "svdrp.h"
@@ -37,7 +37,6 @@
 #include "recording.h"
 #include "remote.h"
 #include "skins.h"
-#include "thread.h"
 #include "timers.h"
 #include "videodir.h"
 
@@ -47,6 +46,13 @@ static bool DumpSVDRPDataTransfer = false;
 
 static int SVDRPTcpPort = 0;
 static int SVDRPUdpPort = 0;
+
+enum eSvdrpFetchFlags {
+  sffNone   = 0b00000000,
+  sffConn   = 0b00000001,
+  sffPing   = 0b00000010,
+  sffTimers = 0b00000100,
+  };
 
 // --- cIpAddress ------------------------------------------------------------
 
@@ -98,7 +104,6 @@ private:
   bool tcp;
   int sock;
   cIpAddress lastIpAddress;
-  bool IsOwnInterface(sockaddr_in *Addr);
 public:
   cSocket(int Port, bool Tcp);
   ~cSocket();
@@ -107,7 +112,7 @@ public:
   void Close(void);
   int Port(void) const { return port; }
   int Socket(void) const { return sock; }
-  static bool SendDgram(const char *Dgram, int Port, const char *Address = NULL);
+  static bool SendDgram(const char *Dgram, int Port);
   int Accept(void);
   cString Discover(void);
   const cIpAddress *LastIpAddress(void) const { return &lastIpAddress; }
@@ -125,30 +130,6 @@ cSocket::~cSocket()
   Close();
 }
 
-bool cSocket::IsOwnInterface(sockaddr_in *Addr)
-{
-  ifaddrs *ifaddr;
-  if (getifaddrs(&ifaddr) >= 0) {
-     bool Own = false;
-     for (ifaddrs *ifa = ifaddr; ifa; ifa = ifa->ifa_next) {
-         if (ifa->ifa_addr) {
-            if (ifa->ifa_addr->sa_family == AF_INET) {
-               sockaddr_in *addr = (sockaddr_in *)ifa->ifa_addr;
-               if (addr->sin_addr.s_addr == Addr->sin_addr.s_addr) {
-                  Own = true;
-                  break;
-                  }
-               }
-            }
-         }
-     freeifaddrs(ifaddr);
-     return Own;
-     }
-  else
-     LOG_ERROR;
-  return false;
-}
-
 void cSocket::Close(void)
 {
   if (sock >= 0) {
@@ -160,6 +141,7 @@ void cSocket::Close(void)
 bool cSocket::Listen(void)
 {
   if (sock < 0) {
+     isyslog("SVDRP %s opening port %d/%s", Setup.SVDRPHostName, port, tcp ? "tcp" : "udp");
      // create socket:
      sock = tcp ? socket(PF_INET, SOCK_STREAM, IPPROTO_IP) : socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
      if (sock < 0) {
@@ -198,7 +180,7 @@ bool cSocket::Listen(void)
            return false;
            }
         }
-     isyslog("SVDRP listening on port %d/%s", port, tcp ? "tcp" : "udp");
+     isyslog("SVDRP %s listening on port %d/%s", Setup.SVDRPHostName, port, tcp ? "tcp" : "udp");
      }
   return true;
 }
@@ -234,13 +216,14 @@ bool cSocket::Connect(const char *Address)
         LOG_ERROR;
         return false;
         }
-     isyslog("SVDRP > %s:%d server connection established", Address, port);
+     dbgsvdrp("> %s:%d server connection established\n", Address, port);
+     isyslog("SVDRP %s > %s:%d server connection established", Setup.SVDRPHostName, Address, port);
      return true;
      }
   return false;
 }
 
-bool cSocket::SendDgram(const char *Dgram, int Port, const char *Address)
+bool cSocket::SendDgram(const char *Dgram, int Port)
 {
   // Create a socket:
   int Socket = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
@@ -248,23 +231,22 @@ bool cSocket::SendDgram(const char *Dgram, int Port, const char *Address)
      LOG_ERROR;
      return false;
      }
-  if (!Address) {
-     // Enable broadcast:
-     int One = 1;
-     if (setsockopt(Socket, SOL_SOCKET, SO_BROADCAST, &One, sizeof(One)) < 0) {
-        LOG_ERROR;
-        close(Socket);
-        return false;
-        }
+  // Enable broadcast:
+  int One = 1;
+  if (setsockopt(Socket, SOL_SOCKET, SO_BROADCAST, &One, sizeof(One)) < 0) {
+     LOG_ERROR;
+     close(Socket);
+     return false;
      }
   // Configure port and ip:
   sockaddr_in Addr;
   memset(&Addr, 0, sizeof(Addr));
   Addr.sin_family = AF_INET;
-  Addr.sin_addr.s_addr = Address ? inet_addr(Address) : htonl(INADDR_BROADCAST);
+  Addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
   Addr.sin_port = htons(Port);
   // Send datagram:
-  dsyslog("SVDRP > %s:%d send dgram '%s'", inet_ntoa(Addr.sin_addr), Port, Dgram);
+  dbgsvdrp("> %s:%d %s\n", inet_ntoa(Addr.sin_addr), Port, Dgram);
+  dsyslog("SVDRP %s > %s:%d send dgram '%s'", Setup.SVDRPHostName, inet_ntoa(Addr.sin_addr), Port, Dgram);
   int Length = strlen(Dgram);
   int Sent = sendto(Socket, Dgram, Length, 0, (sockaddr *)&Addr, sizeof(Addr));
   if (Sent < 0)
@@ -289,7 +271,8 @@ int cSocket::Accept(void)
            NewSock = -1;
            }
         lastIpAddress.Set((sockaddr *)&Addr);
-        isyslog("SVDRP < %s client connection %s", lastIpAddress.Connection(), Accepted ? "accepted" : "DENIED");
+        dbgsvdrp("< %s client connection %s\n", lastIpAddress.Connection(), Accepted ? "accepted" : "DENIED");
+        isyslog("SVDRP %s < %s client connection %s", Setup.SVDRPHostName, lastIpAddress.Connection(), Accepted ? "accepted" : "DENIED");
         }
      else if (FATALERRNO)
         LOG_ERROR;
@@ -307,17 +290,18 @@ cString cSocket::Discover(void)
      int NumBytes = recvfrom(sock, buf, sizeof(buf), 0, (sockaddr *)&Addr, &Size);
      if (NumBytes >= 0) {
         buf[NumBytes] = 0;
-        if (!IsOwnInterface(&Addr)) {
-           lastIpAddress.Set((sockaddr *)&Addr);
-           if (!SVDRPhosts.Acceptable(Addr.sin_addr.s_addr)) {
-              dsyslog("SVDRP < %s discovery ignored (%s)", lastIpAddress.Connection(), buf);
-              return NULL;
-              }
-           if (!startswith(buf, "SVDRP:discover")) {
-              dsyslog("SVDRP < %s discovery unrecognized (%s)", lastIpAddress.Connection(), buf);
-              return NULL;
-              }
-           isyslog("SVDRP < %s discovery received (%s)", lastIpAddress.Connection(), buf);
+        lastIpAddress.Set((sockaddr *)&Addr);
+        if (!SVDRPhosts.Acceptable(Addr.sin_addr.s_addr)) {
+           dsyslog("SVDRP %s < %s discovery ignored (%s)", Setup.SVDRPHostName, lastIpAddress.Connection(), buf);
+           return NULL;
+           }
+        if (!startswith(buf, "SVDRP:discover")) {
+           dsyslog("SVDRP %s < %s discovery unrecognized (%s)", Setup.SVDRPHostName, lastIpAddress.Connection(), buf);
+           return NULL;
+           }
+        if (strcmp(strgetval(buf, "name", ':'), Setup.SVDRPHostName) != 0) { // ignore our own broadcast
+           dbgsvdrp("< %s discovery received (%s)\n", lastIpAddress.Connection(), buf);
+           isyslog("SVDRP %s < %s discovery received (%s)", Setup.SVDRPHostName, lastIpAddress.Connection(), buf);
            return buf;
            }
         }
@@ -331,51 +315,60 @@ cString cSocket::Discover(void)
 
 class cSVDRPClient {
 private:
-  cIpAddress ipAddress;
+  cIpAddress serverIpAddress;
   cSocket socket;
   cString serverName;
+  int length;
+  char *input;
   int timeout;
   cTimeMs pingTime;
   cFile file;
   int fetchFlags;
+  bool connected;
+  bool Send(const char *Command);
   void Close(void);
 public:
   cSVDRPClient(const char *Address, int Port, const char *ServerName, int Timeout);
   ~cSVDRPClient();
   const char *ServerName(void) const { return serverName; }
-  const char *Connection(void) const { return ipAddress.Connection(); }
+  const char *Connection(void) const { return serverIpAddress.Connection(); }
   bool HasAddress(const char *Address, int Port) const;
-  bool Send(const char *Command);
   bool Process(cStringList *Response = NULL);
   bool Execute(const char *Command, cStringList *Response = NULL);
-  void SetFetchFlag(eSvdrpFetchFlags Flag);
-  bool HasFetchFlag(eSvdrpFetchFlags Flag);
+  bool Connected(void) const { return connected; }
+  void SetFetchFlag(int Flag);
+  bool HasFetchFlag(int Flag);
+  bool GetRemoteTimers(cStringList &Response);
   };
 
 static cPoller SVDRPClientPoller;
 
 cSVDRPClient::cSVDRPClient(const char *Address, int Port, const char *ServerName, int Timeout)
-:ipAddress(Address, Port)
+:serverIpAddress(Address, Port)
 ,socket(Port, true)
 {
   serverName = ServerName;
+  length = BUFSIZ;
+  input = MALLOC(char, length);
   timeout = Timeout * 1000 * 9 / 10; // ping after 90% of timeout
   pingTime.Set(timeout);
-  fetchFlags = sffTimers;
+  fetchFlags = sffNone;
+  connected = false;
   if (socket.Connect(Address)) {
      if (file.Open(socket.Socket())) {
         SVDRPClientPoller.Add(file, false);
-        dsyslog("SVDRP > %s client created for '%s'", ipAddress.Connection(), *serverName);
+        dsyslog("SVDRP %s > %s client created for '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
         return;
         }
      }
-  esyslog("SVDRP > %s ERROR: failed to create client for '%s'", ipAddress.Connection(), *serverName);
+  esyslog("SVDRP %s > %s ERROR: failed to create client for '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
 }
 
 cSVDRPClient::~cSVDRPClient()
 {
   Close();
-  dsyslog("SVDRP > %s client destroyed for '%s'", ipAddress.Connection(), *serverName);
+  free(input);
+  dsyslog("SVDRP %s > %s client destroyed for '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
 }
 
 void cSVDRPClient::Close(void)
@@ -384,21 +377,18 @@ void cSVDRPClient::Close(void)
      SVDRPClientPoller.Del(file, false);
      file.Close();
      socket.Close();
-     LOCK_TIMERS_WRITE;
-     if (Timers)
-        Timers->DelRemoteTimers(serverName);
      }
 }
 
 bool cSVDRPClient::HasAddress(const char *Address, int Port) const
 {
-  return strcmp(ipAddress.Address(), Address) == 0 && ipAddress.Port() == Port;
+  return strcmp(serverIpAddress.Address(), Address) == 0 && serverIpAddress.Port() == Port;
 }
 
 bool cSVDRPClient::Send(const char *Command)
 {
   pingTime.Set(timeout);
-  dbgsvdrp("> %s: %s\n", *serverName, Command);
+  dbgsvdrp("> C %s: %s\n", *serverName, Command);
   if (safe_write(file, Command, strlen(Command) + 1) < 0) {
      LOG_ERROR;
      return false;
@@ -409,7 +399,6 @@ bool cSVDRPClient::Send(const char *Command)
 bool cSVDRPClient::Process(cStringList *Response)
 {
   if (file.IsOpen()) {
-     char input[BUFSIZ];
      int numChars = 0;
 #define SVDRPResonseTimeout 5000 // ms
      cTimeMs Timeout(SVDRPResonseTimeout);
@@ -424,12 +413,9 @@ bool cSVDRPClient::Process(cStringList *Response)
                         input[--numChars] = 0;
                   // make sure the string is terminated:
                   input[numChars] = 0;
-                  dbgsvdrp("< %s: %s\n", *serverName, input);
-                  if (Response) {
+                  dbgsvdrp("< C %s: %s\n", *serverName, input);
+                  if (Response)
                      Response->Append(strdup(input));
-                     if (numChars >= 4 && input[3] != '-') // no more lines will follow
-                        break;
-                     }
                   else {
                      switch (atoi(input)) {
                        case 220: if (numChars > 4) {
@@ -438,23 +424,35 @@ bool cSVDRPClient::Process(cStringList *Response)
                                        *t = 0;
                                        if (strcmp(n, serverName) != 0) {
                                           serverName = n;
-                                          dsyslog("SVDRP < %s remote server name is '%s'", ipAddress.Connection(), *serverName);
+                                          dsyslog("SVDRP %s < %s remote server name is '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
                                           }
+                                       SetFetchFlag(sffConn | sffTimers);
+                                       connected = true;
                                        }
                                     }
                                  break;
-                       case 221: dsyslog("SVDRP < %s remote server closed connection to '%s'", ipAddress.Connection(), *serverName);
+                       case 221: dsyslog("SVDRP %s < %s remote server closed connection to '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
+                                 connected = false;
                                  Close();
                                  break;
                        }
                      }
+                  if (numChars >= 4 && input[3] != '-') // no more lines will follow
+                     break;
                   numChars = 0;
                   }
                else {
-                  if (numChars >= int(sizeof(input))) {
-                     esyslog("SVDRP < %s ERROR: out of memory", ipAddress.Connection());
-                     Close();
-                     break;
+                  if (numChars >= length - 1) {
+                     int NewLength = length + BUFSIZ;
+                     if (char *NewBuffer = (char *)realloc(input, NewLength)) {
+                        length = NewLength;
+                        input = NewBuffer;
+                        }
+                     else {
+                        esyslog("SVDRP %s < %s ERROR: out of memory", Setup.SVDRPHostName, serverIpAddress.Connection());
+                        Close();
+                        break;
+                        }
                      }
                   input[numChars++] = c;
                   input[numChars] = 0;
@@ -462,20 +460,20 @@ bool cSVDRPClient::Process(cStringList *Response)
                Timeout.Set(SVDRPResonseTimeout);
                }
             else if (r <= 0) {
-               isyslog("SVDRP < %s lost connection to remote server '%s'", ipAddress.Connection(), *serverName);
+               isyslog("SVDRP %s < %s lost connection to remote server '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
                Close();
                return false;
                }
             }
-         else if (!Response)
-            break;
          else if (Timeout.TimedOut()) {
-            esyslog("SVDRP < %s timeout while waiting for response from '%s'", ipAddress.Connection(), *serverName);
+            esyslog("SVDRP %s < %s timeout while waiting for response from '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
             return false;
             }
+         else if (!Response && numChars == 0)
+            break; // we read all or nothing!
          }
      if (pingTime.TimedOut())
-        Execute("PING");
+        SetFetchFlag(sffPing);
      }
   return file.IsOpen();
 }
@@ -487,19 +485,106 @@ bool cSVDRPClient::Execute(const char *Command, cStringList *Response)
   return Send(Command) && Process(Response);
 }
 
-void cSVDRPClient::SetFetchFlag(eSvdrpFetchFlags Flags)
+void cSVDRPClient::SetFetchFlag(int Flags)
 {
   fetchFlags |= Flags;
 }
 
-bool cSVDRPClient::HasFetchFlag(eSvdrpFetchFlags Flag)
+bool cSVDRPClient::HasFetchFlag(int Flag)
 {
   bool Result = (fetchFlags & Flag);
   fetchFlags &= ~Flag;
   return Result;
 }
 
+bool cSVDRPClient::GetRemoteTimers(cStringList &Response)
+{
+  if (Execute("LSTT ID", &Response)) {
+     for (int i = 0; i < Response.Size(); i++) {
+         char *s = Response[i];
+         int Code = SVDRPCode(s);
+         if (Code == 250)
+            strshift(s, 4);
+         else {
+            if (Code != 550)
+               esyslog("ERROR: %s: %s", ServerName(), s);
+            return false;
+            }
+         }
+     Response.SortNumerically();
+     return true;
+     }
+  return false;
+}
+
+
+// --- cSVDRPServerParams ----------------------------------------------------
+
+class cSVDRPServerParams {
+private:
+  cString name;
+  int port;
+  cString vdrversion;
+  cString apiversion;
+  int timeout;
+  cString host;
+  cString error;
+public:
+  cSVDRPServerParams(const char *Params);
+  const char *Name(void) const { return name; }
+  const int Port(void) const { return port; }
+  const char *VdrVersion(void) const { return vdrversion; }
+  const char *ApiVersion(void) const { return apiversion; }
+  const int Timeout(void) const { return timeout; }
+  const char *Host(void) const { return host; }
+  bool Ok(void) const { return !*error; }
+  const char *Error(void) const { return error; }
+  };
+
+cSVDRPServerParams::cSVDRPServerParams(const char *Params)
+{
+  if (Params && *Params) {
+     name = strgetval(Params, "name", ':');
+     if (*name) {
+        cString p = strgetval(Params, "port", ':');
+        if (*p) {
+           port = atoi(p);
+           vdrversion = strgetval(Params, "vdrversion", ':');
+           if (*vdrversion) {
+              apiversion = strgetval(Params, "apiversion", ':');
+              if (*apiversion) {
+                 cString t = strgetval(Params, "timeout", ':');
+                 if (*t) {
+                    timeout = atoi(t);
+                    if (timeout > 10) { // don't let it get too small
+                       host = strgetval(Params, "host", ':');
+                       // no error if missing - this parameter is optional!
+                       }
+                    else
+                       error = "invalid timeout";
+                    }
+                 else
+                    error = "missing server timeout";
+                 }
+              else
+                 error = "missing server apiversion";
+              }
+           else
+              error = "missing server vdrversion";
+           }
+        else
+           error = "missing server port";
+        }
+     else
+        error = "missing server name";
+     }
+  else
+     error = "missing server parameters";
+}
+
 // --- cSVDRPClientHandler ---------------------------------------------------
+
+cStateKey StateKeySVDRPRemoteTimersPoll(true);
 
 class cSVDRPClientHandler : public cThread {
 private:
@@ -507,6 +592,7 @@ private:
   int tcpPort;
   cSocket udpSocket;
   cVector<cSVDRPClient *> clientConnections;
+  void SendDiscover(void);
   void HandleClientConnection(void);
   void ProcessConnections(void);
   cSVDRPClient *GetClientForServer(const char *ServerName);
@@ -515,9 +601,11 @@ protected:
 public:
   cSVDRPClientHandler(int TcpPort, int UdpPort);
   virtual ~cSVDRPClientHandler();
-  void SendDiscover(const char *Address = NULL);
+  void Lock(void) { mutex.Lock(); }
+  void Unlock(void) { mutex.Unlock(); }
+  void AddClient(cSVDRPServerParams &ServerParams, const char *IpAddress);
   bool Execute(const char *ServerName, const char *Command, cStringList *Response = NULL);
-  bool GetServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlags = sffNone);
+  bool GetServerNames(cStringList *ServerNames);
   bool TriggerFetchingTimers(const char *ServerName);
   };
 
@@ -546,64 +634,78 @@ cSVDRPClient *cSVDRPClientHandler::GetClientForServer(const char *ServerName)
   return NULL;
 }
 
-void cSVDRPClientHandler::SendDiscover(const char *Address)
+void cSVDRPClientHandler::SendDiscover(void)
 {
-  cMutexLock MutexLock(&mutex);
   cString Dgram = cString::sprintf("SVDRP:discover name:%s port:%d vdrversion:%d apiversion:%d timeout:%d%s", Setup.SVDRPHostName, tcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout, (Setup.SVDRPPeering == spmOnly && *Setup.SVDRPDefaultHost) ? *cString::sprintf(" host:%s", Setup.SVDRPDefaultHost) : "");
-  udpSocket.SendDgram(Dgram, udpSocket.Port(), Address);
+  udpSocket.SendDgram(Dgram, udpSocket.Port());
 }
 
 void cSVDRPClientHandler::ProcessConnections(void)
 {
-  cMutexLock MutexLock(&mutex);
+  cString PollTimersCmd;
+  if (cTimers::GetTimersRead(StateKeySVDRPRemoteTimersPoll, 100)) {
+     PollTimersCmd = cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName);
+     StateKeySVDRPRemoteTimersPoll.Remove();
+     }
+  else if (StateKeySVDRPRemoteTimersPoll.TimedOut())
+     return; // try again next time
   for (int i = 0; i < clientConnections.Size(); i++) {
-      if (!clientConnections[i]->Process()) {
-         delete clientConnections[i];
+      cSVDRPClient *Client = clientConnections[i];
+      if (Client->Process()) {
+         if (Client->HasFetchFlag(sffConn))
+            Client->Execute(cString::sprintf("CONN name:%s port:%d vdrversion:%d apiversion:%d timeout:%d", Setup.SVDRPHostName, SVDRPTcpPort, VDRVERSNUM, APIVERSNUM, Setup.SVDRPTimeout));
+         if (Client->HasFetchFlag(sffPing))
+            Client->Execute("PING");
+         if (Client->HasFetchFlag(sffTimers)) {
+            cStringList RemoteTimers;
+            if (Client->GetRemoteTimers(RemoteTimers)) {
+               if (cTimers *Timers = cTimers::GetTimersWrite(StateKeySVDRPRemoteTimersPoll, 100)) {
+                  bool TimersModified = Timers->StoreRemoteTimers(Client->ServerName(), &RemoteTimers);
+                  StateKeySVDRPRemoteTimersPoll.Remove(TimersModified);
+                  }
+               else
+                  Client->SetFetchFlag(sffTimers); // try again next time
+               }
+            }
+         if (*PollTimersCmd) {
+            if (!Client->Execute(PollTimersCmd))
+               esyslog("ERROR: can't send '%s' to '%s'", *PollTimersCmd, Client->ServerName());
+            }
+         }
+      else {
+         cTimers *Timers = cTimers::GetTimersWrite(StateKeySVDRPRemoteTimersPoll);
+         bool TimersModified = Timers->StoreRemoteTimers(Client->ServerName(), NULL);
+         StateKeySVDRPRemoteTimersPoll.Remove(TimersModified);
+         delete Client;
          clientConnections.Remove(i);
          i--;
          }
       }
 }
 
+void cSVDRPClientHandler::AddClient(cSVDRPServerParams &ServerParams, const char *IpAddress)
+{
+  cMutexLock MutexLock(&mutex);
+  for (int i = 0; i < clientConnections.Size(); i++) {
+      if (clientConnections[i]->HasAddress(IpAddress, ServerParams.Port()))
+         return;
+      }
+  if (Setup.SVDRPPeering == spmOnly && strcmp(ServerParams.Name(), Setup.SVDRPDefaultHost) != 0)
+     return; // we only want to peer with the default host, but this isn't the default host
+  if (ServerParams.Host() && strcmp(ServerParams.Host(), Setup.SVDRPHostName) != 0)
+     return; // the remote VDR requests a specific host, but it's not us
+  clientConnections.Append(new cSVDRPClient(IpAddress, ServerParams.Port(), ServerParams.Name(), ServerParams.Timeout()));
+}
+
 void cSVDRPClientHandler::HandleClientConnection(void)
 {
   cString NewDiscover = udpSocket.Discover();
   if (*NewDiscover) {
-     cString p = strgetval(NewDiscover, "port", ':');
-     if (*p) {
-        int Port = atoi(p);
-        for (int i = 0; i < clientConnections.Size(); i++) {
-            if (clientConnections[i]->HasAddress(udpSocket.LastIpAddress()->Address(), Port)) {
-               dsyslog("SVDRP < %s connection to '%s' confirmed", clientConnections[i]->Connection(), clientConnections[i]->ServerName());
-               return;
-               }
-            }
-        cString ServerName = strgetval(NewDiscover, "name", ':');
-        if (*ServerName) {
-           if (Setup.SVDRPPeering == spmOnly && strcmp(ServerName, Setup.SVDRPDefaultHost) != 0)
-              return; // we only want to peer with the default host, but this isn't the default host
-           cString HostName = strgetval(NewDiscover, "host", ':');
-           if (*HostName && strcmp(HostName, Setup.SVDRPHostName) != 0)
-              return; // the remote VDR requests a specific host, but it's not us
-           cString t = strgetval(NewDiscover, "timeout", ':');
-           if (*t) {
-              int Timeout = atoi(t);
-              if (Timeout > 10) { // don't let it get too small
-                 const char *Address = udpSocket.LastIpAddress()->Address();
-                 clientConnections.Append(new cSVDRPClient(Address, Port, ServerName, Timeout));
-                 SendDiscover(Address);
-                 }
-              else
-                 esyslog("SVDRP < %s ERROR: invalid timeout (%d)", udpSocket.LastIpAddress()->Connection(), Timeout);
-              }
-           else
-              esyslog("SVDRP < %s ERROR: missing timeout", udpSocket.LastIpAddress()->Connection());
-           }
-        else
-           esyslog("SVDRP < %s ERROR: missing server name", udpSocket.LastIpAddress()->Connection());
-        }
+     cSVDRPServerParams ServerParams(NewDiscover);
+     if (ServerParams.Ok())
+        AddClient(ServerParams, udpSocket.LastIpAddress()->Address());
      else
-        esyslog("SVDRP < %s ERROR: missing port number", udpSocket.LastIpAddress()->Connection());
+        esyslog("SVDRP %s < %s ERROR: %s", Setup.SVDRPHostName, udpSocket.LastIpAddress()->Connection(), ServerParams.Error());
      }
 }
 
@@ -631,13 +733,13 @@ bool cSVDRPClientHandler::Execute(const char *ServerName, const char *Command, c
   return false;
 }
 
-bool cSVDRPClientHandler::GetServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag)
+bool cSVDRPClientHandler::GetServerNames(cStringList *ServerNames)
 {
   cMutexLock MutexLock(&mutex);
   ServerNames->Clear();
   for (int i = 0; i < clientConnections.Size(); i++) {
       cSVDRPClient *Client = clientConnections[i];
-      if (FetchFlag == sffNone || Client->HasFetchFlag(FetchFlag))
+      if (Client->Connected())
          ServerNames->Append(strdup(Client->ServerName()));
       }
   return ServerNames->Size() > 0;
@@ -730,6 +832,10 @@ const char *HelpPages[] = {
   "    After a CLRE command, no further EPG processing is done for 10\n"
   "    seconds, so that data sent with subsequent PUTE commands doesn't\n"
   "    interfere with data from the broadcasters.",
+  "CONN name:<name> port:<port> vdrversion:<vdrversion> apiversion:<apiversion> timeout:<timeout>\n"
+  "    Used by peer-to-peer connections between VDRs to tell the other VDR\n"
+  "    to establish a connection to this VDR. The name is the SVDRP host name\n"
+  "    of this VDR, which may differ from its DNS name.",
   "DELC <number>\n"
   "    Delete channel.",
   "DELR <id>\n"
@@ -771,6 +877,10 @@ const char *HelpPages[] = {
   "    separators. The channel number of a group separator is always 0.\n"
   "    With ':ids' the channel ids are listed following the channel numbers.\n"
   "    The special number 0 can be given to list the current channel.",
+  "LSTD\n"
+  "    List all available devices. Each device is listed with its name and\n"
+  "    whether it is currently the primary device ('P') or it implements a\n"
+  "    decoder ('D') and can be used as output device.",
   "LSTE [ <channel> ] [ now | next | at <time> ]\n"
   "    List EPG data. Without any parameters all data of all channels is\n"
   "    listed. If a channel is given (either by number or by channel ID),\n"
@@ -847,10 +957,15 @@ const char *HelpPages[] = {
   "    If 'help' is followed by a command, the detailed help for that command is\n"
   "    given. The keyword 'main' initiates a call to the main menu function of the\n"
   "    given plugin.\n",
-  "POLL timers\n"
+  "POLL <name> timers\n"
   "    Used by peer-to-peer connections between VDRs to inform other machines\n"
   "    about changes to timers. The receiving VDR shall use LSTT to query the\n"
-  "    remote machine's timers and update its list of timers accordingly.\n",
+  "    remote machine with the given name about its timers and update its list\n"
+  "    of timers accordingly.\n",
+  "PRIM [ <number> ]\n"
+  "    Make the device with the given number the primary device.\n"
+  "    Without option it returns the currently active primary device in the same\n"
+  "    format as used by the LSTD command.",
   "PUTE [ file ]\n"
   "    Put data into the EPG list. The data entered has to strictly follow the\n"
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
@@ -943,7 +1058,8 @@ static cString grabImageDir;
 class cSVDRPServer {
 private:
   int socket;
-  cString connection;
+  cIpAddress clientIpAddress;
+  cString clientName;
   cFile file;
   cPUTEhandler *PUTEhandler;
   int numChars;
@@ -951,11 +1067,12 @@ private:
   char *cmdLine;
   time_t lastActivity;
   void Close(bool SendReply = false, bool Timeout = false);
-  bool Send(const char *s, int length = -1);
+  bool Send(const char *s);
   void Reply(int Code, const char *fmt, ...) __attribute__ ((format (printf, 3, 4)));
   void PrintHelpTopics(const char **hp);
   void CmdCHAN(const char *Option);
   void CmdCLRE(const char *Option);
+  void CmdCONN(const char *Option);
   void CmdDELC(const char *Option);
   void CmdDELR(const char *Option);
   void CmdDELT(const char *Option);
@@ -964,6 +1081,7 @@ private:
   void CmdHELP(const char *Option);
   void CmdHITK(const char *Option);
   void CmdLSTC(const char *Option);
+  void CmdLSTD(const char *Option);
   void CmdLSTE(const char *Option);
   void CmdLSTR(const char *Option);
   void CmdLSTT(const char *Option);
@@ -979,6 +1097,7 @@ private:
   void CmdPLAY(const char *Option);
   void CmdPLUG(const char *Option);
   void CmdPOLL(const char *Option);
+  void CmdPRIM(const char *Option);
   void CmdPUTE(const char *Option);
   void CmdREMO(const char *Option);
   void CmdSCAN(const char *Option);
@@ -988,18 +1107,20 @@ private:
   void CmdVOLU(const char *Option);
   void Execute(char *Cmd);
 public:
-  cSVDRPServer(int Socket, const char *Connection);
+  cSVDRPServer(int Socket, const cIpAddress *ClientIpAddress);
   ~cSVDRPServer();
+  const char *ClientName(void) const { return clientName; }
   bool HasConnection(void) { return file.IsOpen(); }
   bool Process(void);
   };
 
 static cPoller SVDRPServerPoller;
 
-cSVDRPServer::cSVDRPServer(int Socket, const char *Connection)
+cSVDRPServer::cSVDRPServer(int Socket, const cIpAddress *ClientIpAddress)
 {
   socket = Socket;
-  connection = Connection;
+  clientIpAddress = *ClientIpAddress;
+  clientName = clientIpAddress.Connection(); // will be set to actual name by a CONN command
   PUTEhandler = NULL;
   numChars = 0;
   length = BUFSIZ;
@@ -1010,14 +1131,14 @@ cSVDRPServer::cSVDRPServer(int Socket, const char *Connection)
      Reply(220, "%s SVDRP VideoDiskRecorder %s; %s; %s", Setup.SVDRPHostName, VDRVERSION, *TimeToString(now), cCharSetConv::SystemCharacterTable() ? cCharSetConv::SystemCharacterTable() : "UTF-8");
      SVDRPServerPoller.Add(file, false);
      }
-  dsyslog("SVDRP < %s server created", *connection);
+  dsyslog("SVDRP %s > %s server created", Setup.SVDRPHostName, *clientName);
 }
 
 cSVDRPServer::~cSVDRPServer()
 {
   Close(true);
   free(cmdLine);
-  dsyslog("SVDRP < %s server destroyed", *connection);
+  dsyslog("SVDRP %s < %s server destroyed", Setup.SVDRPHostName, *clientName);
 }
 
 void cSVDRPServer::Close(bool SendReply, bool Timeout)
@@ -1026,7 +1147,7 @@ void cSVDRPServer::Close(bool SendReply, bool Timeout)
      if (SendReply) {
         Reply(221, "%s closing connection%s", Setup.SVDRPHostName, Timeout ? " (timeout)" : "");
         }
-     isyslog("SVDRP < %s connection closed", *connection);
+     isyslog("SVDRP %s < %s connection closed", Setup.SVDRPHostName, *clientName);
      SVDRPServerPoller.Del(file, false);
      file.Close();
      DELETENULL(PUTEhandler);
@@ -1034,11 +1155,10 @@ void cSVDRPServer::Close(bool SendReply, bool Timeout)
   close(socket);
 }
 
-bool cSVDRPServer::Send(const char *s, int length)
+bool cSVDRPServer::Send(const char *s)
 {
-  if (length < 0)
-     length = strlen(s);
-  if (safe_write(file, s, length) < 0) {
+  dbgsvdrp("> S %s: %s", *clientName, s); // terminating newline is already in the string!
+  if (safe_write(file, s, strlen(s)) < 0) {
      LOG_ERROR;
      Close();
      return false;
@@ -1050,26 +1170,33 @@ void cSVDRPServer::Reply(int Code, const char *fmt, ...)
 {
   if (file.IsOpen()) {
      if (Code != 0) {
+        char *buffer = NULL;
         va_list ap;
         va_start(ap, fmt);
-        cString buffer = cString::vsprintf(fmt, ap);
+        if (vasprintf(&buffer, fmt, ap) >= 0) {
+           char *s = buffer;
+           while (s && *s) {
+                 char *n = strchr(s, '\n');
+                 if (n)
+                    *n = 0;
+                 char cont = ' ';
+                 if (Code < 0 || n && *(n + 1)) // trailing newlines don't count!
+                    cont = '-';
+                 if (!Send(cString::sprintf("%03d%c%s\r\n", abs(Code), cont, s)))
+                    break;
+                 s = n ? n + 1 : NULL;
+                 }
+           }
+        else {
+           Reply(451, "Bad format - looks like a programming error!");
+           esyslog("SVDRP %s < %s bad format!", Setup.SVDRPHostName, *clientName);
+           }
         va_end(ap);
-        const char *s = buffer;
-        while (s && *s) {
-              const char *n = strchr(s, '\n');
-              char cont = ' ';
-              if (Code < 0 || n && *(n + 1)) // trailing newlines don't count!
-                 cont = '-';
-              char number[16];
-              sprintf(number, "%03d%c", abs(Code), cont);
-              if (!(Send(number) && Send(s, n ? n - s : -1) && Send("\r\n")))
-                 break;
-              s = n ? n + 1 : NULL;
-              }
+        free(buffer);
         }
      else {
         Reply(451, "Zero return code - looks like a programming error!");
-        esyslog("SVDRP < %s zero return code!", *connection);
+        esyslog("SVDRP %s < %s zero return code!", Setup.SVDRPHostName, *clientName);
         }
      }
 }
@@ -1225,6 +1352,26 @@ void cSVDRPServer::CmdCLRE(const char *Option)
      }
 }
 
+void cSVDRPServer::CmdCONN(const char *Option)
+{
+  if (*Option) {
+     if (SVDRPClientHandler) {
+        cSVDRPServerParams ServerParams(Option);
+        if (ServerParams.Ok()) {
+           clientName = ServerParams.Name();
+           Reply(250, "OK"); // must finish this transaction before creating the new client
+           SVDRPClientHandler->AddClient(ServerParams, clientIpAddress.Address());
+           }
+        else
+           Reply(501, "Error in server parameters: %s", ServerParams.Error());
+        }
+     else
+        Reply(451, "No SVDRP client handler");
+     }
+  else
+     Reply(501, "Missing server parameters");
+}
+
 void cSVDRPServer::CmdDELC(const char *Option)
 {
   if (*Option) {
@@ -1254,7 +1401,7 @@ void cSVDRPServer::CmdDELC(const char *Option)
            Channels->ReNumber();
            Channels->SetModifiedByUser();
            Channels->SetModified();
-           isyslog("SVDRP < %s channel %s deleted", *connection, Option);
+           isyslog("SVDRP %s < %s deleted channel %s", Setup.SVDRPHostName, *clientName, Option);
            if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
               if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
                  Channels->SwitchTo(CurrentChannel->Number());
@@ -1302,6 +1449,7 @@ void cSVDRPServer::CmdDELR(const char *Option)
               if (Recording->Delete()) {
                  Recordings->DelByName(Recording->FileName());
                  Recordings->SetModified();
+                 isyslog("SVDRP %s < %s deleted recording %s", Setup.SVDRPHostName, *clientName, Option);
                  Reply(250, "Recording \"%s\" deleted", Option);
                  }
               else
@@ -1325,11 +1473,13 @@ void cSVDRPServer::CmdDELT(const char *Option)
         LOCK_TIMERS_WRITE;
         Timers->SetExplicitModify();
         if (cTimer *Timer = Timers->GetById(strtol(Option, NULL, 10))) {
-           if (Timer->Recording())
+           if (Timer->Recording()) {
               Timer->Skip();
+              cRecordControls::Process(Timers, time(NULL));
+              }
            Timers->Del(Timer);
            Timers->SetModified();
-           isyslog("SVDRP < %s deleted timer %s", *connection, *Timer->ToDescr());
+           isyslog("SVDRP %s < %s deleted timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
            Reply(250, "Timer \"%s\" deleted", Option);
            }
         else
@@ -1475,7 +1625,7 @@ void cSVDRPServer::CmdGRAB(const char *Option)
            int fd = open(FileName, O_WRONLY | O_CREAT | O_NOFOLLOW | O_TRUNC, DEFFILEMODE);
            if (fd >= 0) {
               if (safe_write(fd, Image, ImageSize) == ImageSize) {
-                 dsyslog("SVDRP < %s grabbed image to %s", *connection, FileName);
+                 dsyslog("SVDRP %s < %s grabbed image to %s", Setup.SVDRPHostName, *clientName, FileName);
                  Reply(250, "Grabbed image %s", Option);
                  }
               else {
@@ -1618,6 +1768,18 @@ void cSVDRPServer::CmdLSTC(const char *Option)
      }
   else
      Reply(550, "No channels defined");
+}
+
+void cSVDRPServer::CmdLSTD(const char *Option)
+{
+  if (cDevice::NumDevices()) {
+     for (int i = 0; i < cDevice::NumDevices(); i++) {
+         if (const cDevice *d = cDevice::GetDevice(i))
+            Reply(d->DeviceNumber() + 1 == cDevice::NumDevices() ? 250 : -250, "%d [%s%s] %s", d->DeviceNumber() + 1, d->HasDecoder() ? "D" : "-", d->DeviceNumber() + 1 == Setup.PrimaryDVB ? "P" : "-", *d->DeviceName());
+         }
+     }
+  else
+     Reply(550, "No devices found");
 }
 
 void cSVDRPServer::CmdLSTE(const char *Option)
@@ -1817,7 +1979,7 @@ void cSVDRPServer::CmdLSTT(const char *Option)
 void cSVDRPServer::CmdMESG(const char *Option)
 {
   if (*Option) {
-     isyslog("SVDRP < %s message '%s'", *connection, Option);
+     isyslog("SVDRP %s < %s message '%s'", Setup.SVDRPHostName, *clientName, Option);
      Skins.QueueMessage(mtInfo, Option);
      Reply(250, "Message queued");
      }
@@ -1842,7 +2004,7 @@ void cSVDRPServer::CmdMODC(const char *Option)
                  Channels->ReNumber();
                  Channels->SetModifiedByUser();
                  Channels->SetModified();
-                 isyslog("SVDRP < %s modifed channel %d %s", *connection, Channel->Number(), *Channel->ToText());
+                 isyslog("SVDRP %s < %s modifed channel %d %s", Setup.SVDRPHostName, *clientName, Channel->Number(), *Channel->ToText());
                  Reply(250, "%d %s", Channel->Number(), *Channel->ToText());
                  }
               else
@@ -1882,7 +2044,7 @@ void cSVDRPServer::CmdMODT(const char *Option)
               }
            *Timer = t;
            Timers->SetModified();
-           isyslog("SVDRP < %s modified timer %s (%s)", *connection, *Timer->ToDescr(), Timer->HasFlags(tfActive) ? "active" : "inactive");
+           isyslog("SVDRP %s < %s modified timer %s (%s)", Setup.SVDRPHostName, *clientName, *Timer->ToDescr(), Timer->HasFlags(tfActive) ? "active" : "inactive");
            Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
            }
         else
@@ -1926,7 +2088,7 @@ void cSVDRPServer::CmdMOVC(const char *Option)
                        else
                           cDevice::SetCurrentChannel(CurrentChannel->Number());
                        }
-                    isyslog("SVDRP < %s channel %d moved to %d", *connection, FromNumber, ToNumber);
+                    isyslog("SVDRP %s < %s moved channel %d to %d", Setup.SVDRPHostName, *clientName, FromNumber, ToNumber);
                     Reply(250,"Channel \"%d\" moved to \"%d\"", From, To);
                     }
                  else
@@ -2006,7 +2168,7 @@ void cSVDRPServer::CmdNEWC(const char *Option)
            Channels->ReNumber();
            Channels->SetModifiedByUser();
            Channels->SetModified();
-           isyslog("SVDRP < %s new channel %d %s", *connection, channel->Number(), *channel->ToText());
+           isyslog("SVDRP %s < %s new channel %d %s", Setup.SVDRPHostName, *clientName, channel->Number(), *channel->ToText());
            Reply(250, "%d %s", channel->Number(), *channel->ToText());
            }
         else
@@ -2027,7 +2189,7 @@ void cSVDRPServer::CmdNEWT(const char *Option)
         LOCK_TIMERS_WRITE;
         Timer->ClrFlags(tfRecording);
         Timers->Add(Timer);
-        isyslog("SVDRP < %s added timer %s", *connection, *Timer->ToDescr());
+        isyslog("SVDRP %s < %s added timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
         Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
         return;
         }
@@ -2216,6 +2378,32 @@ void cSVDRPServer::CmdPOLL(const char *Option)
      Reply(501, "Missing parameters");
 }
 
+void cSVDRPServer::CmdPRIM(const char *Option)
+{
+  int n = -1;
+  if (*Option) {
+     if (isnumber(Option)) {
+        int o = strtol(Option, NULL, 10);
+        if (o > 0 && o <= cDevice::NumDevices())
+           n = o;
+        else
+           Reply(501, "Invalid device number \"%s\"", Option);
+        }
+     else
+        Reply(501, "Invalid parameter \"%s\"", Option);
+     if (n >= 0) {
+        Setup.PrimaryDVB = n;
+        Reply(250, "Primary device set to %d", n);
+        }
+     }
+  else {
+    if (const cDevice *d = cDevice::PrimaryDevice())
+       Reply(250, "%d [%s%s] %s", d->DeviceNumber() + 1, d->HasDecoder() ? "D" : "-", d->DeviceNumber() + 1 == Setup.PrimaryDVB ? "P" : "-", *d->DeviceName());
+    else
+       Reply(501, "Failed to get primary device");
+    }
+}
+
 void cSVDRPServer::CmdPUTE(const char *Option)
 {
   if (*Option) {
@@ -2290,11 +2478,11 @@ void cSVDRPServer::CmdUPDT(const char *Option)
            t->Parse(Option);
            delete Timer;
            Timer = t;
-           isyslog("SVDRP < %s updated timer %s", *connection, *Timer->ToDescr());
+           isyslog("SVDRP %s < %s updated timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
            }
         else {
            Timers->Add(Timer);
-           isyslog("SVDRP < %s added timer %s", *connection, *Timer->ToDescr());
+           isyslog("SVDRP %s < %s added timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
            }
         Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
         return;
@@ -2360,6 +2548,7 @@ void cSVDRPServer::Execute(char *Cmd)
   s = skipspace(s);
   if      (CMD("CHAN"))  CmdCHAN(s);
   else if (CMD("CLRE"))  CmdCLRE(s);
+  else if (CMD("CONN"))  CmdCONN(s);
   else if (CMD("DELC"))  CmdDELC(s);
   else if (CMD("DELR"))  CmdDELR(s);
   else if (CMD("DELT"))  CmdDELT(s);
@@ -2368,6 +2557,7 @@ void cSVDRPServer::Execute(char *Cmd)
   else if (CMD("HELP"))  CmdHELP(s);
   else if (CMD("HITK"))  CmdHITK(s);
   else if (CMD("LSTC"))  CmdLSTC(s);
+  else if (CMD("LSTD"))  CmdLSTD(s);
   else if (CMD("LSTE"))  CmdLSTE(s);
   else if (CMD("LSTR"))  CmdLSTR(s);
   else if (CMD("LSTT"))  CmdLSTT(s);
@@ -2383,6 +2573,7 @@ void cSVDRPServer::Execute(char *Cmd)
   else if (CMD("PLAY"))  CmdPLAY(s);
   else if (CMD("PLUG"))  CmdPLUG(s);
   else if (CMD("POLL"))  CmdPOLL(s);
+  else if (CMD("PRIM"))  CmdPRIM(s);
   else if (CMD("PUTE"))  CmdPUTE(s);
   else if (CMD("REMO"))  CmdREMO(s);
   else if (CMD("SCAN"))  CmdSCAN(s);
@@ -2408,6 +2599,7 @@ bool cSVDRPServer::Process(void)
                  // make sure the string is terminated:
                  cmdLine[numChars] = 0;
                  // showtime!
+                 dbgsvdrp("< S %s: %s\n", *clientName, cmdLine);
                  Execute(cmdLine);
                  numChars = 0;
                  if (length > BUFSIZ) {
@@ -2436,7 +2628,7 @@ bool cSVDRPServer::Process(void)
                        cmdLine = NewBuffer;
                        }
                     else {
-                       esyslog("SVDRP < %s ERROR: out of memory", *connection);
+                       esyslog("SVDRP %s < %s ERROR: out of memory", Setup.SVDRPHostName, *clientName);
                        Close();
                        break;
                        }
@@ -2447,12 +2639,12 @@ bool cSVDRPServer::Process(void)
               lastActivity = time(NULL);
               }
            else if (r <= 0) {
-              isyslog("SVDRP < %s lost connection to client", *connection);
+              isyslog("SVDRP %s < %s lost connection to client", Setup.SVDRPHostName, *clientName);
               Close();
               }
            }
      if (Setup.SVDRPTimeout && time(NULL) - lastActivity > Setup.SVDRPTimeout) {
-        isyslog("SVDRP < %s timeout on connection", *connection);
+        isyslog("SVDRP %s < %s timeout on connection", Setup.SVDRPHostName, *clientName);
         Close(true, true);
         }
      }
@@ -2474,7 +2666,6 @@ void SetSVDRPGrabImageDir(const char *GrabImageDir)
 
 class cSVDRPServerHandler : public cThread {
 private:
-  cMutex mutex;
   bool ready;
   cSocket tcpSocket;
   cVector<cSVDRPServer *> serverConnections;
@@ -2513,7 +2704,6 @@ void cSVDRPServerHandler::WaitUntilReady(void)
 
 void cSVDRPServerHandler::ProcessConnections(void)
 {
-  cMutexLock MutexLock(&mutex);
   for (int i = 0; i < serverConnections.Size(); i++) {
       if (!serverConnections[i]->Process()) {
          delete serverConnections[i];
@@ -2527,7 +2717,7 @@ void cSVDRPServerHandler::HandleServerConnection(void)
 {
   int NewSocket = tcpSocket.Accept();
   if (NewSocket >= 0)
-     serverConnections.Append(new cSVDRPServer(NewSocket, tcpSocket.LastIpAddress()->Connection()));
+     serverConnections.Append(new cSVDRPServer(NewSocket, tcpSocket.LastIpAddress()));
 }
 
 void cSVDRPServerHandler::Action(void)
@@ -2537,7 +2727,6 @@ void cSVDRPServerHandler::Action(void)
      ready = true;
      while (Running()) {
            SVDRPServerPoller.Poll(1000);
-           cMutexLock MutexLock(&mutex);
            HandleServerConnection();
            ProcessConnections();
            }
@@ -2550,60 +2739,53 @@ void cSVDRPServerHandler::Action(void)
 
 static cMutex SVDRPHandlerMutex;
 
-void StartSVDRPServerHandler(void)
+void StartSVDRPHandler(void)
 {
   cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPTcpPort && !SVDRPServerHandler) {
-     SVDRPServerHandler = new cSVDRPServerHandler(SVDRPTcpPort);
-     SVDRPServerHandler->Start();
-     SVDRPServerHandler->WaitUntilReady();
+  if (SVDRPTcpPort) {
+     if (!SVDRPServerHandler) {
+        SVDRPServerHandler = new cSVDRPServerHandler(SVDRPTcpPort);
+        SVDRPServerHandler->Start();
+        SVDRPServerHandler->WaitUntilReady();
+        }
+     if (Setup.SVDRPPeering && SVDRPUdpPort && !SVDRPClientHandler) {
+        SVDRPClientHandler = new cSVDRPClientHandler(SVDRPTcpPort, SVDRPUdpPort);
+        SVDRPClientHandler->Start();
+        }
      }
 }
 
-void StartSVDRPClientHandler(void)
-{
-  cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPTcpPort && SVDRPUdpPort && !SVDRPClientHandler) {
-     SVDRPClientHandler = new cSVDRPClientHandler(SVDRPTcpPort, SVDRPUdpPort);
-     SVDRPClientHandler->Start();
-     }
-}
-
-void StopSVDRPServerHandler(void)
-{
-  cMutexLock MutexLock(&SVDRPHandlerMutex);
-  delete SVDRPServerHandler;
-  SVDRPServerHandler = NULL;
-}
-
-void StopSVDRPClientHandler(void)
+void StopSVDRPHandler(void)
 {
   cMutexLock MutexLock(&SVDRPHandlerMutex);
   delete SVDRPClientHandler;
   SVDRPClientHandler = NULL;
+  delete SVDRPServerHandler;
+  SVDRPServerHandler = NULL;
 }
 
-void SendSVDRPDiscover(const char *Address)
+bool GetSVDRPServerNames(cStringList *ServerNames)
 {
+  bool Result = false;
   cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPClientHandler)
-     SVDRPClientHandler->SendDiscover(Address);
-}
-
-bool GetSVDRPServerNames(cStringList *ServerNames, eSvdrpFetchFlags FetchFlag)
-{
-  cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPClientHandler)
-     return SVDRPClientHandler->GetServerNames(ServerNames, FetchFlag);
-  return false;
+  if (SVDRPClientHandler) {
+     SVDRPClientHandler->Lock();
+     Result = SVDRPClientHandler->GetServerNames(ServerNames);
+     SVDRPClientHandler->Unlock();
+     }
+  return Result;
 }
 
 bool ExecSVDRPCommand(const char *ServerName, const char *Command, cStringList *Response)
 {
+  bool Result = false;
   cMutexLock MutexLock(&SVDRPHandlerMutex);
-  if (SVDRPClientHandler)
-     return SVDRPClientHandler->Execute(ServerName, Command, Response);
-  return false;
+  if (SVDRPClientHandler) {
+     SVDRPClientHandler->Lock();
+     Result = SVDRPClientHandler->Execute(ServerName, Command, Response);
+     SVDRPClientHandler->Unlock();
+     }
+  return Result;
 }
 
 void BroadcastSVDRPCommand(const char *Command)
@@ -2611,9 +2793,11 @@ void BroadcastSVDRPCommand(const char *Command)
   cMutexLock MutexLock(&SVDRPHandlerMutex);
   cStringList ServerNames;
   if (SVDRPClientHandler) {
+     SVDRPClientHandler->Lock();
      if (SVDRPClientHandler->GetServerNames(&ServerNames)) {
         for (int i = 0; i < ServerNames.Size(); i++)
             ExecSVDRPCommand(ServerNames[i], Command);
         }
+     SVDRPClientHandler->Unlock();
      }
 }

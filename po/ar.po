@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -615,9 +615,6 @@ msgstr "تحرير مجلد"
 msgid "New folder"
 msgstr "مجلد جديد"
 
-msgid "Sub folder"
-msgstr "مجلد فرعى"
-
 msgid "Folder name already exists!"
 msgstr "المجلد موجود بالفعل"
 
@@ -732,6 +729,9 @@ msgstr "جدولة"
 
 msgid "Can't switch channel!"
 msgstr "لا يمكن تبديل القناة"
+
+msgid "Schedule"
+msgstr "جدولة"
 
 #, c-format
 msgid "Schedule - %s"
@@ -866,6 +866,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "عرص على الشاشة"
 
@@ -954,6 +960,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "قم دائما بسرد المجلدات اولا"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1390,9 +1399,6 @@ msgstr "هل حقا تريد اعادة التشغيل"
 msgid " Stop recording "
 msgstr " ايقاف التسجيل "
 
-msgid "Schedule"
-msgstr "جدولة"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " ايقاف الاعادة"
@@ -1600,14 +1606,14 @@ msgstr "البرنامج سيقوم بالاغلاق لاحقا اضغط زر ا
 msgid "Press any key to cancel shutdown"
 msgstr "اضغط اى زر لالغاء اقفال البرنامج"
 
-msgid "Switching primary DVB..."
-msgstr "تم الانتقال لكرت الستالايت الافتراضى"
-
 msgid "Editing process failed!"
 msgstr "تم فشل عملية التعديل"
 
 msgid "Editing process finished"
 msgstr "تم الانتهاء من التعديل"
+
+msgid "Switching primary DVB..."
+msgstr "تم الانتقال لكرت الستالايت الافتراضى"
 
 msgid "Press any key to cancel restart"
 msgstr "اضغط اى زر لالغاء اعادة التشغيل"

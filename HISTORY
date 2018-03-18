@@ -3905,7 +3905,7 @@ Video Disk Recorder Revision History
 - Updated the French OSD texts (thanks to Nicolas Huillard).
 - Fixed the cFilter example in PLUGINS.html (reported by Patrick Fischer).
 - The new class cUnbufferedFile is used for the recording files to avoid
-  trashing the file system cache (based on a patch by Ralf Müller).
+  thrashing the file system cache (based on a patch by Ralf Müller).
 
 2005-11-06: Version 1.3.36
 
@@ -8866,7 +8866,7 @@ Video Disk Recorder Revision History
   font drawing in high level OSDs (thanks to Thomas Reufer).
 - Fixed regenerating the index of audio recordings (thanks to Thomas Reufer).
 - Fixed building VDR with systemd >= 230 (thanks to Ville Skyttä).
-- Sorted sources.conf by continous azimuth (thanks to Lucian Muresan).
+- Sorted sources.conf by continuous azimuth (thanks to Lucian Muresan).
 - Added 'S58.5E Kazsat 3' to sources.conf (thanks to Aitugan Sarbassov).
 - Fixed truncated date/time strings in the skins on multi-byte UTF-8 systems
   (reported by Sergey Chernyavskiy).
@@ -9161,3 +9161,158 @@ Video Disk Recorder Revision History
   This is especially useful if one VDR mounts the video directory of an other one into
   a subdirectory.
 - SVDRP peering can now be limited to the default SVDRP host (see MANUAL for details).
+
+2018-03-18: Version 2.3.9
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed a possible crash when stopping VDR (thanks to Matthias Senzel for reporting and
+  helping to debug this one).
+- Fixed handling VPS events outside the LingerLimit, which could cause recordings to
+  stop prematurely (thanks to Johann Friedrichs).
+- Fixed an invalid lock sequence when trying to remove a deleted recording in case
+  of low disk space.
+- Now making sure that AssertFreeDiskSpace() is called with the maximum timer
+  priority in case there are several timers recording with different priorities.
+- The MTD mapper now avoids immediately reusing unique PIDs when switching channels,
+  to prevent possible problems with old data in buffers (thanks to Onur Sentürk).
+- The function cDevice::GetVideoSystem() (which has been deprecated since version 2.1.6)
+  has been finally removed.
+- The macros used to control deprecated code or functions have been changed to hold
+  numeric values (0 and 1), so that they can be controlled at compile time, without
+  having to edit the actual source code (suggested by Jasmin Jessich).
+- The default for DEPRECATED_VDR_CHARSET_OVERRIDE has been set to 0, which means VDR
+  no longer reacts on the environment variable VDR_CHARSET_OVERRIDE. You can add
+  'DEPRECATED_VDR_CHARSET_OVERRIDE=1' when compiling in order to restore this
+  functionality. However, it is recommended to use the command line option --chartab
+  instead.
+- The timeout for the channel display is now reset whenever the channel or EPG data
+  changes.
+- OSD menus now try to keep the offset of the list cursor at a constant position on
+  the screen, even if the list is modified while being displayed.
+- The LCARS skin's main menu now reacts to changes of the current channel's name.
+- If an event in the Schedules menu is marked with a 'T' or 'I' and the user presses the
+  Red button to edit the timer, local timers are now preferred over remote timers
+  in case there is more than one timer that will record that event.
+- Switching the primary device is no longer done via osSwitchDvb (which has been
+  removed), but rather by the main program loop reacting to changes in Setup.PrimaryDVB.
+- The new SVDRP commands 'LSTD' and 'PRIM' can be used to list all available devices
+  and to switch the primary device (thanks to Thomas Reufer).
+- Added some comments regarding font height (thanks to Thomas Reufer).
+- Fixed handling timers during the change from DST to winter time (thanks to Johann
+  Friedrichs).
+- Added missing checks of 'player' in member functions of cControl, and setting
+  cControl::player to NULL in cDvbPlayerControl::Stop() to avoid a possible crash
+  with plugins that retrieve player information after a replay has been stopped, but
+  before the replay control has been destroyed (thanks to Johann Friedrich).
+- Now calling Hide() and cStatus::MsgReplaying(..., false) from cReplayControl::Stop(),
+  to inform plugins about an ending replay session before the replay control gets
+  destroyed.
+- Fixed a possible crash when moving a recording between different volumes (reported by
+  Matthias Senzel).
+- Fixed positioning the cursor in the Recordings menu when moving a recording between
+  different volumes.
+- Added a note to PLUGINS.html about writing log messages in English.
+- Fixed a deadlock when moving a folder containing several recordings between
+  different volumes (reported by Matthias Senzel).
+- Fixed positioning to the current item when changing the sort mode in the Recordings
+  menu, in case there is a LastReplayed recording.
+- The CAM menu is now automatically closed when the current channel is switched
+  (suggested by Dietmar Spingler).
+- Fixed a lengthy write lock on the Recordings list in case of moving a folder with
+  more than one recording (thanks to Matthias Senzel).
+- If TS packets are not accepted by the output device in Transfer Mode, this is now
+  reported only once per minute in the log file.
+- The new setup option "OSD/Sorting direction for recordings" can be used to switch
+  the sequence in which recordings are presented in the "Recordings" menu between
+  ascending (oldest first) and descendeng (newest first) (thanks to Matthias Senzel).
+- When moving recordings between volumes, the "Recordings" menu now displays those items
+  that have not yet been moved completely as non-selectable. This avoids situations
+  where trying to play such a recording might fail.
+- Fixed canceling moving a folder with several recordings between volumes.
+- When moving a recording to a different folder, the cursor is no longer placed on the
+  new location of the recording, but rather stays in the original folder (suggested by
+  Matthias Senzel). If the original folder got empty by moving away the last recording
+  it contained, the cursor is moved up until a non empty folder is found.
+- Changed the log message ""ERROR: copying directory '%s' to '%s' ended prematurely" from
+  "error" to "info", because any actual error would have already been reported before this
+  (suggested by Matthias Senzel).
+- When selecting a folder for a recording or timer, it is now possible to open a folder
+  even if it doesn't contain any subfolders (suggested by Matthias Senzel).
+- Fixed a possible deadlock when detaching a receiver from a device.
+- Moved any locking from cutter.c into recording.c, to avoid a problem with locking
+  the Recordings list (reported by Matthias Senzel).
+- Now using the 'example' macro in vdr.5 (thanks to Chris Mayo).
+- Now unlocking the Recordings list before displaying an error message in
+  cMenuPathEdit::ApplyChanges() and cReplayControl::Stop() (reported by Matthias Senzel).
+- Fixed a possible deadlock when quickly zapping through encrypted channels (reported
+  by Jörg Wendel).
+- The new function cStatus::MarksModified() can be implemented by plugins to get
+  informed about any modifications to the editing marks of the currently played
+  recording (based on a patch from Jörg Wendel).
+- Fixed handling editing marks in the replay progress display, in case the marks are
+  deleted via the Info/Edit menu of the currently played recording (the progress
+  display still displayed them).
+- Limited some CAM related log messages to the actual master CAM, if any.
+- The Perl script 'peerdemo' shows how one can find all the VDRs in the local network
+  using the peer connection mechanism.
+- Added the UPDATE-2.4.0 file.
+- Making sure cSVDRPClient::Process() reads the entire reply once it started reading,
+  even if no Response parameter is given.
+- Replaced the warning regarding the open SVDRP port in the INSTALL file with a remark
+  about using svdrphosts.conf to completely disable SVDRP access.
+- Added a note about the fixed UDP port for SVDRP discovery to vdr.1.
+- Fixed updating the Timers menu after turning a local timer on/off with the Red
+  button.
+- Fixed keeping the cursor position in the Recordings menu in case a timer starts
+  recording while the menu is open.
+- When a timer is newly created in the Timers menu, it now immediately appears at the
+  correct position in the list, rather than first being added at the end and then
+  jumping to the proper offset.
+- Fixed getting the info of a newly edited recording (reported by Matthias Senzel).
+- Improved calculating signal strength and quality (thanks to Helmut Binder).
+- While a timer is recording, the file '.timer' in the recording directory now contains
+  the full id of the timer that is currently recording into this directory. This is used
+  to determine whether a timer is still recording on a remote VDR when deleting a recording
+  from the Recordings menu.
+- Fixed handling SVDRP peering for more than one instance of VDR on the same machine, and
+  improved logging and debug output.
+- Fixed case inconsistency with SVDRPDefaultHost in config.c.
+- Added a section about the '.sort' file to vdr.5.
+- Initiating the client side of a peer-to-peer SVDRP connection is now done with the new
+  SVDRP command CONN instead of using the UDP port with the server's address.
+  This change requires that all VDRs that shall take part in a peer-to-peer network need
+  to be updated to this version.
+- Moved handling remote timers into cSVDRPClientHandler::ProcessConnections().
+- Combined Start/StopSVDRPServer/ClientHandler() into Start/StopSVDRPHandler().
+- Updated the Polish OSD texts (thanks to Tomasz Maciej Nowak).
+- When remote timers are fetched from a peer VDR, we no longer blindly delete and re-add
+  them, but rather compare them and make only the minimum necessary changes.
+- Fixed the CompareInts() function.
+- Disabled the use of posix_fadvise() when reading (i.e. replaying), since it caused
+  stuttering replay in fast forward and fast rewind mode in case the video directory
+  is mounted via NFS. You can re-enable it by setting the macro USE_FADVISE_READ to 1
+  in tools.c.
+- Modified cStateLock's SetExplicitModify() and IncState() (changed to SetModified()) to
+  allow for the introduction of syncing a separate cStateKey to a cStateLock.
+- Assigning events to timers no longer triggers sending a POLL to all peer VDRs.
+- When making modifications to remote timers, the local VDR no longer sends a POLL to
+  all remote VDRs.
+- Fixed removing a cStateKey from a cStateLock (setting StateKey.stateLock = NULL was
+  done too late, after the lock had already been released).
+- Now writing the info file before attaching the recorder to the device, to make sure it
+  is present when the recorder needs to update the fps value.
+- Making sure the Schedules menu has a proper title, even if it is empty.
+- Removed sending the SVDRP command UPDR to peer VDRs whenever a change is made to the
+  recordings in the video directory (which was introduced in version 2.3.8), because it
+  triggered re-reading the video directory too fast.
+- Improved handling VPS timers to better react to EPG changes during an ongoing recording.
+- Commented out the logging in cMarks::Align(), to avoid log entries in case of editing
+  marks that are not generated by VDR itself, and thus may be a little off (suggested by
+  Jörg Wendel). You can activate this line again for debugging if necessary.
+- Made the input buffer in cSVDRPClient dynamic.
+- Fixed handling parameters in the S2SatelliteDeliverySystemDescriptor and
+  T2DeliverySystemDescriptor that were overwritten when parsing the
+  SatelliteDeliverySystemDescriptor or TerrestrialDeliverySystemDescriptor, respectively.
+- Modified cMenuTimers::Delete() to avoid a lengthy lock on the Timers list while prompting
+  the user.

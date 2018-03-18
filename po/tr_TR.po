@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish <vdr@linuxtv.org>\n"
@@ -611,9 +611,6 @@ msgstr ""
 msgid "New folder"
 msgstr ""
 
-msgid "Sub folder"
-msgstr ""
-
 msgid "Folder name already exists!"
 msgstr ""
 
@@ -728,6 +725,9 @@ msgstr "Program"
 
 msgid "Can't switch channel!"
 msgstr "Kanala deðiþtirelemiyor!"
+
+msgid "Schedule"
+msgstr "Program"
 
 #, c-format
 msgid "Schedule - %s"
@@ -862,6 +862,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -950,6 +956,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr ""
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1386,9 +1395,6 @@ msgstr "Gerçekten yeniden baþlat?"
 msgid " Stop recording "
 msgstr " Çekimi bitir "
 
-msgid "Schedule"
-msgstr "Program"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Gösteriþi bitir"
@@ -1596,14 +1602,14 @@ msgstr "VDR daha sonra kapanacak - zorlamak için Kapat'a bas"
 msgid "Press any key to cancel shutdown"
 msgstr "Kapatmayý iptal etmek için herhangi bir tuþa bas"
 
-msgid "Switching primary DVB..."
-msgstr "Primer DVB arayüzü deðiþtiriliyor..."
-
 msgid "Editing process failed!"
 msgstr "Kesim baþarýsýz!"
 
 msgid "Editing process finished"
 msgstr "Kesim bitti"
+
+msgid "Switching primary DVB..."
+msgstr "Primer DVB arayüzü deðiþtiriliyor..."
 
 msgid "Press any key to cancel restart"
 msgstr "Yeniden baþlatmayý iptal etmek için herhangi bir tuþa bas"

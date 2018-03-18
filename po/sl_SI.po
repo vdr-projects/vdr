@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2013-03-04 12:46+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: Slovenian <vdr@linuxtv.org>\n"
@@ -612,9 +612,6 @@ msgstr "Uredi direktorij"
 msgid "New folder"
 msgstr "Nov direktorij"
 
-msgid "Sub folder"
-msgstr "Pod direktorij"
-
 msgid "Folder name already exists!"
 msgstr "Ime direktorija ¾e obstaja"
 
@@ -729,6 +726,9 @@ msgstr "Program"
 
 msgid "Can't switch channel!"
 msgstr "Ne morem preklopiti kanala!"
+
+msgid "Schedule"
+msgstr "Program"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -951,6 +957,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr ""
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1387,9 +1396,6 @@ msgstr "Zares ponoven zagon?"
 msgid " Stop recording "
 msgstr " Prekini snemanje "
 
-msgid "Schedule"
-msgstr "Program"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Prekini predvajanje"
@@ -1597,14 +1603,14 @@ msgstr "VDR se bo zaustavil kasneje - pritisni Power za takoj¹en izklop"
 msgid "Press any key to cancel shutdown"
 msgstr "Pritisnite katerikoli gumb za preklic izklopa"
 
-msgid "Switching primary DVB..."
-msgstr "Preklapljanje primarne DVB naprave..."
-
 msgid "Editing process failed!"
 msgstr "Napaka pri procesu urejanja!"
 
 msgid "Editing process finished"
 msgstr "Proces urejanja je konèan"
+
+msgid "Switching primary DVB..."
+msgstr "Preklapljanje primarne DVB naprave..."
 
 msgid "Press any key to cancel restart"
 msgstr "Pritisni katerokoli tipko za preklic ponovnega zagona"

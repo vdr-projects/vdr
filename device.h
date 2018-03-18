@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.10 2017/05/30 11:06:11 kls Exp $
+ * $Id: device.h 4.12 2017/11/02 14:47:33 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -54,13 +54,6 @@ enum ePlayMode { pmNone,           // audio/video from decoder
                  // IF A PARTICULAR VDR INSTALLATION USES A DEVICE NOT
                  // KNOWN TO YOUR PLAYER.
                };
-
-//#define DEPRECATED_VIDEOSYSTEM
-#ifdef DEPRECATED_VIDEOSYSTEM
-enum eVideoSystem { vsPAL,
-                    vsNTSC
-                  };
-#endif
 
 enum eVideoDisplayFormat { vdfPanAndScan,
                            vdfLetterBox,
@@ -356,8 +349,10 @@ protected:
 public:
   static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          ///< Returns the number of the current channel on the primary device.
-#define DEPRECATED_SETCURRENTCHANNEL
-#ifdef DEPRECATED_SETCURRENTCHANNEL
+#ifndef DEPRECATED_SETCURRENTCHANNEL
+#define DEPRECATED_SETCURRENTCHANNEL 1
+#endif
+#if DEPRECATED_SETCURRENTCHANNEL
   static void SetCurrentChannel(const cChannel *Channel) { currentChannel = Channel ? Channel->Number() : 0; }
 #endif
   static void SetCurrentChannel(int ChannelNumber) { currentChannel = ChannelNumber; }
@@ -510,12 +505,6 @@ public:
          ///< if this device has an MPEG decoder).
          ///< NOTE: this is only for SD devices. HD devices shall implement their
          ///< own setup menu with the necessary parameters for controlling output.
-#ifdef DEPRECATED_VIDEOSYSTEM
-  virtual eVideoSystem GetVideoSystem(void) { return vsPAL; }
-         ///< Returns the video system of the currently displayed material
-         ///< (default is PAL).
-         ///< This function is deprecated and will be removed in a future version!
-#endif
   virtual void GetVideoSize(int &Width, int &Height, double &VideoAspect);
          ///< Returns the Width, Height and VideoAspect ratio of the currently
          ///< displayed video material. Width and Height are given in pixel

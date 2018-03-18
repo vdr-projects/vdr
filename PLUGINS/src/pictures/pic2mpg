@@ -7,7 +7,7 @@
 #
 # See the README file for copyright information and how to reach the author.
 #
-# $Id: pic2mpg 4.0 2013/07/01 08:33:38 kls Exp $
+# $Id: pic2mpg 4.1 2017/10/06 14:42:18 kls Exp $
 
 use File::Path;
 use File::Spec;
@@ -128,7 +128,7 @@ for ($i = 0; $i < 10; $i++) { # dirs might become empty when removing empty subd
     for $dir (@Dirs) {
         $dir = EscapeMeta($dir);
         print "removing $dir\n";
-        !system("rm -rf $dir") || die "$dir: $!\n";
+        Exec("rm -rf $dir");
         }
     }
 
@@ -142,17 +142,18 @@ sub ConvertFile
   my $Exif = ImageInfo($Pict);
   my $Orientation = $$Exif{"Orientation"};
   my ($Degrees) = $Orientation =~ /Rotate ([0-9]+)/;
-  my $Rotate = $Degrees ? "-rotate $Degrees" : "";
+  my $Rotate = ($Degrees == 90) ? "transpose=clock" : ($Degrees == 180) ? "hflip,vflip" : ($Degrees == 270) ? "transpose=cclock" : "";
+  $Rotate .= ',' if ($Rotate);
+  my $Background = '#000000@1';
   print "orientation = '$Orientation' -> rotation = $Rotate\n" if ($Detailed);
   $Pict = EscapeMeta($Pict);
   $Mpeg = EscapeMeta($Mpeg);
   print "$Pict -> $Mpeg $Rotate\n" if $ListFiles;
-  my $Cmd = "convert $Pict -background '#000000' $Rotate -resize $Size -gravity center -extent $Extent ppm:- | "
-          . "ffmpeg -f image2pipe -vcodec ppm -i pipe:0 -an -vcodec libx264 -vpre baseline -s $Size -qscale 2 -f mpegts -y $Mpeg "
+  my $Cmd = "ffmpeg -i $Pict -vf '${Rotate}scale=1920:1080:force_original_aspect_ratio=decrease,pad=1920:1080:(ow-iw)/2:(oh-ih)/2:$Background' -c:v libx264 -pix_fmt yuv420p -f mpegts -y $Mpeg "
           . ($Detailed ? "" : "2>/dev/null");
-  !system($Cmd) || die "$Cmd: $!\n";
+  Exec($Cmd);
   $Cmd = "touch -r $Pict $Mpeg";
-  !system($Cmd) || die "$Cmd: $!\n";
+  Exec($Cmd);
 }
 
 sub EscapeMeta
@@ -161,4 +162,11 @@ sub EscapeMeta
   my $s = shift;
   $s =~ s/([$META])/\\$1/g;
   return $s;
+}
+
+sub Exec
+{
+  my $Cmd = shift;
+  print "==> '$Cmd'\n" if ($Verbose);
+  !system($Cmd) || die "$Cmd: $!\n";
 }

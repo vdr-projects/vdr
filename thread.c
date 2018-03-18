@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.11 2017/06/25 12:08:16 kls Exp $
+ * $Id: thread.c 4.14 2018/03/05 22:38:10 kls Exp $
  */
 
 #include "thread.h"
@@ -716,7 +716,8 @@ cStateLock::cStateLock(const char *Name)
   name = Name;
   threadId = 0;
   state = 0;
-  explicitModify = false;
+  explicitModify = emDisabled;
+  syncStateKey = NULL;
 }
 
 bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
@@ -764,30 +765,71 @@ void cStateLock::Unlock(cStateKey &StateKey, bool IncState)
      return;
      }
   if (StateKey.write && threadId != cThread::ThreadId()) {
-     esyslog("ERROR: cStateLock::Unlock() called without holding a lock (tid=%d, lock=%s)", threadId, name);
+     esyslog("ERROR: cStateLock::Unlock() called without holding a write lock (tid=%d, lock=%s)", threadId, name);
      ABORT;
      return;
      }
-  if (StateKey.write && IncState && !explicitModify)
+  if (StateKey.write && (IncState && explicitModify != emArmed || explicitModify == emEnabled)) {
+     if (syncStateKey && syncStateKey->state == state)
+        syncStateKey->state++;
      state++;
+     }
   StateKey.state = state;
+  StateKey.stateLock = NULL;
   if (StateKey.write) {
      StateKey.write = false;
      threadId = 0;
-     explicitModify = false;
+     explicitModify = emDisabled;
+     syncStateKey = NULL;
      }
   dbglockseq(name, false, false);
   rwLock.Unlock();
 }
 
-void cStateLock::IncState(void)
+void cStateLock::SetSyncStateKey(cStateKey &StateKey)
+{
+  dbglocking("%5d %-12s %10p SetSyncStateKey\n", cThread::ThreadId(), name, &StateKey);
+  if (threadId != cThread::ThreadId()) {
+     esyslog("ERROR: cStateLock::SetSyncStateKey() called without holding a write lock (tid=%d, lock=%s)", threadId, name);
+     ABORT;
+     return;
+     }
+  if (StateKey.stateLock == this) {
+     esyslog("ERROR: cStateLock::SetSyncStateKey() called with locked key (tid=%d, lock=%s)", threadId, name);
+     ABORT;
+     return;
+     }
+  if (syncStateKey) {
+     esyslog("ERROR: cStateLock::SetSyncStateKey() called twice (tid=%d, lock=%s)", threadId, name);
+     ABORT;
+     return;
+     }
+  syncStateKey = &StateKey;
+}
+
+void cStateLock::SetExplicitModify(void)
 {
   if (threadId != cThread::ThreadId()) {
-     esyslog("ERROR: cStateLock::IncState() called without holding a lock (tid=%d, lock=%s)", threadId, name);
+     esyslog("ERROR: cStateLock::SetExplicitModify() called without holding a write lock (tid=%d, lock=%s)", threadId, name);
      ABORT;
+     return;
      }
-  else
-     state++;
+  if (explicitModify != emDisabled) {
+     esyslog("ERROR: cStateLock::SetExplicitModify() called twice (tid=%d, lock=%s)", threadId, name);
+     ABORT;
+     return;
+     }
+  explicitModify = emArmed;
+}
+
+void cStateLock::SetModified(void)
+{
+  if (threadId != cThread::ThreadId()) {
+     esyslog("ERROR: cStateLock::SetModified() called without holding a write lock (tid=%d, lock=%s)", threadId, name);
+     ABORT;
+     return;
+     }
+  explicitModify = emEnabled;
 }
 
 // --- cStateKey -------------------------------------------------------------
@@ -816,10 +858,8 @@ void cStateKey::Reset(void)
 
 void cStateKey::Remove(bool IncState)
 {
-  if (stateLock) {
+  if (stateLock)
      stateLock->Unlock(*this, IncState);
-     stateLock = NULL;
-     }
   else {
      esyslog("ERROR: cStateKey::Remove() called without holding a lock (key=%p)", this);
      ABORT;
@@ -836,7 +876,6 @@ bool cStateKey::StateChanged(void)
      return state != stateLock->state;
   else
      return true;
-  return false;
 }
 
 // --- cIoThrottle -----------------------------------------------------------

@@ -1847,7 +1847,7 @@ Lucian Muresan <lucianm@users.sourceforge.net>
  for exporting some libsi functions
  for suggesting to add functions to cDevice that allow derived output devices to
  implement scaling the video to a given size and location
- fpr sorting sources.conf by continous azimuth
+ for sorting sources.conf by continuous azimuth
 
 Mattias Grönlund <Mattias@Gronlund.net>
  for pointing out a missing cleanup at program exit in case there is a problem
@@ -2627,6 +2627,9 @@ Jörg Wendel <vdr-ml@jwendel.de>
  for making cEpgHandlers::BeginSegmentTransfer() boolean
  for suggesting to change tEventID back to u_int32_t
  for adding the 'aux' member to cEvent
+ for reporting a possible deadlock when quickly zapping through encrypted channels
+ for a patch that was used to implement cStatus::MarksModified()
+ for suggesting to no longer log unaligned marks in cMarks::Align()
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems
@@ -2837,6 +2840,11 @@ Johann Friedrichs <johann.friedrichs@web.de>
  false
  for reporting an invalid lock sequence in the epgsearch plugin, which turned out to
  be an abandoned member of class cSchedulesLock
+ for fixing handling VPS events outside the LingerLimit, which could cause recordings to
+ stop prematurely
+ for fixing handling timers during the change from DST to winter time
+ for fixing a possible crash with plugins that retrieve player information after a
+ replay has been stopped, but before the replay control has been destroyed
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -3106,6 +3114,7 @@ Chris Mayo <aklhfex@gmail.com>
  for fixing the link to "svdrpsend (1)" in the vdr.1 man page
  for updating links in the INSTALL file
  for reporting double slashes in file names processed with AddDirectory()
+ for using the 'example' macro in vdr.5
 
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs
@@ -3277,6 +3286,24 @@ Matthias Senzel <matthias.senzel@t-online.de>
  various Now and Schedule menus for different channels
  for the "jumpingseconds" patch
  for reporting a bug in drawing very long menu titles in the LCARS skin
+ for reporting and helping to debug a crash when stopping VDR
+ for reporting a crash when moving a recording between different volumes
+ for reporting a deadlock when moving a folder containing several recordings between
+ different volumes
+ for fixing a lengthy write lock on the Recordings list in case of moving a folder with
+ more than one recording
+ for implementing the parameter "OSD/Sorting direction for recordings"
+ for suggesting to stay in the original folder when moving a recording to a different
+ folder
+ for reporting problem with locking the Recordings list in the cutting process
+ for suggesting to change the log message ""ERROR: copying directory '%s' to '%s' ended
+ prematurely" from "error" to "info"
+ for suggesting to allow opening a folder when selecting a folder for a recording or
+ timer, even if it doesn't contain any subfolders
+ for reporting a possible locking problem in cMenuPathEdit::ApplyChanges() when the
+ lock is held while the error message is displayed
+ for reporting that the info of a newly edited recording was not available immediately
+ after starting the editing process
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
@@ -3370,6 +3397,8 @@ Thomas Reufer <thomas@reufer.ch>
  for adding cFont::Width(void) to get the default character width and allow stretched
  font drawing in high level OSDs
  for fixing regenerating the index of audio recordings
+ for implementing the SVDRP commands 'LSTD' and 'PRIM'
+ for adding some comments regarding font height
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting
@@ -3414,6 +3443,7 @@ Dietmar Spingler <d_spingler@gmx.de>
  for suggesting to optionally list the channels with channel ids in the SVDRP command LSTC
  for suggesting to include the channel ID in log messages about switching channels
  for reporting a problem with the SVDRP command CHAN while the channel display is open
+ for suggesting to automatically close the CAM menu when the current channel is switched
 
 Stefan Schallenberg <infos@nafets.de>
  for adding the functions IndexOf(), InsertUnique(), AppendUnique() and RemoveElement()
@@ -3443,6 +3473,9 @@ Jasmin Jessich <jasmin@anw.at>
  for suggesting to use $(Q) to control Makefile verbosity
  for adding handling DEBUG to the Make.config.template file, in order to control
  code optimization
+ for suggesting to change the macros used to control deprecated code or functions
+ to numeric values (0 and 1), so that they can be controlled at compile time, without
+ having to edit the actual source code
 
 Martin Schirrmacher <schirrmie@gmail.com>
  for suggesting to provide a way for skin plugins to get informed about the currently
@@ -3511,3 +3544,9 @@ Frank Richter <kulpstur@t-online.de>
 Daniel Scheller <d.scheller@gmx.net>
  for reporting a problem with detecting whether a CAM replies to queries, which didn't
  work on some systems since the implementation of RI_HOST_CONTROL
+
+Onur Sentürk <onur@sentek.org>
+ for making the MTD mapper avoid immediately reusing unique PIDs when switching channels
+
+Helmut Binder <cco@aon.at>
+ for improving calculating signal strength and quality

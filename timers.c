@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.11 2017/06/25 10:02:09 kls Exp $
+ * $Id: timers.c 4.18 2018/03/17 10:07:19 kls Exp $
  */
 
 #include "timers.h"
@@ -419,20 +419,25 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
      t = time(NULL);
 
   int begin  = TimeToInt(start); // seconds from midnight
-  int length = TimeToInt(stop) - begin;
-  if (length < 0)
-     length += SECSINDAY;
+  int end    = TimeToInt(stop);
+  int length = end - begin;
 
   if (IsSingleEvent()) {
-     startTime = SetTime(day, begin);
-     stopTime = startTime + length;
+     time_t t0 = day;
+     startTime = SetTime(t0, begin);
+     if (length < 0)
+        t0 = IncDay(day, 1);
+     stopTime  = SetTime(t0, end);
      }
   else {
+     time_t d = day ? max(day, t) : t;
      for (int i = -1; i <= 7; i++) {
-         time_t t0 = IncDay(day ? max(day, t) : t, i);
+         time_t t0 = IncDay(d, i);
          if (DayMatches(t0)) {
             time_t a = SetTime(t0, begin);
-            time_t b = a + length;
+            if (length < 0)
+               t0 = IncDay(d, i + 1);
+            time_t b = SetTime(t0, end);
             if ((!day || a >= day) && t < b) {
                startTime = a;
                stopTime = b;
@@ -480,9 +485,16 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
      bool UseVps = HasFlags(tfVps) && Event->Vps();
      Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
      int overlap = 0;
-     if (UseVps)
-        overlap = (startTime == Event->Vps()) ? FULLMATCH + (Event->IsRunning() ? 200 : 100) : 0;
-     if (!overlap) {
+     if (UseVps) {
+        if (startTime == Event->Vps()) {
+           overlap = FULLMATCH;
+           if (Event->IsRunning())
+              overlap += 200;
+           else if (Event->RunningStatus() != SI::RunningStatusNotRunning)
+              overlap += 100;
+           }
+        }
+     else {
         if (startTime <= Event->StartTime() && Event->EndTime() <= stopTime)
            overlap = FULLMATCH;
         else if (stopTime <= Event->StartTime() || Event->EndTime() <= startTime)
@@ -493,8 +505,6 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
      startTime = stopTime = 0;
      if (Overlap)
         *Overlap = overlap;
-     if (UseVps)
-        return overlap > FULLMATCH ? tmFull : tmNone;
      return overlap >= FULLMATCH ? tmFull : overlap > 0 ? tmPartial : tmNone;
      }
   return tmNone;
@@ -504,7 +514,10 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
 
 bool cTimer::Expired(void) const
 {
-  return IsSingleEvent() && !Recording() && StopTime() + EXPIRELATENCY <= time(NULL) && (!HasFlags(tfVps) || !event || !event->Vps());
+  return IsSingleEvent()
+      && !Recording()
+      && StopTime() + EXPIRELATENCY <= time(NULL)
+      && (!HasFlags(tfVps) || !event || !event->Vps() || event->EndTime() + EXPIRELATENCY <= time(NULL));
 }
 
 time_t cTimer::StartTime(void) const
@@ -538,12 +551,12 @@ bool cTimer::SetEventFromSchedule(const cSchedules *Schedules)
         if (HasFlags(tfVps) && Schedule->Events()->First()->Vps()) {
            // VPS timers only match if their start time exactly matches the event's VPS time:
            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
-               if (e->StartTime() && e->RunningStatus() != SI::RunningStatusNotRunning) { // skip outdated events
+               if (e->StartTime()) {
                   int overlap = 0;
-                  Matches(e, &overlap);
-                  if (overlap > FULLMATCH) {
+                  if (Matches(e, &overlap) == tmFull) {
                      Event = e;
-                     break; // take the first matching event
+                     if (overlap > FULLMATCH)
+                        break; // take the first matching event
                      }
                   }
                }
@@ -792,16 +805,26 @@ const cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match) const
   eTimerMatch m = tmNone;
   for (const cTimer *ti = First(); ti; ti = Next(ti)) {
       eTimerMatch tm = ti->Matches(Event);
-      if (tm > m) {
+      if (tm > m || tm == tmFull && ti->Local()) {
          t = ti;
          m = tm;
-         if (m == tmFull)
+         if (m == tmFull && ti->Local())
             break;
          }
       }
   if (Match)
      *Match = m;
   return t;
+}
+
+int cTimers::GetMaxPriority(void) const
+{
+  int n = 0;
+  for (const cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (!ti->Remote() && ti->Recording())
+         n = max(n, ti->Priority());
+      }
+  return n;
 }
 
 const cTimer *cTimers::GetNextActiveTimer(void) const
@@ -883,78 +906,115 @@ bool cTimers::DeleteExpired(void)
   return TimersModified;
 }
 
-bool cTimers::GetRemoteTimers(const char *ServerName)
+bool cTimers::StoreRemoteTimers(const char *ServerName, const cStringList *RemoteTimers)
 {
   bool Result = false;
-  if (ServerName) {
-     Result = DelRemoteTimers(ServerName);
-     cStringList Response;
-     if (ExecSVDRPCommand(ServerName, "LSTT ID", &Response)) {
-        for (int i = 0; i < Response.Size(); i++) {
-            const char *s = Response[i];
-            int Code = SVDRPCode(s);
-            if (Code == 250) {
-               if (const char *v = SVDRPValue(s)) {
-                  int Id = atoi(v);
-                  while (*v && *v != ' ')
-                        v++; // skip id
-                  cTimer *Timer = new cTimer;
-                  if (Timer->Parse(v)) {
-                     Timer->SetRemote(ServerName);
-                     Timer->SetId(Id);
-                     Add(Timer);
-                     Result = true;
-                     }
-                  else {
-                     esyslog("ERROR: %s: error in timer settings: %s", ServerName, v);
-                     delete Timer;
-                     }
-                  }
-               }
-            else if (Code != 550)
-               esyslog("ERROR: %s: %s", ServerName, s);
-            }
-        return Result;
-        }
-     }
-  else {
-     cStringList ServerNames;
-     if (GetSVDRPServerNames(&ServerNames, sffTimers)) {
-        for (int i = 0; i < ServerNames.Size(); i++)
-            Result |= GetRemoteTimers(ServerNames[i]);
-        }
-     }
-  return Result;
-}
-
-bool cTimers::DelRemoteTimers(const char *ServerName)
-{
-  bool Deleted = false;
-  cTimer *Timer = First();
-  while (Timer) {
-        cTimer *t = Next(Timer);
-        if (Timer->Remote() && (!ServerName || strcmp(Timer->Remote(), ServerName) == 0)) {
-           Del(Timer);
-           Deleted = true;
+  if (!ServerName || !RemoteTimers || RemoteTimers->Size() == 0) {
+     // Remove remote timers from this list:
+     cTimer *Timer = First();
+     while (Timer) {
+           cTimer *t = Next(Timer);
+           if (Timer->Remote() && (!ServerName || strcmp(Timer->Remote(), ServerName) == 0)) {
+              Del(Timer);
+              Result = true;
+              }
+           Timer = t;
            }
-        Timer = t;
-        }
-  return Deleted;
-}
-
-void cTimers::TriggerRemoteTimerPoll(const char *ServerName)
-{
-  if (ServerName) {
-     if (!ExecSVDRPCommand(ServerName, cString::sprintf("POLL %s TIMERS", Setup.SVDRPHostName)))
-        esyslog("ERROR: can't send 'POLL %s TIMERS' to '%s'", Setup.SVDRPHostName, ServerName);
+     return Result;
      }
-  else {
-     cStringList ServerNames;
-     if (GetSVDRPServerNames(&ServerNames)) {
-        for (int i = 0; i < ServerNames.Size(); i++)
-            TriggerRemoteTimerPoll(ServerNames[i]);
-        }
-     }
+  // Collect all locally stored remote timers from ServerName:
+  cStringList tl;
+  for (cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (ti->Remote() && strcmp(ti->Remote(), ServerName) == 0)
+         tl.Append(strdup(cString::sprintf("%d %s", ti->Id(), *ti->ToText(true))));
+      }
+  tl.SortNumerically(); // RemoteTimers is also sorted numerically!
+  // Compare the two lists and react accordingly:
+  int il = 0; // index into the local ("left") list of remote timers
+  int ir = 0; // index into the remote ("right") list of timers
+  int sl = tl.Size();
+  int sr = RemoteTimers->Size();
+  for (;;) {
+      int AddTimer = 0;
+      int DelTimer = 0;
+      if (il < sl) { // still have left entries
+         int nl = atoi(tl[il]);
+         if (ir < sr) { // still have right entries
+            // Compare timers:
+            int nr = atoi((*RemoteTimers)[ir]);
+            if (nl == nr) // same timer id
+               AddTimer = DelTimer = nl;
+            else if (nl < nr) // left entry not in right list
+               DelTimer = nl;
+            else // right entry not in left list
+               AddTimer = nr;
+            }
+         else // processed all right entries
+            DelTimer = nl;
+         }
+      else if (ir < sr) { // still have right entries
+         AddTimer = atoi((*RemoteTimers)[ir]);
+         if (!AddTimer) {
+            esyslog("ERROR: %s: error in timer settings: %s", ServerName, (*RemoteTimers)[ir]);
+            ir++;
+            continue; // let's see if we can process the rest
+            }
+         }
+      else // processed all left and right entries
+         break;
+      if (AddTimer && DelTimer) {
+         if (strcmp(tl[il], (*RemoteTimers)[ir]) != 0) {
+            // Overwrite timer:
+            char *v = (*RemoteTimers)[ir];
+            while (*v && *v != ' ')
+                  v++; // skip id
+            if (cTimer *l = GetById(DelTimer, ServerName)) {
+               cTimer r;
+               if (r.Parse(v)) {
+                  r.SetRemote(ServerName);
+                  r.SetId(AddTimer);
+                  *l = r;
+                  Result = true;
+                  }
+               else
+                  esyslog("ERROR: %d@%s: error in timer settings: %s", DelTimer, ServerName, v);
+               }
+            }
+         else // identical timer, nothing to do
+            ;
+         il++;
+         ir++;
+         }
+      else if (AddTimer) {
+         char *v = (*RemoteTimers)[ir];
+         while (*v && *v != ' ')
+               v++; // skip id
+         cTimer *Timer = new cTimer;
+         if (Timer->Parse(v)) {
+            Timer->SetRemote(ServerName);
+            Timer->SetId(AddTimer);
+            Add(Timer);
+            Result = true;
+            }
+         else {
+            esyslog("ERROR: %s: error in timer settings: %s", ServerName, v);
+            delete Timer;
+            }
+         ir++;
+         }
+      else if (DelTimer) {
+         if (cTimer *t = GetById(DelTimer, ServerName)) {
+            Del(t);
+            Result = true;
+            }
+         il++;
+         }
+      else {
+         esyslog("ERROR: oops while storing remote timers!");
+         break; // let's not get stuck here!
+         }
+      }
+  return Result;
 }
 
 static bool RemoteTimerError(const cTimer *Timer, cString *Msg)

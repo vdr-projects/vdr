@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -612,9 +612,6 @@ msgstr "Verzeichnis editieren"
 msgid "New folder"
 msgstr "Neues Verzeichnis"
 
-msgid "Sub folder"
-msgstr "Unterverzeichnis"
-
 msgid "Folder name already exists!"
 msgstr "Verzeichnisname existiert bereits!"
 
@@ -729,6 +726,9 @@ msgstr "Programm"
 
 msgid "Can't switch channel!"
 msgstr "Kanal kann nicht umgeschaltet werden!"
+
+msgid "Schedule"
+msgstr "Programm"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr "nach Namen"
 msgid "by time"
 msgstr "nach Zeit"
 
+msgid "ascending"
+msgstr "aufsteigend"
+
+msgid "descending"
+msgstr "absteigend"
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -952,6 +958,9 @@ msgstr "Verzeichnisse immer zuerst einsortieren"
 
 msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Standard Sortierreihenfolge für Aufnahmen"
+
+msgid "Setup.OSD$Sorting direction for recordings"
+msgstr "Sortierreihenfolge für Aufnahmen"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Nummerntasten für Zeichen"
@@ -1387,9 +1396,6 @@ msgstr "Wirklich neu starten?"
 msgid " Stop recording "
 msgstr " Aufzeichnung beenden "
 
-msgid "Schedule"
-msgstr "Programm"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Wiedergabe beenden"
@@ -1597,14 +1603,14 @@ msgstr "VDR schaltet später aus - Power zum Erzwingen"
 msgid "Press any key to cancel shutdown"
 msgstr "Taste drücken, um Ausschalten abzubrechen"
 
-msgid "Switching primary DVB..."
-msgstr "Primäres Interface wird umgeschaltet..."
-
 msgid "Editing process failed!"
 msgstr "Bearbeitung gescheitert!"
 
 msgid "Editing process finished"
 msgstr "Bearbeitung beendet"
+
+msgid "Switching primary DVB..."
+msgstr "Primäres Interface wird umgeschaltet..."
 
 msgid "Press any key to cancel restart"
 msgstr "Taste drücken, um Neustart abzubrechen"

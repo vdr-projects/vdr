@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 4.0 2014/01/25 10:47:39 kls Exp $
+ * $Id: status.c 4.1 2018/01/29 13:36:53 kls Exp $
  */
 
 #include "status.h"
@@ -51,6 +51,12 @@ void cStatus::MsgReplaying(const cControl *Control, const char *Name, const char
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
       sm->Replaying(Control, Name, FileName, On);
+}
+
+void cStatus::MsgMarksModified(const cMarks* Marks)
+{
+  for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
+      sm->MarksModified(Marks);
 }
 
 void cStatus::MsgSetVolume(int Volume, bool Absolute)

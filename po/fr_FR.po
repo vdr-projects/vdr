@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-18 20:16+0100\n"
 "Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -622,9 +622,6 @@ msgstr "Modifier le dossier"
 msgid "New folder"
 msgstr "Nouveau dossier"
 
-msgid "Sub folder"
-msgstr "Sous-dossier"
-
 msgid "Folder name already exists!"
 msgstr "Ce nom de dossier existe déjà !"
 
@@ -739,6 +736,9 @@ msgstr "Programme"
 
 msgid "Can't switch channel!"
 msgstr "Impossible de changer de chaîne !"
+
+msgid "Schedule"
+msgstr "Programme"
 
 #, c-format
 msgid "Schedule - %s"
@@ -873,6 +873,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "Affichage à l'écran"
 
@@ -961,6 +967,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Toujours trier les dossiers en premier"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1397,9 +1406,6 @@ msgstr "Confirmer le redémarrage ?"
 msgid " Stop recording "
 msgstr " Arrêter l'enregistrement "
 
-msgid "Schedule"
-msgstr "Programme"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Arrêter la lecture"
@@ -1607,14 +1613,14 @@ msgstr "VDR doit s'arrêter plus tard - Appuyer sur Arrêt pour forcer"
 msgid "Press any key to cancel shutdown"
 msgstr "Appuyer sur une touche pour annuler l'arrêt"
 
-msgid "Switching primary DVB..."
-msgstr "Changement de périphérique DVB primaire..."
-
 msgid "Editing process failed!"
 msgstr "Échec du montage !"
 
 msgid "Editing process finished"
 msgstr "Montage terminé"
+
+msgid "Switching primary DVB..."
+msgstr "Changement de périphérique DVB primaire..."
 
 msgid "Press any key to cancel restart"
 msgstr "Appuyer sur une touche pour annuler le redémarrage"

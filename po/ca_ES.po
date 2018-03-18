@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Catalan <vdr@linuxtv.org>\n"
@@ -614,9 +614,6 @@ msgstr "Modificar carpeta"
 msgid "New folder"
 msgstr "Nova carpeta"
 
-msgid "Sub folder"
-msgstr "Sub carpeta"
-
 msgid "Folder name already exists!"
 msgstr "La carpeta ja existeix!"
 
@@ -731,6 +728,9 @@ msgstr "Programar"
 
 msgid "Can't switch channel!"
 msgstr "No puc canviar de canal!"
+
+msgid "Schedule"
+msgstr "Guia de Programació"
 
 #, c-format
 msgid "Schedule - %s"
@@ -865,6 +865,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "Informació en pantalla"
 
@@ -953,6 +959,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Sempre ordenar primer carpetes"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1389,9 +1398,6 @@ msgstr "Segur que voleu reiniciar?"
 msgid " Stop recording "
 msgstr " Aturar la gravació "
 
-msgid "Schedule"
-msgstr "Guia de Programació"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Aturar la reproducció"
@@ -1599,14 +1605,14 @@ msgstr "VDR s'apagarà més tard, prem Power per a forçar"
 msgid "Press any key to cancel shutdown"
 msgstr "Prem qualsevol tecla per cancel·lar l'aturada"
 
-msgid "Switching primary DVB..."
-msgstr "Canviant a la interfície DVB primària..."
-
 msgid "Editing process failed!"
 msgstr "Procés d'edició fallit!"
 
 msgid "Editing process finished"
 msgstr "Procés d'edició finalitzat"
+
+msgid "Switching primary DVB..."
+msgstr "Canviant a la interfície DVB primària..."
 
 msgid "Press any key to cancel restart"
 msgstr "Prem qualsevol tecla per cancel·lar el reinici"

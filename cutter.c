@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 4.3 2017/05/21 09:45:06 kls Exp $
+ * $Id: cutter.c 4.6 2018/01/18 12:19:31 kls Exp $
  */
 
 #include "cutter.h"
@@ -677,8 +677,6 @@ bool cCutter::Start(void)
               cRecordingUserCommand::InvokeCommand(RUC_EDITINGRECORDING, editedVersionName, originalVersionName);
               if (cVideoDirectory::RemoveVideoFile(editedVersionName) && MakeDirs(editedVersionName, true)) {
                  Recording.WriteInfo(editedVersionName);
-                 LOCK_RECORDINGS_WRITE;
-                 Recordings->AddByName(editedVersionName, false);
                  cuttingThread = new cCuttingThread(originalVersionName, editedVersionName);
                  return true;
                  }
@@ -702,9 +700,6 @@ void cCutter::Stop(void)
         esyslog("ERROR: '%s' during editing process", Error);
      if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), editedVersionName) == 0)
         cControl::Shutdown();
-     cVideoDirectory::RemoveVideoFile(editedVersionName);
-     LOCK_RECORDINGS_WRITE;
-     Recordings->DelByName(editedVersionName);
      }
 }
 

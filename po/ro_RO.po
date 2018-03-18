@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-11 22:26+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -613,9 +613,6 @@ msgstr "Editează directorul"
 msgid "New folder"
 msgstr "Director nou"
 
-msgid "Sub folder"
-msgstr "Sub-director"
-
 msgid "Folder name already exists!"
 msgstr "Un director cu acelaşi nume există!"
 
@@ -730,6 +727,9 @@ msgstr "Program"
 
 msgid "Can't switch channel!"
 msgstr "Nu pot comuta canalul!"
+
+msgid "Schedule"
+msgstr "Program (EPG)"
 
 #, c-format
 msgid "Schedule - %s"
@@ -864,6 +864,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -952,6 +958,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Sortează întotdeauna directoarele la început"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1388,9 +1397,6 @@ msgstr "Sigur repornesc?"
 msgid " Stop recording "
 msgstr " Opreşte înregistrarea "
 
-msgid "Schedule"
-msgstr "Program (EPG)"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Opreşte redarea"
@@ -1598,14 +1604,14 @@ msgstr "VDR se va închide mai târziu - apăsaţi 'Power' pentru a forţa"
 msgid "Press any key to cancel shutdown"
 msgstr "Apasă orice tastă pentru a anula închiderea"
 
-msgid "Switching primary DVB..."
-msgstr "Comut dispozitiv DVB primar..."
-
 msgid "Editing process failed!"
 msgstr "Editarea înregistrării a eşuat"
 
 msgid "Editing process finished"
 msgstr "Editarea înregistrării s-a încheiat"
+
+msgid "Switching primary DVB..."
+msgstr "Comut dispozitiv DVB primar..."
 
 msgid "Press any key to cancel restart"
 msgstr "Apăsaţi orice tastă pentru a anula repornirea"

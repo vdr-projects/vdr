@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 4.2 2017/04/03 12:02:16 kls Exp $
+ * $Id: osdbase.h 4.5 2018/01/25 15:09:23 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -30,7 +30,6 @@ enum eOSState { osUnknown,
                 osStopRecord,
                 osStopReplay,
                 osCancelEdit,
-                osSwitchDvb,
                 osBack,
                 osEnd,
                 os_User, // the following values can be used locally
@@ -92,6 +91,7 @@ private:
   char *title;
   int cols[cSkinDisplayMenu::MaxTabs];
   int first, current, marked;
+  int lastOffset;
   eMenuCategory menuCategory;
   eMenuSortMode menuSortMode;
   eMenuOrientation menuOrientation;

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-17 18:59+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
@@ -612,9 +612,6 @@ msgstr "Upravi» zlo¾ku"
 msgid "New folder"
 msgstr "Nový zlo¾ka"
 
-msgid "Sub folder"
-msgstr "Pod zlo¾ka"
-
 msgid "Folder name already exists!"
 msgstr "Názov zlo¾ky u¾ existuje!"
 
@@ -729,6 +726,9 @@ msgstr "TV program"
 
 msgid "Can't switch channel!"
 msgstr "Kanál nejde prepnú»!"
+
+msgid "Schedule"
+msgstr "TV program"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD (Menu na obrazovke)"
 
@@ -951,6 +957,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Zlo¾ky v¾dy najprv usporiada»"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1387,9 +1396,6 @@ msgstr "Naozaj re¹tartova»?"
 msgid " Stop recording "
 msgstr " Zastavi» nahrávanie "
 
-msgid "Schedule"
-msgstr "TV program"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Zastavi» prehrávanie"
@@ -1597,14 +1603,14 @@ msgstr "VDR sa vypne neskor¹ie. - Vynútenie potvrdte klávesou Power"
 msgid "Press any key to cancel shutdown"
 msgstr "Ktorákoµvek klávesa zru¹í vypnutie"
 
-msgid "Switching primary DVB..."
-msgstr "Prepína hlavný DVB..."
-
 msgid "Editing process failed!"
 msgstr "Zostrihávanie zlyhalo!"
 
 msgid "Editing process finished"
 msgstr "Proces zostrihávania dokonèený"
+
+msgid "Switching primary DVB..."
+msgstr "Prepína hlavný DVB..."
 
 msgid "Press any key to cancel restart"
 msgstr "ktorákoµvek klávesa zru¹í re¹tart"

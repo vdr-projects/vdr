@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: font.h 4.2 2016/12/22 12:43:24 kls Exp $
+ * $Id: font.h 4.3 2017/11/11 14:05:07 kls Exp $
  */
 
 #ifndef __FONT_H
@@ -54,6 +54,8 @@ public:
           ///< Returns the width of the given string in pixel.
   virtual int Height(void) const = 0;
           ///< Returns the height of this font in pixel (all characters have the same height).
+          ///< If the font contains descenders, its total height may be higher than the character
+          ///< height specified during creation.
   int Height(const char *s) const { return Height(); }
           ///< Returns the height of this font in pixel (obsolete, just for backwards compatibility).
   virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const = 0;
@@ -75,10 +77,12 @@ public:
           ///< function that called GetFont() has returned.
   static cFont *CreateFont(const char *Name, int CharHeight, int CharWidth = 0);
           ///< Creates a new font object with the given Name and makes its characters
-          ///< CharHeight pixels high. If CharWidth is given, it overwrites the font's
-          ///< default width. Name is of the form "Family:Style", for instance
-          ///< "Verdana:Bold Italic" or "Times New Roman". See GetAvailableFontNames()
-          ///< for how to get a list of all available font names.
+          ///< CharHeight pixels high. The actual height of the required drawing area
+          ///< might be higher than CharHeight if the font contains descenders.
+          ///< If CharWidth is given, it overwrites the font's default width.
+          ///< Name is of the form "Family:Style", for instance "Verdana:Bold Italic" or
+          ///< "Times New Roman". See GetAvailableFontNames() for how to get a list of
+          ///< all available font names.
           ///< If the requested font can't be created, a dummy font is returned.
           ///< The caller must delete the font when it is no longer needed.
   static bool GetAvailableFontNames(cStringList *FontNames, bool Monospaced = false);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.13 2017/06/25 11:45:38 kls Exp $
+ * $Id: tools.h 4.16 2018/03/04 14:06:36 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -226,6 +226,12 @@ cString strgetval(const char *s, const char *name, char d = '=');
     ///< If an other delimiter shall be used (like, e.g., ':'), it can be given
     ///< as the third parameter.
     ///< If name occurs more than once in s, only the first occurrence is taken.
+char *strshift(char *s, int n);
+    ///< Shifts the given string to the left by the given number of bytes, thus
+    ///< removing the first n bytes from s.
+    ///< If n is greater than the length of s, the resulting string will be empty.
+    ///< If n is <= 0 s will be unchanged.
+    ///< Returns s.
 bool startswith(const char *s, const char *p);
 bool endswith(const char *s, const char *p);
 bool isempty(const char *s);
@@ -553,6 +559,11 @@ public:
        ///< Contains() function to check whether an object you are holding a pointer
        ///< to is still in the list. Note that the garbage collector is purged when
        ///< the usual housekeeping is done.
+  void SetSyncStateKey(cStateKey &StateKey) { stateLock.SetSyncStateKey(StateKey); }
+       ///< When making changes to this list (while holding a write lock) that shall
+       ///< not affect some other code that reacts to such changes, this function can
+       ///< be called with the StateKey used by that other code.
+       ///< See cStateLock::SetSyncStateKey() for details.
   void SetUseGarbageCollector(void) { useGarbageCollector = true; }
   void SetExplicitModify(void);
        ///< If you have obtained a write lock on this list, and you don't want it to
@@ -768,7 +779,7 @@ public:
 
 inline int CompareInts(const void *a, const void *b)
 {
-  return *(const int *)a > *(const int *)b;
+  return *(const int *)a - *(const int *)b;
 }
 
 inline int CompareStrings(const void *a, const void *b)
@@ -779,6 +790,12 @@ inline int CompareStrings(const void *a, const void *b)
 inline int CompareStringsIgnoreCase(const void *a, const void *b)
 {
   return strcasecmp(*(const char **)a, *(const char **)b);
+}
+
+inline int CompareStringsNumerically(const void *a, const void *b)
+{
+  int d = atoi(*(const char **)a) - atoi(*(const char **)b);
+  return d ? d : CompareStrings(a, b);
 }
 
 class cStringList : public cVector<char *> {
@@ -792,6 +809,10 @@ public:
        cVector<char *>::Sort(CompareStringsIgnoreCase);
     else
        cVector<char *>::Sort(CompareStrings);
+  }
+  void SortNumerically(void)
+  {
+    cVector<char *>::Sort(CompareStringsNumerically);
   }
   virtual void Clear(void);
   };

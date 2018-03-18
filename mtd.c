@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.11 2017/05/01 09:19:52 kls Exp $
+ * $Id: mtd.c 1.12 2017/10/31 12:16:39 kls Exp $
  */
 
 #include "mtd.h"
@@ -148,6 +148,7 @@ class cMtdMapper {
 private:
   int number;
   int masterCamSlotNumber;
+  int nextUniqPid;
   uint16_t uniqPids[MAX_REAL_PIDS]; // maps a real PID to a unique PID
   uint16_t realPids[MAX_UNIQ_PIDS]; // maps a unique PID to a real PID
   cVector<uint16_t> uniqSids;
@@ -165,6 +166,7 @@ cMtdMapper::cMtdMapper(int Number, int MasterCamSlotNumber)
 {
   number = Number;
   masterCamSlotNumber = MasterCamSlotNumber;
+  nextUniqPid = 0;
   Clear();
 }
 
@@ -179,11 +181,15 @@ uint16_t cMtdMapper::MakeUniqPid(uint16_t RealPid)
   DBGMTD("CAM %d/%d: mapped PID %d (%04X) to %d (%04X)", masterCamSlotNumber, number, RealPid, RealPid, uniqPids[RealPid], uniqPids[RealPid]);
   return uniqPids[RealPid];
 #else
-  for (int i = 0; i < MAX_UNIQ_PIDS; i++) {
+  for (int p = 0; p < MAX_UNIQ_PIDS; p++) {
+      int i = nextUniqPid + p;
+      if (i >= MAX_UNIQ_PIDS)
+         i -= MAX_UNIQ_PIDS;
       if (realPids[i] == MTD_INVALID_PID) { // 0x0000 is a valid PID (PAT)!
          realPids[i] = RealPid;
          uniqPids[RealPid] = (number << UNIQ_PID_SHIFT) | i;
          DBGMTD("CAM %d/%d: mapped PID %d (%04X) to %d (%04X)", masterCamSlotNumber, number, RealPid, RealPid, uniqPids[RealPid], uniqPids[RealPid]);
+         nextUniqPid = i + 1;
          return uniqPids[RealPid];
          }
       }
@@ -212,6 +218,7 @@ void cMtdMapper::Clear(void)
   DBGMTD("CAM %d/%d: MTD mapper cleared", masterCamSlotNumber, number);
   memset(uniqPids, 0, sizeof(uniqPids));
   memset(realPids, MTD_INVALID_PID, sizeof(realPids));
+  // do not reset nextUniqPid here!
   uniqSids.Clear();
 }
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: Greek <vdr@linuxtv.org>\n"
@@ -611,9 +611,6 @@ msgstr ""
 msgid "New folder"
 msgstr ""
 
-msgid "Sub folder"
-msgstr ""
-
 msgid "Folder name already exists!"
 msgstr ""
 
@@ -728,6 +725,9 @@ msgstr "Πρόγραμμα"
 
 msgid "Can't switch channel!"
 msgstr "Αλλαγή καναλιού αδύνατη!"
+
+msgid "Schedule"
+msgstr "Πρόγραμμα"
 
 #, c-format
 msgid "Schedule - %s"
@@ -862,6 +862,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -950,6 +956,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr ""
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1386,9 +1395,6 @@ msgstr "Nα γίνει σίγουρα επανεκκίνηση?"
 msgid " Stop recording "
 msgstr " Τέλος εγγαφής "
 
-msgid "Schedule"
-msgstr "Πρόγραμμα"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Τέλος αναπαραγωγής"
@@ -1596,14 +1602,14 @@ msgstr ""
 msgid "Press any key to cancel shutdown"
 msgstr "Πίεσε ένα πλήκτρο γιά ακύρωδη τερματισμού"
 
-msgid "Switching primary DVB..."
-msgstr "Η κύρια DVB κάρτα αλλάζει..."
-
 msgid "Editing process failed!"
 msgstr "Η επεξεργασία απέτυχε!"
 
 msgid "Editing process finished"
 msgstr "Η επεξεργασία τελείωσε"
+
+msgid "Switching primary DVB..."
+msgstr "Η κύρια DVB κάρτα αλλάζει..."
 
 msgid "Press any key to cancel restart"
 msgstr ""

@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 4.2 2015/04/19 12:39:13 kls Exp $
+.\" $Id: vdr.1 4.3 2018/02/09 15:09:07 kls Exp $
 .\"
 .TH vdr 1 "19 Feb 2015" "2.2" "Video Disk Recorder"
 .SH NAME
@@ -158,7 +158,10 @@ Don't use the keyboard as an input device.
 Use \fIport\fR for SVDRP. A value of \fB0\fR turns off SVDRP.
 The default SVDRP port is \fB6419\fR.
 You need to edit the file \fIsvdrphosts.conf\fR in order to enable
-access to the SVDRP port.
+access to the SVDRP port from hosts other than the localhosts.
+Note that this option only changes the TCP port used for SVDRP commands.
+The UDP port for discovering peer VDRs in the same network is always set
+to 6419 and can't be changed.
 .TP
 .BI \-P\  options ,\ \-\-plugin= options
 Load a plugin, defined by the given \fIoptions\fR.

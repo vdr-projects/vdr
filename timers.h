@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.8 2017/04/20 09:09:45 kls Exp $
+ * $Id: timers.h 4.11 2018/02/27 13:57:26 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -176,6 +176,8 @@ public:
   cTimer *GetMatch(time_t t) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(t)); };
   const cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL) const;
   cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(Event, Match)); }
+  int GetMaxPriority(void) const;
+      ///< Returns the maximum priority of all local timers that are currently recording.
   const cTimer *GetNextActiveTimer(void) const;
   const cTimer *UsesChannel(const cChannel *Channel) const;
   bool SetEvents(const cSchedules *Schedules);
@@ -183,21 +185,14 @@ public:
   void Add(cTimer *Timer, cTimer *After = NULL);
   void Ins(cTimer *Timer, cTimer *Before = NULL);
   void Del(cTimer *Timer, bool DeleteObject = true);
-  bool GetRemoteTimers(const char *ServerName = NULL);
-      ///< Gets the timers from the given remote machine and adds them to this
-      ///< list. If no ServerName is given, all timers from all known remote
-      ///< machines will be fetched. This function calls DelRemoteTimers() with
-      ///< the given ServerName first.
-      ///< Returns true if any remote timers have been added or deleted
-  bool DelRemoteTimers(const char *ServerName = NULL);
-      ///< Deletes all timers of the given remote machine from this list (leaves
-      ///< them untouched on the remote machine). If no ServerName is given, the
-      ///< timers of all remote machines will be deleted from the list.
-      ///< Returns true if any remote timers have been deleted.
-  void TriggerRemoteTimerPoll(const char *ServerName = NULL);
-      ///< Sends an SVDRP POLL command to the given remote machine.
-      ///< If no ServerName is given, the POLL command will be sent to all
-      ///< known remote machines.
+  bool StoreRemoteTimers(const char *ServerName = NULL, const cStringList *RemoteTimers = NULL);
+      ///< Stores the given list of RemoteTimers, which come from the VDR ServerName, in
+      ///< this list. If no ServerName is given, all remote timers from all peer machines
+      ///< will be removed from this list. If no RemoteTimers are given, only the remote
+      ///< timers from ServerName will be removed from this list.
+      ///< The given list of RemoteTimers must be sorted numerically (by a call to its
+      ///< SortNumerically() function).
+      ///< Returns true if any remote timers have been added, deleted or modified.
   };
 
 bool HandleRemoteTimerModifications(cTimer *NewTimer, cTimer *OldTimer = NULL, cString *Msg = NULL);

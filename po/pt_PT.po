@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2010-03-28 22:49+0100\n"
 "Last-Translator: Cris Silva <hudokkow@gmail.com>\n"
 "Language-Team: Portuguese <vdr@linuxtv.org>\n"
@@ -612,9 +612,6 @@ msgstr "Editar pasta"
 msgid "New folder"
 msgstr "Nova pasta"
 
-msgid "Sub folder"
-msgstr "Subpasta"
-
 msgid "Folder name already exists!"
 msgstr "Nome da pasta já existe!"
 
@@ -729,6 +726,9 @@ msgstr "Programação"
 
 msgid "Can't switch channel!"
 msgstr "Impossível mudar de canal!"
+
+msgid "Schedule"
+msgstr "Programação"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -951,6 +957,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr ""
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1387,9 +1396,6 @@ msgstr "Quer mesmo reiniciar?"
 msgid " Stop recording "
 msgstr " Parar gravação "
 
-msgid "Schedule"
-msgstr "Programação"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Parar reprodução"
@@ -1597,14 +1603,14 @@ msgstr "O VDR vai desligar mais tarde - pressione On/Off para forçar"
 msgid "Press any key to cancel shutdown"
 msgstr "Pressione qualquer tecla para cancelar o encerramento"
 
-msgid "Switching primary DVB..."
-msgstr "A mudar placa de DVB primária..."
-
 msgid "Editing process failed!"
 msgstr "Processo de edição falhou!"
 
 msgid "Editing process finished"
 msgstr "Processo de edição terminou"
+
+msgid "Switching primary DVB..."
+msgstr "A mudar placa de DVB primária..."
 
 msgid "Press any key to cancel restart"
 msgstr "Pressione qualquer tecla para cancelar o reinicio"

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.3 2017/05/03 08:58:41 kls Exp $
+ * $Id: eit.c 4.4 2017/10/11 09:19:42 kls Exp $
  */
 
 #include "eit.h"
@@ -94,10 +94,10 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
       // Drop bogus events - but keep NVOD reference events, where all bits of the start time field are set to 1, resulting in a negative number.
       if (StartTime == 0 || StartTime > 0 && Duration == 0)
          continue;
+      Empty = false;
       // Ignore events that ended before the "EPG linger time":
       if (StartTime + Duration < LingerLimit)
          continue;
-      Empty = false;
       if (!SegmentStart)
          SegmentStart = StartTime;
       SegmentEnd = StartTime + Duration;

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2016-12-27 17:13+0100\n"
 "Last-Translator: Pridvorov Andrey <ua0lnj@bk.ru>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -612,9 +612,6 @@ msgstr "Редакция директории"
 msgid "New folder"
 msgstr "Новая директория"
 
-msgid "Sub folder"
-msgstr "поддиректория"
-
 msgid "Folder name already exists!"
 msgstr "Директория уже существует!"
 
@@ -729,6 +726,9 @@ msgstr "Программа"
 
 msgid "Can't switch channel!"
 msgstr "Невозможно переключить канал!"
+
+msgid "Schedule"
+msgstr "Телегид"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr "по имени"
 msgid "by time"
 msgstr "по времени"
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "Меню"
 
@@ -952,6 +958,9 @@ msgstr "Директории всегда в первую очередь сор�
 
 msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Сортировка по умолчанию"
+
+msgid "Setup.OSD$Sorting direction for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Количество кнопок для символов"
@@ -1387,9 +1396,6 @@ msgstr "Действительно перезапустить?"
 msgid " Stop recording "
 msgstr " Прекратить запись "
 
-msgid "Schedule"
-msgstr "Телегид"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Прекратить воспроизведение"
@@ -1597,14 +1603,14 @@ msgstr "VDR выключится позже - нажмите Питание дл
 msgid "Press any key to cancel shutdown"
 msgstr "Нажмите любую кнопку чтобы отменить выключение"
 
-msgid "Switching primary DVB..."
-msgstr "Смена основного DVB-устройства..."
-
 msgid "Editing process failed!"
 msgstr "Ошибка во время монтажа записи!"
 
 msgid "Editing process finished"
 msgstr "Монтаж окончен"
+
+msgid "Switching primary DVB..."
+msgstr "Смена основного DVB-устройства..."
 
 msgid "Press any key to cancel restart"
 msgstr "Нажмите любую кнопку для отмены перезагрузки"

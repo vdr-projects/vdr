@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.5 2017/04/03 13:31:16 kls Exp $
+ * $Id: recording.h 4.8 2018/02/12 12:28:24 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -38,6 +38,7 @@ enum eRecordingUsage {
   ruDst      = 0x0040, // the recording is the destination of a cut, move or copy process
   //
   ruPending  = 0x0080, // the recording is pending a cut, move or copy process
+  ruCanceled = 0x8000, // the operation has been canceled, waiting for cleanup
   };
 
 void RemoveDeletedRecordings(void);
@@ -526,11 +527,15 @@ bool GenerateIndex(const char *FileName, bool Update = false);
        ///< complete, and will be updated if it isn't. Otherwise an existing index
        ///< file will be removed before a new one is generated.
 
+enum eRecordingsSortDir { rsdAscending, rsdDescending };
 enum eRecordingsSortMode { rsmName, rsmTime };
 extern eRecordingsSortMode RecordingsSortMode;
 bool HasRecordingsSortMode(const char *Directory);
 void GetRecordingsSortMode(const char *Directory);
 void SetRecordingsSortMode(const char *Directory, eRecordingsSortMode SortMode);
 void IncRecordingsSortMode(const char *Directory);
+
+void SetRecordingTimerId(const char *Directory, const char *TimerId);
+cString GetRecordingTimerId(const char *Directory);
 
 #endif //__RECORDING_H

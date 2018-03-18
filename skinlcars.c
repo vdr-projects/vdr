@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 4.5 2017/06/23 15:52:03 kls Exp $
+ * $Id: skinlcars.c 4.6 2017/11/08 10:10:30 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -715,6 +715,7 @@ private:
   int lastLiveIndicatorY;
   bool lastLiveIndicatorTransferring;
   const cChannel *lastChannel;
+  cString lastChannelName;
   const cEvent *lastEvent;
   const cRecording *lastRecording;
   cString lastHeader;
@@ -1426,12 +1427,13 @@ void cSkinLCARSDisplayMenu::DrawLive(const cChannel *Channel)
      }
   if (!Channel)
      return;
-  if (initial || Channel != lastChannel) {
+  if (initial || Channel != lastChannel || strcmp(Channel->Name(), lastChannelName)) {
      osd->DrawText(xa00, yt00, itoa(Channel->Number()), Theme.Color(clrChannelFrameFg), Theme.Color(clrChannelFrameBg), tallFont, xa02 - xa00, yt02 - yt00, taTop | taRight | taBorder);
      osd->DrawText(xa03, yt00, Channel->Name(), Theme.Color(clrChannelName), Theme.Color(clrBackground), tallFont, xd00 - xa03, yd01 - yd00, taTop | taLeft);
      int x = xa00 + (yc03 - yc02); // compensate for the arc
      osd->DrawText(x, yc00, cSource::ToString(Channel->Source()), Theme.Color(clrChannelFrameFg), Theme.Color(clrChannelFrameBg), cFont::GetFont(fontOsd), xa02 - x, yc03 - yc00, taTop | taRight | taBorder);
      lastChannel = Channel;
+     lastChannelName = Channel->Name();
      DrawSeen(0, 0);
      }
   // The current programme:

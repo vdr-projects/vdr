@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.10 2017/06/25 12:31:46 kls Exp $
+ * $Id: recording.c 4.22 2018/03/17 10:56:13 kls Exp $
  */
 
 #include "recording.h"
@@ -57,6 +57,7 @@
 #define MARKSFILESUFFIX   "/marks"
 
 #define SORTMODEFILE      ".sort"
+#define TIMERRECFILE      ".timer"
 
 #define MINDISKSPACE 1024 // MB
 
@@ -117,7 +118,7 @@ void cRemoveDeletedRecordingsThread::Action(void)
          r = DeletedRecordings->Next(r);
          }
      if (deleted) {
-        const char *IgnoreFiles[] = { SORTMODEFILE, NULL };
+        const char *IgnoreFiles[] = { SORTMODEFILE, TIMERRECFILE, NULL };
         cVideoDirectory::RemoveEmptyVideoDirectories(IgnoreFiles);
         }
      }
@@ -962,8 +963,8 @@ char *cRecording::StripEpisodeName(char *s, bool Strip)
      // To have folders sorted before plain recordings, the '/' s1 points to
      // is replaced by the character '1'. All other slashes will be replaced
      // by '0' in SortName() (see below), which will result in the desired
-     // sequence:
-     *s1 = '1';
+     // sequence ('0' and '1' are reversed in case of rsdDescending):
+     *s1 = (Setup.RecSortingDirection == rsdAscending) ? '1' : '0';
      if (Strip) {
         s1++;
         memmove(s1, s2, t - s2 + 1);
@@ -986,7 +987,7 @@ char *cRecording::SortName(void) const
         char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
         if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
            s = StripEpisodeName(s, RecordingsSortMode != rsmName);
-        strreplace(s, '/', '0'); // some locales ignore '/' when sorting
+        strreplace(s, '/', (Setup.RecSortingDirection == rsdAscending) ? '0' : '1'); // some locales ignore '/' when sorting
         int l = strxfrm(NULL, s, 0) + 1;
         *sb = MALLOC(char, l);
         strxfrm(*sb, s, l);
@@ -1020,7 +1021,10 @@ int cRecording::GetResume(void) const
 int cRecording::Compare(const cListObject &ListObject) const
 {
   cRecording *r = (cRecording *)&ListObject;
-  return strcasecmp(SortName(), r->SortName());
+  if (Setup.RecSortingDirection == rsdAscending)
+     return strcasecmp(SortName(), r->SortName());
+  else
+     return strcasecmp(r->SortName(), SortName());
 }
 
 bool cRecording::IsInPath(const char *Path) const
@@ -1234,7 +1238,10 @@ bool cRecording::ChangeName(const char *NewName)
      free(name);
      name = strdup(NewName);
      cString NewFileName = FileName();
-     if (!(MakeDirs(NewFileName, true) && cVideoDirectory::MoveVideoFile(OldFileName, NewFileName))) {
+     bool Exists = access(NewFileName, F_OK) == 0;
+     if (Exists)
+        esyslog("ERROR: recording '%s' already exists", NewName);
+     if (Exists || !(MakeDirs(NewFileName, true) && cVideoDirectory::MoveVideoFile(OldFileName, NewFileName))) {
         free(name);
         name = strdup(OldName);
         free(fileName);
@@ -1494,7 +1501,6 @@ void cRecordings::TouchUpdate(void)
   TouchFile(UpdateFileName());
   if (!needsUpdate)
      lastUpdate = time(NULL); // make sure we don't trigger ourselves
-  BroadcastSVDRPCommand("UPDR");
 }
 
 bool cRecordings::NeedsUpdate(void)
@@ -1679,7 +1685,6 @@ private:
 public:
   cDirCopier(const char *DirNameSrc, const char *DirNameDst);
   virtual ~cDirCopier();
-  void Stop(void);
   bool Error(void) { return error; }
   };
 
@@ -1694,7 +1699,7 @@ cDirCopier::cDirCopier(const char *DirNameSrc, const char *DirNameDst)
 
 cDirCopier::~cDirCopier()
 {
-  Stop();
+  Cancel(3);
 }
 
 bool cDirCopier::Throttled(void)
@@ -1725,6 +1730,7 @@ void cDirCopier::Action(void)
         int From = -1;
         int To = -1;
         size_t BufferSize = BUFSIZ;
+        uchar *Buffer = NULL;
         while (Running()) {
               // Suspend copying if we have severe throughput problems:
               if (Throttled()) {
@@ -1734,8 +1740,11 @@ void cDirCopier::Action(void)
               // Copy all files in the source directory to the destination directory:
               if (e) {
                  // We're currently copying a file:
-                 uchar Buffer[BufferSize];
-                 size_t Read = safe_read(From, Buffer, sizeof(Buffer));
+                 if (!Buffer) {
+                    esyslog("ERROR: no buffer");
+                    break;
+                    }
+                 size_t Read = safe_read(From, Buffer, BufferSize);
                  if (Read > 0) {
                     size_t Written = safe_write(To, Buffer, Read);
                     if (Written != Read) {
@@ -1784,7 +1793,14 @@ void cDirCopier::Action(void)
                     break;
                     }
                  dsyslog("copying file '%s' to '%s'", *FileNameSrc, *FileNameDst);
-                 BufferSize = max(size_t(st.st_blksize * 10), size_t(BUFSIZ));
+                 if (!Buffer) {
+                    BufferSize = max(size_t(st.st_blksize * 10), size_t(BUFSIZ));
+                    Buffer = MALLOC(uchar, BufferSize);
+                    if (!Buffer) {
+                       esyslog("ERROR: out of memory");
+                       break;
+                       }
+                    }
                  if (access(FileNameDst, F_OK) == 0) {
                     esyslog("ERROR: destination file '%s' already exists", *FileNameDst);
                     break;
@@ -1801,31 +1817,22 @@ void cDirCopier::Action(void)
                  }
               else {
                  // We're done:
+                 free(Buffer);
                  dsyslog("done copying directory '%s' to '%s'", *dirNameSrc, *dirNameDst);
                  error = false;
                  return;
                  }
               }
+        free(Buffer);
         close(From); // just to be absolutely sure
         close(To);
-        esyslog("ERROR: copying directory '%s' to '%s' ended prematurely", *dirNameSrc, *dirNameDst);
+        isyslog("copying directory '%s' to '%s' ended prematurely", *dirNameSrc, *dirNameDst);
         }
      else
         esyslog("ERROR: can't open '%s'", *dirNameSrc);
      }
   else
      esyslog("ERROR: can't access '%s'", *dirNameDst);
-}
-
-void cDirCopier::Stop(void)
-{
-  Cancel(3);
-  if (error) {
-     cVideoDirectory::RemoveVideoFile(dirNameDst);
-     LOCK_RECORDINGS_WRITE;
-     Recordings->AddByName(dirNameSrc);
-     Recordings->DelByName(dirNameDst);
-     }
 }
 
 // --- cRecordingsHandlerEntry -----------------------------------------------
@@ -1837,14 +1844,18 @@ private:
   cString fileNameDst;
   cCutter *cutter;
   cDirCopier *copier;
+  bool error;
   void ClearPending(void) { usage &= ~ruPending; }
 public:
   cRecordingsHandlerEntry(int Usage, const char *FileNameSrc, const char *FileNameDst);
   ~cRecordingsHandlerEntry();
   int Usage(const char *FileName = NULL) const;
+  bool Error(void) const { return error; }
+  void SetCanceled(void) { usage |= ruCanceled; }
   const char *FileNameSrc(void) const { return fileNameSrc; }
   const char *FileNameDst(void) const { return fileNameDst; }
-  bool Active(bool &Error);
+  bool Active(cRecordings *Recordings);
+  void Cleanup(cRecordings *Recordings);
   };
 
 cRecordingsHandlerEntry::cRecordingsHandlerEntry(int Usage, const char *FileNameSrc, const char *FileNameDst)
@@ -1854,6 +1865,7 @@ cRecordingsHandlerEntry::cRecordingsHandlerEntry(int Usage, const char *FileName
   fileNameDst = FileNameDst;
   cutter = NULL;
   copier = NULL;
+  error = false;
 }
 
 cRecordingsHandlerEntry::~cRecordingsHandlerEntry()
@@ -1874,22 +1886,22 @@ int cRecordingsHandlerEntry::Usage(const char *FileName) const
   return u;
 }
 
-bool cRecordingsHandlerEntry::Active(bool &Error)
+bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
 {
-  bool CopierFinishedOk = false;
+  if ((usage & ruCanceled) != 0)
+     return false;
   // First test whether there is an ongoing operation:
   if (cutter) {
      if (cutter->Active())
         return true;
-     Error |= cutter->Error();
+     error = cutter->Error();
      delete cutter;
      cutter = NULL;
      }
   else if (copier) {
      if (copier->Active())
         return true;
-     Error |= copier->Error();
-     CopierFinishedOk = !copier->Error();
+     error = copier->Error();
      delete copier;
      copier = NULL;
      }
@@ -1898,26 +1910,50 @@ bool cRecordingsHandlerEntry::Active(bool &Error)
      if ((Usage() & ruCut) != 0) {
         cutter = new cCutter(FileNameSrc());
         cutter->Start();
+        Recordings->AddByName(FileNameDst(), false);
         }
      else if ((Usage() & (ruMove | ruCopy)) != 0) {
         copier = new cDirCopier(FileNameSrc(), FileNameDst());
         copier->Start();
         }
      ClearPending();
-     LOCK_RECORDINGS_WRITE; // to trigger a state change
+     Recordings->SetModified(); // to trigger a state change
      return true;
      }
-  // Clean up:
-  if (CopierFinishedOk && (Usage() & ruMove) != 0) {
+  // We're done:
+  if (!error && (usage & ruMove) != 0) {
      cRecording Recording(FileNameSrc());
-     if (Recording.Delete()) {
-        LOCK_RECORDINGS_WRITE;
+     if (Recording.Delete())
         Recordings->DelByName(Recording.FileName());
-        }
      }
-  LOCK_RECORDINGS_WRITE; // to trigger a state change
+  Recordings->SetModified(); // to trigger a state change
   Recordings->TouchUpdate();
   return false;
+}
+
+void cRecordingsHandlerEntry::Cleanup(cRecordings *Recordings)
+{
+  if ((usage & ruCut)) {          // this was a cut operation...
+     if (cutter) {                // ...which had not yet ended
+        delete cutter;
+        cutter = NULL;
+        cVideoDirectory::RemoveVideoFile(fileNameDst);
+        Recordings->DelByName(fileNameDst);
+        }
+     }
+  if ((usage & (ruMove | ruCopy)) // this was a move/copy operation...
+     && ((usage & ruPending)      // ...which had not yet started...
+        || copier                 // ...or not yet finished...
+        || error)) {              // ...or finished with error
+     if (copier) {
+        delete copier;
+        copier = NULL;
+        }
+     cVideoDirectory::RemoveVideoFile(fileNameDst);
+     if ((usage & ruMove) != 0)
+        Recordings->AddByName(fileNameSrc);
+     Recordings->DelByName(fileNameDst);
+     }
 }
 
 // --- cRecordingsHandler ----------------------------------------------------
@@ -1941,10 +1977,15 @@ void cRecordingsHandler::Action(void)
   while (Running()) {
         bool Sleep = false;
         {
+          LOCK_RECORDINGS_WRITE;
+          Recordings->SetExplicitModify();
           cMutexLock MutexLock(&mutex);
           if (cRecordingsHandlerEntry *r = operations.First()) {
-             if (!r->Active(error))
+             if (!r->Active(Recordings)) {
+                error |= r->Error();
+                r->Cleanup(Recordings);
                 operations.Del(r);
+                }
              else
                 Sleep = true;
              }
@@ -1960,6 +2001,8 @@ cRecordingsHandlerEntry *cRecordingsHandler::Get(const char *FileName)
 {
   if (FileName && *FileName) {
      for (cRecordingsHandlerEntry *r = operations.First(); r; r = operations.Next(r)) {
+         if ((r->Usage() & ruCanceled) != 0)
+            continue;
          if (strcmp(FileName, r->FileNameSrc()) == 0 || strcmp(FileName, r->FileNameDst()) == 0)
             return r;
          }
@@ -2002,16 +2045,14 @@ void cRecordingsHandler::Del(const char *FileName)
 {
   cMutexLock MutexLock(&mutex);
   if (cRecordingsHandlerEntry *r = Get(FileName))
-     operations.Del(r);
+     r->SetCanceled();
 }
 
 void cRecordingsHandler::DelAll(void)
 {
-  {
-    cMutexLock MutexLock(&mutex);
-    operations.Clear();
-  }
-  Cancel(3);
+  cMutexLock MutexLock(&mutex);
+  for (cRecordingsHandlerEntry *r = operations.First(); r; r = operations.Next(r))
+      r->SetCanceled();
 }
 
 int cRecordingsHandler::GetUsage(const char *FileName)
@@ -2149,8 +2190,8 @@ void cMarks::Align(void)
   cIndexFile IndexFile(recordingFileName, false, isPesRecording);
   for (cMark *m = First(); m; m = Next(m)) {
       int p = IndexFile.GetClosestIFrame(m->Position());
-      if (int d = m->Position() - p) {
-         isyslog("aligned editing mark %s to %s (off by %d frame%s)", *IndexToHMSF(m->Position(), true, framesPerSecond), *IndexToHMSF(p, true, framesPerSecond), d, abs(d) > 1 ? "s" : "");
+      if (m->Position() - p) {
+         //isyslog("aligned editing mark %s to %s (off by %d frame%s)", *IndexToHMSF(m->Position(), true, framesPerSecond), *IndexToHMSF(p, true, framesPerSecond), m->Position() - p, abs(m->Position() - p) > 1 ? "s" : "");
          m->SetPosition(p);
          }
       }
@@ -3080,4 +3121,39 @@ void IncRecordingsSortMode(const char *Directory)
   if (RecordingsSortMode > rsmTime)
      RecordingsSortMode = eRecordingsSortMode(0);
   SetRecordingsSortMode(Directory, RecordingsSortMode);
+}
+
+// --- Recording Timer Indicator ---------------------------------------------
+
+void SetRecordingTimerId(const char *Directory, const char *TimerId)
+{
+  cString FileName = AddDirectory(Directory, TIMERRECFILE);
+  if (TimerId) {
+     dsyslog("writing timer id '%s' to %s", TimerId, *FileName);
+     if (FILE *f = fopen(FileName, "w")) {
+        fprintf(f, "%s\n", TimerId);
+        fclose(f);
+        }
+     else
+        LOG_ERROR_STR(*FileName);
+     }
+  else {
+     dsyslog("removing %s", *FileName);
+     unlink(FileName);
+     }
+}
+
+cString GetRecordingTimerId(const char *Directory)
+{
+  cString FileName = AddDirectory(Directory, TIMERRECFILE);
+  const char *Id = NULL;
+  if (FILE *f = fopen(FileName, "r")) {
+     char buf[HOST_NAME_MAX + 10]; // +10 for numeric timer id and '@'
+     if (fgets(buf, sizeof(buf), f)) {
+        stripspace(buf);
+        Id = buf;
+        }
+     fclose(f);
+     }
+  return Id;
 }

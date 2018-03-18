@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 4.6 2017/05/21 10:25:26 kls Exp $
+ * $Id: config.c 4.8 2018/02/15 14:40:36 kls Exp $
  */
 
 #include "config.h"
@@ -432,6 +432,7 @@ cSetup::cSetup(void)
   FoldersInTimerMenu = 1;
   AlwaysSortFoldersFirst = 1;
   DefaultSortModeRec = rsmTime;
+  RecSortingDirection = rsdAscending;
   NumberKeysForChars = 1;
   ColorKey0 = 0;
   ColorKey1 = 1;
@@ -641,7 +642,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPPeering"))        SVDRPPeering       = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPHostName"))     { if (*Value) strn0cpy(SVDRPHostName, Value, sizeof(SVDRPHostName)); }
-  else if (!strcasecmp(Name, "SVDRPdefaultHost"))    strn0cpy(SVDRPDefaultHost, Value, sizeof(SVDRPDefaultHost));
+  else if (!strcasecmp(Name, "SVDRPDefaultHost"))    strn0cpy(SVDRPDefaultHost, Value, sizeof(SVDRPDefaultHost));
   else if (!strcasecmp(Name, "ZapTimeout"))          ZapTimeout         = atoi(Value);
   else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
   else if (!strcasecmp(Name, "RcRepeatDelay"))       RcRepeatDelay      = atoi(Value);
@@ -658,6 +659,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "RecordingDirs"))       RecordingDirs      = atoi(Value);
   else if (!strcasecmp(Name, "FoldersInTimerMenu"))  FoldersInTimerMenu = atoi(Value);
   else if (!strcasecmp(Name, "AlwaysSortFoldersFirst")) AlwaysSortFoldersFirst = atoi(Value);
+  else if (!strcasecmp(Name, "RecSortingDirection")) RecSortingDirection= atoi(Value);
   else if (!strcasecmp(Name, "DefaultSortModeRec"))  DefaultSortModeRec = atoi(Value);
   else if (!strcasecmp(Name, "NumberKeysForChars"))  NumberKeysForChars = atoi(Value);
   else if (!strcasecmp(Name, "ColorKey0"))           ColorKey0          = atoi(Value);
@@ -789,6 +791,7 @@ bool cSetup::Save(void)
   Store("RecordingDirs",      RecordingDirs);
   Store("FoldersInTimerMenu", FoldersInTimerMenu);
   Store("AlwaysSortFoldersFirst", AlwaysSortFoldersFirst);
+  Store("RecSortingDirection",RecSortingDirection);
   Store("DefaultSortModeRec", DefaultSortModeRec);
   Store("NumberKeysForChars", NumberKeysForChars);
   Store("ColorKey0",          ColorKey0);

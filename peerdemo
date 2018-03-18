@@ -1,0 +1,136 @@
+#!/usr/bin/perl
+
+# VDR SVDRP Peer Demo
+#
+# This script broadcasts an SVDRP discover datagram on the SVDRP UDP port and
+# then listens for replies  from peer VDRs on both the UDP and TCP port.
+# It reacts properly to the SVDRP commands CONN, LSTT, POLL, PING and QUIT,
+# and thus seems like a regular VDR to other VDRs.
+#
+# (C) 2018 by Klaus Schmidinger <Klaus.Schmidinger@tvdr.de>
+
+use Getopt::Std;
+use IO::Socket;
+use IO::Select;
+
+$DefaultSvdrpPort = 6419;
+$DefaultSvdrpName = "peerdemo";
+
+$Usage = qq{
+Usage: $0 options
+
+Options: -n name  use the given VDR name (default: $DefaultSvdrpName)
+         -p port  use the given TCP port (default: $DefaultSvdrpPort)
+         -v       be verbose
+};
+
+die $Usage if (!getopts("n:p:v"));
+
+$Name    = $opt_n || $DefaultSvdrpName;
+$Port    = $opt_p || $DefaultSvdrpPort;
+$Verbose = $opt_v || 0;
+
+# Open TCP and UDP sockets:
+
+$TcpPort = $Port;
+$UdpPort = $DefaultSvdrpPort;
+
+$TcpSocket = new IO::Socket::INET(Listen => 5, LocalPort => $TcpPort, Proto => "tcp", ReusePort => 1) || die "$!";
+$UdpSocket = new IO::Socket::INET(             LocalPort => $UdpPort, Proto => "udp", ReusePort => 1) || die "$!";
+$SvdrpSelect = new IO::Select($TcpSocket);
+setsockopt($UdpSocket, SOL_SOCKET, SO_RCVTIMEO, pack('L!L!', 0, 1000)); # 1ms timeout on UDP socket
+
+# Send UDP broadcast:
+
+$BcastSocket = new IO::Socket::INET(PeerAddr => '255.255.255.255', PeerPort => $UdpPort, Proto => "udp", Broadcast => 1) || die "$!";
+$BcastMsg = "SVDRP:discover name:$Name port:$TcpPort vdrversion:20309 apiversion:20309 timeout:300";
+Log('>', $BcastSocket, $BcastMsg);
+print($BcastSocket $BcastMsg);
+$BcastSocket->close();
+
+# Listen on UDP and TCP socket:
+
+while (1) {
+      if ($UdpSocket->recv($Request, 1024)) {
+         if (Extract($Request, "name") ne $Name) {
+            Log('<', $UdpSocket, $Request);
+            ReportVDR($Request, $UdpSocket->peerhost());
+            }
+         }
+      if (my @Ready = $SvdrpSelect->can_read(0.01)) {
+         for my $fh (@Ready) {
+             if ($fh == $TcpSocket) {
+                # accept connection:
+                my $new = $TcpSocket->accept();
+                Log('<', $new, "incoming TCP connection");
+                # send mandatory response to simulate an SVDRP host:
+                my $Prompt = "220 $Name SVDRP VideoDiskRecorder 2.3.9; Wed Nov 29 17:00:29 2017; ISO-8859-1";
+                Log('>', $new, $Prompt);
+                print($new "$Prompt\n");
+                # add incoming connection to select:
+                $SvdrpSelect->add($new);
+                }
+             else {
+                # process connection:
+                my $Request = "";
+                $fh->recv($Request, 1024);
+                chomp($Request);
+                Log('<', $fh, $Request) if ($Request);
+                if ($Request =~ /^CONN/i) {
+                   Reply($fh, "250 OK");
+                   ReportVDR($Request, $fh->peerhost());
+                   }
+                elsif ($Request =~ /^LSTT/i) {
+                   Reply($fh, "550 No timers defined");
+                   }
+                elsif ($Request =~ /^POLL/i) {
+                   Reply($fh, "250 OK");
+                   }
+                elsif ($Request =~ /^PING/i) {
+                   Reply($fh, "250 $Name is alive");
+                   }
+                elsif ($Request =~ /^QUIT/i || !$Request) {
+                   # close connection:
+                   Log('<', $fh, "connection closed");
+                   $SvdrpSelect->remove($fh);
+                   $fh->close;
+                   }
+                }
+             }
+         }
+      }
+
+# Tools:
+
+sub Reply
+{
+  my ($fh, $s) = @_;
+  Log('>', $fh, $s);
+  print($fh "$s\n");
+}
+
+sub ReportVDR
+{
+  my $s = shift;
+  my $PeerHost = shift;
+  $s .= " "; # for easier parsing
+  my $Name       = Extract($s, "name");
+  my $Port       = Extract($s, "port");
+  my $VdrVersion = Extract($s, "vdrversion");
+  my $ApiVersion = Extract($s, "apiversion");
+  my $Timeout    = Extract($s, "timeout");
+  print("found VDR '$Name' at $PeerHost with SVDRP port '$Port'\n");
+}
+
+sub Extract
+{
+  my ($s, $n) = @_;
+  return ($s =~ / $n:([^ ]*) /)[0];
+}
+
+sub Log
+{
+  return unless ($Verbose);
+  my ($Dir, $Socket, $Msg) = @_;
+  printf("SVDRP %s [%s:%s] %s\n", $Dir, $Socket->peerhost(), $Socket->peerport(), $Msg);
+}

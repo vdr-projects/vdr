@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 4.3 2017/05/31 11:39:11 kls Exp $
+ * $Id: thread.h 4.4 2018/03/04 11:27:55 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -171,11 +171,13 @@ class cStateKey;
 class cStateLock {
   friend class cStateKey;
 private:
+  enum { emDisabled = 0, emArmed, emEnabled };
   const char *name;
   tThreadId threadId;
   cRwLock rwLock;
   int state;
-  bool explicitModify;
+  int explicitModify;
+  cStateKey *syncStateKey;
   void Unlock(cStateKey &StateKey, bool IncState = true);
        ///< Releases a lock that has been obtained by a previous call to Lock()
        ///< with the given StateKey. If this was a write-lock, and IncState is true,
@@ -211,13 +213,21 @@ public:
        ///< If Write is true (i.e. a write-lock is requested), the states of the
        ///< lock and the given StateKey don't matter, it will always try to obtain
        ///< a write lock.
-  void SetExplicitModify(void) { explicitModify = true; }
+  void SetSyncStateKey(cStateKey &StateKey);
+       ///< Sets the given StateKey to be synchronized to the state of this lock.
+       ///< The caller must currenty hold a write lock on this lock, with a cStateKey
+       ///< that is different from the given StateKey. If, when removing the key that
+       ///< is holding the write lock, the StateKey's current state is the same as that
+       ///< of the lock, it will be increased together with the lock's state.
+  void SetExplicitModify(void);
        ///< If you have obtained a write lock on this lock, and you don't want its
        ///< state to be automatically incremented when the lock is released, a call to
-       ///< this function will disable this, and you can explicitly call IncState()
+       ///< this function will disable this, and you can explicitly call SetModified()
        ///< to increment the state.
-  void IncState(void);
-       ///< Increments the state of this lock.
+  void SetModified(void);
+       ///< Sets this lock to have its state incremented when the current write lock
+       ///< state key is removed. Must have called SetExplicitModify() before calling
+       ///< this function.
   };
 
 class cStateKey {

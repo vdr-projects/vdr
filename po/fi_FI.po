@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -615,9 +615,6 @@ msgstr "Muokkaa kansiota"
 msgid "New folder"
 msgstr "Uusi kansio"
 
-msgid "Sub folder"
-msgstr "Alikansio"
-
 msgid "Folder name already exists!"
 msgstr "Kansio on jo olemassa!"
 
@@ -732,6 +729,9 @@ msgstr "Ohjelmisto"
 
 msgid "Can't switch channel!"
 msgstr "Kanavan vaihtaminen ei mahdollista!"
+
+msgid "Schedule"
+msgstr "Ohjelmisto"
 
 #, c-format
 msgid "Schedule - %s"
@@ -866,6 +866,12 @@ msgstr "nimen mukaan"
 msgid "by time"
 msgstr "ajan mukaan"
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "Kuvaruutunäyttö"
 
@@ -955,6 +961,9 @@ msgstr "Näytä kansiot ensin"
 
 msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Järjestä tallenteet oletuksena"
+
+msgid "Setup.OSD$Sorting direction for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Käytä numeronäppäimiä tekstisyötteessä"
@@ -1303,16 +1312,16 @@ msgid "Setup.Replay$Resume ID"
 msgstr "Tallenteen paluutunniste"
 
 msgid "any hosts"
-msgstr ""
+msgstr "mihin tahansa palvelimeen"
 
 msgid "only default host"
-msgstr ""
+msgstr "vain oletuspalvelimeen"
 
 msgid "type"
-msgstr ""
+msgstr "tyyppi"
 
 msgid "full"
-msgstr ""
+msgstr "kokonaan"
 
 msgid "Miscellaneous"
 msgstr "Sekalaiset"
@@ -1389,9 +1398,6 @@ msgstr "Käynnistetäänkö uudelleen?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Lopeta tallennus "
-
-msgid "Schedule"
-msgstr "Ohjelmisto"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
@@ -1600,14 +1606,14 @@ msgstr "VDR sammuu myöhemmin - pakota virtanäppäimellä"
 msgid "Press any key to cancel shutdown"
 msgstr "Peru sammutus painamalla mitä tahansa näppäintä"
 
-msgid "Switching primary DVB..."
-msgstr "Vaihdetaan ensisijaista DVB-sovitinta..."
-
 msgid "Editing process failed!"
 msgstr "Muokkaus epäonnistui!"
 
 msgid "Editing process finished"
 msgstr "Muokkaus valmis"
+
+msgid "Switching primary DVB..."
+msgstr "Vaihdetaan ensisijaista DVB-sovitinta..."
 
 msgid "Press any key to cancel restart"
 msgstr "Peru uudelleenkäynnistys painamalla mitä tahansa näppäintä"

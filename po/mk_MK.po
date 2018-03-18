@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-08 15:18+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <en@li.org>\n"
@@ -612,9 +612,6 @@ msgstr "Уреди директориум"
 msgid "New folder"
 msgstr "Нов директориум"
 
-msgid "Sub folder"
-msgstr "Поддиректориум"
-
 msgid "Folder name already exists!"
 msgstr "Името веќе постои"
 
@@ -729,6 +726,9 @@ msgstr "Распоред"
 
 msgid "Can't switch channel!"
 msgstr "Невозможно е да се смени канал!"
+
+msgid "Schedule"
+msgstr "Распоред"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -951,6 +957,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Секогаш сортирај прво папки"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1387,9 +1396,6 @@ msgstr "Рестартирање?"
 msgid " Stop recording "
 msgstr " Запри снимање "
 
-msgid "Schedule"
-msgstr "Распоред"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Запри пуштање"
@@ -1597,14 +1603,14 @@ msgstr "VDR ќе се исклучи подоцна - притиснете Ис�
 msgid "Press any key to cancel shutdown"
 msgstr "Притиснете копче за отказ на исклучување"
 
-msgid "Switching primary DVB..."
-msgstr "Промена на примарниот DVB уред..."
-
 msgid "Editing process failed!"
 msgstr "Сечењето е неуспешно!"
 
 msgid "Editing process finished"
 msgstr "Сечењето заврши"
+
+msgid "Switching primary DVB..."
+msgstr "Промена на примарниот DVB уред..."
 
 msgid "Press any key to cancel restart"
 msgstr "Притиснете копче за откажување на рестарт"

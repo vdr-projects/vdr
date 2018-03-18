@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.18 2017/06/19 12:13:38 kls Exp $
+ * $Id: ci.c 4.20 2018/02/03 12:55:03 kls Exp $
  */
 
 #include "ci.h"
@@ -122,6 +122,8 @@ private:
   uchar *bufp;
   uchar mtdCatBuffer[TS_SIZE]; // TODO: handle multi packet CATs!
   int length;
+  cMutex mutex;
+  bool handlingPid;
   void AddEmmPid(int Pid);
   void DelEmmPids(void);
 public:
@@ -130,6 +132,15 @@ public:
   virtual void Receive(const uchar *Data, int Length);
   bool HasCaPids(void) const { return NumPids() - emmPids.Size() - 1 > 0; }
   void Reset(void) { DelEmmPids(); catVersion = -1; }
+  bool HandlingPid(void);
+       ///< The cCaPidReceiver adds/deletes PIDs to/from the base class cReceiver,
+       ///< which in turn does the same on the cDevice it is attached to. The cDevice
+       ///< then sets the PIDs on the assigned cCamSlot, which can cause a deadlock on the
+       ///< cCamSlot's mutex if a cReceiver is detached from the device at the same time.
+       ///< Since these PIDs, however, are none that have to be decrypted,
+       ///< it is not necessary to set them in the CAM. Therefore this function is
+       ///< used in cCamSlot::SetPid() to detect this situation, and thus avoid the
+       ///< deadlock.
   };
 
 cCaPidReceiver::cCaPidReceiver(void)
@@ -137,7 +148,11 @@ cCaPidReceiver::cCaPidReceiver(void)
   catVersion = -1;
   bufp = NULL;
   length = 0;
+  handlingPid = false;
+  cMutexLock MutexLock(&mutex);
+  handlingPid = true;
   AddPid(CATPID);
+  handlingPid = false;
 }
 
 void cCaPidReceiver::AddEmmPid(int Pid)
@@ -147,14 +162,20 @@ void cCaPidReceiver::AddEmmPid(int Pid)
          return;
       }
   emmPids.Append(Pid);
+  cMutexLock MutexLock(&mutex);
+  handlingPid = true;
   AddPid(Pid);
+  handlingPid = false;
 }
 
 void cCaPidReceiver::DelEmmPids(void)
 {
+  cMutexLock MutexLock(&mutex);
+  handlingPid = true;
   for (int i = 0; i < emmPids.Size(); i++)
       DelPid(emmPids[i]);
   emmPids.Clear();
+  handlingPid = false;
 }
 
 void cCaPidReceiver::Receive(const uchar *Data, int Length)
@@ -239,6 +260,12 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
      }
 }
 
+bool cCaPidReceiver::HandlingPid(void)
+{
+  cMutexLock MutexLock(&mutex);
+  return handlingPid;
+}
+
 // --- cCaActivationReceiver -------------------------------------------------
 
 // A receiver that is used to make the device stay on a given channel and
@@ -279,7 +306,7 @@ void cCaActivationReceiver::Receive(const uchar *Data, int Length)
      if (TsIsScrambled(Data))
         lastScrambledTime = Now;
      else if (Now - lastScrambledTime > UNSCRAMBLE_TIME) {
-        dsyslog("CAM %d: activated!", camSlot->SlotNumber());
+        dsyslog("CAM %d: activated!", camSlot->MasterSlotNumber());
         Skins.QueueMessage(mtInfo, tr("CAM activated!"));
         cDevice *d = Device();
         Detach();
@@ -1111,10 +1138,12 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
        case AOT_CA_PMT_REPLY: {
             dbgprotocol("Slot %d: <== Ca Pmt Reply (%d)", CamSlot()->SlotNumber(), SessionId());
             if (!repliesToQuery) {
-               dsyslog("CAM %d: replies to QUERY - multi channel decryption (MCD) possible", CamSlot()->SlotNumber());
+               if (CamSlot()->IsMasterSlot())
+                  dsyslog("CAM %d: replies to QUERY - multi channel decryption (MCD) possible", CamSlot()->SlotNumber());
                repliesToQuery = true;
                if (CamSlot()->MtdAvailable()) {
-                  dsyslog("CAM %d: supports multi transponder decryption (MTD)", CamSlot()->SlotNumber());
+                  if (CamSlot()->IsMasterSlot())
+                     dsyslog("CAM %d: supports multi transponder decryption (MTD)", CamSlot()->SlotNumber());
                   CamSlot()->MtdActivate(true);
                   }
                }
@@ -2588,6 +2617,8 @@ void cCamSlot::AddPid(int ProgramNumber, int Pid, int StreamType)
 
 void cCamSlot::SetPid(int Pid, bool Active)
 {
+  if (caPidReceiver && caPidReceiver->HandlingPid())
+     return;
   cMutexLock MutexLock(&mutex);
   for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
       for (cCiCaPidData *q = p->pidList.First(); q; q = p->pidList.Next(q)) {

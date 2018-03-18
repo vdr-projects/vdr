@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-19 23:00+0100\n"
 "Last-Translator: Gabriel Bonich <gbonich@gmail.com>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
@@ -612,9 +612,6 @@ msgstr "Modificar carpeta"
 msgid "New folder"
 msgstr "Nueva carpeta"
 
-msgid "Sub folder"
-msgstr "Sub carpeta"
-
 msgid "Folder name already exists!"
 msgstr "¡La carpeta ya existe!"
 
@@ -729,6 +726,9 @@ msgstr "Guía"
 
 msgid "Can't switch channel!"
 msgstr "¡No se puede cambiar de canal!"
+
+msgid "Schedule"
+msgstr "Guía de Programación"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "Menús en pantalla"
 
@@ -951,6 +957,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Siempre ordenar primero carpetas"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1387,9 +1396,6 @@ msgstr "¿Reiniciar realmente?"
 msgid " Stop recording "
 msgstr " Parar grabación "
 
-msgid "Schedule"
-msgstr "Guía de Programación"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Parar reprodución"
@@ -1597,14 +1603,14 @@ msgstr "VDR se apagará más tarde - pulse Apagar para forzar"
 msgid "Press any key to cancel shutdown"
 msgstr "Pulse una tecla para interrumpir apagar"
 
-msgid "Switching primary DVB..."
-msgstr "Cambiando el interfaz DVB primario..."
-
 msgid "Editing process failed!"
 msgstr "¡Proceso de edición fallido!"
 
 msgid "Editing process finished"
 msgstr "Proceso de edición terminado"
+
+msgid "Switching primary DVB..."
+msgstr "Cambiando el interfaz DVB primario..."
 
 msgid "Press any key to cancel restart"
 msgstr "Pulse cualquier tecla para cancelar reinicio"

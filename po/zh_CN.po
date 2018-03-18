@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -613,9 +613,6 @@ msgstr "编辑文件夹"
 msgid "New folder"
 msgstr "新文件夹"
 
-msgid "Sub folder"
-msgstr "子文件夹"
-
 msgid "Folder name already exists!"
 msgstr "文件夹名称已经存在！"
 
@@ -730,6 +727,9 @@ msgstr "任务列表"
 
 msgid "Can't switch channel!"
 msgstr "不能切换频道"
+
+msgid "Schedule"
+msgstr "任务列表"
 
 #, c-format
 msgid "Schedule - %s"
@@ -864,6 +864,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "系统菜单设置"
 
@@ -952,6 +958,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "总是排序文件夹"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1388,9 +1397,6 @@ msgstr "是否重启？"
 msgid " Stop recording "
 msgstr " 是否停止录像? "
 
-msgid "Schedule"
-msgstr "任务列表"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " 停止回放"
@@ -1598,14 +1604,14 @@ msgstr "VDR即将关闭 - 按电源强制关闭！"
 msgid "Press any key to cancel shutdown"
 msgstr "按下任何键即可取消关机"
 
-msgid "Switching primary DVB..."
-msgstr "切换主要的DVB设备."
-
 msgid "Editing process failed!"
 msgstr "编辑过程失败"
 
 msgid "Editing process finished"
 msgstr "编辑过程完毕"
+
+msgid "Switching primary DVB..."
+msgstr "切换主要的DVB设备."
 
 msgid "Press any key to cancel restart"
 msgstr "请按任意键重启"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Arthur Konovalov <artlov@gmail.com>\n"
 "Language-Team: Estonian <vdr@linuxtv.org>\n"
@@ -611,9 +611,6 @@ msgstr "Muuda kausta"
 msgid "New folder"
 msgstr "Uus kaust"
 
-msgid "Sub folder"
-msgstr "Uus alamkaust"
-
 msgid "Folder name already exists!"
 msgstr "Sellenimeline kaust juba olemas!"
 
@@ -728,6 +725,9 @@ msgstr "Ajakava"
 
 msgid "Can't switch channel!"
 msgstr "Kanali vahetus ei ole võimalik!"
+
+msgid "Schedule"
+msgstr "Ajakava"
 
 #, c-format
 msgid "Schedule - %s"
@@ -862,6 +862,12 @@ msgstr "nime järgi"
 msgid "by time"
 msgstr "aja järgi"
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -951,6 +957,9 @@ msgstr "Järjesta kaustad alati ette"
 
 msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Salvestiste vaikimisi järjestus"
+
+msgid "Setup.OSD$Sorting direction for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Teksti sisestamine numbriklahvidega"
@@ -1386,9 +1395,6 @@ msgstr "Taaskäivitada?"
 msgid " Stop recording "
 msgstr " Lõpeta salvestamine "
 
-msgid "Schedule"
-msgstr "Ajakava"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Lõpeta taasesitus"
@@ -1596,14 +1602,14 @@ msgstr "VDR lülitub välja hiljem - vajuta Power kiirendamiseks"
 msgid "Press any key to cancel shutdown"
 msgstr "Vajuta suvalist klahvi väljalülitamise tühistamiseks"
 
-msgid "Switching primary DVB..."
-msgstr "Esmase DVB seadme ümberlülitus..."
-
 msgid "Editing process failed!"
 msgstr "Töötlemine ebaõnnestus!"
 
 msgid "Editing process finished"
 msgstr "Töötlemine lõpetatud"
+
+msgid "Switching primary DVB..."
+msgstr "Esmase DVB seadme ümberlülitus..."
 
 msgid "Press any key to cancel restart"
 msgstr "Taaskäivitamise katkestamiseks vajuta suvalist klahvi"

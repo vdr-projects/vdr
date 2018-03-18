@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2015-02-13 18:14+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -612,9 +612,6 @@ msgstr "Редагувати теку"
 msgid "New folder"
 msgstr "Нова тека"
 
-msgid "Sub folder"
-msgstr "Підтека"
-
 msgid "Folder name already exists!"
 msgstr "Назва теки вже існує!"
 
@@ -729,6 +726,9 @@ msgstr "Програма"
 
 msgid "Can't switch channel!"
 msgstr "Неможливо перемкнути канал!"
+
+msgid "Schedule"
+msgstr "Телегід"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "Меню"
 
@@ -951,6 +957,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Завжди сортувати теки першими"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1387,9 +1396,6 @@ msgstr "Дійсно перезапустити?"
 msgid " Stop recording "
 msgstr " Зупинити запис "
 
-msgid "Schedule"
-msgstr "Телегід"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Зупинити програвання"
@@ -1597,14 +1603,14 @@ msgstr "VDR виключиться ппізніше - натисніть Power �
 msgid "Press any key to cancel shutdown"
 msgstr "Натисніть будь-яку кнопку для відміни виключення."
 
-msgid "Switching primary DVB..."
-msgstr "Зміна основного DVB-пристрою..."
-
 msgid "Editing process failed!"
 msgstr "Помилка під час монтажу запису!"
 
 msgid "Editing process finished"
 msgstr "Монтаж закінчено"
+
+msgid "Switching primary DVB..."
+msgstr "Зміна основного DVB-пристрою..."
 
 msgid "Press any key to cancel restart"
 msgstr "Натисніть будь-яку кнопку для відміни перезавантаження"

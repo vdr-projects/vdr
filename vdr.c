@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.18 2017/06/08 16:10:34 kls Exp $
+ * $Id: vdr.c 4.24 2018/03/04 14:00:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -221,8 +221,10 @@ int main(int argc, char *argv[])
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
   const char *OverrideCharacterTable = NULL;
-#define DEPRECATED_VDR_CHARSET_OVERRIDE
-#ifdef DEPRECATED_VDR_CHARSET_OVERRIDE
+#ifndef DEPRECATED_VDR_CHARSET_OVERRIDE
+#define DEPRECATED_VDR_CHARSET_OVERRIDE 0
+#endif
+#if DEPRECATED_VDR_CHARSET_OVERRIDE
   OverrideCharacterTable = getenv("VDR_CHARSET_OVERRIDE");
   const char *DeprecatedVdrCharsetOverride = OverrideCharacterTable;
 #endif
@@ -703,7 +705,7 @@ int main(int argc, char *argv[])
      isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
      cCharSetConv::SetSystemCharacterTable(CodeSet);
      }
-#ifdef DEPRECATED_VDR_CHARSET_OVERRIDE
+#if DEPRECATED_VDR_CHARSET_OVERRIDE
   if (DeprecatedVdrCharsetOverride)
      isyslog("use of environment variable VDR_CHARSET_OVERRIDE (%s) is deprecated!", DeprecatedVdrCharsetOverride);
 #endif
@@ -730,6 +732,7 @@ int main(int argc, char *argv[])
   bool InhibitEpgScan = false;
   bool IsInfoMenu = false;
   cSkin *CurrentSkin = NULL;
+  int OldPrimaryDVB = 0;
 
   // Load plugins:
 
@@ -832,6 +835,7 @@ int main(int argc, char *argv[])
            }
         }
      }
+  OldPrimaryDVB = Setup.PrimaryDVB;
 
   // Check for timers in automatic start time window:
 
@@ -942,9 +946,7 @@ int main(int argc, char *argv[])
   // SVDRP:
 
   SetSVDRPPorts(SVDRPport, DEFAULTSVDRPPORT);
-  StartSVDRPServerHandler();
-  if (Setup.SVDRPPeering)
-     StartSVDRPClientHandler();
+  StartSVDRPHandler();
 
   // Main program loop:
 
@@ -1076,32 +1078,28 @@ int main(int argc, char *argv[])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
         {
           // Timers and Recordings:
-          bool TimersModified = false;
-          bool TriggerRemoteTimerPoll = false;
-          static cStateKey TimersStateKey(true);
-          if (cTimers::GetTimersRead(TimersStateKey)) {
-             TriggerRemoteTimerPoll = true;
-             TimersStateKey.Remove();
-             }
+          static cStateKey TimersStateKey;
           cTimers *Timers = cTimers::GetTimersWrite(TimersStateKey);
-          // Get remote timers:
-          TimersModified |= Timers->GetRemoteTimers();
-          // Assign events to timers:
-          static cStateKey SchedulesStateKey;
-          if (const cSchedules *Schedules = cSchedules::GetSchedulesRead(SchedulesStateKey))
-             TimersModified |= Timers->SetEvents(Schedules);
+          {
+            // Assign events to timers:
+            static cStateKey SchedulesStateKey;
+            if (TimersStateKey.StateChanged())
+               SchedulesStateKey.Reset(); // we assign events if either the Timers or the Schedules have changed
+            bool TimersModified = false;
+            if (const cSchedules *Schedules = cSchedules::GetSchedulesRead(SchedulesStateKey)) {
+               Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
+               if (Timers->SetEvents(Schedules))
+                  TimersModified = true;
+               SchedulesStateKey.Remove();
+               }
+            TimersStateKey.Remove(TimersModified); // we need to remove the key here, so that syncing StateKeySVDRPRemoteTimersPoll takes effect!
+          }
           // Must do all following calls with the exact same time!
           // Process ongoing recordings:
-          if (cRecordControls::Process(Timers, Now)) {
+          Timers = cTimers::GetTimersWrite(TimersStateKey);
+          bool TimersModified = false;
+          if (cRecordControls::Process(Timers, Now))
              TimersModified = true;
-             TriggerRemoteTimerPoll = true;
-             }
-          // Must keep the lock on the schedules until after processing the record
-          // controls, in order to avoid short interrupts in case the current event
-          // is replaced by a new one (which some broadcasters do, instead of just
-          // modifying the current event's data):
-          if (SchedulesStateKey.InLock())
-             SchedulesStateKey.Remove();
           // Start new recordings:
           if (cTimer *Timer = Timers->GetMatch(Now)) {
              if (!cRecordControls::Start(Timers, Timer))
@@ -1109,7 +1107,6 @@ int main(int argc, char *argv[])
              else
                 LastTimerChannel = Timer->Channel()->Number();
              TimersModified = true;
-             TriggerRemoteTimerPoll = true;
              }
           // Make sure timers "see" their channel early enough:
           static time_t LastTimerCheck = 0;
@@ -1164,13 +1161,10 @@ int main(int argc, char *argv[])
              LastTimerCheck = Now;
              }
           // Delete expired timers:
-          if (Timers->DeleteExpired()) {
+          if (Timers->DeleteExpired())
              TimersModified = true;
-             TriggerRemoteTimerPoll = true;
-             }
-          // Trigger remote timer polls:
-          if (TriggerRemoteTimerPoll)
-             Timers->TriggerRemoteTimerPoll();
+          // Make sure there is enough free disk space for ongoing recordings:
+          AssertFreeDiskSpace(Timers->GetMaxPriority());
           TimersStateKey.Remove(TimersModified);
         }
         // Recordings:
@@ -1422,12 +1416,6 @@ int main(int argc, char *argv[])
                             DELETE_MENU;
                             cControl::Shutdown();
                             break;
-             case osSwitchDvb:
-                            DELETE_MENU;
-                            cControl::Shutdown();
-                            Skins.QueueMessage(mtInfo, tr("Switching primary DVB..."));
-                            cDevice::SetPrimaryDevice(Setup.PrimaryDVB);
-                            break;
              case osPlugin: DELETE_MENU;
                             Menu = cMenuMain::PluginOsdObject();
                             if (Menu)
@@ -1503,6 +1491,17 @@ int main(int argc, char *argv[])
               }
            }
 
+        // Change primary device:
+        int NewPrimaryDVB = Setup.PrimaryDVB;
+        if (NewPrimaryDVB != OldPrimaryDVB) {
+           DELETE_MENU;
+           cControl::Shutdown();
+           Skins.QueueMessage(mtInfo, tr("Switching primary DVB..."));
+           cOsdProvider::Shutdown();
+           cDevice::SetPrimaryDevice(NewPrimaryDVB);
+           OldPrimaryDVB = NewPrimaryDVB;
+           }
+
         // SIGHUP shall cause a restart:
         if (LastSignal == SIGHUP) {
            if (ShutdownHandler.ConfirmRestart(true) && Interface->Confirm(tr("Press any key to cancel restart"), RESTARTCANCELPROMPT, true))
@@ -1564,8 +1563,7 @@ Exit:
   signal(SIGPIPE, SIG_DFL);
   signal(SIGALRM, SIG_DFL);
 
-  StopSVDRPClientHandler();
-  StopSVDRPServerHandler();
+  StopSVDRPHandler();
   ChannelCamRelations.Save();
   cRecordControls::Shutdown();
   PluginManager.StopPlugins();

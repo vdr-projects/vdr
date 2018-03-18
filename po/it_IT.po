@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
-"PO-Revision-Date: 2017-06-23 00:00+0100\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
+"PO-Revision-Date: 2017-07-02 23:49+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -617,9 +617,6 @@ msgstr "Modifica cartella"
 msgid "New folder"
 msgstr "Nuova cartella"
 
-msgid "Sub folder"
-msgstr "Sotto cartella"
-
 msgid "Folder name already exists!"
 msgstr "Nome cartella già esistente!"
 
@@ -734,6 +731,9 @@ msgstr "Programmi"
 
 msgid "Can't switch channel!"
 msgstr "Impossibile cambiare canale!"
+
+msgid "Schedule"
+msgstr "Programmi"
 
 #, c-format
 msgid "Schedule - %s"
@@ -868,6 +868,12 @@ msgstr "per nome"
 msgid "by time"
 msgstr "per ora"
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -957,6 +963,9 @@ msgstr "Ordina sempre per prima le cartelle"
 
 msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Modalità ordinamento predefinito per registrazioni"
+
+msgid "Setup.OSD$Sorting direction for recordings"
+msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Tasti numerici per i caratteri"
@@ -1305,16 +1314,16 @@ msgid "Setup.Replay$Resume ID"
 msgstr "ID di ripristino"
 
 msgid "any hosts"
-msgstr ""
+msgstr "qualsiasi sistema"
 
 msgid "only default host"
-msgstr ""
+msgstr "solo sistema predefinito"
 
 msgid "type"
 msgstr "tipo"
 
 msgid "full"
-msgstr "completo"
+msgstr "tutto"
 
 msgid "Miscellaneous"
 msgstr "Generici"
@@ -1391,9 +1400,6 @@ msgstr "Eseguire un riavvio?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Ferma registrazione "
-
-msgid "Schedule"
-msgstr "Programmi"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
@@ -1602,14 +1608,14 @@ msgstr "VDR si spegnerà più tardi - premi Power per forzare"
 msgid "Press any key to cancel shutdown"
 msgstr "Premi un tasto per annullare lo spegnimento"
 
-msgid "Switching primary DVB..."
-msgstr "Cambio della scheda DVB primaria..."
-
 msgid "Editing process failed!"
 msgstr "Processo di modifica fallito!"
 
 msgid "Editing process finished"
 msgstr "Processo di modifica terminato"
+
+msgid "Switching primary DVB..."
+msgstr "Cambio della scheda DVB primaria..."
 
 msgid "Press any key to cancel restart"
 msgstr "Premi un tasto per annullare il riavvio"

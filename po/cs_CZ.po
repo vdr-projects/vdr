@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Aleš Juřík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -614,9 +614,6 @@ msgstr "Změna složky"
 msgid "New folder"
 msgstr "Nová složka"
 
-msgid "Sub folder"
-msgstr "Podsložka"
-
 msgid "Folder name already exists!"
 msgstr "Složka již existuje!"
 
@@ -731,6 +728,9 @@ msgstr "Program"
 
 msgid "Can't switch channel!"
 msgstr "Kanál nelze přepnout!"
+
+msgid "Schedule"
+msgstr "Program (EPG)"
 
 #, c-format
 msgid "Schedule - %s"
@@ -865,6 +865,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -953,6 +959,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Adresáře řadit vždy na začátek"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1389,9 +1398,6 @@ msgstr "Opravdu restartovat?"
 msgid " Stop recording "
 msgstr " Zastavit nahrávání "
 
-msgid "Schedule"
-msgstr "Program (EPG)"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Zastavit přehrávání"
@@ -1599,14 +1605,14 @@ msgstr "Vypnutí VDR bude odloženo - vypnete klávesou Power"
 msgid "Press any key to cancel shutdown"
 msgstr "Jakákoliv klávesa zruší vypnutí"
 
-msgid "Switching primary DVB..."
-msgstr "Přepnout primární DVB..."
-
 msgid "Editing process failed!"
 msgstr "Editační proces selhal!"
 
 msgid "Editing process finished"
 msgstr "Editační proces skončil"
+
+msgid "Switching primary DVB..."
+msgstr "Přepnout primární DVB..."
 
 msgid "Press any key to cancel restart"
 msgstr "Jakákoliv klávesa zruší restart"

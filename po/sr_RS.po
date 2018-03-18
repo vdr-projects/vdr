@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2013-03-16 15:05+0100\n"
 "Last-Translator: Zoran Turalija <zoran.turalija@gmail.com>\n"
 "Language-Team: Serbian <vdr@linuxtv.org>\n"
@@ -612,9 +612,6 @@ msgstr "Izmeni direktorijum"
 msgid "New folder"
 msgstr "Novi direktorijum"
 
-msgid "Sub folder"
-msgstr "Poddirektorijum"
-
 msgid "Folder name already exists!"
 msgstr "Naziv direktorijuma veæ postoji!"
 
@@ -729,6 +726,9 @@ msgstr "Raspored"
 
 msgid "Can't switch channel!"
 msgstr "Nemoguæe promeniti kanal!"
+
+msgid "Schedule"
+msgstr "Raspored"
 
 #, c-format
 msgid "Schedule - %s"
@@ -863,6 +863,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -951,6 +957,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Uvek sortiraj direktorijume prve"
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1387,9 +1396,6 @@ msgstr "Stvarno restartovati sistem?"
 msgid " Stop recording "
 msgstr " Zaustavi snimanje "
 
-msgid "Schedule"
-msgstr "Raspored"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Zaustavi reprodukciju"
@@ -1597,14 +1603,14 @@ msgstr "VDR æe se iskljuèiti kasnije - pritisnite dugme 'Power' za prisilno iskl
 msgid "Press any key to cancel shutdown"
 msgstr "Pritisnite bilo koje dugme da otka¾ete iskljuèenje"
 
-msgid "Switching primary DVB..."
-msgstr "Promena primarnog DVB ureðaja..."
-
 msgid "Editing process failed!"
 msgstr "Ureðivanje neuspe¹eno!"
 
 msgid "Editing process finished"
 msgstr "Ureðivanje zavr¹eno"
+
+msgid "Switching primary DVB..."
+msgstr "Promena primarnog DVB ureðaja..."
 
 msgid "Press any key to cancel restart"
 msgstr "Pritisnite bilo koje dugme da otka¾ete ponovno pokretanje"

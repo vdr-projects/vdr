@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.2.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2017-06-30 11:46+0200\n"
+"POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Mogens Elneff <mogens@elneff.dk>\n"
 "Language-Team: Danish <vdr@linuxtv.org>\n"
@@ -611,9 +611,6 @@ msgstr ""
 msgid "New folder"
 msgstr ""
 
-msgid "Sub folder"
-msgstr ""
-
 msgid "Folder name already exists!"
 msgstr ""
 
@@ -728,6 +725,9 @@ msgstr "Program"
 
 msgid "Can't switch channel!"
 msgstr "Kan ikke skifte kanal!"
+
+msgid "Schedule"
+msgstr "Programoversigt"
 
 #, c-format
 msgid "Schedule - %s"
@@ -862,6 +862,12 @@ msgstr ""
 msgid "by time"
 msgstr ""
 
+msgid "ascending"
+msgstr ""
+
+msgid "descending"
+msgstr ""
+
 msgid "OSD"
 msgstr "OSD"
 
@@ -950,6 +956,9 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr ""
 
 msgid "Setup.OSD$Default sort mode for recordings"
+msgstr ""
+
+msgid "Setup.OSD$Sorting direction for recordings"
 msgstr ""
 
 msgid "Setup.OSD$Number keys for characters"
@@ -1386,9 +1395,6 @@ msgstr "Vil du virkelig genstarte?"
 msgid " Stop recording "
 msgstr " Stop optagelse "
 
-msgid "Schedule"
-msgstr "Programoversigt"
-
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
 msgstr " Stop afspilning"
@@ -1596,14 +1602,14 @@ msgstr "VDR slukker senere - tryk Sluk for at tvinge"
 msgid "Press any key to cancel shutdown"
 msgstr "Tryk vilkårlig tast for at annullere sluk"
 
-msgid "Switching primary DVB..."
-msgstr "Skifter primær DVB enhed..."
-
 msgid "Editing process failed!"
 msgstr "Redigeringsproces fejlede!"
 
 msgid "Editing process finished"
 msgstr "Redigeringsproces afsluttet"
+
+msgid "Switching primary DVB..."
+msgstr "Skifter primær DVB enhed..."
 
 msgid "Press any key to cancel restart"
 msgstr "Tryk vilkårlig knap for at annullere genstart"

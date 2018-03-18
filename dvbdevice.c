@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.13 2017/05/09 11:50:38 kls Exp $
+ * $Id: dvbdevice.c 4.16 2018/02/15 15:37:01 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -699,6 +699,231 @@ int dB1000toPercent(int dB1000, int Low, int High)
   return 100 - v * v;
 }
 
+#define REF_S1(q1)                 (mod == QPSK)   ? q1 : 0
+#define REF_S2(q1, q2, q3, q4)     (mod == QPSK)   ? q1 : (mod == PSK_8)  ? q2 : (mod == APSK_16) ? q3 : (mod == APSK_32) ? q4 : 0
+#define REF_T1(q1, q2, q3)         (mod == QPSK)   ? q1 : (mod == QAM_16) ? q2 : (mod == QAM_64)  ? q3 : 0
+#define REF_T2(q1, q2, q3, q4)     (mod == QPSK)   ? q1 : (mod == QAM_16) ? q2 : (mod == QAM_64)  ? q3 : (mod == QAM_256) ? q4 : 0
+#define REF_C1(q1, q2, q3, q4, q5) (mod == QAM_16) ? q1 : (mod == QAM_32) ? q2 : (mod == QAM_64)  ? q3 : (mod == QAM_128) ? q4 : (mod == QAM_256) ? q5: 0
+
+int StrengthToSSI(const cChannel *Channel, int Strength, int FeModulation, int FeCoderateH, int FeFec)
+{
+  // Strength in 0.001dBm (dBm x 1000)
+  cDvbTransponderParameters dtp(Channel->Parameters());
+  int ssi = 0; // 0-100
+  int mod = (FeModulation >= 0) ? FeModulation : dtp.Modulation();
+  int cod = (FeCoderateH >= 0) ? FeCoderateH : dtp.CoderateH(); // DVB-T
+  int fec = (FeFec >= 0) ? FeFec : dtp.CoderateH();
+  if (Channel->IsTerr()) {
+     int pref = 0;
+     // NorDig Unified Ver. 2.6 - 3.4.4.6 Page 43 ff.
+     // reference values : pref-15dBm = 0%, pref+35dBm = 100%
+     if (dtp.System() == DVB_SYSTEM_1) { // DVB-T
+        fec = cod; // adjustment for DVB-T
+        if (mod == QAM_AUTO) mod = QPSK;
+        switch (fec) {  // dBm:        Q4  Q16  Q64
+          case FEC_1_2: pref = REF_T1(-93, -87, -82); break;
+          default:
+          case FEC_2_3: pref = REF_T1(-91, -85, -80); break;
+          case FEC_3_4: pref = REF_T1(-90, -84, -78); break;
+          case FEC_5_6: pref = REF_T1(-89, -83, -77); break;
+          case FEC_7_8: pref = REF_T1(-88, -82, -76); break;
+          }
+        }
+     else { // DVB-T2
+        if (mod == QAM_AUTO) mod = QAM_64;
+        switch (fec) {  // dBm:        Q4  Q16  Q64 Q256
+          case FEC_1_2: pref = REF_T2(-96, -91, -86, -82); break;
+          default:
+          case FEC_3_5: pref = REF_T2(-95, -89, -85, -80); break;
+          case FEC_2_3: pref = REF_T2(-94, -88, -83, -78); break;
+          case FEC_3_4: pref = REF_T2(-93, -87, -82, -76); break;
+          case FEC_4_5: pref = REF_T2(-92, -86, -81, -75); break;
+          case FEC_5_6: pref = REF_T2(-92, -86, -80, -74); break;
+          }
+        }
+     if (pref) {
+        int prel = (Strength / 1000) - pref;
+        ssi = (prel < -15) ? 0 :
+              (prel <   0) ? (prel + 15) * 2 / 3 :       //  0% -  10%
+              (prel <  20) ? prel * 4 + 10 :             // 10% -  90%
+              (prel <  35) ? (prel - 20) * 2 / 3 + 90 :  // 90% - 100%
+              100;
+#ifdef DEBUG_SIGNALSTRENGTH
+        fprintf(stderr, "SSI-T: STR:%d, Pref:%d, Prel:%d, ssi:%d%%(sys:%d, mod:%d, fec:%d)\n", Strength, pref, prel, ssi, dtp.System(), mod, fec);
+#endif
+        }
+     }
+  else if (Channel->IsCable()) { // ! COMPLETELY UNTESTED !
+     // Formula: pref(dB) = -174.0 + NoiseFigure + SymRef + CnRef
+     // NoiseFigure = 6.5 dB;               -> Tuner specific - range: 3.5 .. 9.0 dB
+     // SymRef = 10*log(6900000) = 68.5 dB; -> for Symbolrate of 6900 kSym/sec (TV: 6900, 6750 or 6111 kSym/sec)
+     // ==> pref(dB) = -174.0 + 6.5 + 68.5 + CnRef[modulation]{20,23,26,29,32}; (+/- 3 dB tuner specific)
+     if (mod == QAM_AUTO) mod = QAM_256;
+     //                Q16  Q32  Q64 Q128 Q256
+     int pref = REF_C1(-79, -76, -73, -70, -67);
+     if (pref) {
+        int prel = (Strength / 1000) - pref;
+        ssi = (prel < -15) ? 0 :
+              (prel <   0) ? (prel + 15) * 2 / 3 :       //  0% -  10%
+              (prel <  20) ? prel * 4 + 10 :             // 10% -  90%
+              (prel <  35) ? (prel - 20) * 2 / 3 + 90 :  // 90% - 100%
+              100;
+#ifdef DEBUG_SIGNALSTRENGTH
+        fprintf(stderr, "SSI-C: STR:%d, Pref:%d, Prel:%d, ssi:%d%%(mod:%d)\n", Strength, pref, prel, ssi, mod);
+#endif
+        }
+     }
+  else if (Channel->IsSat())
+     ssi = dB1000toPercent(Strength, -95000, -20000); // defaults
+  return ssi;
+}
+
+// Due to missing values or the different meanings of the reported error rate, ber_sqi is currently not taken into account
+#define IGNORE_BER 1
+#define BER_ERROR_FREE (1000*1000*1000) // 1/10^-9
+
+int SignalToSQI(const cChannel *Channel, int Signal, int Ber, int FeModulation, int FeCoderateH, int FeFec)
+{
+#if IGNORE_BER
+  Ber = BER_ERROR_FREE; // assume/pretend to be biterror free
+#endif
+  // Signal in 0.001dB (dB x 1000)
+  cDvbTransponderParameters dtp(Channel->Parameters());
+  int sqi = 0; // 0-100
+  int mod = (FeModulation >= 0) ? FeModulation : dtp.Modulation();
+  int cod = (FeCoderateH >= 0) ? FeCoderateH : dtp.CoderateH(); // DVB-T
+  int fec = (FeFec >= 0) ? FeFec : dtp.CoderateH();
+  if (Channel->IsTerr()) { // QEF: BER 10^-6
+     int cnref = 0;
+     // NorDig Unified Ver. 2.6 - 3.4.4.7 Page 45 ff.
+     // reference values for QEF (BER 10^-11 at MPEG2 demux input)
+     if (dtp.System() == DVB_SYSTEM_1) { // DVB-T
+        fec = cod; // adjustment for DVB-T
+        if (mod == QAM_AUTO) mod = QPSK;
+        switch (fec) {  // 0.1 dB      Q4  Q16  Q64 (Hierarchy=None)
+          case FEC_1_2: cnref = REF_T1(51, 108, 165); break;
+          default:
+          case FEC_2_3: cnref = REF_T1(69, 131, 187); break;
+          case FEC_3_4: cnref = REF_T1(79, 146, 202); break;
+          case FEC_5_6: cnref = REF_T1(89, 156, 216); break;
+          case FEC_7_8: cnref = REF_T1(97, 160, 225); break;
+          }
+        }
+     else { // DVB-T2
+        if (mod == QAM_AUTO) mod = QAM_64;
+        switch (fec) {  // 0.1 dB      Q4  Q16  Q64 Q256
+          case FEC_1_2: cnref = REF_T2(35,  87, 130, 170); break;
+          default:
+          case FEC_3_5: cnref = REF_T2(47, 101, 148, 194); break;
+          case FEC_2_3: cnref = REF_T2(56, 114, 162, 208); break;
+          case FEC_3_4: cnref = REF_T2(66, 125, 177, 229); break;
+          case FEC_4_5: cnref = REF_T2(72, 133, 187, 243); break;
+          case FEC_5_6: cnref = REF_T2(77, 138, 194, 251); break;
+          }
+        }
+     if (cnref) {
+        int cnrel = (Signal/100) - cnref; // 0.1 dB
+        int ber_sqi = 100; // 100%
+        int cnr_sqi = 0;   // 0%
+        if (dtp.System() == DVB_SYSTEM_1) { // DVB-T
+            ber_sqi = (Ber < 1000) ? 0 :           // > 10^-3
+                      (Ber >= 10000000) ? 100 :    // <= 10^-7
+                      (int)(20 * log10(Ber)) - 40; // 20*log10(1/BER)-40 -> 20% .. 100%
+            // scale: -7dB/+3dB to reference-value
+            cnr_sqi = (cnrel < -70) ? 0 :
+                      (cnrel < +30) ? (100 + (cnrel - 30)) :
+                      100;
+            sqi = (cnr_sqi * ber_sqi) / 100;
+            // alternative: stretched scale: cnref-7dB = 0%, 30dB = 100%
+            // sqi = dB1000toPercent(Signal, (100*cnref)-7000, 30000);
+            }
+        else { // DVB-T2
+            ber_sqi = (Ber < 10000)     ? 0 :             // > 10^-4
+                      (Ber >= 10000000) ? 100 * 100 / 6 : // <= 10^-7 : 16.67% -> SQI 0% .. 100%
+                      (100 * 100 / 15);                   //             6.67% -> SQI 0% .. 40% || 100%
+            // scale: -3dB/+3dB to reference-value
+            sqi = (cnrel <  -30) ? 0 :
+                  (cnrel <= +30) ? (cnrel + 30) * ber_sqi / 1000 : // (0 .. 6) * 16,67 || 6.67
+                  100;
+            // alternative: stretched scale: cnref-3dB = 0%, 32dB = 100%
+            // sqi = dB1000toPercent(Signal, (100*cnref)-3000, 32000);
+            }
+#ifdef DEBUG_SIGNALQUALITY
+        fprintf(stderr, "SQI-T: SIG:%d, BER:%d, CNref:%d, CNrel:%d, bersqi:%d, sqi:%d%%(sys:%d, mod:%d, fec:%d)\n", Signal, Ber, cnref, cnrel, ber_sqi, sqi, dtp.System(), mod, fec);
+#endif
+        }
+     }
+  else if (Channel->IsCable()) { // ! COMPLETELY UNTESTED !
+     if (mod == QAM_AUTO) mod = QAM_256;
+         // 0.1 dB      Q16  Q32  Q64 Q128 Q256
+     int cnref = REF_C1(200, 230, 260, 290, 320); // minimum for BER<10^-4
+     if (cnref) {
+        int cnrel = (Signal / 100) - cnref; // 0.1 dB
+        int ber_sqi = (Ber < 1000)      ? 0 :      // > 10^-3
+                      (Ber >= 10000000) ? 100 :    // <= 10^-7
+                      (int)(20 * log10(Ber)) - 40; // 20*log10(1/BER)-40 -> 20% .. 100%
+        // scale: -7dB/+3dB to reference-value
+        int cnr_sqi = (cnrel < -70) ? 0 :
+                      (cnrel < +30) ? (100 + (cnrel - 30)) :
+                      100;
+        sqi = (cnr_sqi * ber_sqi) / 100;
+        // alternative: stretched scale: cnref-7dB = 0%, 40dB = 100%
+        // sqi = dB1000toPercent(Signal, (100*cnref)-7000, 40000);
+#ifdef DEBUG_SIGNALQUALITY
+        dsyslog("SQI-C: SIG:%d, BER:%d, CNref:%d, CNrel:%d, bersqi:%d, sqi:%d%%(sys:%d, mod:%d, fec:%d)\n", Signal, Ber, cnref, cnrel, ber_sqi, sqi, dtp.System(), mod, fec);
+#endif
+        }
+     }
+  else if (Channel->IsSat()) {
+    int cnref = 0;
+    if (dtp.System() == DVB_SYSTEM_1) { // DVB-S
+        if (mod == QAM_AUTO) mod = QPSK;
+        switch (fec) {  // 0.1 dB:     Q4 : 10^-7
+          case FEC_1_2: cnref = REF_S1(38); break;
+          default:
+          case FEC_2_3: cnref = REF_S1(56); break;
+          case FEC_3_4: cnref = REF_S1(67); break;
+          case FEC_5_6: cnref = REF_S1(77); break;
+          case FEC_7_8: cnref = REF_S1(84); break;
+          }
+        if (cnref) {
+           //cnrel = (Signal/100) - cnref; // 0.1 dB
+           // scale: cnref-4dB = 0%, 15dB = 100%
+           sqi = dB1000toPercent(Signal, (100*cnref)-4000, 15000);
+#ifdef DEBUG_SIGNALQUALITY
+           dsyslog("SQI-S1: SIG:%d, BER:%d, CNref:%d, sqi:%d%%(mod:%d, fec:%d)\n", Signal, Ber, cnref, sqi, mod, fec);
+#endif
+           }
+        }
+    else { // DVB-S2
+        if (mod == QAM_AUTO) mod = QAM_64;
+        switch (fec) {   // 0.1 dB       Q4   Q8 16A* 32A*
+        //case FEC_1_4:  cnref = REF_S2(-14,  65,  90, 126); break;
+        //case FEC_1_3:  cnref = REF_S2( -2,  65,  90, 126); break;
+          case FEC_2_5:  cnref = REF_S2(  7,  65,  90, 126); break;
+          case FEC_1_2:  cnref = REF_S2( 20,  65,  90, 126); break;
+          case FEC_3_5:  cnref = REF_S2( 32,  65,  90, 126); break;
+          default:
+          case FEC_2_3:  cnref = REF_S2( 41,  76,  90, 126); break;
+          case FEC_3_4:  cnref = REF_S2( 50,  66, 102, 126); break;
+          case FEC_4_5:  cnref = REF_S2( 57,  89, 110, 136); break;
+          case FEC_5_6:  cnref = REF_S2( 62, 104, 116, 143); break;
+          case FEC_8_9:  cnref = REF_S2( 72, 117, 129, 157); break;
+          case FEC_9_10: cnref = REF_S2( 74, 120, 131, 161); break;
+          }
+        if (cnref) {
+           // cnrel = (Signal/100) - cnref; // 0.1 dB
+           // scale: cnref-4dB = 0%, 20dB = 100%
+           sqi = dB1000toPercent(Signal, (100*cnref)-4000, 20000);
+#ifdef DEBUG_SIGNALQUALITY
+           dsyslog("SQI-S2: SIG:%d, BER:%d, CNref:%d, sqi:%d%%(mod:%d, fec:%d)\n", Signal, Ber, cnref, sqi, mod, fec);
+#endif
+           }
+        }
+  }
+  return sqi;
+}
+
 int cDvbTuner::GetSignalStrength(void) const
 {
   ClearEventQueue();
@@ -710,14 +935,20 @@ int cDvbTuner::GetSignalStrength(void) const
       memset(&CmdSeq, 0, sizeof(CmdSeq));
       CmdSeq.props = Props;
       SETCMD(DTV_STAT_SIGNAL_STRENGTH, 0);
+      SETCMD(DTV_MODULATION, 0);
+      SETCMD(DTV_CODE_RATE_HP, 0); // DVB-T only
+      SETCMD(DTV_INNER_FEC, 0);
       if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
          esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
          return -1;
          }
-      int Signal = 0;;
+      int FeMod = (Props[1].u.st.len > 0) ? (int)Props[1].u.data : -1;
+      int FeCod = (Props[2].u.st.len > 0) ? (int)Props[2].u.data : -1;
+      int FeFec = (Props[3].u.st.len > 0) ? (int)Props[3].u.data : -1;
+      int Signal = 0;
       if (Props[0].u.st.len > 0) {
          switch (Props[0].u.st.stat[0].scale) {
-           case FE_SCALE_DECIBEL:  Signal = dB1000toPercent(Props[0].u.st.stat[0].svalue, -95000, -20000); // TODO use different values for DVB-S, -T, -C?
+           case FE_SCALE_DECIBEL:  Signal = StrengthToSSI(&channel, Props[0].u.st.stat[0].svalue, FeMod, FeCod, FeFec);
                                    break;
            case FE_SCALE_RELATIVE: Signal = 100 * Props[0].u.st.stat[0].uvalue / 0xFFFF;
                                    break;
@@ -768,14 +999,32 @@ int cDvbTuner::GetSignalQuality(void) const
       memset(&CmdSeq, 0, sizeof(CmdSeq));
       CmdSeq.props = Props;
       SETCMD(DTV_STAT_CNR, 0);
+      SETCMD(DTV_MODULATION, 0);
+      SETCMD(DTV_CODE_RATE_HP, 0); // DVB-T only
+      SETCMD(DTV_INNER_FEC, 0);
+      SETCMD(DTV_STAT_POST_ERROR_BIT_COUNT, 0);
+      SETCMD(DTV_STAT_POST_TOTAL_BIT_COUNT, 0);
       if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
          esyslog("ERROR: frontend %d/%d: %m", adapter, frontend);
          return -1;
          }
-      int Cnr = 0;;
+      int FeMod = (Props[1].u.st.len > 0) ? (int)Props[1].u.data : -1;
+      int FeCod = (Props[2].u.st.len > 0) ? (int)Props[2].u.data : -1;
+      int FeFec = (Props[3].u.st.len > 0) ? (int)Props[3].u.data : -1;
+      int Ber = BER_ERROR_FREE; // 1/10^-9
+      if (Props[4].u.st.len > 0 && Props[4].u.st.stat[0].scale == FE_SCALE_COUNTER && Props[5].u.st.len > 0 && Props[5].u.st.stat[0].scale == FE_SCALE_COUNTER) {
+         uint64_t ebc = Props[4].u.st.stat[0].uvalue; // error bit count
+         uint64_t tbc = Props[5].u.st.stat[0].uvalue; // total bit count
+         if (ebc > 0) {
+            uint64_t BerRev = tbc / ebc; // reversed, for integer arithmetic
+            if (BerRev < BER_ERROR_FREE)
+               Ber = (int)BerRev;
+            }
+         }
+      int Cnr = 0;
       if (Props[0].u.st.len > 0) {
          switch (Props[0].u.st.stat[0].scale) {
-           case FE_SCALE_DECIBEL:  Cnr = dB1000toPercent(Props[0].u.st.stat[0].svalue, 5000, 20000); // TODO use different values for DVB-S, -T, -C?
+           case FE_SCALE_DECIBEL:  Cnr = SignalToSQI(&channel, Props[0].u.st.stat[0].svalue, Ber, FeMod, FeCod, FeFec);
                                    break;
            case FE_SCALE_RELATIVE: Cnr = 100 * Props[0].u.st.stat[0].uvalue / 0xFFFF;
                                    break;
@@ -1116,13 +1365,13 @@ bool cDvbTuner::SetFrontend(void)
      SETCMD(DTV_HIERARCHY, dtp.Hierarchy());
      if (frontendType == SYS_DVBT2) {
         // DVB-T2
+        SETCMD(DTV_INNER_FEC, dtp.CoderateH());
         if (DvbApiVersion >= 0x0508) {
            SETCMD(DTV_STREAM_ID, dtp.StreamId());
            }
         else if (DvbApiVersion >= 0x0503)
            SETCMD(DTV_DVBT2_PLP_ID_LEGACY, dtp.StreamId());
         }
-
      tuneTimeout = DVBT_TUNE_TIMEOUT;
      lockTimeout = DVBT_LOCK_TIMEOUT;
      }
