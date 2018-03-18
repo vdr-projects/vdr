@@ -9314,3 +9314,5 @@ Video Disk Recorder Revision History
 - Fixed handling parameters in the S2SatelliteDeliverySystemDescriptor and
   T2DeliverySystemDescriptor that were overwritten when parsing the
   SatelliteDeliverySystemDescriptor or TerrestrialDeliverySystemDescriptor, respectively.
+- Modified cMenuTimers::Delete() to avoid a lengthy lock on the Timers list while prompting
+  the user.

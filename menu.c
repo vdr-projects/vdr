@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.68 2018/03/09 15:02:29 kls Exp $
+ * $Id: menu.c 4.69 2018/03/18 12:01:09 kls Exp $
  */
 
 #include "menu.h"
@@ -1344,29 +1344,27 @@ eOSState cMenuTimers::Delete(void)
   // Check if this timer is active:
   cTimer *Timer = GetTimer();
   if (Timer) {
-     if (Interface->Confirm(tr("Delete timer?"))) {
-        if (Timer->Recording()) {
-           if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
-              if (!Timer->Remote()) {
-                 Timer->Skip();
-                 cRecordControls::Process(Timers, time(NULL));
-                 }
-              }
-           else
-              Timer = NULL;
-           }
+     bool TimerRecording = Timer->Recording();
+     timersStateKey.Remove(false); // must release lock while prompting!
+     if (Interface->Confirm(tr("Delete timer?")) && (!TimerRecording || Interface->Confirm(tr("Timer still recording - really delete?")))) {
+        Timers = cTimers::GetTimersWrite(timersStateKey);
+        Timer = GetTimer();
         if (Timer) {
-           if (!HandleRemoteModifications(NULL, Timer)) {
-              timersStateKey.Remove();
-              return osContinue;
+           if (!Timer->Remote()) {
+              Timer->Skip();
+              cRecordControls::Process(Timers, time(NULL));
               }
-           if (Timer->Remote())
-              Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
-           Timers->Del(Timer);
-           cOsdMenu::Del(Current());
-           Display();
+           if (HandleRemoteModifications(NULL, Timer)) {
+              if (Timer->Remote())
+                 Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
+              Timers->Del(Timer);
+              cOsdMenu::Del(Current());
+              Display();
+              }
            }
         }
+     else
+        return osContinue;
      }
   timersStateKey.Remove(Timer != NULL);
   return osContinue;
