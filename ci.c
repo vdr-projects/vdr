@@ -2993,6 +2993,8 @@ void cChannelCamRelations::Load(const char *FileName)
 
 void cChannelCamRelations::Save(void)
 {
+  if (!*fileName)
+     return;
   cMutexLock MutexLock(&mutex);
   struct stat st;
   if (stat(fileName, &st) == 0) {
