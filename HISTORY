@@ -9320,3 +9320,5 @@ Video Disk Recorder Revision History
 2018-03-19: Version 2.4.0
 
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Fixed processing SVDRP client responses in case the caller doesn't want the actual
+  response strings (reported by Johann Friedrichs).

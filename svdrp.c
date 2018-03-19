@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.36 2018/03/18 10:43:53 kls Exp $
+ * $Id: svdrp.c 4.37 2018/03/19 12:16:33 kls Exp $
  */
 
 #include "svdrp.h"
@@ -480,8 +480,11 @@ bool cSVDRPClient::Process(cStringList *Response)
 
 bool cSVDRPClient::Execute(const char *Command, cStringList *Response)
 {
+  cStringList Dummy;
   if (Response)
      Response->Clear();
+  else
+     Response = &Dummy;
   return Send(Command) && Process(Response);
 }
 

@@ -2845,6 +2845,8 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for fixing handling timers during the change from DST to winter time
  for fixing a possible crash with plugins that retrieve player information after a
  replay has been stopped, but before the replay control has been destroyed
+ for reporting a problem in processing SVDRP client responses in case the caller doesn't
+ want the actual response strings
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
