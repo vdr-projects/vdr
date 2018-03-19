@@ -480,8 +480,11 @@ bool cSVDRPClient::Process(cStringList *Response)
 
 bool cSVDRPClient::Execute(const char *Command, cStringList *Response)
 {
+  cStringList Dummy;
   if (Response)
      Response->Clear();
+  else
+     Response = &Dummy;
   return Send(Command) && Process(Response);
 }
 
