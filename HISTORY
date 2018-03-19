@@ -9316,3 +9316,7 @@ Video Disk Recorder Revision History
   SatelliteDeliverySystemDescriptor or TerrestrialDeliverySystemDescriptor, respectively.
 - Modified cMenuTimers::Delete() to avoid a lengthy lock on the Timers list while prompting
   the user.
+
+2018-03-19: Version 2.4.0
+
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
