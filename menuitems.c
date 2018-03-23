@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 4.2 2015/09/08 10:25:23 kls Exp $
+ * $Id: menuitems.c 4.3 2018/03/23 15:37:02 kls Exp $
  */
 
 #include "menuitems.h"
@@ -1062,14 +1062,12 @@ cMenuEditTimeItem::cMenuEditTimeItem(const char *Name, int *Value)
 
 void cMenuEditTimeItem::Set(void)
 {
-  char buf[10];
   switch (pos) {
-    case 1:  snprintf(buf, sizeof(buf), "%01d-:--", hh / 10); break;
-    case 2:  snprintf(buf, sizeof(buf), "%02d:--", hh); break;
-    case 3:  snprintf(buf, sizeof(buf), "%02d:%01d-", hh, mm / 10); break;
-    default: snprintf(buf, sizeof(buf), "%02d:%02d", hh, mm);
+    case 1:  SetValue(cString::sprintf("%01d-:--", hh / 10)); break;
+    case 2:  SetValue(cString::sprintf("%02d:--", hh)); break;
+    case 3:  SetValue(cString::sprintf("%02d:%01d-", hh, mm / 10)); break;
+    default: SetValue(cString::sprintf("%02d:%02d", hh, mm));
     }
-  SetValue(buf);
 }
 
 eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)

@@ -9317,10 +9317,12 @@ Video Disk Recorder Revision History
 - Modified cMenuTimers::Delete() to avoid a lengthy lock on the Timers list while prompting
   the user.
 
-2018-03-19: Version 2.4.0
+2018-03-23: Version 2.4.0
 
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Fixed processing SVDRP client responses in case the caller doesn't want the actual
   response strings (reported by Johann Friedrichs).
 - Fixed (not) saving the 'cam.data' file in case VDR stops early during startup due to
   some error.
+- Fixed some warnings from g++ 7.2.0 regarding fixed buffer sizes in cMenuEditTimeItem::Set()
+  and cCountdown::Update() (reported by Jörg Wendel).

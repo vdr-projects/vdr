@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 4.1 2015/07/18 11:29:26 kls Exp $
+ * $Id: shutdown.c 4.2 2018/03/23 15:39:21 kls Exp $
  */
 
 #include "shutdown.h"
@@ -69,10 +69,7 @@ bool cCountdown::Update(void)
         timedOut = true;
      if (counter != NewCounter) {
         counter = NewCounter;
-        char time[10];
-        snprintf(time, sizeof(time), "%d:%d0", counter > 0 ? counter / 6 : 0, counter > 0 ? counter % 6 : 0);
-        cString Message = cString::sprintf(message, time);
-        Skins.Message(mtStatus, Message);
+        Skins.Message(mtStatus, cString::sprintf(message, *cString::sprintf("%d:%d0", counter > 0 ? counter / 6 : 0, counter > 0 ? counter % 6 : 0)));
         return true;
         }
      }
