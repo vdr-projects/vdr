@@ -330,7 +330,8 @@ void cOsdMenu::Clear(void)
 {
   if (marked >= 0)
      SetStatus(NULL);
-  lastOffset = (current > first) ? current - first : 0;
+  if (current >= 0)
+     lastOffset = (current > first) ? current - first : 0;
   first = 0;
   current = marked = -1;
   cList<cOsdItem>::Clear();
