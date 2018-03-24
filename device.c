@@ -195,6 +195,7 @@ bool cDevice::SetPrimaryDevice(int n)
      primaryDevice->MakePrimaryDevice(true);
      primaryDevice->SetVideoFormat(Setup.VideoFormat);
      primaryDevice->SetVolumeDevice(Setup.CurrentVolume);
+     Setup.PrimaryDVB = n + 1;
      return true;
      }
   esyslog("ERROR: invalid primary device number: %d", n + 1);
