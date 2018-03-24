@@ -9317,7 +9317,7 @@ Video Disk Recorder Revision History
 - Modified cMenuTimers::Delete() to avoid a lengthy lock on the Timers list while prompting
   the user.
 
-2018-03-23: Version 2.4.0
+2018-03-24: Version 2.4.0
 
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Fixed processing SVDRP client responses in case the caller doesn't want the actual
@@ -9326,3 +9326,6 @@ Video Disk Recorder Revision History
   some error.
 - Fixed some warnings from g++ 7.2.0 regarding fixed buffer sizes in cMenuEditTimeItem::Set()
   and cCountdown::Update() (reported by Jörg Wendel).
+- Fixed a possible discrepancy of the primary device number in the LSTD and PRIM
+  commands, by setting Setup.PrimaryDVB in cDevice::SetPrimaryDevice() (reported by
+  Jürgen Schneider).

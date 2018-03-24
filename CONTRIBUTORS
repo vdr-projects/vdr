@@ -2265,6 +2265,8 @@ Javier Fernández-Sanguino Peña <jfs@computer.org>
 Jürgen Schneider <ivory7@gmx.de>
  for a patch that was used as a base to fix handling multi byte key sequences
  in cKbdRemote
+ for reporting a possible discrepancy of the primary device number in the LSTD and
+ PRIM commands
 
 Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()
