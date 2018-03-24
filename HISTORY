@@ -9329,3 +9329,5 @@ Video Disk Recorder Revision History
 - Fixed a possible discrepancy of the primary device number in the LSTD and PRIM
   commands, by setting Setup.PrimaryDVB in cDevice::SetPrimaryDevice() (reported by
   Jürgen Schneider).
+- Fixed setting the initial offset of the cursor in a list menu (reported by Matthias
+  Senzel).

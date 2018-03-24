@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.69 2018/03/18 12:01:09 kls Exp $
+ * $Id: menu.c 4.70 2018/03/24 11:43:40 kls Exp $
  */
 
 #include "menu.h"
@@ -3010,6 +3010,7 @@ void cMenuRecordings::Set(bool Refresh)
      Clear();
      GetRecordingsSortMode(DirectoryName());
      Recordings->Sort();
+     cMenuRecordingItem *CurrentItem = NULL;
      cMenuRecordingItem *LastItem = NULL;
      for (const cRecording *Recording = Recordings->First(); Recording; Recording = Recordings->Next(Recording)) {
          if ((!filter || filter->Filter(Recording)) && (!base || (strstr(Recording->Name(), base) == Recording->Name() && Recording->Name()[strlen(base)] == FOLDERDELIMCHAR))) {
@@ -3035,15 +3036,16 @@ void cMenuRecordings::Set(bool Refresh)
             if (LastItem || LastDir) {
                if (*path) {
                   if (strcmp(path, Recording->Folder()) == 0)
-                     SetCurrent(LastDir ? LastDir : LastItem);
+                     CurrentItem = LastDir ? LastDir : LastItem;
                   }
                else if (CurrentRecording && strcmp(CurrentRecording, Recording->FileName()) == 0)
-                  SetCurrent(LastDir ? LastDir : LastItem);
+                  CurrentItem = LastDir ? LastDir : LastItem;
                }
             if (LastDir)
                LastDir->IncrementCounter(Recording->IsNew());
             }
          }
+     SetCurrent(CurrentItem);
      if (Current() < 0)
         SetCurrent(Get(current)); // last resort, in case the recording was deleted
      SetMenuSortMode(RecordingsSortMode == rsmName ? msmName : msmTime);
