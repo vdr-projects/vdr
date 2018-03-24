@@ -1062,14 +1062,12 @@ cMenuEditTimeItem::cMenuEditTimeItem(const char *Name, int *Value)
 
 void cMenuEditTimeItem::Set(void)
 {
-  char buf[10];
   switch (pos) {
-    case 1:  snprintf(buf, sizeof(buf), "%01d-:--", hh / 10); break;
-    case 2:  snprintf(buf, sizeof(buf), "%02d:--", hh); break;
-    case 3:  snprintf(buf, sizeof(buf), "%02d:%01d-", hh, mm / 10); break;
-    default: snprintf(buf, sizeof(buf), "%02d:%02d", hh, mm);
+    case 1:  SetValue(cString::sprintf("%01d-:--", hh / 10)); break;
+    case 2:  SetValue(cString::sprintf("%02d:--", hh)); break;
+    case 3:  SetValue(cString::sprintf("%02d:%01d-", hh, mm / 10)); break;
+    default: SetValue(cString::sprintf("%02d:%02d", hh, mm));
     }
-  SetValue(buf);
 }
 
 eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)
