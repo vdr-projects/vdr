@@ -265,6 +265,8 @@ EPG:
   made for such an event.
 - Changed the default return value of cEpgHandler::BeginSegmentTransfer() to true, to
   avoid problems with derived classes that don't implement this function.
+- The EIT filter no longer parses data from "other TS", to avoid problems with
+  broadcasters who transmit faulty EIT data.
 
 OSD:
 
