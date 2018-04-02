@@ -9334,3 +9334,4 @@ Video Disk Recorder Revision History
 - The EIT filter no longer parses data from "other TS", to avoid problems with
   broadcasters who transmit faulty EIT data.
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).

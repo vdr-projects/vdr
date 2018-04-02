@@ -867,10 +867,10 @@ msgid "by time"
 msgstr "ajan mukaan"
 
 msgid "ascending"
-msgstr ""
+msgstr "nouseva"
 
 msgid "descending"
-msgstr ""
+msgstr "laskeva"
 
 msgid "OSD"
 msgstr "Kuvaruutunäyttö"
@@ -963,7 +963,7 @@ msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Järjestä tallenteet oletuksena"
 
 msgid "Setup.OSD$Sorting direction for recordings"
-msgstr ""
+msgstr "Tallenteiden järjestys"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Käytä numeronäppäimiä tekstisyötteessä"
