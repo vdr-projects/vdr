@@ -9317,7 +9317,7 @@ Video Disk Recorder Revision History
 - Modified cMenuTimers::Delete() to avoid a lengthy lock on the Timers list while prompting
   the user.
 
-2018-04-02: Version 2.4.0
+2018-04-03: Version 2.4.0
 
 - Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
 - Fixed processing SVDRP client responses in case the caller doesn't want the actual
@@ -9335,3 +9335,5 @@ Video Disk Recorder Revision History
   broadcasters who transmit faulty EIT data.
 - Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed sluggish setting of editing marks and a jumping progress display with very
+  short recordings (reported by Oliver Endriss).
