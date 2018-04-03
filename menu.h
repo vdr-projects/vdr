@@ -300,7 +300,6 @@ private:
   bool lastPlay, lastForward;
   int lastSpeed;
   time_t timeoutShow;
-  time_t lastProgressUpdate;
   bool timeSearchActive, timeSearchHide;
   int timeSearchTime, timeSearchPos;
   void TimeSearchDisplay(void);
