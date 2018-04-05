@@ -1691,10 +1691,13 @@ eOSState cMenuWhatsOn::Record(void)
         Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
      if (HasSubMenu())
         CloseSubMenu();
-     if (Update())
-        Display();
-     SetHelpKeys(Channels);
      }
+  if (Update()) {
+     LOCK_SCHEDULES_READ;
+     Display();
+     }
+  LOCK_CHANNELS_READ;
+  SetHelpKeys(Channels);
   return osContinue;
 }
 
@@ -1999,10 +2002,12 @@ eOSState cMenuSchedule::Record(void)
         Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
      if (HasSubMenu())
         CloseSubMenu();
-     if (Update())
-        Display();
-     SetHelpKeys();
      }
+  if (Update()) {
+     LOCK_SCHEDULES_READ;
+     Display();
+     }
+  SetHelpKeys();
   return osContinue;
 }
 
