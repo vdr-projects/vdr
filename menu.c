@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.71 2018/04/02 13:41:39 kls Exp $
+ * $Id: menu.c 4.72 2018/04/05 14:18:18 kls Exp $
  */
 
 #include "menu.h"
@@ -1691,10 +1691,13 @@ eOSState cMenuWhatsOn::Record(void)
         Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
      if (HasSubMenu())
         CloseSubMenu();
-     if (Update())
-        Display();
-     SetHelpKeys(Channels);
      }
+  if (Update()) {
+     LOCK_SCHEDULES_READ;
+     Display();
+     }
+  LOCK_CHANNELS_READ;
+  SetHelpKeys(Channels);
   return osContinue;
 }
 
@@ -1999,10 +2002,12 @@ eOSState cMenuSchedule::Record(void)
         Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
      if (HasSubMenu())
         CloseSubMenu();
-     if (Update())
-        Display();
-     SetHelpKeys();
      }
+  if (Update()) {
+     LOCK_SCHEDULES_READ;
+     Display();
+     }
+  SetHelpKeys();
   return osContinue;
 }
 
