@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.4 2018/01/25 15:09:09 kls Exp $
+ * $Id: osd.c 4.5 2018/04/06 08:43:15 kls Exp $
  */
 
 #include "osd.h"
@@ -839,7 +839,9 @@ cBitmap *cBitmap::Scaled(double FactorX, double FactorY, bool AntiAlias) const
 {
   // Fixed point scaling code based on www.inversereality.org/files/bitmapscaling.pdf
   // by deltener@mindtremors.com
-  cBitmap *b = new cBitmap(int(round(Width() * FactorX)), int(round(Height() * FactorY)), Bpp(), X0(), Y0());
+  int w = max(1, int(round(Width() * FactorX)));
+  int h = max(1, int(round(Height() * FactorY)));
+  cBitmap *b = new cBitmap(w, h, Bpp(), X0(), Y0());
   int RatioX = (Width() << 16) / b->Width();
   int RatioY = (Height() << 16) / b->Height();
   if (!AntiAlias || FactorX <= 1.0 && FactorY <= 1.0) {

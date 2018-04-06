@@ -1203,6 +1203,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
  for adding a Status parameter to the interface of cDevice::SignalStats() and
  cDvbDevice::SignalStats()
+ for reporting a possible crash when scaling bitmaps with very small factors
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
