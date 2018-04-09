@@ -9341,3 +9341,4 @@ Video Disk Recorder Revision History
 - Fixed scaling bitmaps with very small factors (reported by Rolf Ahrenberg).
 - Added a missing initialization of osdState in cDisplayChannel::cDisplayChannel(eKeys
   FirstKey).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
