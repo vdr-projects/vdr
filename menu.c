@@ -4644,6 +4644,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   number = 0;
   timeout = true;
   lastPresent = lastFollowing = NULL;
+  cOsdProvider::OsdSizeChanged(osdState); // just to get the current state
   lastTime.Set();
   withInfo = Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
