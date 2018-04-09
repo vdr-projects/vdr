@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.72 2018/04/05 14:18:18 kls Exp $
+ * $Id: menu.c 4.73 2018/04/09 09:20:03 kls Exp $
  */
 
 #include "menu.h"
@@ -4644,6 +4644,7 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   number = 0;
   timeout = true;
   lastPresent = lastFollowing = NULL;
+  cOsdProvider::OsdSizeChanged(osdState); // just to get the current state
   lastTime.Set();
   withInfo = Setup.ShowInfoOnChSwitch;
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
