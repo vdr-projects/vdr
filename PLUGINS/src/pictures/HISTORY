@@ -108,3 +108,7 @@ VDR Plugin 'pictures' Revision History
 
 - Adapted the pic2mpg script to new ffmpeg options.
 - No longer using 'convert' to scale/rotate the pictures.
+
+2018-04-15: Version 2.4.0
+
+- Official release.

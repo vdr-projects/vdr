@@ -1,11 +1,11 @@
 # VDR plugin language source file.
-# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2018 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Klaus Schmidinger <vdr@tvdr.de>, 2007
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vdr-skincurses 2.2.0\n"
+"Project-Id-Version: vdr-skincurses 2.4.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
 "POT-Creation-Date: 2015-02-08 11:16+0100\n"
 "PO-Revision-Date: 2007-08-15 16:07+0200\n"

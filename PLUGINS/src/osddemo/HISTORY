@@ -79,3 +79,7 @@ VDR Plugin 'osddemo' Revision History
 - Fixed a vertical black line in the "TiledPixmaps" area on the rpihddevice OSD with
   1280x800 pixel (thanks to Thomas Reufer).
 - Added a demo case for storing images (thanks to Thomas Reufer).
+
+2018-04-15: Version 2.4.0
+
+- Official release.

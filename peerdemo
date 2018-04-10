@@ -7,7 +7,8 @@
 # It reacts properly to the SVDRP commands CONN, LSTT, POLL, PING and QUIT,
 # and thus seems like a regular VDR to other VDRs.
 #
-# (C) 2018 by Klaus Schmidinger <Klaus.Schmidinger@tvdr.de>
+# See the main source file 'vdr.c' for copyright information and
+# how to reach the author.
 
 use Getopt::Std;
 use IO::Socket;
