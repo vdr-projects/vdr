@@ -9344,3 +9344,5 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Updated the Hungarian OSD texts (thanks to István Füley).
 - Updated the French OSD texts (thanks to Bernard Jaulin).
+- Fixed a high CPU load during replay with active progress display (reported by Matthias
+  Senzel).
