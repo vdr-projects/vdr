@@ -45,6 +45,7 @@
 #define MAXWAITFORCAMMENU  10 // seconds to wait for the CAM menu to open
 #define CAMMENURETRYTIMEOUT 3 // seconds after which opening the CAM menu is retried
 #define CAMRESPONSETIMEOUT  5 // seconds to wait for a response from a CAM
+#define PROGRESSTIMEOUT   100 // milliseconds to wait before updating the replay progress display
 #define MINFREEDISK       300 // minimum free disk space (in MB) required to start recording
 #define NODISKSPACEDELTA  300 // seconds between "Not enough disk space to start recording!" messages
 #define MAXCHNAMWIDTH      16 // maximum number of characters of channels' short names shown in schedules menus
@@ -5733,6 +5734,8 @@ void cReplayControl::ShowMode(void)
 bool cReplayControl::ShowProgress(bool Initial)
 {
   int Current, Total;
+  if (!(Initial || updateTimer.TimedOut()))
+     return visible;
   if (GetFrameNumber(Current, Total) && Total > 0) {
      if (!visible) {
         displayReplay = Skins.Current()->DisplayReplay(modeOnly);
@@ -5762,6 +5765,7 @@ bool cReplayControl::ShowProgress(bool Initial)
         }
      lastTotal = Total;
      ShowMode();
+     updateTimer.Set(PROGRESSTIMEOUT);
      return true;
      }
   return false;
