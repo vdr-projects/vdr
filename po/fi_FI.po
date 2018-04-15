@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2018 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Hannu Savolainen <hannu@opensound.com>, 2002
 # Jaakko Hyvätti <jaakko@hyvatti.iki.fi>, 2002, 2003
@@ -9,7 +9,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.2.0\n"
+"Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2018-03-09 16:02+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
@@ -867,10 +867,10 @@ msgid "by time"
 msgstr "ajan mukaan"
 
 msgid "ascending"
-msgstr ""
+msgstr "nouseva"
 
 msgid "descending"
-msgstr ""
+msgstr "laskeva"
 
 msgid "OSD"
 msgstr "Kuvaruutunäyttö"
@@ -963,7 +963,7 @@ msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Järjestä tallenteet oletuksena"
 
 msgid "Setup.OSD$Sorting direction for recordings"
-msgstr ""
+msgstr "Tallenteiden järjestys"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Käytä numeronäppäimiä tekstisyötteessä"

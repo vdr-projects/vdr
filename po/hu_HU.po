@@ -1,25 +1,25 @@
 # VDR language source file.
-# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2018 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Istvan Koenigsberger <istvnko@hotmail.com>, 2002, 2003, 2006
 # Guido Josten <guido.josten@t-online.de>, 2002, 2003, 2006
 # Thomas Günther <tom@toms-cafe.de>, 2007
-# István Füley <ifuley@tigercomp.ro>, 2007, 2012, 2013, 2015
+# István Füley <ifuley@tigercomp.ro>, 2007, 2012, 2013, 2015, 2018
 # Albert Danis <a.danis@gmx.de>, 2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.2.0\n"
+"Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2018-03-09 16:02+0100\n"
-"PO-Revision-Date: 2015-02-13 09:36+0200\n"
+"PO-Revision-Date: 2018-04-09 21:42+0300\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian <vdr@linuxtv.org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 1.6.11\n"
+"X-Generator: Poedit 2.0.6\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Érvénytelen csatorna ***"
@@ -663,7 +663,7 @@ msgid "File"
 msgstr "Fájl"
 
 msgid "Record on"
-msgstr ""
+msgstr "Felvétel be"
 
 msgid "Button$Folder"
 msgstr "Könyvtár"
@@ -678,10 +678,10 @@ msgid "First day"
 msgstr "Első nap"
 
 msgid "Error while accessing remote timer"
-msgstr ""
+msgstr "Távoli időzítő nem elérhető"
 
 msgid "Timer has been deleted!"
-msgstr ""
+msgstr "Az időzítő törölve lett!"
 
 msgid "Select folder"
 msgstr "Könyvtár kiválasztása"
@@ -862,16 +862,16 @@ msgid "always"
 msgstr "mindig"
 
 msgid "by name"
-msgstr ""
+msgstr "név szerint"
 
 msgid "by time"
-msgstr ""
+msgstr "idő szerint"
 
 msgid "ascending"
-msgstr ""
+msgstr "növekvő"
 
 msgid "descending"
-msgstr ""
+msgstr "csökkenő"
 
 msgid "OSD"
 msgstr "OSD"
@@ -961,10 +961,10 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Könyvtárakat rendezd előre"
 
 msgid "Setup.OSD$Default sort mode for recordings"
-msgstr ""
+msgstr "Felvételek alapértelmezett rendezése"
 
 msgid "Setup.OSD$Sorting direction for recordings"
-msgstr ""
+msgstr "Felvételek rendezésének sorrendje"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Betűk a számgombokon"
@@ -1151,7 +1151,7 @@ msgid " (activating)"
 msgstr " (aktiválás)"
 
 msgid "@ device"
-msgstr ""
+msgstr "@ eszköz"
 
 msgid "CAM"
 msgstr "CAM"
@@ -1184,13 +1184,13 @@ msgid "Can't reset CAM!"
 msgstr "CAM újraindítása nem sikerült!"
 
 msgid "no instant recording"
-msgstr ""
+msgstr "nincs azonnali felvétel"
 
 msgid "confirm instant recording"
-msgstr ""
+msgstr "azonnali felvétel megerősítése"
 
 msgid "record instantly"
-msgstr ""
+msgstr "azonnali felvétel"
 
 msgid "do not pause live video"
 msgstr "élőkép leállítása tiltva"
@@ -1223,7 +1223,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Alapértelmezett élettartam (n)"
 
 msgid "Setup.Recording$Record key handling"
-msgstr ""
+msgstr "Felvétel gomb kezelése"
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Szünet gomb működése"
@@ -1313,16 +1313,16 @@ msgid "Setup.Replay$Resume ID"
 msgstr "Lejátszás azonosító"
 
 msgid "any hosts"
-msgstr ""
+msgstr "bármelyik host"
 
 msgid "only default host"
-msgstr ""
+msgstr "csak az alapértelmezett host"
 
 msgid "type"
-msgstr ""
+msgstr "típus"
 
 msgid "full"
-msgstr ""
+msgstr "teljes"
 
 msgid "Miscellaneous"
 msgstr "Egyéb"
@@ -1337,13 +1337,13 @@ msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP szétkapcsol használat nélkül(mp)"
 
 msgid "Setup.Miscellaneous$SVDRP peering"
-msgstr ""
+msgstr "SVDRP párosítása"
 
 msgid "Setup.Miscellaneous$SVDRP host name"
-msgstr ""
+msgstr "SVDRP host név"
 
 msgid "Setup.Miscellaneous$SVDRP default host"
-msgstr ""
+msgstr "SVDRP alapértelmezett host"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Előző csatorna időkorlátja (mp)"
@@ -1596,7 +1596,7 @@ msgid "Pause live video?"
 msgstr "Megállítsam az élő képet?"
 
 msgid "Start recording?"
-msgstr ""
+msgstr "Felvétel elindítása?"
 
 msgid "Recording started"
 msgstr "Felvétel elindítva"

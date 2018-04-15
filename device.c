@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.26 2018/01/27 14:45:08 kls Exp $
+ * $Id: device.c 4.27 2018/03/24 09:49:14 kls Exp $
  */
 
 #include "device.h"

@@ -716,6 +716,8 @@ Oliver Endriss <o.endriss@gmx.de>
  channels
  for fixing a possible stack overflow in cListBase::Sort()
  for reporting a crash when deleting a recording
+ for reporting a problem with sluggish setting of editing marks and a jumping progress
+ display with very short recordings
 
 Reinhard Walter Buchner <rw.buchner@freenet.de>
  for adding some satellites to 'sources.conf'
@@ -1201,6 +1203,7 @@ Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>
  for suggesting to change the naming of "binary skip mode" to "adaptive skip mode"
  for adding a Status parameter to the interface of cDevice::SignalStats() and
  cDvbDevice::SignalStats()
+ for reporting a possible crash when scaling bitmaps with very small factors
 
 Ralf Klueber <ralf.klueber@vodafone.com>
  for reporting a bug in cutting a recording if there is only a single editing mark
@@ -2265,6 +2268,8 @@ Javier Fernández-Sanguino Peña <jfs@computer.org>
 Jürgen Schneider <ivory7@gmx.de>
  for a patch that was used as a base to fix handling multi byte key sequences
  in cKbdRemote
+ for reporting a possible discrepancy of the primary device number in the LSTD and
+ PRIM commands
 
 Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()
@@ -2630,6 +2635,8 @@ Jörg Wendel <vdr-ml@jwendel.de>
  for reporting a possible deadlock when quickly zapping through encrypted channels
  for a patch that was used to implement cStatus::MarksModified()
  for suggesting to no longer log unaligned marks in cMarks::Align()
+ for reporting some warnings from g++ 7.2.0 regarding fixed buffer sizes in
+ cMenuEditTimeItem::Set() and cCountdown::Update()
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems
@@ -2845,6 +2852,8 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for fixing handling timers during the change from DST to winter time
  for fixing a possible crash with plugins that retrieve player information after a
  replay has been stopped, but before the replay control has been destroyed
+ for reporting a problem in processing SVDRP client responses in case the caller doesn't
+ want the actual response strings
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -3304,6 +3313,8 @@ Matthias Senzel <matthias.senzel@t-online.de>
  lock is held while the error message is displayed
  for reporting that the info of a newly edited recording was not available immediately
  after starting the editing process
+ for reporting a problem with setting the initial offset of the cursor in a list menu
+ for reporting a high CPU load during replay with active progress display
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language

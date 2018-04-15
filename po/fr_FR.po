@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2018 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Jean-Claude Repetto <jc@repetto.org>, 2001, 2002, 2008
 # Olivier Jacques <jacquesolivier@hotmail.com>, 2003, 2005
@@ -9,17 +9,17 @@
 # Bruno Roussel <bruno.roussel@free.fr>, 2007
 # Michael Nival <mnival@club-internet.fr>, 2007
 # Marc Perrudin <vdr@ekass.net>, 2013
-# Bernard Jaulin <bernard.jaulin@gmail.com>, 2013, 2015
+# Bernard Jaulin <bernard.jaulin@gmail.com>, 2013, 2015, 2018
 # Peter Münster <pmlists@free.fr>, 2013
 # Dominique Plu <dplu@free.fr>, 2013
 # Régis Bossut <famille.bossut@wanadoo.fr>, 2015
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.2.0\n"
+"Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2018-03-09 16:02+0100\n"
-"PO-Revision-Date: 2015-02-18 20:16+0100\n"
+"PO-Revision-Date: 2018-04-14 10:16+0100\n"
 "Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
 "Language: fr\n"
@@ -669,7 +669,7 @@ msgid "File"
 msgstr "Fichier"
 
 msgid "Record on"
-msgstr ""
+msgstr "Enregistrement actif"
 
 msgid "Button$Folder"
 msgstr "Dossier"
@@ -684,10 +684,10 @@ msgid "First day"
 msgstr "Premier jour"
 
 msgid "Error while accessing remote timer"
-msgstr ""
+msgstr "Erreur pendant l'accès à la programmation"
 
 msgid "Timer has been deleted!"
-msgstr ""
+msgstr "La programmation a été supprimée"
 
 msgid "Select folder"
 msgstr "Sélectionner le dossier"
@@ -868,16 +868,16 @@ msgid "always"
 msgstr "toujours"
 
 msgid "by name"
-msgstr ""
+msgstr "par nom"
 
 msgid "by time"
-msgstr ""
+msgstr "par heure"
 
 msgid "ascending"
-msgstr ""
+msgstr "ascendant"
 
 msgid "descending"
-msgstr ""
+msgstr "descendant"
 
 msgid "OSD"
 msgstr "Affichage à l'écran"
@@ -967,10 +967,10 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Toujours trier les dossiers en premier"
 
 msgid "Setup.OSD$Default sort mode for recordings"
-msgstr ""
+msgstr "Mode de tri par défaut pour les enregistrements"
 
 msgid "Setup.OSD$Sorting direction for recordings"
-msgstr ""
+msgstr "Sens de tri pour les enregistrements"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Touches numériques pour caractères"
@@ -1157,7 +1157,7 @@ msgid " (activating)"
 msgstr " (activation en cours)"
 
 msgid "@ device"
-msgstr ""
+msgstr "@ récepteur"
 
 msgid "CAM"
 msgstr "CAM"
@@ -1190,13 +1190,13 @@ msgid "Can't reset CAM!"
 msgstr "Impossible de réinitialiser le CAM !"
 
 msgid "no instant recording"
-msgstr ""
+msgstr "Pas d'enregistrement instantané"
 
 msgid "confirm instant recording"
-msgstr ""
+msgstr "Confirmer l'enregistrement instantané"
 
 msgid "record instantly"
-msgstr ""
+msgstr "enregistrer instantanément"
 
 msgid "do not pause live video"
 msgstr "ne pas mettre en pause le direct"
@@ -1229,7 +1229,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Durée de vie par défaut (j)"
 
 msgid "Setup.Recording$Record key handling"
-msgstr ""
+msgstr "Fonction de la touche enregistrement"
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Fonction de la touche Pause"
@@ -1319,16 +1319,16 @@ msgid "Setup.Replay$Resume ID"
 msgstr "ID résumé"
 
 msgid "any hosts"
-msgstr ""
+msgstr "Tous les serveurs"
 
 msgid "only default host"
-msgstr ""
+msgstr "Uniquement le serveur par défaut"
 
 msgid "type"
-msgstr ""
+msgstr "type"
 
 msgid "full"
-msgstr ""
+msgstr "complet"
 
 msgid "Miscellaneous"
 msgstr "Divers"
@@ -1343,13 +1343,13 @@ msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "Temps maxi SVDRP (s)"
 
 msgid "Setup.Miscellaneous$SVDRP peering"
-msgstr ""
+msgstr "Appairage SVDRP"
 
 msgid "Setup.Miscellaneous$SVDRP host name"
-msgstr ""
+msgstr "Serveur SVDRP"
 
 msgid "Setup.Miscellaneous$SVDRP default host"
-msgstr ""
+msgstr "Serveur SVDRP par défaut"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Prise en compte chaîne (s)"
@@ -1602,7 +1602,7 @@ msgid "Pause live video?"
 msgstr "Arrêter le direct ?"
 
 msgid "Start recording?"
-msgstr ""
+msgstr "Commencer l'enregistrement ?"
 
 msgid "Recording started"
 msgstr "L'enregistrement a commencé"

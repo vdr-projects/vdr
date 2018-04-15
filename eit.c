@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.4 2017/10/11 09:19:42 kls Exp $
+ * $Id: eit.c 4.5 2018/03/31 13:40:32 kls Exp $
  */
 
 #include "eit.h"

@@ -1,21 +1,22 @@
 # VDR language source file.
-# Copyright (C) 2015 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2018 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
-# Dimitar Petrovski <dimeptr@gmail.com>, 2009, 2012, 2013, 2015
+# Dimitar Petrovski <dimeptr@gmail.com>, 2009, 2012, 2013, 2015, 2018.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.2.0\n"
+"Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2018-03-09 16:02+0100\n"
-"PO-Revision-Date: 2015-02-08 15:18+0100\n"
+"PO-Revision-Date: 2018-03-31 21:47+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
-"Language-Team: Macedonian <en@li.org>\n"
+"Language-Team: Macedonian <kde-i18n-doc@kde.org>\n"
 "Language: mk\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 2.0\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 ? 0 : n%10==2 ? 1 : 2;\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Невалиден Канал ***"
@@ -659,7 +660,7 @@ msgid "File"
 msgstr "Датотека"
 
 msgid "Record on"
-msgstr ""
+msgstr "Вклучена снимка"
 
 msgid "Button$Folder"
 msgstr "Директориум"
@@ -674,10 +675,10 @@ msgid "First day"
 msgstr "Прв ден"
 
 msgid "Error while accessing remote timer"
-msgstr ""
+msgstr "Грешка при пристап на далечен тајмер"
 
 msgid "Timer has been deleted!"
-msgstr ""
+msgstr "Тајмерот е избришан!"
 
 msgid "Select folder"
 msgstr "Избери директориум"
@@ -858,16 +859,16 @@ msgid "always"
 msgstr "секогаш"
 
 msgid "by name"
-msgstr ""
+msgstr "по име"
 
 msgid "by time"
-msgstr ""
+msgstr "по време"
 
 msgid "ascending"
-msgstr ""
+msgstr "растечки"
 
 msgid "descending"
-msgstr ""
+msgstr "опаѓачки"
 
 msgid "OSD"
 msgstr "OSD"
@@ -957,10 +958,10 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Секогаш сортирај прво папки"
 
 msgid "Setup.OSD$Default sort mode for recordings"
-msgstr ""
+msgstr "Начин на сортирање на снимки"
 
 msgid "Setup.OSD$Sorting direction for recordings"
-msgstr ""
+msgstr "Насока на сортирање на снимки"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Нумерички копчиња за букви"
@@ -1147,7 +1148,7 @@ msgid " (activating)"
 msgstr " (активирање)"
 
 msgid "@ device"
-msgstr ""
+msgstr "@ уред"
 
 msgid "CAM"
 msgstr "CAM"
@@ -1180,13 +1181,13 @@ msgid "Can't reset CAM!"
 msgstr "Неуспешно рестартирање на CAM-от!"
 
 msgid "no instant recording"
-msgstr ""
+msgstr "иклучено инстантно снимање"
 
 msgid "confirm instant recording"
-msgstr ""
+msgstr "потврди инстантно снимање"
 
 msgid "record instantly"
-msgstr ""
+msgstr "снимај инстантно"
 
 msgid "do not pause live video"
 msgstr "не паузирај пренос во живо"
@@ -1219,7 +1220,7 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Стандардно веметраење (денови)"
 
 msgid "Setup.Recording$Record key handling"
-msgstr ""
+msgstr "Уредување на копче за снимање"
 
 msgid "Setup.Recording$Pause key handling"
 msgstr "Подесување на копчето пауза"
@@ -1309,16 +1310,16 @@ msgid "Setup.Replay$Resume ID"
 msgstr "ID на продолжеток"
 
 msgid "any hosts"
-msgstr ""
+msgstr "сите хостови"
 
 msgid "only default host"
-msgstr ""
+msgstr "само стандарден хост"
 
 msgid "type"
-msgstr ""
+msgstr "тип"
 
 msgid "full"
-msgstr ""
+msgstr "полно"
 
 msgid "Miscellaneous"
 msgstr "Разно"
@@ -1333,13 +1334,13 @@ msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP тајмаут (сек)"
 
 msgid "Setup.Miscellaneous$SVDRP peering"
-msgstr ""
+msgstr "SVDRP врска"
 
 msgid "Setup.Miscellaneous$SVDRP host name"
-msgstr ""
+msgstr "SVDRP хост"
 
 msgid "Setup.Miscellaneous$SVDRP default host"
-msgstr ""
+msgstr "SVDRP основен хост"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Зап тајмаут (сек)"
@@ -1592,7 +1593,7 @@ msgid "Pause live video?"
 msgstr "Паузирај пренос во живо?"
 
 msgid "Start recording?"
-msgstr ""
+msgstr "Почни снимање?"
 
 msgid "Recording started"
 msgstr "Снимањето почна"

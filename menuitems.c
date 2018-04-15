@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 4.2 2015/09/08 10:25:23 kls Exp $
+ * $Id: menuitems.c 4.3 2018/03/23 15:37:02 kls Exp $
  */
 
 #include "menuitems.h"

@@ -1,7 +1,7 @@
 Installation of the Video Disk Recorder
 ---------------------------------------
 
-Version 2.2
+Version 2.4
 -----------
 
 Compiling and running the program:
@@ -47,9 +47,9 @@ By default the 'vdr' program can be controlled via the PC keyboard.
 If you want to disable control via the keyboard, you can add NO_KBD=1
 to the 'make' call, or use the '--no-kbd' option at runtime.
 
-If you have an infrared remote control unit you can define the REMOTE macro
-to one of the following values in the 'make' call to make the respective control
-the default:
+If you have a LIRC compatible infrared remote control receiver you can define
+the REMOTE macro to one of the following values in the 'make' call to make
+the respective control the default:
 
   REMOTE=LIRC   control via the "Linux Infrared Remote Control"
                 (see http://www.lirc.org)

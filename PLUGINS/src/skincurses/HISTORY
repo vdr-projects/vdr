@@ -137,3 +137,7 @@ VDR Plugin 'skincurses' Revision History
   font drawing in high level OSDs (dummy for skincurses).
 - Fixed truncated date/time strings in the skins on multi-byte UTF-8 systems
   (reported by Sergey Chernyavskiy).
+
+2018-04-15: Version 2.4.0
+
+- Official release.

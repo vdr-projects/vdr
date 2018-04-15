@@ -9316,3 +9316,34 @@ Video Disk Recorder Revision History
   SatelliteDeliverySystemDescriptor or TerrestrialDeliverySystemDescriptor, respectively.
 - Modified cMenuTimers::Delete() to avoid a lengthy lock on the Timers list while prompting
   the user.
+
+2018-04-15: Version 2.4.0
+
+- Updated the Ukrainian OSD texts (thanks to Yarema Aka Knedlyk).
+- Fixed processing SVDRP client responses in case the caller doesn't want the actual
+  response strings (reported by Johann Friedrichs).
+- Fixed (not) saving the 'cam.data' file in case VDR stops early during startup due to
+  some error.
+- Fixed some warnings from g++ 7.2.0 regarding fixed buffer sizes in cMenuEditTimeItem::Set()
+  and cCountdown::Update() (reported by Jörg Wendel).
+- Fixed a possible discrepancy of the primary device number in the LSTD and PRIM
+  commands, by setting Setup.PrimaryDVB in cDevice::SetPrimaryDevice() (reported by
+  Jürgen Schneider).
+- Fixed setting the initial offset of the cursor in a list menu (reported by Matthias
+  Senzel).
+- The EIT filter no longer parses data from "other TS", to avoid problems with
+  broadcasters who transmit faulty EIT data.
+- Updated the Macedonian OSD texts (thanks to Dimitar Petrovski).
+- Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
+- Fixed sluggish setting of editing marks and a jumping progress display with very
+  short recordings (reported by Oliver Endriss).
+- Fixed updating the Schedule menu after editing a timer.
+- Fixed scaling bitmaps with very small factors (reported by Rolf Ahrenberg).
+- Added a missing initialization of osdState in cDisplayChannel::cDisplayChannel(eKeys
+  FirstKey).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Updated the Hungarian OSD texts (thanks to István Füley).
+- Updated the French OSD texts (thanks to Bernard Jaulin).
+- Fixed a high CPU load during replay with active progress display (reported by Matthias
+  Senzel).
+- Official release.
