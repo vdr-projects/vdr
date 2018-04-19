@@ -9347,3 +9347,8 @@ Video Disk Recorder Revision History
 - Fixed a high CPU load during replay with active progress display (reported by Matthias
   Senzel).
 - Official release.
+
+2018-04-19: Version 2.4.1
+
+- Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
+  by Johann Friedrichs).

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.37 2018/03/19 12:16:33 kls Exp $
+ * $Id: svdrp.c 4.38 2018/04/19 09:45:08 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2036,6 +2036,7 @@ void cSVDRPServer::CmdMODT(const char *Option)
         LOCK_TIMERS_WRITE;
         Timers->SetExplicitModify();
         if (cTimer *Timer = Timers->GetById(Id)) {
+           bool IsRecording = Timer->HasFlags(tfRecording);
            cTimer t = *Timer;
            if (strcasecmp(tail, "ON") == 0)
               t.SetFlags(tfActive);
@@ -2046,6 +2047,10 @@ void cSVDRPServer::CmdMODT(const char *Option)
               return;
               }
            *Timer = t;
+           if (IsRecording)
+              Timer->SetFlags(tfRecording);
+           else
+              Timer->ClrFlags(tfRecording);
            Timers->SetModified();
            isyslog("SVDRP %s < %s modified timer %s (%s)", Setup.SVDRPHostName, *clientName, *Timer->ToDescr(), Timer->HasFlags(tfActive) ? "active" : "inactive");
            Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
@@ -2478,12 +2483,18 @@ void cSVDRPServer::CmdUPDT(const char *Option)
      if (Timer->Parse(Option)) {
         LOCK_TIMERS_WRITE;
         if (cTimer *t = Timers->GetTimer(Timer)) {
+           bool IsRecording = t->HasFlags(tfRecording);
            t->Parse(Option);
            delete Timer;
            Timer = t;
+           if (IsRecording)
+              Timer->SetFlags(tfRecording);
+           else
+              Timer->ClrFlags(tfRecording);
            isyslog("SVDRP %s < %s updated timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
            }
         else {
+           Timer->ClrFlags(tfRecording);
            Timers->Add(Timer);
            isyslog("SVDRP %s < %s added timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
            }
