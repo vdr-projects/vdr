@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 3.1 2013/08/18 12:07:22 kls Exp $
+ * $Id: skins.c 4.1 2018/04/28 12:13:01 kls Exp $
  */
 
 #include "skins.h"
@@ -351,6 +351,14 @@ void cSkins::ProcessQueuedMessages(void)
   if (!cThread::IsMainThread()) {
      dsyslog("cSkins::ProcessQueuedMessages() called from background thread - ignored!");
      return;
+     }
+  // Check whether there is a cSkinDisplay object (if any) that implements SetMessage():
+  if (cSkinDisplay *sd = cSkinDisplay::Current()) {
+     if (!(dynamic_cast<cSkinDisplayChannel *>(sd) ||
+           dynamic_cast<cSkinDisplayMenu *>(sd) ||
+           dynamic_cast<cSkinDisplayReplay *>(sd) ||
+           dynamic_cast<cSkinDisplayMessage *>(sd)))
+        return;
      }
   cSkinQueuedMessage *msg = NULL;
   // Get the first waiting message:

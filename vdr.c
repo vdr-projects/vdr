@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.25 2018/04/10 13:24:43 kls Exp $
+ * $Id: vdr.c 4.26 2018/04/28 11:27:48 kls Exp $
  */
 
 #include <getopt.h>
@@ -1176,8 +1176,7 @@ int main(int argc, char *argv[])
         if (!Menu && !cOsd::IsOpen())
            Menu = CamControl();
         // Queued messages:
-        if (!Skins.IsOpen())
-           Skins.ProcessQueuedMessages();
+        Skins.ProcessQueuedMessages();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();
         eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());

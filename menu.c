@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.74 2018/04/14 10:24:41 kls Exp $
+ * $Id: menu.c 4.75 2018/04/28 12:09:45 kls Exp $
  */
 
 #include "menu.h"
@@ -1075,7 +1075,7 @@ static bool HandleRemoteModifications(cTimer *NewTimer, cTimer *OldTimer = NULL)
 {
   cString ErrorMessage;
   if (!HandleRemoteTimerModifications(NewTimer, OldTimer, &ErrorMessage)) {
-     Skins.Message(mtError, ErrorMessage);
+     Skins.QueueMessage(mtError, ErrorMessage);
      return false;
      }
   return true;

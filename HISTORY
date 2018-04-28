@@ -9348,7 +9348,14 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2018-04-19: Version 2.4.1
+2018-04-28: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
+- Fixed a possible invalid locking sequence in case a remote timer handling error message
+  is displayed on the OSD and the skin tries to lock the Recordings or DeletedRecordings
+  list in its Flush() function (for instance by calling cVideoDiskUsage::HasChanged()).
+  To do this, the call to Skins.Message() in menu.c's HandleRemoteModifications() has
+  been changed to Skins.QueueMessage(), and cSkins::ProcessQueuedMessages() is now called
+  unconditionally in the main loop, and checks whether the current cSkinDisplay object
+  (if any) implements SetMessage().
