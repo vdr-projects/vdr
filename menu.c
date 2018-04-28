@@ -1075,7 +1075,7 @@ static bool HandleRemoteModifications(cTimer *NewTimer, cTimer *OldTimer = NULL)
 {
   cString ErrorMessage;
   if (!HandleRemoteTimerModifications(NewTimer, OldTimer, &ErrorMessage)) {
-     Skins.Message(mtError, ErrorMessage);
+     Skins.QueueMessage(mtError, ErrorMessage);
      return false;
      }
   return true;

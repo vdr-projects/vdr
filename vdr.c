@@ -1176,8 +1176,7 @@ int main(int argc, char *argv[])
         if (!Menu && !cOsd::IsOpen())
            Menu = CamControl();
         // Queued messages:
-        if (!Skins.IsOpen())
-           Skins.ProcessQueuedMessages();
+        Skins.ProcessQueuedMessages();
         // User Input:
         cOsdObject *Interact = Menu ? Menu : cControl::Control();
         eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());

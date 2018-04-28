@@ -352,6 +352,14 @@ void cSkins::ProcessQueuedMessages(void)
      dsyslog("cSkins::ProcessQueuedMessages() called from background thread - ignored!");
      return;
      }
+  // Check whether there is a cSkinDisplay object (if any) that implements SetMessage():
+  if (cSkinDisplay *sd = cSkinDisplay::Current()) {
+     if (!(dynamic_cast<cSkinDisplayChannel *>(sd) ||
+           dynamic_cast<cSkinDisplayMenu *>(sd) ||
+           dynamic_cast<cSkinDisplayReplay *>(sd) ||
+           dynamic_cast<cSkinDisplayMessage *>(sd)))
+        return;
+     }
   cSkinQueuedMessage *msg = NULL;
   // Get the first waiting message:
   queueMessageMutex.Lock();
