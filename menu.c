@@ -4626,14 +4626,17 @@ cDisplayChannel::cDisplayChannel(int Number, bool Switched)
   cOsdProvider::OsdSizeChanged(osdState); // just to get the current state
   positioner = NULL;
   channel = NULL;
-  LOCK_CHANNELS_READ;
-  channel = Channels->GetByNumber(Number);
-  lastPresent = lastFollowing = NULL;
-  if (channel) {
-     DisplayChannel();
-     DisplayInfo();
+  {
+    LOCK_CHANNELS_READ;
+    channel = Channels->GetByNumber(Number);
+    lastPresent = lastFollowing = NULL;
+    if (channel) {
+       DisplayChannel();
+       DisplayInfo();
+       }
+  }
+  if (channel)
      displayChannel->Flush();
-     }
   lastTime.Set();
 }
 
@@ -4868,31 +4871,33 @@ eOSState cDisplayChannel::ProcessKey(eKeys Key)
             }
     };
   if (positioner || !timeout || lastTime.Elapsed() < (uint64_t)(Setup.ChannelInfoTime * 1000)) {
-     LOCK_CHANNELS_READ;
-     if (Key == kNone && !number && group < 0 && !NewChannel && channel && channel->Number() != cDevice::CurrentChannel()) {
-        // makes sure a channel switch through the SVDRP CHAN command is displayed
-        channel = Channels->GetByNumber(cDevice::CurrentChannel());
-        Refresh();
-        lastTime.Set();
-        }
-     DisplayInfo();
-     if (NewChannel) {
-        SetTrackDescriptions(NewChannel->Number()); // to make them immediately visible in the channel display
-        Channels->SwitchTo(NewChannel->Number());
-        SetTrackDescriptions(NewChannel->Number()); // switching the channel has cleared them
-        channel = NewChannel;
-        }
-     const cPositioner *Positioner = cDevice::ActualDevice()->Positioner();
-     bool PositionerMoving = Positioner && Positioner->IsMoving();
-     SetNeedsFastResponse(PositionerMoving);
-     if (!PositionerMoving) {
-        if (positioner)
-           lastTime.Set(); // to keep the channel display up a few seconds after the target position has been reached
-        Positioner = NULL;
-        }
-     if (Positioner || positioner) // making sure we call SetPositioner(NULL) if there is a switch from "with" to "without" positioner
-        displayChannel->SetPositioner(Positioner);
-     positioner = Positioner;
+     {
+       LOCK_CHANNELS_READ;
+       if (Key == kNone && !number && group < 0 && !NewChannel && channel && channel->Number() != cDevice::CurrentChannel()) {
+          // makes sure a channel switch through the SVDRP CHAN command is displayed
+          channel = Channels->GetByNumber(cDevice::CurrentChannel());
+          Refresh();
+          lastTime.Set();
+          }
+       DisplayInfo();
+       if (NewChannel) {
+          SetTrackDescriptions(NewChannel->Number()); // to make them immediately visible in the channel display
+          Channels->SwitchTo(NewChannel->Number());
+          SetTrackDescriptions(NewChannel->Number()); // switching the channel has cleared them
+          channel = NewChannel;
+          }
+       const cPositioner *Positioner = cDevice::ActualDevice()->Positioner();
+       bool PositionerMoving = Positioner && Positioner->IsMoving();
+       SetNeedsFastResponse(PositionerMoving);
+       if (!PositionerMoving) {
+          if (positioner)
+             lastTime.Set(); // to keep the channel display up a few seconds after the target position has been reached
+          Positioner = NULL;
+          }
+       if (Positioner || positioner) // making sure we call SetPositioner(NULL) if there is a switch from "with" to "without" positioner
+          displayChannel->SetPositioner(Positioner);
+       positioner = Positioner;
+     }
      displayChannel->Flush();
      return osContinue;
      }
