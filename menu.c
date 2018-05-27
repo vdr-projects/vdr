@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.76 2018/05/06 09:30:11 kls Exp $
+ * $Id: menu.c 4.77 2018/05/27 09:51:56 kls Exp $
  */
 
 #include "menu.h"
@@ -4654,8 +4654,10 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   positioner = NULL;
   channel = NULL;
-  LOCK_CHANNELS_READ;
-  channel = Channels->GetByNumber(cDevice::CurrentChannel());
+  {
+    LOCK_CHANNELS_READ;
+    channel = Channels->GetByNumber(cDevice::CurrentChannel());
+  }
   ProcessKey(FirstKey);
 }
 

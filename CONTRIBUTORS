@@ -283,6 +283,8 @@ Uwe Scheffler <linux_dvb@uni.de>
  for reporting a problem in handling the PrimaryLimit when requesting a device for
  live viewing
  for reporting a black screen while a "Recording started" message is displayed
+ for reporting a problem with the lock on the Channels list in cDisplayChannel still
+ being held when Flush() was called
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
