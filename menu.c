@@ -4654,8 +4654,10 @@ cDisplayChannel::cDisplayChannel(eKeys FirstKey)
   displayChannel = Skins.Current()->DisplayChannel(withInfo);
   positioner = NULL;
   channel = NULL;
-  LOCK_CHANNELS_READ;
-  channel = Channels->GetByNumber(cDevice::CurrentChannel());
+  {
+    LOCK_CHANNELS_READ;
+    channel = Channels->GetByNumber(cDevice::CurrentChannel());
+  }
   ProcessKey(FirstKey);
 }
 
