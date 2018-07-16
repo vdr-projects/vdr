@@ -1514,9 +1514,7 @@ int main(int argc, char *argv[])
               ShutdownHandler.countdown.Cancel();
            }
 
-        if ((Now - LastInteract) > ACTIVITYTIMEOUT && !cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
-           // Handle housekeeping tasks
-
+        if (!cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Shutdown:
            // Check whether VDR will be ready for shutdown in SHUTDOWNWAIT seconds:
            time_t Soon = Now + SHUTDOWNWAIT;
@@ -1535,13 +1533,15 @@ int main(int argc, char *argv[])
               // Do this again a bit later:
               ShutdownHandler.SetRetry(SHUTDOWNRETRY);
               }
-
+           // Handle housekeeping tasks
+           if ((Now - LastInteract) > ACTIVITYTIMEOUT) {
            // Disk housekeeping:
            RemoveDeletedRecordings();
            ListGarbageCollector.Purge();
            cSchedules::Cleanup();
            // Plugins housekeeping:
            PluginManager.Housekeeping();
+           }
            }
 
         ReportEpgBugFixStats();
