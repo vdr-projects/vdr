@@ -4704,6 +4704,8 @@ void cDisplayChannel::Refresh(void)
 const cChannel *cDisplayChannel::NextAvailableChannel(const cChannel *Channel, int Direction)
 {
   if (Direction) {
+     cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
+                           // and, if decrypted, this removes the now superflous PIDs from the CAM, too
      LOCK_CHANNELS_READ;
      while (Channel) {
            Channel = Direction > 0 ? Channels->Next(Channel) : Channels->Prev(Channel);

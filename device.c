@@ -787,6 +787,7 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
   if (LiveView) {
      isyslog("switching to channel %d %s (%s)", Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
+                           // and, if decrypted, this removes the now superflous PIDs from the CAM, too
      }
   for (int i = 3; i--;) {
       switch (SetChannel(Channel, LiveView)) {
@@ -809,6 +810,7 @@ bool cDevice::SwitchChannel(int Direction)
   Direction = sgn(Direction);
   if (Direction) {
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
+                           // and, if decrypted, this removes the now superflous PIDs from the CAM, too
      int n = CurrentChannel() + Direction;
      int first = n;
      LOCK_CHANNELS_READ;
