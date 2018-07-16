@@ -3566,6 +3566,7 @@ Onur Sentürk <onur@sentek.org>
 
 Helmut Binder <cco@aon.at>
  for improving calculating signal strength and quality
+ for fixing switching through encrypted channels with the Up/Down keys
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

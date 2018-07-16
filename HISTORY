@@ -9363,3 +9363,5 @@ Video Disk Recorder Revision History
   when Flush() was called (reported by Matthias Senzel and Uwe Scheffler).
 - Fixed shutdown after user inactivity in case a plugin is keeping the OSD open
   (reported by Ulrich Eckhardt).
+- Fixed switching through encrypted channels with the Up/Down keys (thanks to Helmut
+  Binder).

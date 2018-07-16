@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.77 2018/05/27 09:51:56 kls Exp $
+ * $Id: menu.c 4.78 2018/07/16 09:29:57 kls Exp $
  */
 
 #include "menu.h"
@@ -4704,6 +4704,8 @@ void cDisplayChannel::Refresh(void)
 const cChannel *cDisplayChannel::NextAvailableChannel(const cChannel *Channel, int Direction)
 {
   if (Direction) {
+     cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
+                           // and, if decrypted, this removes the now superflous PIDs from the CAM, too
      LOCK_CHANNELS_READ;
      while (Channel) {
            Channel = Direction > 0 ? Channels->Next(Channel) : Channels->Prev(Channel);
