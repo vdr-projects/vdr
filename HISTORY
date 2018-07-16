@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2018-05-27: Version 2.4.1
+2018-07-16: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9361,3 +9361,5 @@ Video Disk Recorder Revision History
   (if any) implements SetMessage().
 - Fixed locking the Channels list in cDisplayChannel, where the lock was still held
   when Flush() was called (reported by Matthias Senzel and Uwe Scheffler).
+- Fixed shutdown after user inactivity in case a plugin is keeping the OSD open
+  (reported by Ulrich Eckhardt).

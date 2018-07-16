@@ -3566,3 +3566,7 @@ Onur Sentürk <onur@sentek.org>
 
 Helmut Binder <cco@aon.at>
  for improving calculating signal strength and quality
+
+Ulrich Eckhardt <uli@uli-eckhardt.de>
+ for reporting a problem with shutdown after user inactivity in case a plugin is
+ keeping the OSD open
