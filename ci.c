@@ -1213,6 +1213,7 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
         }
      else {
         dsyslog("CAM %d: doesn't reply to QUERY - only a single channel can be decrypted", CamSlot()->SlotNumber());
+        CamSlot()->MtdActivate(false);
         state = 4; // normal operation
         }
      }
