@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2018-07-16: Version 2.4.1
+2018-09-23: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9365,3 +9365,5 @@ Video Disk Recorder Revision History
   (reported by Ulrich Eckhardt).
 - Fixed switching through encrypted channels with the Up/Down keys (thanks to Helmut
   Binder).
+- Now deactivating MTD support if a non MCD capable CAM is inserted after removing
+  a previously used CAM that is MCD capable (thanks to Helmut Binder).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.21 2018/03/19 16:37:03 kls Exp $
+ * $Id: ci.c 4.22 2018/09/23 10:17:20 kls Exp $
  */
 
 #include "ci.h"
@@ -1213,6 +1213,7 @@ void cCiConditionalAccessSupport::Process(int Length, const uint8_t *Data)
         }
      else {
         dsyslog("CAM %d: doesn't reply to QUERY - only a single channel can be decrypted", CamSlot()->SlotNumber());
+        CamSlot()->MtdActivate(false);
         state = 4; // normal operation
         }
      }

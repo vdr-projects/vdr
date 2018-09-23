@@ -3567,6 +3567,8 @@ Onur Sentürk <onur@sentek.org>
 Helmut Binder <cco@aon.at>
  for improving calculating signal strength and quality
  for fixing switching through encrypted channels with the Up/Down keys
+ for deactivating MTD support if a non MCD capable CAM is inserted after removing
+ a previously used CAM that is MCD capable
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
