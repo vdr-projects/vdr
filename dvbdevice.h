@@ -67,8 +67,6 @@ enum {
 
 // --- End of definitions for older DVB API versions -------------------------
 
-#define MAXDELIVERYSYSTEMS 8
-
 #define DEV_VIDEO         "/dev/video"
 #define DEV_DVB_BASE      "/dev/dvb"
 #define DEV_DVB_ADAPTER   "adapter"
@@ -162,12 +160,12 @@ public:
 
 class cDvbTuner;
 
+cString DvbName(const char *Name, int Adapter, int Frontend);
+int DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError = false);
+
 /// The cDvbDevice implements a DVB device which can be accessed through the Linux DVB driver API.
 
 class cDvbDevice : public cDevice {
-protected:
-  static cString DvbName(const char *Name, int Adapter, int Frontend);
-  static int DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportError = false);
 private:
   static bool Exists(int Adapter, int Frontend);
          ///< Checks whether the given adapter/frontend exists.
@@ -182,16 +180,11 @@ public:
 protected:
   int adapter, frontend;
 private:
-  dvb_frontend_info frontendInfo;
-  int deliverySystems[MAXDELIVERYSYSTEMS];
-  int numDeliverySystems;
-  int numModulations;
   int fd_dvr, fd_ca;
   bool checkTsBuffer;
   static cMutex bondMutex;
   cDvbDevice *bondedDevice;
   mutable bool needsDetachBondedReceivers;
-  bool QueryDeliverySystems(int fd_frontend);
 public:
   cDvbDevice(int Adapter, int Frontend);
   virtual ~cDvbDevice();
