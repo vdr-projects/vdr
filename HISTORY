@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2018-09-23: Version 2.4.1
+2018-10-29: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9367,3 +9367,7 @@ Video Disk Recorder Revision History
   Binder).
 - Now deactivating MTD support if a non MCD capable CAM is inserted after removing
   a previously used CAM that is MCD capable (thanks to Helmut Binder).
+- Added support for DVB devices with more than one frontend that all use the same
+  dvr and demux. Note that in order for this to work, you must not set symbolic
+  links like "demux1 -> demux0" and "dvr1 -> dvr0", as is mentioned in some user
+  manuals of multi frontend DVB cards.
