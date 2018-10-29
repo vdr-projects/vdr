@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.17 2018/10/29 10:40:34 kls Exp $
+ * $Id: dvbdevice.c 4.18 2018/10/29 12:22:11 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -295,6 +295,48 @@ bool cDvbTransponderParameters::Parse(const char *s)
 
 // --- cDvbFrontend ----------------------------------------------------------
 
+const char *DeliverySystemNames[] = {
+  "???",
+  "DVB-C",
+  "DVB-C",
+  "DVB-T",
+  "DSS",
+  "DVB-S",
+  "DVB-S2",
+  "DVB-H",
+  "ISDBT",
+  "ISDBS",
+  "ISDBC",
+  "ATSC",
+  "ATSCMH",
+  "DTMB",
+  "CMMB",
+  "DAB",
+  "DVB-T2",
+  "TURBO",
+  "DVB-C",
+  "DVB-C2",
+  NULL
+  };
+
+static const int DeliverySystemNamesMax = sizeof(DeliverySystemNames) / sizeof(DeliverySystemNames[0]) - 2; // -1 to get the maximum allowed index & -1 for the NULL => -2
+
+static const char *GetDeliverySystemName(int Index)
+{
+  if (Index > DeliverySystemNamesMax)
+     Index = 0;
+  return DeliverySystemNames[Index];
+};
+
+#define MAXFRONTENDCMDS 16
+#define SETCMD(c, d) { Props[CmdSeq.num].cmd = (c);\
+                       Props[CmdSeq.num].u.data = (d);\
+                       if (CmdSeq.num++ > MAXFRONTENDCMDS) {\
+                          esyslog("ERROR: too many tuning commands on frontend %d/%d", adapter, frontend);\
+                          return false;\
+                          }\
+                     }
+
 class cDvbFrontend {
 private:
   int adapter, frontend;
@@ -377,9 +419,108 @@ bool cDvbFrontend::ProvidesModulation(int System, int StreamId, int Modulation) 
   return true;
 }
 
+bool cDvbFrontend::QueryDeliverySystems(void)
+{
+  deliverySystems.Clear();
+  numModulations = 0;
+  if (ioctl(fd_frontend, FE_GET_INFO, &frontendInfo) < 0) {
+     LOG_ERROR;
+     return false;
+     }
+  dtv_property Props[1];
+  dtv_properties CmdSeq;
+  // Determine the version of the running DVB API:
+  if (!DvbApiVersion) {
+     memset(&Props, 0, sizeof(Props));
+     memset(&CmdSeq, 0, sizeof(CmdSeq));
+     CmdSeq.props = Props;
+     SETCMD(DTV_API_VERSION, 0);
+     if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
+        LOG_ERROR;
+        return false;
+        }
+     DvbApiVersion = Props[0].u.data;
+     isyslog("DVB API version is 0x%04X (VDR was built with 0x%04X)", DvbApiVersion, DVBAPIVERSION);
+     }
+  // Determine the types of delivery systems this device provides:
+  bool LegacyMode = true;
+  if (DvbApiVersion >= 0x0505) {
+     memset(&Props, 0, sizeof(Props));
+     memset(&CmdSeq, 0, sizeof(CmdSeq));
+     CmdSeq.props = Props;
+     SETCMD(DTV_ENUM_DELSYS, 0);
+     int Result = ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq);
+     if (Result == 0) {
+        for (uint i = 0; i < Props[0].u.buffer.len; i++) {
+            // activate this line to simulate a multi-frontend device if you only have a single-frontend device with DVB-S and DVB-S2:
+            //if (frontend == 0 && Props[0].u.buffer.data[i] != SYS_DVBS || frontend == 1 && Props[0].u.buffer.data[i] != SYS_DVBS2)
+            deliverySystems.Append(Props[0].u.buffer.data[i]);
+            }
+        LegacyMode = false;
+        }
+     else {
+        esyslog("ERROR: can't query delivery systems on frontend %d/%d - falling back to legacy mode", adapter, frontend);
+        }
+     }
+  if (LegacyMode) {
+     // Legacy mode (DVB-API < 5.5):
+     switch (frontendInfo.type) {
+       case FE_QPSK: deliverySystems.Append(SYS_DVBS);
+                     if (frontendInfo.caps & FE_CAN_2G_MODULATION)
+                        deliverySystems.Append(SYS_DVBS2);
+                     break;
+       case FE_OFDM: deliverySystems.Append(SYS_DVBT);
+                     if (frontendInfo.caps & FE_CAN_2G_MODULATION)
+                        deliverySystems.Append(SYS_DVBT2);
+                     break;
+       case FE_QAM:  deliverySystems.Append(SYS_DVBC_ANNEX_AC); break;
+       case FE_ATSC: deliverySystems.Append(SYS_ATSC); break;
+       default: esyslog("ERROR: unknown frontend type %d on frontend %d/%d", frontendInfo.type, adapter, frontend);
+       }
+     }
+  if (deliverySystems.Size() > 0) {
+     cString ds("");
+     for (int i = 0; i < deliverySystems.Size(); i++)
+         ds = cString::sprintf("%s%s%s", *ds, i ? "," : "", GetDeliverySystemName(deliverySystems[i]));
+     cString ms("");
+     if (frontendInfo.caps & FE_CAN_QPSK)      { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QPSK, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_16)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_16, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_32)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_32, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_64)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_64, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_128)   { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_128, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_QAM_256)   { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_256, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_8VSB)      { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(VSB_8, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_16VSB)     { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(VSB_16, ModulationValues)); }
+     if (frontendInfo.caps & FE_CAN_TURBO_FEC) { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", "TURBO_FEC"); }
+     if (!**ms)
+        ms = "unknown modulations";
+     isyslog("frontend %d/%d provides %s with %s (\"%s\")", adapter, frontend, *ds, *ms, frontendInfo.name);
+     return true;
+     }
+  else
+     esyslog("ERROR: frontend %d/%d doesn't provide any delivery systems", adapter, frontend);
+  return false;
+}
+
 // --- cDvbTuner -------------------------------------------------------------
 
 #define TUNER_POLL_TIMEOUT  10 // ms
+
+static int GetRequiredDeliverySystem(const cChannel *Channel, const cDvbTransponderParameters *Dtp)
+{
+  int ds = SYS_UNDEFINED;
+  if (Channel->IsAtsc())
+     ds = SYS_ATSC;
+  else if (Channel->IsCable())
+     ds = SYS_DVBC_ANNEX_AC;
+  else if (Channel->IsSat())
+     ds = Dtp->System() == DVB_SYSTEM_1 ? SYS_DVBS : SYS_DVBS2;
+  else if (Channel->IsTerr())
+     ds = Dtp->System() == DVB_SYSTEM_1 ? SYS_DVBT : SYS_DVBT2;
+  else
+     esyslog("ERROR: can't determine frontend type for channel %d (%s)", Channel->Number(), Channel->Name());
+  return ds;
+}
 
 class cDvbTuner : public cThread {
 private:
@@ -534,8 +675,6 @@ bool cDvbTuner::ProvidesModulation(int System, int StreamId, int Modulation) con
       }
   return false;
 }
-
-static int GetRequiredDeliverySystem(const cChannel *Channel, const cDvbTransponderParameters *Dtp);//TODO
 
 bool cDvbTuner::ProvidesFrontend(const cChannel *Channel, bool Activate) const
 {
@@ -726,15 +865,6 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
 //#define DEBUG_SIGNALSTATS
 //#define DEBUG_SIGNALSTRENGTH
 //#define DEBUG_SIGNALQUALITY
-
-#define MAXFRONTENDCMDS 16
-#define SETCMD(c, d) { Props[CmdSeq.num].cmd = (c);\
-                       Props[CmdSeq.num].u.data = (d);\
-                       if (CmdSeq.num++ > MAXFRONTENDCMDS) {\
-                          esyslog("ERROR: too many tuning commands on frontend %d/%d", adapter, frontend);\
-                          return false;\
-                          }\
-                     }
 
 bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
@@ -1402,22 +1532,6 @@ void cDvbTuner::ResetToneAndVoltage(void)
   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF));
 }
 
-static int GetRequiredDeliverySystem(const cChannel *Channel, const cDvbTransponderParameters *Dtp)
-{
-  int ds = SYS_UNDEFINED;
-  if (Channel->IsAtsc())
-     ds = SYS_ATSC;
-  else if (Channel->IsCable())
-     ds = SYS_DVBC_ANNEX_AC;
-  else if (Channel->IsSat())
-     ds = Dtp->System() == DVB_SYSTEM_1 ? SYS_DVBS : SYS_DVBS2;
-  else if (Channel->IsTerr())
-     ds = Dtp->System() == DVB_SYSTEM_1 ? SYS_DVBT : SYS_DVBT2;
-  else
-     esyslog("ERROR: can't determine frontend type for channel %d (%s)", Channel->Number(), Channel->Name());
-  return ds;
-}
-
 bool cDvbTuner::SetFrontend(void)
 {
   dtv_property Props[MAXFRONTENDCMDS];
@@ -1703,39 +1817,6 @@ bool cDvbDevice::useDvbDevices = true;
 int cDvbDevice::setTransferModeForDolbyDigital = 1;
 cMutex cDvbDevice::bondMutex;
 
-const char *DeliverySystemNames[] = {
-  "???",
-  "DVB-C",
-  "DVB-C",
-  "DVB-T",
-  "DSS",
-  "DVB-S",
-  "DVB-S2",
-  "DVB-H",
-  "ISDBT",
-  "ISDBS",
-  "ISDBC",
-  "ATSC",
-  "ATSCMH",
-  "DTMB",
-  "CMMB",
-  "DAB",
-  "DVB-T2",
-  "TURBO",
-  "DVB-C",
-  "DVB-C2",
-  NULL
-  };
-
-static const int DeliverySystemNamesMax = sizeof(DeliverySystemNames) / sizeof(DeliverySystemNames[0]) - 2; // -1 to get the maximum allowed index & -1 for the NULL => -2
-
-static const char *GetDeliverySystemName(int Index)
-{
-  if (Index > DeliverySystemNamesMax)
-     Index = 0;
-  return DeliverySystemNames[Index];
-};
-
 cDvbDevice::cDvbDevice(int Adapter, int Frontend)
 {
   adapter = Adapter;
@@ -1889,90 +1970,6 @@ bool cDvbDevice::Initialize(void)
   else
      isyslog("no DVB device found");
   return Found > 0;
-}
-
-//TODO move this up to cDvbFrontend later (leaving it here for now to keep the diff small)
-bool cDvbFrontend::QueryDeliverySystems(void)
-{
-  deliverySystems.Clear();
-  numModulations = 0;
-  if (ioctl(fd_frontend, FE_GET_INFO, &frontendInfo) < 0) {
-     LOG_ERROR;
-     return false;
-     }
-  dtv_property Props[1];
-  dtv_properties CmdSeq;
-  // Determine the version of the running DVB API:
-  if (!DvbApiVersion) {
-     memset(&Props, 0, sizeof(Props));
-     memset(&CmdSeq, 0, sizeof(CmdSeq));
-     CmdSeq.props = Props;
-     SETCMD(DTV_API_VERSION, 0);
-     if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
-        LOG_ERROR;
-        return false;
-        }
-     DvbApiVersion = Props[0].u.data;
-     isyslog("DVB API version is 0x%04X (VDR was built with 0x%04X)", DvbApiVersion, DVBAPIVERSION);
-     }
-  // Determine the types of delivery systems this device provides:
-  bool LegacyMode = true;
-  if (DvbApiVersion >= 0x0505) {
-     memset(&Props, 0, sizeof(Props));
-     memset(&CmdSeq, 0, sizeof(CmdSeq));
-     CmdSeq.props = Props;
-     SETCMD(DTV_ENUM_DELSYS, 0);
-     int Result = ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq);
-     if (Result == 0) {
-        for (uint i = 0; i < Props[0].u.buffer.len; i++) {
-            // activate this line to simulate a multi-frontend device if you only have a single-frontend device with DVB-S and DVB-S2:
-            //if (frontend == 0 && Props[0].u.buffer.data[i] != SYS_DVBS || frontend == 1 && Props[0].u.buffer.data[i] != SYS_DVBS2)
-            deliverySystems.Append(Props[0].u.buffer.data[i]);
-            }
-        LegacyMode = false;
-        }
-     else {
-        esyslog("ERROR: can't query delivery systems on frontend %d/%d - falling back to legacy mode", adapter, frontend);
-        }
-     }
-  if (LegacyMode) {
-     // Legacy mode (DVB-API < 5.5):
-     switch (frontendInfo.type) {
-       case FE_QPSK: deliverySystems.Append(SYS_DVBS);
-                     if (frontendInfo.caps & FE_CAN_2G_MODULATION)
-                        deliverySystems.Append(SYS_DVBS2);
-                     break;
-       case FE_OFDM: deliverySystems.Append(SYS_DVBT);
-                     if (frontendInfo.caps & FE_CAN_2G_MODULATION)
-                        deliverySystems.Append(SYS_DVBT2);
-                     break;
-       case FE_QAM:  deliverySystems.Append(SYS_DVBC_ANNEX_AC); break;
-       case FE_ATSC: deliverySystems.Append(SYS_ATSC); break;
-       default: esyslog("ERROR: unknown frontend type %d on frontend %d/%d", frontendInfo.type, adapter, frontend);
-       }
-     }
-  if (deliverySystems.Size() > 0) {
-     cString ds("");
-     for (int i = 0; i < deliverySystems.Size(); i++)
-         ds = cString::sprintf("%s%s%s", *ds, i ? "," : "", GetDeliverySystemName(deliverySystems[i]));
-     cString ms("");
-     if (frontendInfo.caps & FE_CAN_QPSK)      { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QPSK, ModulationValues)); }
-     if (frontendInfo.caps & FE_CAN_QAM_16)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_16, ModulationValues)); }
-     if (frontendInfo.caps & FE_CAN_QAM_32)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_32, ModulationValues)); }
-     if (frontendInfo.caps & FE_CAN_QAM_64)    { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_64, ModulationValues)); }
-     if (frontendInfo.caps & FE_CAN_QAM_128)   { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_128, ModulationValues)); }
-     if (frontendInfo.caps & FE_CAN_QAM_256)   { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(QAM_256, ModulationValues)); }
-     if (frontendInfo.caps & FE_CAN_8VSB)      { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(VSB_8, ModulationValues)); }
-     if (frontendInfo.caps & FE_CAN_16VSB)     { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", MapToUserString(VSB_16, ModulationValues)); }
-     if (frontendInfo.caps & FE_CAN_TURBO_FEC) { numModulations++; ms = cString::sprintf("%s%s%s", *ms, **ms ? "," : "", "TURBO_FEC"); }
-     if (!**ms)
-        ms = "unknown modulations";
-     isyslog("frontend %d/%d provides %s with %s (\"%s\")", adapter, frontend, *ds, *ms, frontendInfo.name);
-     return true;
-     }
-  else
-     esyslog("ERROR: frontend %d/%d doesn't provide any delivery systems", adapter, frontend);
-  return false;
 }
 
 bool cDvbDevice::BondDevices(const char *Bondings)
