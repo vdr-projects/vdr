@@ -3573,3 +3573,6 @@ Helmut Binder <cco@aon.at>
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
  keeping the OSD open
+
+Stian B. Barmen <stian@barmen.nu>
+ for reporting missing EPG data on channels from Canal Digital Norway
