@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.18 2018/10/29 12:22:11 kls Exp $
+ * $Id: dvbdevice.c 4.19 2019/03/10 12:03:20 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -571,6 +571,7 @@ public:
   bool ProvidesDeliverySystem(int DeliverySystem) const;
   bool ProvidesModulation(int System, int StreamId, int Modulation) const;
   bool ProvidesFrontend(const cChannel *Channel, bool Activate = false) const;
+  int Frontend(void) const { return frontend; }
   int FrontendType(void) const { return frontendType; }
   const char *FrontendName(void) { return dvbFrontend->FrontendName(); }
   int NumProvidedSystems(void) const { return numDeliverySystems + numModulations; }
@@ -1867,6 +1868,11 @@ int DvbOpen(const char *Name, int Adapter, int Frontend, int Mode, bool ReportEr
   if (fd < 0 && ReportError)
      LOG_ERROR_STR(*FileName);
   return fd;
+}
+
+int cDvbDevice::Frontend(void) const
+{
+  return dvbTuner ? dvbTuner->Frontend() : frontend;
 }
 
 bool cDvbDevice::Exists(int Adapter, int Frontend)

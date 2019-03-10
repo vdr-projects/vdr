@@ -9373,3 +9373,4 @@ Video Disk Recorder Revision History
   manuals of multi frontend DVB cards.
 - Reverted the change "The EIT filter no longer parses data from "other TS"...". It led to
   missing EPG data on channels from Canal Digital Norway (reported by Stian B. Barmen).
+- Fixed accessing the actual frontend on multi frontend devices (thanks to Helmut Binder).

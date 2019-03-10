@@ -3569,6 +3569,7 @@ Helmut Binder <cco@aon.at>
  for fixing switching through encrypted channels with the Up/Down keys
  for deactivating MTD support if a non MCD capable CAM is inserted after removing
  a previously used CAM that is MCD capable
+ for fixing accessing the actual frontend on multi frontend devices
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
