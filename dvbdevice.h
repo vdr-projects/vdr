@@ -189,7 +189,7 @@ public:
   cDvbDevice(int Adapter, int Frontend);
   virtual ~cDvbDevice();
   int Adapter(void) const { return adapter; }
-  int Frontend(void) const { return frontend; }
+  int Frontend(void) const;
   virtual cString DeviceType(void) const;
   virtual cString DeviceName(void) const;
   static bool BondDevices(const char *Bondings);
