@@ -9375,3 +9375,4 @@ Video Disk Recorder Revision History
   missing EPG data on channels from Canal Digital Norway (reported by Stian B. Barmen).
 - Fixed accessing the actual frontend on multi frontend devices (thanks to Helmut Binder).
 - Fixed opening the UDP port in peerdemo (thanks to Robert Hannebauer).
+- Fixed handling PATs that contain no PMTs.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 4.3 2016/12/23 14:02:07 kls Exp $
+ * $Id: pat.c 4.4 2019/03/11 13:20:27 kls Exp $
  */
 
 #include "pat.h"
@@ -372,7 +372,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                }
            if (numPmtEntries > 0 && pmtIndex < 0)
               pmtIndex = 0;
-           Add(GetPmtPid(pmtIndex), SI::TableIdPMT);
+           if (pmtIndex >= 0)
+              Add(GetPmtPid(pmtIndex), SI::TableIdPMT);
            patVersion = pat.getVersionNumber();
            timer.Set(PMT_SCAN_TIMEOUT);
            }
