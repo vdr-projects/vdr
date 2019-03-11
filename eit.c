@@ -388,8 +388,7 @@ time_t cEitFilter::disableUntil = 0;
 
 cEitFilter::cEitFilter(void)
 {
-//Set(0x12, 0x40, 0xC0);  // event info now&next actual/other TS (0x4E/0x4F), future actual/other TS (0x5X/0x6X) // TODO: remove later
-  Set(0x12, 0x40, 0xE0);  // event info now&next actual/other TS (0x4E/0x4F), future actual TS (0x5X)
+  Set(0x12, 0x40, 0xC0);  // event info now&next actual/other TS (0x4E/0x4F), future actual/other TS (0x5X/0x6X)
   Set(0x14, 0x70);        // TDT
 }
 
@@ -416,8 +415,7 @@ void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      }
   switch (Pid) {
     case 0x12: {
-       //if (Tid >= 0x4E && Tid <= 0x6F) // TODO: remove later
-         if (Tid == 0x4E || Tid >= 0x50 && Tid <= 0x5F)
+         if (Tid >= 0x4E && Tid <= 0x6F)
             cEIT EIT(sectionSyncerHash, Source(), Tid, Data);
          }
          break;
