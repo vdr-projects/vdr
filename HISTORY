@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2018-11-15: Version 2.4.1
+2019-03-11: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9374,3 +9374,4 @@ Video Disk Recorder Revision History
 - Reverted the change "The EIT filter no longer parses data from "other TS"...". It led to
   missing EPG data on channels from Canal Digital Norway (reported by Stian B. Barmen).
 - Fixed accessing the actual frontend on multi frontend devices (thanks to Helmut Binder).
+- Fixed opening the UDP port in peerdemo (thanks to Robert Hannebauer).

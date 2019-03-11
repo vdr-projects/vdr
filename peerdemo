@@ -37,7 +37,7 @@ $TcpPort = $Port;
 $UdpPort = $DefaultSvdrpPort;
 
 $TcpSocket = new IO::Socket::INET(Listen => 5, LocalPort => $TcpPort, Proto => "tcp", ReusePort => 1) || die "$!";
-$UdpSocket = new IO::Socket::INET(             LocalPort => $UdpPort, Proto => "udp", ReusePort => 1) || die "$!";
+$UdpSocket = new IO::Socket::INET(             LocalPort => $UdpPort, Proto => "udp", ReuseAddr => 1) || die "$!";
 $SvdrpSelect = new IO::Select($TcpSocket);
 setsockopt($UdpSocket, SOL_SOCKET, SO_RCVTIMEO, pack('L!L!', 0, 1000)); # 1ms timeout on UDP socket
 
