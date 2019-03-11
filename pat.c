@@ -372,7 +372,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                }
            if (numPmtEntries > 0 && pmtIndex < 0)
               pmtIndex = 0;
-           Add(GetPmtPid(pmtIndex), SI::TableIdPMT);
+           if (pmtIndex >= 0)
+              Add(GetPmtPid(pmtIndex), SI::TableIdPMT);
            patVersion = pat.getVersionNumber();
            timer.Set(PMT_SCAN_TIMEOUT);
            }
