@@ -3571,6 +3571,7 @@ Helmut Binder <cco@aon.at>
  for deactivating MTD support if a non MCD capable CAM is inserted after removing
  a previously used CAM that is MCD capable
  for fixing accessing the actual frontend on multi frontend devices
+ for fixing processing the last entry in the scan list of the EIT scanner
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

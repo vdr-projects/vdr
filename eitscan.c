@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 4.2 2015/09/10 11:05:03 kls Exp $
+ * $Id: eitscan.c 4.3 2019/03/12 11:46:05 kls Exp $
  */
 
 #include "eitscan.h"
@@ -177,7 +177,7 @@ void cEITScanner::Process(void)
                       }
                   }
                }
-           if (!scanList->Count() || !AnyDeviceSwitched) {
+           if (!AnyDeviceSwitched) {
               delete scanList;
               scanList = NULL;
               if (lastActivity == 0) // this was a triggered scan
