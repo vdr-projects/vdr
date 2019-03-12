@@ -9379,3 +9379,4 @@ Video Disk Recorder Revision History
 - Fixed processing the last entry in the scan list of the EIT scanner (thanks to
   Helmut Binder).
 - Fixed processing transponder data in the NIT (thanks to Helmut Binder).
+- Fixed triggering the SDT filter when parsing the NIT (thanks to Helmut Binder).

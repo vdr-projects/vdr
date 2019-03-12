@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.6 2019/03/12 13:01:33 kls Exp $
+ * $Id: nit.c 4.7 2019/03/12 14:00:52 kls Exp $
  */
 
 #include "nit.h"
@@ -153,8 +153,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
-                 if (ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), Transponder()))
-                    sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::S2SatelliteDeliverySystemDescriptorTag: {
@@ -218,8 +216,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
-                 if (ISTRANSPONDER(Frequency / 1000, Transponder()))
-                    sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::TerrestrialDeliverySystemDescriptorTag: {
@@ -286,8 +282,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            }
                        }
                     }
-                 if (ISTRANSPONDER(Frequency / 1000000, Transponder()))
-                    sdtFilter->Trigger(Source);
                  }
                  break;
             case SI::ExtensionDescriptorTag: {
@@ -367,5 +361,9 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
           delete d;
           }
       }
+  if (nit.getSectionNumber() == nit.getLastSectionNumber()) {
+     dbgnit("    trigger sdtFilter for current tp %d\n", Transponder());
+     sdtFilter->Trigger(Source());
+     }
   StateKey.Remove(ChannelsModified);
 }
