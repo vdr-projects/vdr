@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.27 2018/07/16 08:52:40 kls Exp $
+ * $Id: vdr.c 4.28 2019/03/12 10:01:16 kls Exp $
  */
 
 #include <getopt.h>
@@ -1514,7 +1514,7 @@ int main(int argc, char *argv[])
               ShutdownHandler.countdown.Cancel();
            }
 
-        if (!cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
+        if (!cControl::Control() && !cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Shutdown:
            // Check whether VDR will be ready for shutdown in SHUTDOWNWAIT seconds:
            time_t Soon = Now + SHUTDOWNWAIT;
