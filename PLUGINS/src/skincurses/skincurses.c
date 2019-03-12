@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 4.3 2018/04/10 13:01:00 kls Exp $
+ * $Id: skincurses.c 4.4 2019/03/12 12:24:34 kls Exp $
  */
 
 #include <ncurses.h>
@@ -12,7 +12,7 @@
 #include <vdr/skins.h>
 #include <vdr/videodir.h>
 
-static const char *VERSION        = "2.4.0";
+static const char *VERSION        = "2.4.1";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -127,8 +127,12 @@ void cCursesOsd::SaveRegion(int x1, int y1, int x2, int y2)
 
 void cCursesOsd::RestoreRegion(void)
 {
+  int begy, begx;
+  int maxy, maxx;
+  getmaxyx(savedRegion, maxy,maxx);
+  getbegyx(savedRegion, begy,begx);
   if (savedRegion) {
-     copywin(savedRegion, window, 0, 0, savedRegion->_begy, savedRegion->_begx, savedRegion->_maxy - savedRegion->_begy, savedRegion->_maxx - savedRegion->_begx, false);
+     copywin(savedRegion, window, 0, 0, begy, begx, maxy - begy, maxx - begx, false);
      delwin(savedRegion);
      savedRegion = NULL;
      }
@@ -828,9 +832,13 @@ bool cPluginSkinCurses::Initialize(void)
 {
   // Initialize any background activities the plugin shall perform.
   WINDOW *w = initscr();
+  int begy, begx;
+  int maxy, maxx;
+  getmaxyx(w, maxy,maxx);
+  getbegyx(w, begy,begx);
   if (w) {
-     ScOsdWidth  = w->_maxx - w->_begx + 1;
-     ScOsdHeight = w->_maxy - w->_begy + 1;
+     ScOsdWidth  = maxx - begx + 1;
+     ScOsdHeight = maxy - begy + 1;
      return true;
      }
   return false;
