@@ -177,7 +177,7 @@ void cEITScanner::Process(void)
                       }
                   }
                }
-           if (!scanList->Count() || !AnyDeviceSwitched) {
+           if (!AnyDeviceSwitched) {
               delete scanList;
               scanList = NULL;
               if (lastActivity == 0) // this was a triggered scan
