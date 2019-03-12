@@ -9378,3 +9378,4 @@ Video Disk Recorder Revision History
 - Fixed handling PATs that contain no PMTs.
 - Fixed processing the last entry in the scan list of the EIT scanner (thanks to
   Helmut Binder).
+- Fixed processing transponder data in the NIT (thanks to Helmut Binder).

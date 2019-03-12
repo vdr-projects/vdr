@@ -3572,6 +3572,7 @@ Helmut Binder <cco@aon.at>
  a previously used CAM that is MCD capable
  for fixing accessing the actual frontend on multi frontend devices
  for fixing processing the last entry in the scan list of the EIT scanner
+ for fixing processing transponder data in the NIT
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.5 2018/03/18 10:52:21 kls Exp $
+ * $Id: nit.c 4.6 2019/03/12 13:01:33 kls Exp $
  */
 
 #include "nit.h"
@@ -125,7 +125,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            dtp.SetStreamId(dtpc.StreamId());
                            //
                            int transponder = Channel->Transponder();
-                           found = true;
                            if (!ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), transponder)) {
                               for (int n = 0; n < NumFrequencies; n++) {
                                   if (ISTRANSPONDER(cChannel::Transponder(Frequencies[n], dtp.Polarization()), transponder)) {
@@ -134,7 +133,10 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                      }
                                   }
                               }
-                           if (ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), Transponder())) // only modify channels if we're actually receiving this transponder
+                           if (!ISTRANSPONDER(cChannel::Transponder(Frequency, dtp.Polarization()), transponder))
+                              continue; // a channel with obsolete/wrong/other(?) transponder
+                           found = true;
+                           if (ISTRANSPONDER(transponder, Transponder())) // only modify channels if we're actually receiving this transponder
                               ChannelsModified |= Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('S'));
                            else if (Channel->Srate() != SymbolRate || strcmp(Channel->Parameters(), dtp.ToString('S')))
                               forceTransponderUpdate = true; // get us receiving this transponder
@@ -188,7 +190,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                     for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
                         if (!Channel->GroupSep() && Channel->Source() == Source && Channel->Nid() == ts.getOriginalNetworkId() && Channel->Tid() == ts.getTransportStreamId()) {
                            int transponder = Channel->Transponder();
-                           found = true;
                            if (!ISTRANSPONDER(Frequency / 1000, transponder)) {
                               for (int n = 0; n < NumFrequencies; n++) {
                                   if (ISTRANSPONDER(Frequencies[n] / 1000, transponder)) {
@@ -197,7 +198,10 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                      }
                                   }
                               }
-                           if (ISTRANSPONDER(Frequency / 1000, Transponder())) // only modify channels if we're actually receiving this transponder
+                           if (!ISTRANSPONDER(Frequency / 1000000, transponder))
+                              continue; // a channel with obsolete/wrong/other(?) transponder
+                           found = true;
+                           if (ISTRANSPONDER(transponder, Transponder())) // only modify channels if we're actually receiving this transponder
                               ChannelsModified |= Channel->SetTransponderData(Source, Frequency, SymbolRate, dtp.ToString('C'));
                            else if (Channel->Srate() != SymbolRate || strcmp(Channel->Parameters(), dtp.ToString('C')))
                               forceTransponderUpdate = true; // get us receiving this transponder
@@ -254,7 +258,6 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            dtp.SetTransmission(dtpc.Transmission());
                            //
                            int transponder = Channel->Transponder();
-                           found = true;
                            if (!ISTRANSPONDER(Frequency / 1000000, transponder)) {
                               for (int n = 0; n < NumFrequencies; n++) {
                                   if (ISTRANSPONDER(Frequencies[n] / 1000000, transponder)) {
@@ -263,7 +266,10 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                      }
                                   }
                               }
-                           if (ISTRANSPONDER(Frequency / 1000000, Transponder())) // only modify channels if we're actually receiving this transponder
+                           if (!ISTRANSPONDER(Frequency / 1000000, transponder))
+                              continue; // a channel with obsolete/wrong/other(?) transponder
+                           found = true;
+                           if (ISTRANSPONDER(transponder, Transponder())) // only modify channels if we're actually receiving this transponder
                               ChannelsModified |= Channel->SetTransponderData(Source, Frequency, 0, dtp.ToString('T'));
                            else if (strcmp(Channel->Parameters(), dtp.ToString('T')))
                               forceTransponderUpdate = true; // get us receiving this transponder
