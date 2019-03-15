@@ -529,11 +529,13 @@ private:
 
 class ExtensionDescriptor : public Descriptor {
 public:
+   int getExtendedDataFlag() const;
    int getExtensionDescriptorTag() const;
 protected:
    virtual void Parse();
 private:
    const descr_extension *s;
+   int extended_data_flag;
 };
 
 class T2DeliverySystemDescriptor : public Descriptor {

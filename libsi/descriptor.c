@@ -870,6 +870,11 @@ int S2SatelliteDeliverySystemDescriptor::getScramblingSequenceIndex() const {
 void ExtensionDescriptor::Parse() {
    int offset=0;
    data.setPointerAndOffset<const descr_extension>(s, offset);
+   extended_data_flag = s->descriptor_length > 0x04;
+}
+
+int ExtensionDescriptor::getExtendedDataFlag() const {
+  return extended_data_flag;
 }
 
 int ExtensionDescriptor::getExtensionDescriptorTag() const {
