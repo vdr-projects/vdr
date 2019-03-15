@@ -9381,3 +9381,5 @@ Video Disk Recorder Revision History
 - Fixed processing transponder data in the NIT (thanks to Helmut Binder).
 - Fixed triggering the SDT filter when parsing the NIT (thanks to Helmut Binder).
 - Added support for EAC3 audio from other sources (thanks to Jürgen Schneider).
+- No longer logging tuning timeouts for transponders that are announced in the NIT but
+  are not currently broadcasting.
