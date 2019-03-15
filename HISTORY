@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-03-12: Version 2.4.1
+2019-03-15: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9380,3 +9380,4 @@ Video Disk Recorder Revision History
   Helmut Binder).
 - Fixed processing transponder data in the NIT (thanks to Helmut Binder).
 - Fixed triggering the SDT filter when parsing the NIT (thanks to Helmut Binder).
+- Added support for EAC3 audio from other sources (thanks to Jürgen Schneider).

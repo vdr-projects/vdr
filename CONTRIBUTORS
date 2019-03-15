@@ -2272,6 +2272,7 @@ Jürgen Schneider <ivory7@gmx.de>
  in cKbdRemote
  for reporting a possible discrepancy of the primary device number in the LSTD and
  PRIM commands
+ for adding support for EAC3 audio from other sources
 
 Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 4.4 2019/03/11 13:20:27 kls Exp $
+ * $Id: pat.c 4.5 2019/03/15 10:14:35 kls Exp $
  */
 
 #include "pat.h"
@@ -545,6 +545,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                          }
                       // fall through
               case 0x81: // STREAMTYPE_USER_PRIVATE
+              case 0x87: // eac3
                       if (Setup.StandardCompliance == STANDARD_ANSISCTE) { // ATSC A/53 AUDIO (ANSI/SCTE 57)
                          char lang[MAXLANGCODE1] = { 0 };
                          SI::Descriptor *d;
@@ -575,7 +576,8 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                          break;
                          }
                       // fall through
-              case 0x83 ... 0xFF: // STREAMTYPE_USER_PRIVATE
+              case 0x83 ... 0x86: // STREAMTYPE_USER_PRIVATE
+              case 0x88 ... 0xFF: // STREAMTYPE_USER_PRIVATE
                       {
                       char lang[MAXLANGCODE1] = { 0 };
                       bool IsAc3 = false;
