@@ -1711,7 +1711,8 @@ void cDvbTuner::Action(void)
                   lastDiseqc = NULL;
                   lastSource = 0;
                   if (time(NULL) - lastTimeoutReport > 60) { // let's not get too many of these
-                     isyslog("frontend %d/%d timed out while tuning to channel %d (%s), tp %d", adapter, frontend, channel.Number(), channel.Name(), channel.Transponder());
+                     if (channel.Number()) // no need to log this for transponders that are announced in the NIT but are not currently broadcasting
+                        isyslog("frontend %d/%d timed out while tuning to channel %d (%s), tp %d", adapter, frontend, channel.Number(), channel.Name(), channel.Transponder());
                      lastTimeoutReport = time(NULL);
                      }
                   continue;
