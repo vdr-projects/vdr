@@ -9383,3 +9383,5 @@ Video Disk Recorder Revision History
 - Added support for EAC3 audio from other sources (thanks to Jürgen Schneider).
 - No longer logging tuning timeouts for transponders that are announced in the NIT but
   are not currently broadcasting.
+- Fixed processing SI::T2DeliverySystemDescriptor when typecasting it over an
+  SI::ExtensionDescriptor (reported by Helmut Binder).

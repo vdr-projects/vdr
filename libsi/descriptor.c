@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 3.1 2013/10/30 10:16:18 kls Exp $
+ *   $Id: descriptor.c 4.1 2019/03/15 16:12:43 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -870,6 +870,11 @@ int S2SatelliteDeliverySystemDescriptor::getScramblingSequenceIndex() const {
 void ExtensionDescriptor::Parse() {
    int offset=0;
    data.setPointerAndOffset<const descr_extension>(s, offset);
+   extended_data_flag = s->descriptor_length > 0x04;
+}
+
+int ExtensionDescriptor::getExtendedDataFlag() const {
+  return extended_data_flag;
 }
 
 int ExtensionDescriptor::getExtensionDescriptorTag() const {

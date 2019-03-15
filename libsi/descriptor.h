@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 3.2 2014/02/08 12:44:17 kls Exp $
+ *   $Id: descriptor.h 4.1 2019/03/15 16:12:09 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -529,11 +529,13 @@ private:
 
 class ExtensionDescriptor : public Descriptor {
 public:
+   int getExtendedDataFlag() const;
    int getExtensionDescriptorTag() const;
 protected:
    virtual void Parse();
 private:
    const descr_extension *s;
+   int extended_data_flag;
 };
 
 class T2DeliverySystemDescriptor : public Descriptor {

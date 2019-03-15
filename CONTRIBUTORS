@@ -3575,6 +3575,8 @@ Helmut Binder <cco@aon.at>
  for fixing processing the last entry in the scan list of the EIT scanner
  for fixing processing transponder data in the NIT
  for fixing triggering the SDT filter when parsing the NIT
+ for reporting a bug in processing SI::T2DeliverySystemDescriptor when typecasting it
+ over an SI::ExtensionDescriptor
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
