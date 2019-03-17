@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.22 2018/03/17 10:56:13 kls Exp $
+ * $Id: recording.c 4.23 2019/03/17 16:01:13 kls Exp $
  */
 
 #include "recording.h"
@@ -1022,9 +1022,9 @@ int cRecording::Compare(const cListObject &ListObject) const
 {
   cRecording *r = (cRecording *)&ListObject;
   if (Setup.RecSortingDirection == rsdAscending)
-     return strcasecmp(SortName(), r->SortName());
+     return strcmp(SortName(), r->SortName());
   else
-     return strcasecmp(r->SortName(), SortName());
+     return strcmp(r->SortName(), SortName());
 }
 
 bool cRecording::IsInPath(const char *Path) const
