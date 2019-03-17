@@ -1022,9 +1022,9 @@ int cRecording::Compare(const cListObject &ListObject) const
 {
   cRecording *r = (cRecording *)&ListObject;
   if (Setup.RecSortingDirection == rsdAscending)
-     return strcasecmp(SortName(), r->SortName());
+     return strcmp(SortName(), r->SortName());
   else
-     return strcasecmp(r->SortName(), SortName());
+     return strcmp(r->SortName(), SortName());
 }
 
 bool cRecording::IsInPath(const char *Path) const
