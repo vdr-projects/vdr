@@ -576,7 +576,7 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
          break;
     default:
          if (state == osUnknown) {
-            switch (Key) {
+            switch (int(Key)) {
               case k0 ... k9:
                             return Number(Key);
               case kOk:     return Switch();
@@ -586,6 +586,20 @@ eOSState cMenuChannels::ProcessKey(eKeys Key)
               case kBlue:   if (!HasSubMenu())
                                Mark();
                             break;
+              case kChanUp|k_Repeat:
+              case kChanUp:
+              case kChanDn|k_Repeat:
+              case kChanDn: {
+                   LOCK_CHANNELS_READ;
+                   int CurrentChannelNr = cDevice::CurrentChannel();
+                   for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next()) {
+                       if (!ci->Channel()->GroupSep() && ci->Channel()->Number() == CurrentChannelNr) {
+                          SetCurrent(ci);
+                          Display();
+                          break;
+                          }
+                       }
+                   }
               default: break;
               }
             }
