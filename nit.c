@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.7 2019/03/12 14:00:52 kls Exp $
+ * $Id: nit.c 4.8 2019/03/18 10:29:09 kls Exp $
  */
 
 #include "nit.h"
@@ -196,7 +196,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                                      }
                                   }
                               }
-                           if (!ISTRANSPONDER(Frequency / 1000000, transponder))
+                           if (!ISTRANSPONDER(Frequency / 1000, transponder))
                               continue; // a channel with obsolete/wrong/other(?) transponder
                            found = true;
                            if (ISTRANSPONDER(transponder, Transponder())) // only modify channels if we're actually receiving this transponder
