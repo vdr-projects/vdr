@@ -9387,3 +9387,5 @@ Video Disk Recorder Revision History
   SI::ExtensionDescriptor (reported by Helmut Binder).
 - Fixed sorting recordings alphabetically.
 - Fixed dropping capabilities in case cap_sys_time is not available.
+- Fixed updating the cursor position when switching channels with the Channel+/- keys
+  while the Channels menu is open.
