@@ -126,7 +126,25 @@ static bool SetUser(const char *User, bool UserDump)
 static bool DropCaps(void)
 {
   // drop all capabilities except selected ones
-  cap_t caps = cap_from_text("= cap_sys_nice,cap_sys_time,cap_net_raw=ep");
+  cap_t caps_all = cap_get_proc();
+  if (!caps_all) {
+     fprintf(stderr, "vdr: cap_get_proc failed: %s\n", strerror(errno));
+     return false;
+     }
+  char *caps_text = cap_to_text(caps_all, NULL);
+  if (!caps_text) {
+     fprintf(stderr, "vdr: cap_to_text failed: %s\n", strerror(errno));
+     return false;
+     }
+  if (cap_free(caps_all)) {
+     fprintf(stderr, "vdr: cap_free failed: %s\n", strerror(errno));
+     return false;
+     }
+  cap_t caps;
+  if (strstr(caps_text,"cap_sys_time"))
+     caps = cap_from_text("= cap_sys_nice,cap_sys_time,cap_net_raw=ep");
+  else
+     caps = cap_from_text("= cap_sys_nice,cap_net_raw=ep");
   if (!caps) {
      fprintf(stderr, "vdr: cap_from_text failed: %s\n", strerror(errno));
      return false;
