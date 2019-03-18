@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-03-17: Version 2.4.1
+2019-03-18: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9386,3 +9386,4 @@ Video Disk Recorder Revision History
 - Fixed processing SI::T2DeliverySystemDescriptor when typecasting it over an
   SI::ExtensionDescriptor (reported by Helmut Binder).
 - Fixed sorting recordings alphabetically.
+- Fixed dropping capabilities in case cap_sys_time is not available.
