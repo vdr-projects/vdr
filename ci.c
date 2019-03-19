@@ -2505,8 +2505,10 @@ void cCamSlot::BuildCaPmts(uint8_t CmdId, cCiCaPmtList &CaPmtList, cMtdMapper *M
                   if (GetCaPids(source, transponder, p->programNumber, CaSystemIds, MAXRECEIVEPIDS + 1, CaPids) > 0) {
                      if (Active)
                         caPidReceiver->AddPids(CaPids);
-                     else
+                     else {
+                        KeepSharedCaPids(p->programNumber, CaSystemIds, CaPids);
                         caPidReceiver->DelPids(CaPids);
+                        }
                      }
                   }
                if (RepliesToQuery())
@@ -2520,6 +2522,43 @@ void cCamSlot::BuildCaPmts(uint8_t CmdId, cCiCaPmtList &CaPmtList, cMtdMapper *M
      else if (CmdId == CPCI_NOT_SELECTED)
         CaPmtList.Add(CmdId, 0, 0, 0, NULL);
      }
+}
+
+void cCamSlot::KeepSharedCaPids(int ProgramNumber, const int *CaSystemIds, int *CaPids)
+{
+  int numPids = 0;
+  int *pCaPids = CaPids;
+  while (*pCaPids) {
+        numPids++;
+        pCaPids++;
+        }
+  if (numPids <= 0)
+     return;
+  int CaPids2[MAXRECEIVEPIDS + 1];
+  for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
+      if (p->programNumber != ProgramNumber) { 
+         if (GetCaPids(source, transponder, p->programNumber, CaSystemIds, MAXRECEIVEPIDS + 1, CaPids2) > 0) {
+            int *pCaPids2 = CaPids2;
+            while (*pCaPids2) {
+                  pCaPids = CaPids;
+                  while (*pCaPids) {
+                        if (*pCaPids == *pCaPids2) {
+                           dsyslog("CAM %d: keeping shared CA pid %d", SlotNumber(), *pCaPids);
+                           // To remove *pCaPids from CaPids we overwrite it with the last valie in the list, and then strip the last value:
+                           *pCaPids = CaPids[numPids - 1];
+                           numPids--;
+                           CaPids[numPids] = 0;
+                           if (numPids <= 0)
+                              return;
+                           }
+                        else
+                           pCaPids++;
+                        }
+                  pCaPids2++;
+                  }
+            }
+         }
+      }
 }
 
 void cCamSlot::SendCaPmts(cCiCaPmtList &CaPmtList)

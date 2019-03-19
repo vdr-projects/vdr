@@ -254,6 +254,7 @@ private:
   cList<cCiCaProgramData> caProgramList;
   bool mtdAvailable;
   cMtdHandler *mtdHandler;
+  void KeepSharedCaPids(int ProgramNumber, const int *CaSystemIds, int *CaPids);
   void NewConnection(void);
   void DeleteAllConnections(void);
   void Process(cTPDU *TPDU = NULL);
