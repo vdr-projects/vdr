@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.23 2019/03/17 16:01:13 kls Exp $
+ * $Id: recording.c 4.24 2019/03/19 15:56:58 kls Exp $
  */
 
 #include "recording.h"
@@ -99,27 +99,33 @@ void cRemoveDeletedRecordingsThread::Action(void)
   if (LockFile.Lock()) {
      time_t StartTime = time(NULL);
      bool deleted = false;
+     bool interrupted = false;
      LOCK_DELETEDRECORDINGS_WRITE;
      for (cRecording *r = DeletedRecordings->First(); r; ) {
          if (cIoThrottle::Engaged())
-            return;
-         if (time(NULL) - StartTime > MAXREMOVETIME)
-            return; // don't stay here too long
-         if (cRemote::HasKeys())
-            return; // react immediately on user input
+            interrupted = true;
+         else if (time(NULL) - StartTime > MAXREMOVETIME)
+            interrupted = true; // don't stay here too long
+         else if (cRemote::HasKeys())
+            interrupted = true; // react immediately on user input
+         if (interrupted)
+            break;
          if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
             cRecording *next = DeletedRecordings->Next(r);
             r->Remove();
             DeletedRecordings->Del(r);
             r = next;
             deleted = true;
-            continue;
             }
-         r = DeletedRecordings->Next(r);
+         else
+            r = DeletedRecordings->Next(r);
          }
      if (deleted) {
-        const char *IgnoreFiles[] = { SORTMODEFILE, TIMERRECFILE, NULL };
-        cVideoDirectory::RemoveEmptyVideoDirectories(IgnoreFiles);
+        cRecordings::TouchUpdate();
+        if (!interrupted) {
+           const char *IgnoreFiles[] = { SORTMODEFILE, TIMERRECFILE, NULL };
+           cVideoDirectory::RemoveEmptyVideoDirectories(IgnoreFiles);
+           }
         }
      }
 }

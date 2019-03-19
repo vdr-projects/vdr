@@ -9390,3 +9390,6 @@ Video Disk Recorder Revision History
 - Fixed updating the cursor position when switching channels with the Channel+/- keys
   while the Channels menu is open.
 - Fixed handling shared CA pids (thanks to Onur Sentürk).
+- Now touching the .update file in the video directory after removing deleted
+  recordings, so that other VDRs that use the same video directory will update their
+  list of (deleted) recordings and thus won't display too much empty disk space.
