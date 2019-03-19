@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.12 2018/03/17 12:17:37 kls Exp $
+ * $Id: ci.h 4.13 2019/03/19 14:58:00 kls Exp $
  */
 
 #ifndef __CI_H
@@ -254,6 +254,7 @@ private:
   cList<cCiCaProgramData> caProgramList;
   bool mtdAvailable;
   cMtdHandler *mtdHandler;
+  void KeepSharedCaPids(int ProgramNumber, const int *CaSystemIds, int *CaPids);
   void NewConnection(void);
   void DeleteAllConnections(void);
   void Process(cTPDU *TPDU = NULL);

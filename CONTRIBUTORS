@@ -3565,6 +3565,7 @@ Daniel Scheller <d.scheller@gmx.net>
 
 Onur Sentürk <onur@sentek.org>
  for making the MTD mapper avoid immediately reusing unique PIDs when switching channels
+ for fixing handling shared CA pids
 
 Helmut Binder <cco@aon.at>
  for improving calculating signal strength and quality
