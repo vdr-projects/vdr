@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.12 2017/10/31 12:16:39 kls Exp $
+ * $Id: mtd.c 1.13 2019/05/05 13:56:46 kls Exp $
  */
 
 #include "mtd.h"
@@ -224,7 +224,10 @@ void cMtdMapper::Clear(void)
 
 void MtdMapSid(uchar *p, cMtdMapper *MtdMapper)
 {
-  Poke13(p, MtdMapper->RealToUniqSid(Peek13(p)));
+  uint16_t RealSid = p[0] << 8 | p[1];
+  uint16_t UniqSid = MtdMapper->RealToUniqSid(RealSid);
+  p[0] = UniqSid >> 8;
+  p[1] = UniqSid & 0xff;
 }
 
 void MtdMapPid(uchar *p, cMtdMapper *MtdMapper)

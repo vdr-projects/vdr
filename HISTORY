@@ -9394,3 +9394,4 @@ Video Disk Recorder Revision History
   recordings, so that other VDRs that use the same video directory will update their
   list of (deleted) recordings and thus won't display too much empty disk space.
 - Fixed the install target in case of multiple jobs (thanks to Chris Mayo).
+- Fixed mapping SIDs in MTD (thanks to Helmut Binder).
