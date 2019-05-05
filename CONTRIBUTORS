@@ -3128,6 +3128,7 @@ Chris Mayo <aklhfex@gmail.com>
  for updating links in the INSTALL file
  for reporting double slashes in file names processed with AddDirectory()
  for using the 'example' macro in vdr.5
+ for fixing the install target in case of multiple jobs
 
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs

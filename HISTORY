@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-03-19: Version 2.4.1
+2019-05-05: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9393,3 +9393,4 @@ Video Disk Recorder Revision History
 - Now touching the .update file in the video directory after removing deleted
   recordings, so that other VDRs that use the same video directory will update their
   list of (deleted) recordings and thus won't display too much empty disk space.
+- Fixed the install target in case of multiple jobs (thanks to Chris Mayo).
