@@ -224,7 +224,10 @@ void cMtdMapper::Clear(void)
 
 void MtdMapSid(uchar *p, cMtdMapper *MtdMapper)
 {
-  Poke13(p, MtdMapper->RealToUniqSid(Peek13(p)));
+  uint16_t RealSid = p[0] << 8 | p[1];
+  uint16_t UniqSid = MtdMapper->RealToUniqSid(RealSid);
+  p[0] = UniqSid >> 8;
+  p[1] = UniqSid & 0xff;
 }
 
 void MtdMapPid(uchar *p, cMtdMapper *MtdMapper)
