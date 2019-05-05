@@ -3580,6 +3580,7 @@ Helmut Binder <cco@aon.at>
  for reporting a bug in processing SI::T2DeliverySystemDescriptor when typecasting it
  over an SI::ExtensionDescriptor
  for fixing mapping SIDs in MTD
+ for fixing updating the checksum in the CA table after mapping EMM PIDs for MTD
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

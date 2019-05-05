@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.23 2019/03/19 14:58:06 kls Exp $
+ * $Id: ci.c 4.24 2019/05/05 14:15:56 kls Exp $
  */
 
 #include "ci.h"
@@ -225,7 +225,7 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
            }
         else {
            esyslog("ERROR: buffer overflow in cCaPidReceiver::Receive()");
-           bufp = 0;
+           bufp = NULL;
            length = 0;
            }
         }
@@ -250,12 +250,22 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
                i += p[i + 1] + 2 - 1; // -1 to compensate for the loop increment
                }
             }
-        p = NULL;
-        bufp = 0;
-        length = 0;
-        memcpy(mtdCatBuffer, Data, TS_SIZE);
-        if (MtdCamSlot)
+        if (MtdCamSlot) {
+           if (!bufp && length) {
+              // update crc32 - but only single packet CAT is handled for now:
+              uint32_t crc = SI::CRC32::crc32((const char *)p - 8, length + 8 - 4, 0xFFFFFFFF); // <TableIdCAT....>[crc32]
+              uchar *c = const_cast<uchar *>(p + length - 4);
+              *c++ = crc >> 24;
+              *c++ = crc >> 16;
+              *c++ = crc >> 8;
+              *c++ = crc;
+              }
+           memcpy(mtdCatBuffer, Data, TS_SIZE);
            MtdCamSlot->PutCat(mtdCatBuffer, TS_SIZE);
+           }
+        p = NULL;
+        bufp = NULL;
+        length = 0;
         }
      }
 }

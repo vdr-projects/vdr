@@ -9395,3 +9395,5 @@ Video Disk Recorder Revision History
   list of (deleted) recordings and thus won't display too much empty disk space.
 - Fixed the install target in case of multiple jobs (thanks to Chris Mayo).
 - Fixed mapping SIDs in MTD (thanks to Helmut Binder).
+- Fixed updating the checksum in the CA table after mapping EMM PIDs for MTD (thanks to
+  Helmut Binder).
