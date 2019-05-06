@@ -3581,6 +3581,7 @@ Helmut Binder <cco@aon.at>
  over an SI::ExtensionDescriptor
  for fixing mapping SIDs in MTD
  for fixing updating the checksum in the CA table after mapping EMM PIDs for MTD
+ for fixing a compiler warning in ExchangeChars()
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

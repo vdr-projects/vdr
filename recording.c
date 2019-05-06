@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.24 2019/03/19 15:56:58 kls Exp $
+ * $Id: recording.c 4.25 2019/05/06 11:26:06 kls Exp $
  */
 
 #include "recording.h"
@@ -610,7 +610,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
                              char buf[4];
                              sprintf(buf, "#%02X", (unsigned char)*p);
                              memmove(p + 2, p, strlen(p) + 1);
-                             strncpy(p, buf, 3);
+                             memcpy(p, buf, 3);
                              p += 2;
                              }
                           else
