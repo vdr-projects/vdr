@@ -9398,3 +9398,4 @@ Video Disk Recorder Revision History
 - Fixed updating the checksum in the CA table after mapping EMM PIDs for MTD (thanks to
   Helmut Binder).
 - Fixed a compiler warning in ExchangeChars() (thanks to Helmut Binder).
+- Fixed a compiler warning and a possible buffer overflow in cCiMMI::SendAnswer().

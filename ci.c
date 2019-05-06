@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.24 2019/05/05 14:15:56 kls Exp $
+ * $Id: ci.c 4.25 2019/05/06 11:47:42 kls Exp $
  */
 
 #include "ci.h"
@@ -1591,9 +1591,12 @@ bool cCiMMI::SendAnswer(const char *Text)
   struct tAnswer { uint8_t id; char text[256]; };//XXX
   tAnswer answer;
   answer.id = Text ? AI_ANSWER : AI_CANCEL;
-  if (Text)
-     strncpy(answer.text, Text, sizeof(answer.text));
-  SendData(AOT_ANSW, Text ? strlen(Text) + 1 : 1, (uint8_t *)&answer);
+  int len = 0;
+  if (Text) {
+     len = min(sizeof(answer.text), strlen(Text));
+     memcpy(answer.text, Text, len);
+     }
+  SendData(AOT_ANSW, len + 1, (uint8_t *)&answer);
   return true;
 }
 
