@@ -508,9 +508,10 @@ bool cSVDRPClient::GetRemoteTimers(cStringList &Response)
          int Code = SVDRPCode(s);
          if (Code == 250)
             strshift(s, 4);
+         else if (Code == 550)
+            Response.Clear();
          else {
-            if (Code != 550)
-               esyslog("ERROR: %s: %s", ServerName(), s);
+            esyslog("ERROR: %s: %s", ServerName(), s);
             return false;
             }
          }
