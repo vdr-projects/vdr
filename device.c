@@ -831,7 +831,7 @@ bool cDevice::SwitchChannel(int Direction)
            result = true;
         }
      else if (n != first)
-        Skins.Message(mtError, tr("Channel not available!"));
+        Skins.QueueMessage(mtError, tr("Channel not available!"));
      }
   return result;
 }
