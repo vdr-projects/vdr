@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.38 2018/04/19 09:45:08 kls Exp $
+ * $Id: svdrp.c 4.39 2019/05/06 15:11:15 kls Exp $
  */
 
 #include "svdrp.h"
@@ -508,9 +508,10 @@ bool cSVDRPClient::GetRemoteTimers(cStringList &Response)
          int Code = SVDRPCode(s);
          if (Code == 250)
             strshift(s, 4);
+         else if (Code == 550)
+            Response.Clear();
          else {
-            if (Code != 550)
-               esyslog("ERROR: %s: %s", ServerName(), s);
+            esyslog("ERROR: %s: %s", ServerName(), s);
             return false;
             }
          }

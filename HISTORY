@@ -9401,3 +9401,4 @@ Video Disk Recorder Revision History
 - Fixed a compiler warning and a possible buffer overflow in cCiMMI::SendAnswer().
 - Fixed a possible invalid lock sequence if the main menu is open and the user
   switches to a channel that is currently not available, using the Channel+/- keys.
+- Fixed handling remote timers in case the response to LSTT is '550 No timers defined'.
