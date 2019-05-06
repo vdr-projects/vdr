@@ -604,7 +604,7 @@ char *ExchangeChars(char *s, bool ToFileSystem)
                              char buf[4];
                              sprintf(buf, "#%02X", (unsigned char)*p);
                              memmove(p + 2, p, strlen(p) + 1);
-                             strncpy(p, buf, 3);
+                             memcpy(p, buf, 3);
                              p += 2;
                              }
                           else
