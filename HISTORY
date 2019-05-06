@@ -9399,3 +9399,5 @@ Video Disk Recorder Revision History
   Helmut Binder).
 - Fixed a compiler warning in ExchangeChars() (thanks to Helmut Binder).
 - Fixed a compiler warning and a possible buffer overflow in cCiMMI::SendAnswer().
+- Fixed a possible invalid lock sequence if the main menu is open and the user
+  switches to a channel that is currently not available, using the Channel+/- keys.

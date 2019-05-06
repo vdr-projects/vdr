@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.28 2018/07/16 09:29:57 kls Exp $
+ * $Id: device.c 4.29 2019/05/06 13:10:36 kls Exp $
  */
 
 #include "device.h"
@@ -831,7 +831,7 @@ bool cDevice::SwitchChannel(int Direction)
            result = true;
         }
      else if (n != first)
-        Skins.Message(mtError, tr("Channel not available!"));
+        Skins.QueueMessage(mtError, tr("Channel not available!"));
      }
   return result;
 }
