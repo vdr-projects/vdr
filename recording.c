@@ -2492,14 +2492,14 @@ void cIndexFileGenerator::Action(void)
 #define MAXINDEXCATCHUP    8 // number of retries
 #define INDEXCATCHUPWAIT 100 // milliseconds
 
-struct tIndexPes {
+struct __attribute__((packed)) tIndexPes {
   uint32_t offset;
   uchar type;
   uchar number;
   uint16_t reserved;
   };
 
-struct tIndexTs {
+struct __attribute__((packed)) tIndexTs {
   uint64_t offset:40; // up to 1TB per file (not using off_t here - must definitely be exactly 64 bit!)
   int reserved:7;     // reserved for future use
   int independent:1;  // marks frames that can be displayed by themselves (for trick modes)
@@ -2634,7 +2634,7 @@ void cIndexFile::ConvertToPes(tIndexTs *IndexTs, int Count)
         IndexPes.type = uchar(IndexTs->independent ? 1 : 2); // I_FRAME : "not I_FRAME" (exact frame type doesn't matter)
         IndexPes.number = uchar(IndexTs->number);
         IndexPes.reserved = 0;
-        memcpy(IndexTs, &IndexPes, sizeof(*IndexTs));
+        memcpy((void *)IndexTs, &IndexPes, sizeof(*IndexTs));
         IndexTs++;
         }
 }
