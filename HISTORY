@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-05-06: Version 2.4.1
+2019-05-07: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9402,3 +9402,5 @@ Video Disk Recorder Revision History
 - Fixed a possible invalid lock sequence if the main menu is open and the user
   switches to a channel that is currently not available, using the Channel+/- keys.
 - Fixed handling remote timers in case the response to LSTT is '550 No timers defined'.
+- Fixed a compiler warning in cIndexFile::ConvertToPes() and added __attribute__((packed))
+  to tIndexPes and tIndexTs (suggested by Helmut Binder).
