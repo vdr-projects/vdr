@@ -307,7 +307,7 @@ void cKbdRemote::PutKey(uint64_t Code, bool Repeat, bool Release)
 int cKbdRemote::ReadKey(void)
 {
   cPoller Poller(STDIN_FILENO);
-  if (Poller.Poll(50)) {
+  if (Poller.Poll(Setup.RcRepeatDelta * 3 / 2)) {
      uchar ch = 0;
      int r = safe_read(STDIN_FILENO, &ch, 1);
      if (r == 1)
@@ -430,6 +430,11 @@ void cKbdRemote::Action(void)
            Delayed = false;
            FirstCommand = 0;
            FirstTime.Set();
+           }
+        else if (FirstCommand && FirstTime.Elapsed() > (uint)Setup.RcRepeatDelay) {
+           // Don't wait too long for that second key press:
+           Delayed = false;
+           FirstCommand = 0;
            }
         LastCommand = Command;
         }
