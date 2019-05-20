@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-05-13: Version 2.4.1
+2019-05-20: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9405,3 +9405,5 @@ Video Disk Recorder Revision History
 - Fixed a compiler warning in cIndexFile::ConvertToPes() and added __attribute__((packed))
   to tIndexPes and tIndexTs (suggested by Helmut Binder).
 - Fixed handling repeat function for keyboards.
+- Added a workaround for broadcasters who set an event to status "not running" where
+  this is inappropriate; implicitly setting events to "not running" is now also logged.

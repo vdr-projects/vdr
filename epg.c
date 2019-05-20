@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 4.8 2017/05/28 13:08:09 kls Exp $
+ * $Id: epg.c 4.9 2019/05/20 09:55:22 kls Exp $
  */
 
 #include "epg.h"
@@ -1025,7 +1025,7 @@ void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, const cChanne
             }
          }
       else if (RunningStatus >= SI::RunningStatusPausing && p->StartTime() < Event->StartTime())
-         p->SetRunningStatus(SI::RunningStatusNotRunning);
+         p->SetRunningStatus(SI::RunningStatusNotRunning, Channel);
       if (p->RunningStatus() >= SI::RunningStatusPausing)
          hasRunning = true;
       }
