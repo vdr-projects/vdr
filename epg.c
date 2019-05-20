@@ -1025,7 +1025,7 @@ void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, const cChanne
             }
          }
       else if (RunningStatus >= SI::RunningStatusPausing && p->StartTime() < Event->StartTime())
-         p->SetRunningStatus(SI::RunningStatusNotRunning);
+         p->SetRunningStatus(SI::RunningStatusNotRunning, Channel);
       if (p->RunningStatus() >= SI::RunningStatusPausing)
          hasRunning = true;
       }

@@ -20,6 +20,8 @@
 
 #define VALID_TIME (31536000 * 2) // two years
 
+#define DBGEIT 0
+
 // --- cEIT ------------------------------------------------------------------
 
 class cEIT : public SI::EIT {
@@ -130,8 +132,34 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
       if (pEvent->TableID() > 0x4E) // for backwards compatibility, table ids less than 0x4E are never overwritten
          pEvent->SetTableID(Tid);
       if (Tid == 0x4E) { // we trust only the present/following info on the actual TS
-         if (SiEitEvent.getRunningStatus() >= SI::RunningStatusNotRunning)
-            pSchedule->SetRunningStatus(pEvent, SiEitEvent.getRunningStatus(), Channel);
+         int RunningStatus = SiEitEvent.getRunningStatus();
+#if DBGEIT
+         if (Process)
+            dsyslog("channel %d (%s) event %s status %d (raw data from '%s' section)", Channel->Number(), Channel->Name(), *pEvent->ToDescr(), RunningStatus, getSectionNumber() ? "following" : "present");
+#endif
+         if (RunningStatus >= SI::RunningStatusNotRunning) {
+            // Workaround for broadcasters who set an event to status "not running" where
+            // this is inappropriate:
+            if (RunningStatus != pEvent->RunningStatus()) { // if the running status of the event has changed...
+               if (RunningStatus == SI::RunningStatusNotRunning) { // ...and the new status is "not running"...
+                  int OverrideStatus = -1;
+                  if (getSectionNumber() == 0) { // ...and if this the "present" event...
+                     if (pEvent->RunningStatus() == SI::RunningStatusPausing) // ...and if the event has already been set to "pausing"...
+                        OverrideStatus = SI::RunningStatusPausing; // ...then we ignore the faulty new status and stay with "pausing"
+                     }
+                  else // ...and if this is the "following" event...
+                     OverrideStatus = SI::RunningStatusUndefined; // ...then we ignore the faulty new status and fall back to "undefined"
+                  if (OverrideStatus >= 0) {
+#if DBGEIT
+                     if (Process)
+                        dsyslog("channel %d (%s) event %s status %d (ignored status %d from '%s' section)", Channel->Number(), Channel->Name(), *pEvent->ToDescr(), OverrideStatus, RunningStatus, getSectionNumber() ? "following" : "present");
+#endif
+                     RunningStatus = OverrideStatus;
+                     }
+                  }
+               }
+            pSchedule->SetRunningStatus(pEvent, RunningStatus, Channel);
+            }
          if (!Process)
             continue;
          }
