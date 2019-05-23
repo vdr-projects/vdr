@@ -819,7 +819,7 @@ const cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match) const
 
 int cTimers::GetMaxPriority(void) const
 {
-  int n = 0;
+  int n = -1;
   for (const cTimer *ti = First(); ti; ti = Next(ti)) {
       if (!ti->Remote() && ti->Recording())
          n = max(n, ti->Priority());

@@ -178,6 +178,7 @@ public:
   cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(Event, Match)); }
   int GetMaxPriority(void) const;
       ///< Returns the maximum priority of all local timers that are currently recording.
+      ///< If there is no local timer currently recording, -1 is returned.
   const cTimer *GetNextActiveTimer(void) const;
   const cTimer *UsesChannel(const cChannel *Channel) const;
   bool SetEvents(const cSchedules *Schedules);

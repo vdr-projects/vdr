@@ -1182,7 +1182,9 @@ int main(int argc, char *argv[])
           if (Timers->DeleteExpired())
              TimersModified = true;
           // Make sure there is enough free disk space for ongoing recordings:
-          AssertFreeDiskSpace(Timers->GetMaxPriority());
+          int MaxPriority = Timers->GetMaxPriority();
+          if (MaxPriority >= 0)
+             AssertFreeDiskSpace(MaxPriority);
           TimersStateKey.Remove(TimersModified);
         }
         // Recordings:
