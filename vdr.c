@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.29 2019/03/18 11:17:07 kls Exp $
+ * $Id: vdr.c 4.30 2019/05/23 09:48:35 kls Exp $
  */
 
 #include <getopt.h>
@@ -1182,7 +1182,9 @@ int main(int argc, char *argv[])
           if (Timers->DeleteExpired())
              TimersModified = true;
           // Make sure there is enough free disk space for ongoing recordings:
-          AssertFreeDiskSpace(Timers->GetMaxPriority());
+          int MaxPriority = Timers->GetMaxPriority();
+          if (MaxPriority >= 0)
+             AssertFreeDiskSpace(MaxPriority);
           TimersStateKey.Remove(TimersModified);
         }
         // Recordings:
