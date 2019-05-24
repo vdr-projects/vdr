@@ -1643,7 +1643,7 @@ int cOsd::osdLeft = 0;
 int cOsd::osdTop = 0;
 int cOsd::osdWidth = 0;
 int cOsd::osdHeight = 0;
-cSize cOsd::maxPixmapSize(2048, 2048);
+cSize cOsd::maxPixmapSize(INT_MAX, INT_MAX);
 cVector<cOsd *> cOsd::Osds;
 cMutex cOsd::mutex;
 
