@@ -9408,3 +9408,4 @@ Video Disk Recorder Revision History
 - Added a workaround for broadcasters who set an event to status "not running" where
   this is inappropriate; implicitly setting events to "not running" is now also logged.
 - Fixed asserting free disk space in case there is no local timer currently recording.
+- The default maximum size of a cPixmap has been raised to the maximum possible value.

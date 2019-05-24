@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.5 2018/04/06 08:43:15 kls Exp $
+ * $Id: osd.c 4.6 2019/05/24 21:28:35 kls Exp $
  */
 
 #include "osd.h"
@@ -1643,7 +1643,7 @@ int cOsd::osdLeft = 0;
 int cOsd::osdTop = 0;
 int cOsd::osdWidth = 0;
 int cOsd::osdHeight = 0;
-cSize cOsd::maxPixmapSize(2048, 2048);
+cSize cOsd::maxPixmapSize(INT_MAX, INT_MAX);
 cVector<cOsd *> cOsd::Osds;
 cMutex cOsd::mutex;
 

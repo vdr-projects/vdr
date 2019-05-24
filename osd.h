@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 4.5 2017/11/02 14:59:19 kls Exp $
+ * $Id: osd.h 4.6 2019/05/24 21:28:35 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -833,6 +833,10 @@ public:
        ///< If this is a true color OSD, this function does nothing.
   virtual const cSize &MaxPixmapSize(void) const;
        ///< Returns the maximum possible size of a pixmap this OSD can create.
+       ///< Derived classes can reimplement this function if their implementation
+       ///< of cPixmap can only provide pixmaps up to a certain size.
+       ///< The default implementation returns a cSize object of maximal size
+       ///< (INT_MAX). However, memory restrictions may still apply.
   virtual cPixmap *CreatePixmap(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
        ///< Creates a new true color pixmap on this OSD (see cPixmap for details).
        ///< The caller must not delete the returned object, it will be deleted when
