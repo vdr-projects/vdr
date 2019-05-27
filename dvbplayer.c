@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 4.5 2017/11/26 14:55:03 kls Exp $
+ * $Id: dvbplayer.c 4.6 2019/05/27 13:54:19 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -230,7 +230,7 @@ bool cNonBlockingFileReader::WaitForDataMs(int msToWait)
 
 // --- cDvbPlayer ------------------------------------------------------------
 
-#define PLAYERBUFSIZE  MEGABYTE(1)
+#define PLAYERBUFSIZE  (MAXFRAMESIZE * 5)
 
 #define RESUMEBACKUP 10 // number of seconds to back up when resuming an interrupted replay session
 #define MAXSTUCKATEOF 3 // max. number of seconds to wait in case the device doesn't play the last frame
