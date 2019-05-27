@@ -230,7 +230,7 @@ bool cNonBlockingFileReader::WaitForDataMs(int msToWait)
 
 // --- cDvbPlayer ------------------------------------------------------------
 
-#define PLAYERBUFSIZE  MEGABYTE(1)
+#define PLAYERBUFSIZE  (MAXFRAMESIZE * 5)
 
 #define RESUMEBACKUP 10 // number of seconds to back up when resuming an interrupted replay session
 #define MAXSTUCKATEOF 3 // max. number of seconds to wait in case the device doesn't play the last frame
