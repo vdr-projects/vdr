@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.29 2019/05/06 13:10:36 kls Exp $
+ * $Id: device.c 4.30 2019/05/28 14:50:11 kls Exp $
  */
 
 #include "device.h"
@@ -75,9 +75,9 @@ cDevice::cDevice(void)
 :patPmtParser(true)
 {
   cardIndex = nextCardIndex++;
-  dsyslog("new device number %d", CardIndex() + 1);
+  dsyslog("new device number %d (card index %d)", numDevices + 1, CardIndex() + 1);
 
-  SetDescription("device %d receiver", CardIndex() + 1);
+  SetDescription("device %d receiver", numDevices + 1);
 
   mute = false;
   volume = Setup.CurrentVolume;
@@ -230,11 +230,11 @@ static int GetClippedNumProvidedSystems(int AvailableBits, cDevice *Device)
   int MaxNumProvidedSystems = (1 << AvailableBits) - 1;
   int NumProvidedSystems = Device->NumProvidedSystems();
   if (NumProvidedSystems > MaxNumProvidedSystems) {
-     esyslog("ERROR: device %d supports %d modulation systems but cDevice::GetDevice() currently only supports %d delivery systems which should be fixed", Device->CardIndex() + 1, NumProvidedSystems, MaxNumProvidedSystems);
+     esyslog("ERROR: device %d supports %d modulation systems but cDevice::GetDevice() currently only supports %d delivery systems which should be fixed", Device->DeviceNumber() + 1, NumProvidedSystems, MaxNumProvidedSystems);
      NumProvidedSystems = MaxNumProvidedSystems;
      }
   else if (NumProvidedSystems <= 0) {
-     esyslog("ERROR: device %d reported an invalid number (%d) of supported delivery systems - assuming 1", Device->CardIndex() + 1, NumProvidedSystems);
+     esyslog("ERROR: device %d reported an invalid number (%d) of supported delivery systems - assuming 1", Device->DeviceNumber() + 1, NumProvidedSystems);
      NumProvidedSystems = 1;
      }
   return NumProvidedSystems;
@@ -272,7 +272,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
       if (NumUsableSlots && SlotPriority[j] > MAXPRIORITY)
          continue; // there is no CAM available in this slot
       for (int i = 0; i < numDevices; i++) {
-          if (Channel->Ca() && Channel->Ca() <= CA_DVB_MAX && Channel->Ca() != device[i]->CardIndex() + 1)
+          if (Channel->Ca() && Channel->Ca() <= CA_DVB_MAX && Channel->Ca() != device[i]->DeviceNumber() + 1)
              continue; // a specific card was requested, but not this one
           bool HasInternalCam = device[i]->HasInternalCam();
           if (InternalCamNeeded && !HasInternalCam)
@@ -525,7 +525,7 @@ void cDevice::GetOsdSize(int &Width, int &Height, double &PixelAspect)
   PixelAspect = 1.0;
 }
 
-//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", CardIndex(), s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog("%s", b); }
+//#define PRINTPIDS(s) { char b[500]; char *q = b; q += sprintf(q, "%d %s ", DeviceNumber() + 1, s); for (int i = 0; i < MAXPIDHANDLES; i++) q += sprintf(q, " %s%4d %d", i == ptOther ? "* " : "", pidHandles[i].pid, pidHandles[i].used); dsyslog("%s", b); }
 #define PRINTPIDS(s)
 
 bool cDevice::HasPid(int Pid) const
@@ -560,7 +560,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
            // It's a special PID that may have to be switched into "tap" mode
            PRINTPIDS("A");
            if (!SetPid(&pidHandles[n], n, true)) {
-              esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+              esyslog("ERROR: can't set PID %d on device %d", Pid, DeviceNumber() + 1);
               if (PidType <= ptTeletext)
                  DetachAll(Pid);
               DelPid(Pid, PidType);
@@ -581,7 +581,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
         n = a;
         }
      else {
-        esyslog("ERROR: no free slot for PID %d on device %d", Pid, CardIndex() + 1);
+        esyslog("ERROR: no free slot for PID %d on device %d", Pid, DeviceNumber() + 1);
         return false;
         }
      if (n >= 0) {
@@ -590,7 +590,7 @@ bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
         pidHandles[n].used = 1;
         PRINTPIDS("C");
         if (!SetPid(&pidHandles[n], n, true)) {
-           esyslog("ERROR: can't set PID %d on device %d", Pid, CardIndex() + 1);
+           esyslog("ERROR: can't set PID %d on device %d", Pid, DeviceNumber() + 1);
            if (PidType <= ptTeletext)
               DetachAll(Pid);
            DelPid(Pid, PidType);
@@ -1758,7 +1758,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
 #ifdef WAIT_FOR_TUNER_LOCK
 #define TUNER_LOCK_TIMEOUT 5000 // ms
   if (!HasLock(TUNER_LOCK_TIMEOUT)) {
-     esyslog("ERROR: device %d has no lock, can't attach receiver!", CardIndex() + 1);
+     esyslog("ERROR: device %d has no lock, can't attach receiver!", DeviceNumber() + 1);
      return false;
      }
 #endif
@@ -1849,11 +1849,11 @@ void cDevice::DetachAllReceivers(void)
 
 // --- cTSBuffer -------------------------------------------------------------
 
-cTSBuffer::cTSBuffer(int File, int Size, int CardIndex)
+cTSBuffer::cTSBuffer(int File, int Size, int DeviceNumber)
 {
-  SetDescription("device %d TS buffer", CardIndex);
+  SetDescription("device %d TS buffer", DeviceNumber);
   f = File;
-  cardIndex = CardIndex;
+  deviceNumber = DeviceNumber;
   delivered = 0;
   ringBuffer = new cRingBufferLinear(Size, TS_SIZE, true, "TS");
   ringBuffer->SetTimeouts(100, 100);
@@ -1878,7 +1878,7 @@ void cTSBuffer::Action(void)
               int r = ringBuffer->Read(f);
               if (r < 0 && FATALERRNO) {
                  if (errno == EOVERFLOW)
-                    esyslog("ERROR: driver buffer overflow on device %d", cardIndex);
+                    esyslog("ERROR: driver buffer overflow on device %d", deviceNumber);
                  else {
                     LOG_ERROR;
                     break;
@@ -1909,7 +1909,7 @@ uchar *cTSBuffer::Get(int *Available, bool CheckAvailable)
                }
             }
         ringBuffer->Del(Count);
-        esyslog("ERROR: skipped %d bytes to sync on TS packet on device %d", Count, cardIndex);
+        esyslog("ERROR: skipped %d bytes to sync on TS packet on device %d", Count, deviceNumber);
         return NULL;
         }
      delivered = TS_SIZE;

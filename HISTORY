@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-05-27: Version 2.4.1
+2019-05-28: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9412,3 +9412,5 @@ Video Disk Recorder Revision History
 - Increased PLAYERBUFSIZE to (MAXFRAMESIZE * 5) to avoid stuttering replay under heavy
   system load, and to better document that this buffer size is related to the maximum
   frame size.
+- Fixed inconsistent behavior in case only certain devices are used (selected by the '-D'
+  option).

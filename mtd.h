@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.8 2017/05/01 09:19:21 kls Exp $
+ * $Id: mtd.h 1.9 2019/05/28 15:00:10 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -136,9 +136,9 @@ public:
       ///< Tells all active MTD CAM slots to cancel activation.
   bool IsActivating(void);
       ///< Returns true if any of the active MTD CAM slots is currently activating.
-  bool Devices(cVector<int> &CardIndexes);
-      ///< Adds the card indexes of the devices of any active MTD CAM slots to
-      ///< the given CardIndexes.
+  bool Devices(cVector<int> &DeviceNumbers);
+      ///< Adds the numbers of the devices of any active MTD CAM slots to
+      ///< the given DeviceNumbers.
       ///< Returns true if the array is not empty.
   void UnAssignAll(void);
       ///< Unassigns all MTD CAM slots from their devices.

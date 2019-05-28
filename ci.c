@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.25 2019/05/06 11:47:42 kls Exp $
+ * $Id: ci.c 4.26 2019/05/28 15:01:29 kls Exp $
  */
 
 #include "ci.h"
@@ -2233,14 +2233,14 @@ bool cCamSlot::Assign(cDevice *Device, bool Query)
   return false;
 }
 
-bool cCamSlot::Devices(cVector<int> &CardIndexes)
+bool cCamSlot::Devices(cVector<int> &DeviceNumbers)
 {
   cMutexLock MutexLock(&mutex);
   if (mtdHandler)
-     return mtdHandler->Devices(CardIndexes);
+     return mtdHandler->Devices(DeviceNumbers);
   if (assignedDevice)
-     CardIndexes.Append(assignedDevice->CardIndex());
-  return CardIndexes.Size() > 0;
+     DeviceNumbers.Append(assignedDevice->DeviceNumber());
+  return DeviceNumbers.Size() > 0;
 }
 
 void cCamSlot::NewConnection(void)

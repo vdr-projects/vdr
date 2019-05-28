@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.12 2017/11/02 14:47:33 kls Exp $
+ * $Id: device.h 4.13 2019/05/28 14:47:09 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -861,12 +861,12 @@ public:
 class cTSBuffer : public cThread {
 private:
   int f;
-  int cardIndex;
+  int deviceNumber;
   int delivered;
   cRingBufferLinear *ringBuffer;
   virtual void Action(void);
 public:
-  cTSBuffer(int File, int Size, int CardIndex);
+  cTSBuffer(int File, int Size, int DeviceNumber);
   virtual ~cTSBuffer();
   uchar *Get(int *Available = NULL, bool CheckAvailable = false);
      ///< Returns a pointer to the first TS packet in the buffer. If Available is given,
