@@ -136,9 +136,9 @@ public:
       ///< Tells all active MTD CAM slots to cancel activation.
   bool IsActivating(void);
       ///< Returns true if any of the active MTD CAM slots is currently activating.
-  bool Devices(cVector<int> &CardIndexes);
-      ///< Adds the card indexes of the devices of any active MTD CAM slots to
-      ///< the given CardIndexes.
+  bool Devices(cVector<int> &DeviceNumbers);
+      ///< Adds the numbers of the devices of any active MTD CAM slots to
+      ///< the given DeviceNumbers.
       ///< Returns true if the array is not empty.
   void UnAssignAll(void);
       ///< Unassigns all MTD CAM slots from their devices.

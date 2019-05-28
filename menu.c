@@ -3892,16 +3892,16 @@ bool cMenuSetupCAMItem::Changed(void)
   else if (camSlot->IsActivating())
      // TRANSLATORS: note the leading blank!
      Activating = tr(" (activating)");
-  cVector<int> CardIndexes;
+  cVector<int> DeviceNumbers;
   for (cCamSlot *CamSlot = CamSlots.First(); CamSlot; CamSlot = CamSlots.Next(CamSlot)) {
       if (CamSlot == camSlot || CamSlot->MasterSlot() == camSlot)
-         CamSlot->Devices(CardIndexes);
+         CamSlot->Devices(DeviceNumbers);
       }
-  if (CardIndexes.Size() > 0) {
+  if (DeviceNumbers.Size() > 0) {
      AssignedDevice = cString::sprintf(" %s", tr("@ device"));
-     CardIndexes.Sort(CompareInts);
-     for (int i = 0; i < CardIndexes.Size(); i++)
-         AssignedDevice = cString::sprintf("%s %d", *AssignedDevice, CardIndexes[i] + 1);
+     DeviceNumbers.Sort(CompareInts);
+     for (int i = 0; i < DeviceNumbers.Size(); i++)
+         AssignedDevice = cString::sprintf("%s %d", *AssignedDevice, DeviceNumbers[i]);
      }
 
   cString buffer = cString::sprintf(" %d %s%s%s", camSlot->SlotNumber(), CamName, *AssignedDevice, Activating);
@@ -5231,7 +5231,7 @@ cRecordControl::cRecordControl(cDevice *Device, cTimers *Timers, cTimer *Timer, 
   if (!timer) {
      timer = new cTimer(true, Pause);
      Timers->Add(timer);
-     instantId = cString::sprintf(cDevice::NumDevices() > 1 ? "%s - %d" : "%s", timer->Channel()->Name(), device->CardIndex() + 1);
+     instantId = cString::sprintf(cDevice::NumDevices() > 1 ? "%s - %d" : "%s", timer->Channel()->Name(), device->DeviceNumber() + 1);
      }
   timer->SetPending(true);
   timer->SetRecording(true);

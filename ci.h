@@ -331,9 +331,9 @@ public:
        ///< class function.
   cDevice *Device(void) { return assignedDevice; }
        ///< Returns the device this CAM slot is currently assigned to.
-  bool Devices(cVector<int> &CardIndexes);
-       ///< Adds the card indexes of any devices that currently use this CAM to
-       ///< the given CardIndexes. This can be more than one in case of MTD.
+  bool Devices(cVector<int> &DeviceNumbers);
+       ///< Adds the numbers of any devices that currently use this CAM to
+       ///< the given DeviceNumbers. This can be more than one in case of MTD.
        ///< Returns true if the array is not empty.
   bool WantsTsData(void) const { return caPidReceiver != NULL; }
        ///< Returns true if this CAM slot wants to receive the TS data through

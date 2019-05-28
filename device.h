@@ -861,12 +861,12 @@ public:
 class cTSBuffer : public cThread {
 private:
   int f;
-  int cardIndex;
+  int deviceNumber;
   int delivered;
   cRingBufferLinear *ringBuffer;
   virtual void Action(void);
 public:
-  cTSBuffer(int File, int Size, int CardIndex);
+  cTSBuffer(int File, int Size, int DeviceNumber);
   virtual ~cTSBuffer();
   uchar *Get(int *Available = NULL, bool CheckAvailable = false);
      ///< Returns a pointer to the first TS packet in the buffer. If Available is given,

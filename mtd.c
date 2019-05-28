@@ -127,11 +127,11 @@ bool cMtdHandler::IsActivating(void)
   return false;
 }
 
-bool cMtdHandler::Devices(cVector<int> &CardIndexes)
+bool cMtdHandler::Devices(cVector<int> &DeviceNumbers)
 {
   for (int i = 0; i < camSlots.Size(); i++)
-      camSlots[i]->Devices(CardIndexes);
-  return CardIndexes.Size() > 0;
+      camSlots[i]->Devices(DeviceNumbers);
+  return DeviceNumbers.Size() > 0;
 }
 
 void cMtdHandler::UnAssignAll(void)

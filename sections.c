@@ -44,7 +44,7 @@ cSectionHandler::cSectionHandler(cDevice *Device)
 {
   shp = new cSectionHandlerPrivate;
   device = Device;
-  SetDescription("device %d section handler", device->CardIndex() + 1);
+  SetDescription("device %d section handler", device->DeviceNumber() + 1);
   statusCount = 0;
   on = false;
   waitForLock = false;

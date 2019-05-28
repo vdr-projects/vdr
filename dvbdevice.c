@@ -738,7 +738,7 @@ cString cDvbTuner::GetBondingParams(const cChannel *Channel) const
      Channel = &channel;
   cDvbTransponderParameters dtp(Channel->Parameters());
   if (Setup.DiSEqC) {
-     if (const cDiseqc *diseqc = Diseqcs.Get(device->CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization(), NULL))
+     if (const cDiseqc *diseqc = Diseqcs.Get(device->DeviceNumber() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization(), NULL))
         return diseqc->Commands();
      }
   else {
@@ -1558,7 +1558,7 @@ bool cDvbTuner::SetFrontend(void)
   if (frontendType == SYS_DVBS || frontendType == SYS_DVBS2) {
      int frequency = channel.Frequency();
      if (Setup.DiSEqC) {
-        if (const cDiseqc *diseqc = Diseqcs.Get(device->CardIndex() + 1, channel.Source(), frequency, dtp.Polarization(), &scr)) {
+        if (const cDiseqc *diseqc = Diseqcs.Get(device->DeviceNumber() + 1, channel.Source(), frequency, dtp.Polarization(), &scr)) {
            frequency -= diseqc->Lof();
            if (diseqc != lastDiseqc || diseqc->IsScr() || diseqc->Position() >= 0 && channel.Source() != lastSource) {
               if (IsBondedMaster()) {
@@ -1939,8 +1939,10 @@ bool cDvbDevice::Initialize(void)
                  while ((f = AdapterDir.Next()) != NULL) {
                        if (strstr(f->d_name, DEV_DVB_FRONTEND) == f->d_name) {
                           int Frontend = strtol(f->d_name + strlen(DEV_DVB_FRONTEND), NULL, 10);
-                          if (access(DvbName(DEV_DVB_DEMUX, Adapter, Frontend), F_OK) == 0) // we only create devices for actual demuxes
+                          if (access(DvbName(DEV_DVB_DEMUX, Adapter, Frontend), F_OK) == 0) { // we only create devices for actual demuxes
+                             dsyslog("detected /dev/dvb/adapter%d/frontend%d", Adapter, Frontend);
                              Nodes.Append(strdup(cString::sprintf("%2d %2d", Adapter, Frontend)));
+                             }
                           }
                        }
                  }
@@ -1962,8 +1964,10 @@ bool cDvbDevice::Initialize(void)
                      if (Probe(Adapter, Frontend))
                         Used++;
                      }
-                  else
+                  else {
+                     dsyslog("skipped /dev/dvb/adapter%d/frontend%d", Adapter, Frontend);
                      NextCardIndex(1); // skips this one
+                     }
                   }
                }
             }
@@ -2037,18 +2041,18 @@ bool cDvbDevice::Bond(cDvbDevice *Device)
            if (dvbTuner && Device->dvbTuner && dvbTuner->Bond(Device->dvbTuner)) {
               bondedDevice = Device->bondedDevice ? Device->bondedDevice : Device;
               Device->bondedDevice = this;
-              dsyslog("device %d bonded with device %d", CardIndex() + 1, bondedDevice->CardIndex() + 1);
+              dsyslog("device %d bonded with device %d", DeviceNumber() + 1, bondedDevice->DeviceNumber() + 1);
               return true;
               }
            }
         else
-           esyslog("ERROR: can't bond device %d with device %d (only DVB-S(2) devices can be bonded)", CardIndex() + 1, Device->CardIndex() + 1);
+           esyslog("ERROR: can't bond device %d with device %d (only DVB-S(2) devices can be bonded)", DeviceNumber() + 1, Device->DeviceNumber() + 1);
         }
      else
-        esyslog("ERROR: can't bond device %d with itself", CardIndex() + 1);
+        esyslog("ERROR: can't bond device %d with itself", DeviceNumber() + 1);
      }
   else
-     esyslog("ERROR: device %d already bonded with device %d, can't bond with device %d", CardIndex() + 1, bondedDevice->CardIndex() + 1, Device->CardIndex() + 1);
+     esyslog("ERROR: device %d already bonded with device %d, can't bond with device %d", DeviceNumber() + 1, bondedDevice->DeviceNumber() + 1, Device->DeviceNumber() + 1);
   return false;
 }
 
@@ -2058,7 +2062,7 @@ void cDvbDevice::UnBond(void)
   if (cDvbDevice *d = bondedDevice) {
      if (dvbTuner)
         dvbTuner->UnBond();
-     dsyslog("device %d unbonded from device %d", CardIndex() + 1, bondedDevice->CardIndex() + 1);
+     dsyslog("device %d unbonded from device %d", DeviceNumber() + 1, bondedDevice->DeviceNumber() + 1);
      while (d->bondedDevice != this)
            d = d->bondedDevice;
      if (d == bondedDevice)
@@ -2174,7 +2178,7 @@ bool cDvbDevice::ProvidesTransponder(const cChannel *Channel) const
      return false; // requires modulation system which frontend doesn't provide
   cDvbTransponderParameters dtp(Channel->Parameters());
   if (!cSource::IsSat(Channel->Source()) ||
-     (!Setup.DiSEqC || Diseqcs.Get(CardIndex() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization(), NULL)))
+     (!Setup.DiSEqC || Diseqcs.Get(DeviceNumber() + 1, Channel->Source(), Channel->Frequency(), dtp.Polarization(), NULL)))
      return DeviceHooksProvidesTransponder(Channel);
   return false;
 }
@@ -2298,7 +2302,7 @@ bool cDvbDevice::OpenDvr(void)
   CloseDvr();
   fd_dvr = DvbOpen(DEV_DVB_DVR, adapter, frontend, O_RDONLY | O_NONBLOCK, true);
   if (fd_dvr >= 0)
-     tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(5), CardIndex() + 1);
+     tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(5), DeviceNumber() + 1);
   return fd_dvr >= 0;
 }
 
