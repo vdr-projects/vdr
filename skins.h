@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 4.5 2017/11/02 15:04:56 kls Exp $
+ * $Id: skins.h 4.6 2019/05/29 16:36:41 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -477,6 +477,8 @@ public:
        ///< has been received within Seconds (the default value of 0 results
        ///< in the value defined for "Message time" in the setup), kNone
        ///< will be returned.
+       ///< If Message() is called from a background thread and Type is not
+       ///< mtStatus, the call will be automatically forwarded to QueueMessage().
   int QueueMessage(eMessageType Type, const char *s, int Seconds = 0, int Timeout = 0);
        ///< Like Message(), but this function may be called from a background
        ///< thread. The given message is put into a queue and the main program

@@ -9415,3 +9415,5 @@ Video Disk Recorder Revision History
 - Fixed inconsistent behavior in case only certain devices are used (selected by the '-D'
   option).
 - Fixed a wrong variable name in cFileName::cFileName().
+- If cSkins::Message() is called from a background thread and Type is not mtStatus,
+  the call is now automatically forwarded to QueueMessage().
