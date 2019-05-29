@@ -250,7 +250,10 @@ bool cSkins::SetCurrent(const char *Name)
 eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
 {
   if (!cThread::IsMainThread()) {
-     dsyslog("cSkins::Message() called from background thread - ignored! (Use cSkins::QueueMessage() instead)");
+     if (Type != mtStatus)
+        QueueMessage(Type, s, Seconds);
+     else
+        dsyslog("cSkins::Message(%d, \"%s\", %d) called from background thread - ignored! (Use cSkins::QueueMessage() instead)", Type, s, Seconds);
      return kNone;
      }
   switch (Type) {
