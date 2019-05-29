@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.26 2019/05/07 09:22:34 kls Exp $
+ * $Id: recording.c 4.27 2019/05/28 21:47:32 kls Exp $
  */
 
 #include "recording.h"
@@ -2896,7 +2896,7 @@ cFileName::cFileName(const char *FileName, bool Record, bool Blocking, bool IsPe
   // Prepare the file name:
   fileName = MALLOC(char, strlen(FileName) + RECORDFILESUFFIXLEN);
   if (!fileName) {
-     esyslog("ERROR: can't copy file name '%s'", fileName);
+     esyslog("ERROR: can't copy file name '%s'", FileName);
      return;
      }
   strcpy(fileName, FileName);

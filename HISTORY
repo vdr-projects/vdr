@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-05-28: Version 2.4.1
+2019-05-29: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9414,3 +9414,4 @@ Video Disk Recorder Revision History
   frame size.
 - Fixed inconsistent behavior in case only certain devices are used (selected by the '-D'
   option).
+- Fixed a wrong variable name in cFileName::cFileName().
