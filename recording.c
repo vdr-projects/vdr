@@ -2890,7 +2890,7 @@ cFileName::cFileName(const char *FileName, bool Record, bool Blocking, bool IsPe
   // Prepare the file name:
   fileName = MALLOC(char, strlen(FileName) + RECORDFILESUFFIXLEN);
   if (!fileName) {
-     esyslog("ERROR: can't copy file name '%s'", fileName);
+     esyslog("ERROR: can't copy file name '%s'", FileName);
      return;
      }
   strcpy(fileName, FileName);
