@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.8 2019/03/18 10:29:09 kls Exp $
+ * $Id: nit.c 4.9 2019/05/31 13:25:00 kls Exp $
  */
 
 #include "nit.h"
@@ -97,6 +97,15 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
          }
       delete fld;
 
+      // Necessary for "backwards compatibility mode" according to ETSI EN 300 468:
+      bool ForceDVBS2 = false;
+      for (SI::Loop::Iterator it2; (d = ts.transportStreamDescriptors.getNext(it2)); ) {
+          if (d->getDescriptorTag() == SI::S2SatelliteDeliverySystemDescriptorTag) {
+             ForceDVBS2 = true;
+             break;
+             }
+          }
+
       for (SI::Loop::Iterator it2; (d = ts.transportStreamDescriptors.getNext(it2)); ) {
           switch (d->getDescriptorTag()) {
             case SI::SatelliteDeliverySystemDescriptorTag: {
@@ -110,11 +119,12 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  dtp.SetCoderateH(CodeRates[sd->getFecInner()]);
                  static int Modulations[] = { QAM_AUTO, QPSK, PSK_8, QAM_16 };
                  dtp.SetModulation(Modulations[sd->getModulationType()]);
-                 dtp.SetSystem(sd->getModulationSystem() ? DVB_SYSTEM_2 : DVB_SYSTEM_1);
+                 bool System = sd->getModulationSystem() || ForceDVBS2;
+                 dtp.SetSystem(System ? DVB_SYSTEM_2 : DVB_SYSTEM_1);
                  static int RollOffs[] = { ROLLOFF_35, ROLLOFF_25, ROLLOFF_20, ROLLOFF_AUTO };
-                 dtp.SetRollOff(sd->getModulationSystem() ? RollOffs[sd->getRollOff()] : ROLLOFF_AUTO);
+                 dtp.SetRollOff(System ? RollOffs[sd->getRollOff()] : ROLLOFF_AUTO);
                  int SymbolRate = BCD2INT(sd->getSymbolRate()) / 10;
-                 dbgnit("    %s %d %c %d %d\n", *cSource::ToString(Source), Frequency, dtp.Polarization(), SymbolRate, cChannel::Transponder(Frequency, dtp.Polarization()));
+                 dbgnit("    %s %d %c %d %d DVB-S%d\n", *cSource::ToString(Source), Frequency, dtp.Polarization(), SymbolRate, cChannel::Transponder(Frequency, dtp.Polarization()), System ? 2 : 1);
                  if (Setup.UpdateChannels >= 5) {
                     bool found = false;
                     bool forceTransponderUpdate = false;

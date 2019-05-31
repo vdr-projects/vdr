@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-05-29: Version 2.4.1
+2019-05-31: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
@@ -9417,3 +9417,5 @@ Video Disk Recorder Revision History
 - Fixed a wrong variable name in cFileName::cFileName().
 - If cSkins::Message() is called from a background thread and Type is not mtStatus,
   the call is now automatically forwarded to QueueMessage().
+- Fixed handling the S2SatelliteDeliverySystemDescriptor for transponders broadcasting
+  in "backwards compatibility mode" according to ETSI EN 300 468 (thanks to Onur Sentürk).
