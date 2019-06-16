@@ -9348,7 +9348,7 @@ Video Disk Recorder Revision History
   Senzel).
 - Official release.
 
-2019-05-31: Version 2.4.1
+2019-06-17: Version 2.4.1
 
 - Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
   by Johann Friedrichs).
