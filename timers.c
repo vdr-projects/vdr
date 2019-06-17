@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.18 2018/03/17 10:07:19 kls Exp $
+ * $Id: timers.c 4.18.1.1 2019/05/23 10:02:45 kls Exp $
  */
 
 #include "timers.h"

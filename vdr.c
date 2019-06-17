@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.25 2018/04/10 13:24:43 kls Exp $
+ * $Id: vdr.c 4.25.1.5 2019/05/23 10:02:45 kls Exp $
  */
 
 #include <getopt.h>
@@ -1555,13 +1555,13 @@ int main(int argc, char *argv[])
               }
            // Handle housekeeping tasks
            if ((Now - LastInteract) > ACTIVITYTIMEOUT) {
-           // Disk housekeeping:
-           RemoveDeletedRecordings();
-           ListGarbageCollector.Purge();
-           cSchedules::Cleanup();
-           // Plugins housekeeping:
-           PluginManager.Housekeeping();
-           }
+              // Disk housekeeping:
+              RemoveDeletedRecordings();
+              ListGarbageCollector.Purge();
+              cSchedules::Cleanup();
+              // Plugins housekeeping:
+              PluginManager.Housekeeping();
+              }
            }
 
         ReportEpgBugFixStats();

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.21 2018/03/19 16:37:03 kls Exp $
+ * $Id: ci.c 4.21.1.5 2019/05/28 15:55:44 kls Exp $
  */
 
 #include "ci.h"
@@ -2549,7 +2549,7 @@ void cCamSlot::KeepSharedCaPids(int ProgramNumber, const int *CaSystemIds, int *
      return;
   int CaPids2[MAXRECEIVEPIDS + 1];
   for (cCiCaProgramData *p = caProgramList.First(); p; p = caProgramList.Next(p)) {
-      if (p->programNumber != ProgramNumber) { 
+      if (p->programNumber != ProgramNumber) {
          if (GetCaPids(source, transponder, p->programNumber, CaSystemIds, MAXRECEIVEPIDS + 1, CaPids2) > 0) {
             int *pCaPids2 = CaPids2;
             while (*pCaPids2) {

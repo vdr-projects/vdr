@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.12 2017/10/31 12:16:39 kls Exp $
+ * $Id: mtd.c 1.12.1.2 2019/05/28 15:55:44 kls Exp $
  */
 
 #include "mtd.h"

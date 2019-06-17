@@ -9347,3 +9347,75 @@ Video Disk Recorder Revision History
 - Fixed a high CPU load during replay with active progress display (reported by Matthias
   Senzel).
 - Official release.
+
+2019-06-17: Version 2.4.1
+
+- Fixed handling the tfRecording flag in the SVDRP commands MODT and UPDT (reported
+  by Johann Friedrichs).
+- Fixed a possible invalid locking sequence in case a remote timer handling error message
+  is displayed on the OSD and the skin tries to lock the Recordings or DeletedRecordings
+  list in its Flush() function (for instance by calling cVideoDiskUsage::HasChanged()).
+  To do this, the call to Skins.Message() in menu.c's HandleRemoteModifications() has
+  been changed to Skins.QueueMessage(), and cSkins::ProcessQueuedMessages() is now called
+  unconditionally in the main loop, and checks whether the current cSkinDisplay object
+  (if any) implements SetMessage().
+- Fixed locking the Channels list in cDisplayChannel, where the lock was still held
+  when Flush() was called (reported by Matthias Senzel and Uwe Scheffler).
+- Fixed shutdown after user inactivity in case a plugin is keeping the OSD open
+  (reported by Ulrich Eckhardt).
+- Fixed switching through encrypted channels with the Up/Down keys (thanks to Helmut
+  Binder).
+- Now deactivating MTD support if a non MCD capable CAM is inserted after removing
+  a previously used CAM that is MCD capable (thanks to Helmut Binder).
+- Added support for DVB devices with more than one frontend that all use the same
+  dvr and demux. Note that in order for this to work, you must not set symbolic
+  links like "demux1 -> demux0" and "dvr1 -> dvr0", as is mentioned in some user
+  manuals of multi frontend DVB cards.
+- Reverted the change "The EIT filter no longer parses data from "other TS"...". It led to
+  missing EPG data on channels from Canal Digital Norway (reported by Stian B. Barmen).
+- Fixed accessing the actual frontend on multi frontend devices (thanks to Helmut Binder).
+- Fixed opening the UDP port in peerdemo (thanks to Robert Hannebauer).
+- Fixed handling PATs that contain no PMTs.
+- Fixed processing the last entry in the scan list of the EIT scanner (thanks to
+  Helmut Binder).
+- Fixed processing transponder data in the NIT (thanks to Helmut Binder).
+- Fixed triggering the SDT filter when parsing the NIT (thanks to Helmut Binder).
+- Added support for EAC3 audio from other sources (thanks to Jürgen Schneider).
+- No longer logging tuning timeouts for transponders that are announced in the NIT but
+  are not currently broadcasting.
+- Fixed processing SI::T2DeliverySystemDescriptor when typecasting it over an
+  SI::ExtensionDescriptor (reported by Helmut Binder).
+- Fixed sorting recordings alphabetically.
+- Fixed dropping capabilities in case cap_sys_time is not available.
+- Fixed updating the cursor position when switching channels with the Channel+/- keys
+  while the Channels menu is open.
+- Fixed handling shared CA pids (thanks to Onur Sentürk).
+- Now touching the .update file in the video directory after removing deleted
+  recordings, so that other VDRs that use the same video directory will update their
+  list of (deleted) recordings and thus won't display too much empty disk space.
+- Fixed the install target in case of multiple jobs (thanks to Chris Mayo).
+- Fixed mapping SIDs in MTD (thanks to Helmut Binder).
+- Fixed updating the checksum in the CA table after mapping EMM PIDs for MTD (thanks to
+  Helmut Binder).
+- Fixed a compiler warning in ExchangeChars() (thanks to Helmut Binder).
+- Fixed a compiler warning and a possible buffer overflow in cCiMMI::SendAnswer().
+- Fixed a possible invalid lock sequence if the main menu is open and the user
+  switches to a channel that is currently not available, using the Channel+/- keys.
+- Fixed handling remote timers in case the response to LSTT is '550 No timers defined'.
+- Fixed a compiler warning in cIndexFile::ConvertToPes() and added __attribute__((packed))
+  to tIndexPes and tIndexTs (suggested by Helmut Binder).
+- Fixed handling repeat function for keyboards.
+- Added a workaround for broadcasters who set an event to status "not running" where
+  this is inappropriate; implicitly setting events to "not running" is now also logged.
+- Fixed asserting free disk space in case there is no local timer currently recording.
+- The default maximum size of a cPixmap has been raised to the maximum possible value.
+- Increased PLAYERBUFSIZE to (MAXFRAMESIZE * 5) to avoid stuttering replay under heavy
+  system load, and to better document that this buffer size is related to the maximum
+  frame size.
+- Fixed inconsistent behavior in case only certain devices are used (selected by the '-D'
+  option).
+- Fixed a wrong variable name in cFileName::cFileName().
+- If cSkins::Message() is called from a background thread and Type is not mtStatus,
+  the call is now automatically forwarded to QueueMessage().
+- Fixed handling the S2SatelliteDeliverySystemDescriptor for transponders broadcasting
+  in "backwards compatibility mode" according to ETSI EN 300 468 (thanks to Onur Sentürk).

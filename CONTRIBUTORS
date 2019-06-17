@@ -283,6 +283,8 @@ Uwe Scheffler <linux_dvb@uni.de>
  for reporting a problem in handling the PrimaryLimit when requesting a device for
  live viewing
  for reporting a black screen while a "Recording started" message is displayed
+ for reporting a problem with the lock on the Channels list in cDisplayChannel still
+ being held when Flush() was called
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
@@ -2270,6 +2272,7 @@ Jürgen Schneider <ivory7@gmx.de>
  in cKbdRemote
  for reporting a possible discrepancy of the primary device number in the LSTD and
  PRIM commands
+ for adding support for EAC3 audio from other sources
 
 Christian Wieninger <cwieninger@gmx.de>
  for suggesting to add cMenuEditStrItem::InEditMode()
@@ -2854,6 +2857,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
  replay has been stopped, but before the replay control has been destroyed
  for reporting a problem in processing SVDRP client responses in case the caller doesn't
  want the actual response strings
+ for reporting a bug in handling the tfRecording flag in the SVDRP commands MODT and UPDT
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated
@@ -3124,6 +3128,7 @@ Chris Mayo <aklhfex@gmail.com>
  for updating links in the INSTALL file
  for reporting double slashes in file names processed with AddDirectory()
  for using the 'example' macro in vdr.5
+ for fixing the install target in case of multiple jobs
 
 Dominic Evans <oldmanuk@gmail.com>
  for making the SVDRP command LSTC accepts channel IDs
@@ -3315,6 +3320,8 @@ Matthias Senzel <matthias.senzel@t-online.de>
  after starting the editing process
  for reporting a problem with setting the initial offset of the cursor in a list menu
  for reporting a high CPU load during replay with active progress display
+ for reporting that the lock on the Channels list in cDisplayChannel was still held
+ when Flush() was called
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
@@ -3539,6 +3546,7 @@ Stefan Pöschel <basic.master@gmx.de>
 
 Robert Hannebauer <vdr@hannebauer.org>
  for fixing an overflow of PIDs in a receiver
+ for fixing opening the UDP port in peerdemo
 
 Aitugan Sarbassov <isarbassov@gmail.com>
  for adding 'S58.5E Kazsat 3' to sources.conf
@@ -3558,6 +3566,29 @@ Daniel Scheller <d.scheller@gmx.net>
 
 Onur Sentürk <onur@sentek.org>
  for making the MTD mapper avoid immediately reusing unique PIDs when switching channels
+ for fixing handling shared CA pids
+ for fixing handling the S2SatelliteDeliverySystemDescriptor for transponders broadcasting
+ in "backwards compatibility mode" according to ETSI EN 300 468
 
 Helmut Binder <cco@aon.at>
  for improving calculating signal strength and quality
+ for fixing switching through encrypted channels with the Up/Down keys
+ for deactivating MTD support if a non MCD capable CAM is inserted after removing
+ a previously used CAM that is MCD capable
+ for fixing accessing the actual frontend on multi frontend devices
+ for fixing processing the last entry in the scan list of the EIT scanner
+ for fixing processing transponder data in the NIT
+ for fixing triggering the SDT filter when parsing the NIT
+ for reporting a bug in processing SI::T2DeliverySystemDescriptor when typecasting it
+ over an SI::ExtensionDescriptor
+ for fixing mapping SIDs in MTD
+ for fixing updating the checksum in the CA table after mapping EMM PIDs for MTD
+ for fixing a compiler warning in ExchangeChars()
+ for suggesting to add __attribute__((packed)) to tIndexPes and tIndexTs
+
+Ulrich Eckhardt <uli@uli-eckhardt.de>
+ for reporting a problem with shutdown after user inactivity in case a plugin is
+ keeping the OSD open
+
+Stian B. Barmen <stian@barmen.nu>
+ for reporting missing EPG data on channels from Canal Digital Norway

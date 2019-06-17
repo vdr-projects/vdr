@@ -141,3 +141,7 @@ VDR Plugin 'skincurses' Revision History
 2018-04-15: Version 2.4.0
 
 - Official release.
+
+2019-03-12: Version 2.4.1
+
+- Changes for ncurses version 6 (thanks to Ulrick Eckhardt).

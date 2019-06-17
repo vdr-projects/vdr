@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 4.5 2017/05/29 08:48:42 kls Exp $
+# $Id: Makefile 4.5.1.1 2019/05/05 13:37:38 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -271,7 +271,7 @@ clean-plugins: vdr.pc
 
 # Install the files (note that 'install-pc' must be first!):
 
-install: install-pc install-bin install-dirs install-conf install-doc install-plugins install-i18n install-includes
+install: install-pc install-bin install-conf install-doc install-plugins install-i18n install-includes
 
 # VDR binary:
 
@@ -288,7 +288,7 @@ install-dirs:
 	@mkdir -p $(DESTDIR)$(CACHEDIR)
 	@mkdir -p $(DESTDIR)$(RESDIR)
 
-install-conf:
+install-conf: install-dirs
 	@cp -pn *.conf $(DESTDIR)$(CONFDIR)
 
 # Documentation:
