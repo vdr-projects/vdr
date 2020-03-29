@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.8 2018/02/13 08:44:19 kls Exp $
+ * $Id: recording.h 4.9 2020/03/29 15:50:22 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -254,8 +254,6 @@ public:
        ///< Touches the '.update' file in the video directory, so that other
        ///< instances of VDR that access the same video directory can be triggered
        ///< to update their recordings list.
-       ///< This function is 'const', because it doesn't actually modify the list
-       ///< of recordings.
   static bool NeedsUpdate(void);
   void ResetResume(const char *ResumeFileName = NULL);
   void ClearSortNames(void);
