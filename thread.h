@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 4.4 2018/03/04 11:27:55 kls Exp $
+ * $Id: thread.h 4.5 2020/03/29 15:53:48 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -33,7 +33,7 @@ public:
   bool Wait(int TimeoutMs = 0);
        ///< Waits at most TimeoutMs milliseconds for a call to Signal(), or
        ///< forever if TimeoutMs is 0.
-       ///< Returns true if Signal() has been called, false it the given
+       ///< Returns true if Signal() has been called, false if the given
        ///< timeout has expired.
   void Signal(void);
        ///< Signals a caller of Wait() that the condition it is waiting for is met.
