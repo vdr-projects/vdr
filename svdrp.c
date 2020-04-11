@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.39 2019/05/06 15:11:15 kls Exp $
+ * $Id: svdrp.c 4.40 2020/04/11 09:22:05 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2087,6 +2087,8 @@ void cSVDRPServer::CmdMOVC(const char *Option)
                  int FromNumber = FromChannel->Number();
                  int ToNumber = ToChannel->Number();
                  if (FromNumber != ToNumber) {
+                    if (Channels->MoveNeedsDecrement(FromChannel, ToChannel))
+                       ToChannel = Channels->Prev(ToChannel); // cListBase::Move() doesn't know about the channel list's numbered groups!
                     Channels->Move(FromChannel, ToChannel);
                     Channels->ReNumber();
                     Channels->SetModifiedByUser();

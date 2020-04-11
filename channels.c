@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 4.5 2017/06/10 15:08:56 kls Exp $
+ * $Id: channels.c 4.6 2020/04/11 09:22:05 kls Exp $
  */
 
 #include "channels.h"
@@ -944,6 +944,25 @@ void cChannels::ReNumber(void)
          Channel->SetNumber(Number++);
          }
       }
+}
+
+bool cChannels::MoveNeedsDecrement(cChannel *From, cChannel *To)
+{
+  int Number = From->Number();
+  if (Number < To->Number()) {
+     for (cChannel *Channel = Next(From); Channel; Channel = Next(Channel)) {
+         if (Channel == To)
+            break;
+         if (Channel->GroupSep()) {
+            if (Channel->Number() > Number)
+               Number = Channel->Number();
+            }
+         else
+            Number++;
+         }
+     return Number == To->Number();
+     }
+  return false;
 }
 
 void cChannels::Del(cChannel *Channel)

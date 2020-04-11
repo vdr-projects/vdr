@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.80 2019/05/28 15:24:43 kls Exp $
+ * $Id: menu.c 4.81 2020/04/11 09:22:05 kls Exp $
  */
 
 #include "menu.h"
@@ -516,7 +516,6 @@ eOSState cMenuChannels::Delete(void)
         Channels->Del(Channel);
         cOsdMenu::Del(Index);
         Propagate(Channels);
-        Channels->SetModifiedByUser();
         isyslog("channel %d deleted", DeletedChannel);
         Deleted = true;
         if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
@@ -541,10 +540,14 @@ void cMenuChannels::Move(int From, int To)
      if (FromChannel && ToChannel) {
         int FromNumber = FromChannel->Number();
         int ToNumber = ToChannel->Number();
+        if (Channels->MoveNeedsDecrement(FromChannel, ToChannel)) {
+           ToChannel = Channels->Prev(ToChannel); // cListBase::Move() doesn't know about the channel list's numbered groups!
+           To--;
+           }
         Channels->Move(FromChannel, ToChannel);
         cOsdMenu::Move(From, To);
+        SetCurrent(Get(To));
         Propagate(Channels);
-        Channels->SetModifiedByUser();
         isyslog("channel %d moved to %d", FromNumber, ToNumber);
         if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
            if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
