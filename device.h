@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.14 2020/05/04 08:50:20 kls Exp $
+ * $Id: device.h 4.15 2020/05/04 11:40:44 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -332,7 +332,7 @@ public:
          ///< Returns true if it is ok to switch to the Channel's transponder on this
          ///< device, without disturbing any other activities. If an occupied timeout
          ///< has been set for this device, and that timeout has not yet expired,
-         ///< this function returns false,
+         ///< this function returns false.
   bool SwitchChannel(const cChannel *Channel, bool LiveView);
          ///< Switches the device to the given Channel, initiating transfer mode
          ///< if necessary.
