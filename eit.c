@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.8 2020/05/04 12:28:31 kls Exp $
+ * $Id: eit.c 4.9 2020/05/04 13:02:14 kls Exp $
  */
 
 #include "eit.h"
@@ -391,7 +391,7 @@ cTDT::cTDT(const u_char *Data)
   if (abs(diff) > MAX_TIME_DIFF) {
      mutex.Lock();
      if (abs(diff) > MAX_ADJ_DIFF) {
-        timespec ts = { 0 };
+        timespec ts = {};
         ts.tv_sec = dvbtim;
         if (clock_settime(CLOCK_REALTIME, &ts) == 0)
            isyslog("system time changed from %s (%ld) to %s (%ld)", *TimeToString(loctim), loctim, *TimeToString(dvbtim), dvbtim);
