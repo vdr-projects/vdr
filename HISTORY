@@ -9420,8 +9420,11 @@ Video Disk Recorder Revision History
 - Fixed handling the S2SatelliteDeliverySystemDescriptor for transponders broadcasting
   in "backwards compatibility mode" according to ETSI EN 300 468 (thanks to Onur Sentürk).
 
-2020-04-11:
+2020-05-04:
 
 - Fixed moving channels between number groups in SVDRP's MOVC command and the Channels
   menu, in case a channel is moved to a higher number and into a numbered group
   (reported by Manuel Reimer).
+- Now retuning if the received transponder's SDT doesn't contain the expected values
+  for NID and TID (thanks to Uwe Scheffler for reporting a problem with failed tuning
+  in SCR systems, and Helmut Binder for helping with the implementation).

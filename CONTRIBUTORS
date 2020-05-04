@@ -285,6 +285,7 @@ Uwe Scheffler <linux_dvb@uni.de>
  for reporting a black screen while a "Recording started" message is displayed
  for reporting a problem with the lock on the Channels list in cDisplayChannel still
  being held when Flush() was called
+ for reporting a problem with failed tuning in SCR systems
 
 Matjaz Thaler <matjaz.thaler@guest.arnes.si>
  for improving AC3 decoding when replaying DVDs
@@ -3586,6 +3587,8 @@ Helmut Binder <cco@aon.at>
  for fixing updating the checksum in the CA table after mapping EMM PIDs for MTD
  for fixing a compiler warning in ExchangeChars()
  for suggesting to add __attribute__((packed)) to tIndexPes and tIndexTs
+ for helping with the implementation of retuning if the received transponder's SDT
+ doesn't contain the expected values for NID and TID
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

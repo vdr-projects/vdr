@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.13 2019/05/28 14:47:09 kls Exp $
+ * $Id: device.h 4.14 2020/05/04 08:50:20 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -450,6 +450,8 @@ public:
        ///< Attaches the given filter to this device.
   void Detach(cFilter *Filter);
        ///< Detaches the given filter from this device.
+  const cSdtFilter *SdtFilter(void) const { return sdtFilter; }
+  cSectionHandler *SectionHandler(void) const { return sectionHandler; }
 
 // Common Interface facilities:
 
