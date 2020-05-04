@@ -9428,3 +9428,4 @@ Video Disk Recorder Revision History
 - Now retuning if the received transponder's SDT doesn't contain the expected values
   for NID and TID (thanks to Uwe Scheffler for reporting a problem with failed tuning
   in SCR systems, and Helmut Binder for helping with the implementation).
+- Fixed compatibility with current versions of glibc (thanks to Manuel Reimer).

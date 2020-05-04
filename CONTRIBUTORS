@@ -2920,6 +2920,7 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
  for setting the environment variables HOME, USER, LOGNAME and SHELL accordingly
  when switching to a less privileged user id
  for reporting a bug in moving channels between number groups in SVDRP's MOVC command
+ for fixing compatibility with current versions of glibc
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
