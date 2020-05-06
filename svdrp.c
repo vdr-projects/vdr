@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.41 2020/05/05 15:37:49 kls Exp $
+ * $Id: svdrp.c 4.42 2020/05/06 11:51:33 kls Exp $
  */
 
 #include "svdrp.h"
@@ -970,7 +970,7 @@ const char *HelpPages[] = {
   "    Make the device with the given number the primary device.\n"
   "    Without option it returns the currently active primary device in the same\n"
   "    format as used by the LSTD command.",
-  "PUTE [ file ]\n"
+  "PUTE [ <file> ]\n"
   "    Put data into the EPG list. The data entered has to strictly follow the\n"
   "    format defined in vdr(5) for the 'epg.data' file.  A '.' on a line\n"
   "    by itself terminates the input and starts processing of the data (all\n"
