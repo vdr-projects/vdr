@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.30 2019/05/23 09:48:35 kls Exp $
+ * $Id: vdr.c 4.31 2020/05/07 10:45:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -131,20 +131,18 @@ static bool DropCaps(void)
      fprintf(stderr, "vdr: cap_get_proc failed: %s\n", strerror(errno));
      return false;
      }
-  char *caps_text = cap_to_text(caps_all, NULL);
-  if (!caps_text) {
-     fprintf(stderr, "vdr: cap_to_text failed: %s\n", strerror(errno));
-     return false;
-     }
-  if (cap_free(caps_all)) {
-     fprintf(stderr, "vdr: cap_free failed: %s\n", strerror(errno));
+  cap_flag_value_t cap_flag_value;
+  if (cap_get_flag(caps_all, CAP_SYS_TIME, CAP_PERMITTED , &cap_flag_value)) {
+     fprintf(stderr, "vdr: cap_get_flag failed: %s\n", strerror(errno));
      return false;
      }
   cap_t caps;
-  if (strstr(caps_text,"cap_sys_time"))
+  if (cap_flag_value == CAP_SET)
      caps = cap_from_text("= cap_sys_nice,cap_sys_time,cap_net_raw=ep");
-  else
+  else {
+     fprintf(stdout,"vdr: OS does not support cap_sys_time\n");
      caps = cap_from_text("= cap_sys_nice,cap_net_raw=ep");
+     }
   if (!caps) {
      fprintf(stderr, "vdr: cap_from_text failed: %s\n", strerror(errno));
      return false;

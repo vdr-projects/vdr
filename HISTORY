@@ -9430,3 +9430,4 @@ Video Disk Recorder Revision History
   in SCR systems, and Helmut Binder for helping with the implementation).
 - Fixed compatibility with current versions of glibc (thanks to Manuel Reimer).
 - The SVDRP command DELC now also accepts a channel id (suggested by Manuel Reimer).
+- Fixed dropping capabilities in case cap_sys_time is not available.
