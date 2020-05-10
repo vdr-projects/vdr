@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 4.4 2019/03/12 12:24:34 kls Exp $
+ * $Id: skincurses.c 4.5 2020/05/10 09:04:31 kls Exp $
  */
 
 #include <ncurses.h>
@@ -12,7 +12,7 @@
 #include <vdr/skins.h>
 #include <vdr/videodir.h>
 
-static const char *VERSION        = "2.4.1";
+static const char *VERSION        = "2.4.2";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -83,7 +83,7 @@ cCursesOsd::cCursesOsd(int Left, int Top)
   start_color();
   leaveok(stdscr, true);
 
-  window = subwin(stdscr, ScOsdHeight, ScOsdWidth, 0, 0);
+  window = stdscr;
   syncok(window, true);
 }
 
@@ -92,7 +92,6 @@ cCursesOsd::~cCursesOsd()
   if (window) {
      werase(window);
      Flush();
-     delwin(window);
      window = NULL;
      }
 }
@@ -122,17 +121,14 @@ void cCursesOsd::SaveRegion(int x1, int y1, int x2, int y2)
      savedRegion = NULL;
      }
   savedRegion = newwin(y2 - y1 + 1, x2 - x1 + 1, y1, x1);
-  copywin(window, savedRegion, y1, x1, 0, 0, y2 - y1, x2 - x1, false);
+  if (savedRegion)
+     copywin(window, savedRegion, y1, x1, 0, 0, y2 - y1, x2 - x1, false);
 }
 
 void cCursesOsd::RestoreRegion(void)
 {
-  int begy, begx;
-  int maxy, maxx;
-  getmaxyx(savedRegion, maxy,maxx);
-  getbegyx(savedRegion, begy,begx);
   if (savedRegion) {
-     copywin(savedRegion, window, 0, 0, begy, begx, maxy - begy, maxx - begx, false);
+     overwrite(savedRegion, window);
      delwin(savedRegion);
      savedRegion = NULL;
      }
@@ -837,8 +833,8 @@ bool cPluginSkinCurses::Initialize(void)
   getmaxyx(w, maxy,maxx);
   getbegyx(w, begy,begx);
   if (w) {
-     ScOsdWidth  = maxx - begx + 1;
-     ScOsdHeight = maxy - begy + 1;
+     ScOsdWidth  = maxx - begx;
+     ScOsdHeight = maxy - begy;
      return true;
      }
   return false;
