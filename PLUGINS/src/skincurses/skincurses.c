@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 4.5 2020/05/10 09:04:31 kls Exp $
+ * $Id: skincurses.c 4.6 2020/05/11 10:23:15 kls Exp $
  */
 
 #include <ncurses.h>
@@ -60,9 +60,7 @@ static int ScOsdHeight = 20;
 class cCursesOsd : public cOsd {
 private:
   WINDOW *savedRegion;
-  WINDOW *window;
-  enum { MaxColorPairs = 16 };
-  int colorPairs[MaxColorPairs];
+  cVector<int> colorPairs;
   void SetColor(int colorFg, int colorBg = clrBackground);
 public:
   cCursesOsd(int Left, int Top);
@@ -79,39 +77,34 @@ cCursesOsd::cCursesOsd(int Left, int Top)
 {
   savedRegion = NULL;
 
-  memset(colorPairs, 0x00, sizeof(colorPairs));
   start_color();
   leaveok(stdscr, true);
+  refresh(); // to react on changes to screen size
 
-  window = stdscr;
-  syncok(window, true);
+  int begy, begx;
+  int maxy, maxx;
+  getmaxyx(stdscr, maxy, maxx);
+  getbegyx(stdscr, begy, begx);
+  ScOsdWidth  = maxx - begx;
+  ScOsdHeight = maxy - begy;
 }
 
 cCursesOsd::~cCursesOsd()
 {
-  if (window) {
-     werase(window);
-     Flush();
-     window = NULL;
-     }
+  erase();
+  Flush();
 }
 
 void cCursesOsd::SetColor(int colorFg, int colorBg)
 {
   int color = (colorBg << 16) | colorFg | 0x80000000;
-  for (int i = 0; i < MaxColorPairs; i++) {
-      if (!colorPairs[i]) {
-         colorPairs[i] = color;
-         init_pair(i + 1, colorFg, colorBg);
-         //XXX??? attron(COLOR_PAIR(WHITE_ON_BLUE));
-         wattrset(window, COLOR_PAIR(i + 1));
-         break;
-         }
-      else if (color == colorPairs[i]) {
-         wattrset(window, COLOR_PAIR(i + 1));
-         break;
-         }
-      }
+  int i = colorPairs.IndexOf(color);
+  if (i < 0) {
+     colorPairs.Append(color);
+     i = colorPairs.Size() - 1;
+     init_pair(i + 1, colorFg, colorBg);
+     }
+  attrset(COLOR_PAIR(i + 1));
 }
 
 void cCursesOsd::SaveRegion(int x1, int y1, int x2, int y2)
@@ -122,13 +115,13 @@ void cCursesOsd::SaveRegion(int x1, int y1, int x2, int y2)
      }
   savedRegion = newwin(y2 - y1 + 1, x2 - x1 + 1, y1, x1);
   if (savedRegion)
-     copywin(window, savedRegion, y1, x1, 0, 0, y2 - y1, x2 - x1, false);
+     copywin(stdscr, savedRegion, y1, x1, 0, 0, y2 - y1, x2 - x1, false);
 }
 
 void cCursesOsd::RestoreRegion(void)
 {
   if (savedRegion) {
-     overwrite(savedRegion, window);
+     overwrite(savedRegion, stdscr);
      delwin(savedRegion);
      savedRegion = NULL;
      }
@@ -168,18 +161,22 @@ void cCursesOsd::DrawText(int x, int y, const char *s, tColor ColorFg, tColor Co
         }
      }
   SetColor(ColorFg, ColorBg);
-  wmove(window, y, x); // ncurses wants 'y' before 'x'!
-  waddnstr(window, s, Width ? Width : ScOsdWidth - x);
+  mvaddnstr(y, x, s, Width ? Width : ScOsdWidth - x);
 }
 
 void cCursesOsd::DrawRectangle(int x1, int y1, int x2, int y2, tColor Color)
 {
   SetColor(Color, Color);
-  for (int y = y1; y <= y2; y++) {
-      wmove(window, y, x1); // ncurses wants 'y' before 'x'!
-      whline(window, ' ', x2 - x1 + 1);
-      }
-  wsyncup(window); // shouldn't be necessary because of 'syncok()', but w/o it doesn't work
+  int dx = x2 - x1;
+  int dy = y2 - y1;
+  if (dx >= dy) {
+     for (int y = y1; y <= y2; y++)
+         mvhline(y, x1, ' ', dx + 1);
+     }
+  else {
+     for (int x = x1; x <= x2; x++)
+         mvvline(y1, x, ' ', dy + 1);
+     }
 }
 
 void cCursesOsd::Flush(void)
@@ -827,16 +824,8 @@ bool cPluginSkinCurses::ProcessArgs(int argc, char *argv[])
 bool cPluginSkinCurses::Initialize(void)
 {
   // Initialize any background activities the plugin shall perform.
-  WINDOW *w = initscr();
-  int begy, begx;
-  int maxy, maxx;
-  getmaxyx(w, maxy,maxx);
-  getbegyx(w, begy,begx);
-  if (w) {
-     ScOsdWidth  = maxx - begx;
-     ScOsdHeight = maxy - begy;
+  if (initscr())
      return true;
-     }
   return false;
 }
 

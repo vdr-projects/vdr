@@ -146,6 +146,9 @@ VDR Plugin 'skincurses' Revision History
 
 - Changes for ncurses version 6 (thanks to Ulrick Eckhardt).
 
-2020-05-10: Version 2.4.2
+2020-05-11: Version 2.4.2
 
 - Fixed 'Changes for ncurses version 6'.
+- Reacting to changes in screen size.
+- Simplified color handling.
+- Using 'stdscr' directly instead of an additional window.
