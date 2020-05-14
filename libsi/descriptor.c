@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 4.1 2019/03/15 16:12:43 kls Exp $
+ *   $Id: descriptor.c 4.2 2020/05/14 21:21:03 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -90,17 +90,21 @@ char *ExtendedEventDescriptors::getText(const char *separation1, const char *sep
 }
 
 char *ExtendedEventDescriptors::getText(char *buffer, int size, const char *separation1, const char *separation2) {
+   int tmpsize = size;
+   char tmpbuf[tmpsize];
+   const char *fromCode = NULL;
    int index=0, len;
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)
          continue;
-      d->text.getText(buffer+index, size);
-      len = strlen(buffer+index);
+      d->text.getText(tmpbuf+index, tmpsize, &fromCode);
+      len = strlen(tmpbuf+index);
       index += len;
-      size -= len;
+      tmpsize -= len;
    }
-
+   index = convertCharacterTable(tmpbuf, strlen(tmpbuf), buffer, size, fromCode);
+   size -= index;
    int sepLen1 = strlen(separation1);
    int sepLen2 = strlen(separation2);
    bool separated = false;

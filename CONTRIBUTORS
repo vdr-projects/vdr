@@ -3589,6 +3589,8 @@ Helmut Binder <cco@aon.at>
  for helping with the implementation of retuning if the received transponder's SDT
  doesn't contain the expected values for NID and TID
  for adding the language code for Bulgarian
+ for a patch that was used as a base for fixing handling multi part ExtendedEventDescriptors
+ where only the first part contains information about the character table
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

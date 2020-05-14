@@ -9420,7 +9420,7 @@ Video Disk Recorder Revision History
 - Fixed handling the S2SatelliteDeliverySystemDescriptor for transponders broadcasting
   in "backwards compatibility mode" according to ETSI EN 300 468 (thanks to Onur Sentürk).
 
-2020-05-11:
+2020-05-14:
 
 - Fixed moving channels between number groups in SVDRP's MOVC command and the Channels
   menu, in case a channel is moved to a higher number and into a numbered group
@@ -9432,3 +9432,5 @@ Video Disk Recorder Revision History
 - The SVDRP command DELC now also accepts a channel id (suggested by Manuel Reimer).
 - Fixed dropping capabilities in case cap_sys_time is not available.
 - Added the language code for Bulgarian (thanks to Helmut Binder).
+- Fixed handling multi part ExtendedEventDescriptors where only the first part
+  contains information about the character table (based on a patch from Helmut Binder).
