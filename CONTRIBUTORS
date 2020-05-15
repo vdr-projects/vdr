@@ -3591,6 +3591,8 @@ Helmut Binder <cco@aon.at>
  for adding the language code for Bulgarian
  for a patch that was used as a base for fixing handling multi part ExtendedEventDescriptors
  where only the first part contains information about the character table
+ for suggesting to check and report whether the given value is valid when setting the
+ override character table
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

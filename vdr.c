@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.31 2020/05/07 10:45:41 kls Exp $
+ * $Id: vdr.c 4.32 2020/05/15 11:31:40 kls Exp $
  */
 
 #include <getopt.h>
@@ -726,8 +726,8 @@ int main(int argc, char *argv[])
      isyslog("use of environment variable VDR_CHARSET_OVERRIDE (%s) is deprecated!", DeprecatedVdrCharsetOverride);
 #endif
   if (OverrideCharacterTable) {
-     isyslog("override character table is '%s'", OverrideCharacterTable);
-     SI::SetOverrideCharacterTable(OverrideCharacterTable);
+     bool known = SI::SetOverrideCharacterTable(OverrideCharacterTable);
+     isyslog("override character table is '%s' - %s", OverrideCharacterTable, known ? "known" : "unknown");
      }
 
   // Initialize internationalization:

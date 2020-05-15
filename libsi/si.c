@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 4.1 2020/05/14 21:21:03 kls Exp $
+ *   $Id: si.c 4.2 2020/05/15 11:31:40 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -311,7 +311,7 @@ static const char *CharacterTables2[] = {
 
 #define NumEntries(Table) (sizeof(Table) / sizeof(char *))
 
-static const char *SystemCharacterTable = NULL;
+static char *SystemCharacterTable = NULL;
 bool SystemCharacterTableIsSingleByte = true;
 
 bool systemCharacterTableIsSingleByte(void)
@@ -321,32 +321,42 @@ bool systemCharacterTableIsSingleByte(void)
 
 static char *OverrideCharacterTable = NULL;
 
-void SetOverrideCharacterTable(const char *CharacterTable)
+bool SetOverrideCharacterTable(const char *CharacterTable)
 {
   free(OverrideCharacterTable);
   OverrideCharacterTable = CharacterTable ? strdup(CharacterTable) : NULL;
+   if (OverrideCharacterTable) {
+      // Check whether the character table is known:
+      iconv_t cd = iconv_open(SystemCharacterTable, OverrideCharacterTable);
+      if (cd != (iconv_t)-1) {
+         iconv_close(cd);
+         return true;
+      }
+   }
+   return false;
 }
 
 bool SetSystemCharacterTable(const char *CharacterTable) {
-   if (CharacterTable) {
-      for (unsigned int i = 0; i < NumEntries(CharacterTables1); i++) {
-         if (CharacterTables1[i] && strcasecmp(CharacterTable, CharacterTables1[i]) == 0) {
-            SystemCharacterTable = CharacterTables1[i];
-            SystemCharacterTableIsSingleByte = i <= SingleByteLimit;
-            return true;
+   free(SystemCharacterTable);
+   SystemCharacterTable = CharacterTable ? strdup(CharacterTable) : NULL;
+   SystemCharacterTableIsSingleByte = true;
+   if (SystemCharacterTable) {
+      // Check whether the character table is known and "single byte":
+      char a[] = "ä";
+      char *pa = a;
+      char b[10];
+      char *pb = b;
+      size_t la = strlen(a);
+      size_t lb = sizeof(b);
+      iconv_t cd = iconv_open(SystemCharacterTable, "ISO-8859-1");
+      if (cd != (iconv_t)-1) {
+         if (iconv(cd, &pa, &la, &pb, &lb) != size_t(-1)) {
+            *pb = 0;
+            SystemCharacterTableIsSingleByte = strlen(b) == 1;
          }
+         iconv_close(cd);
+         return true;
       }
-      for (unsigned int i = 0; i < NumEntries(CharacterTables2); i++) {
-         if (CharacterTables2[i] && strcasecmp(CharacterTable, CharacterTables2[i]) == 0) {
-            SystemCharacterTable = CharacterTables2[i];
-            SystemCharacterTableIsSingleByte = true;
-            return true;
-         }
-      }
-   } else {
-      SystemCharacterTable = NULL;
-      SystemCharacterTableIsSingleByte = true;
-      return true;
    }
    return false;
 }
