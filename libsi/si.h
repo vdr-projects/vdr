@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 4.2 2020/05/15 11:31:40 kls Exp $
+ *   $Id: si.h 4.3 2020/05/15 12:32:51 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -538,6 +538,7 @@ bool SetSystemCharacterTable(const char *CharacterTable);
 // a string indicating that table. If no table can be determined, the
 // default ISO6937 is returned. If a table can be determined, the buffer
 // and length are adjusted accordingly.
+// The isSingleByte parameter is deprecated and only present for backwards compatibility.
 const char *getCharacterTable(const unsigned char *&buffer, int &length, bool *isSingleByte = NULL);
 // Copies 'from' to 'to' and converts characters according to 'fromCode', if given.
 // Returns the length of the resulting string.

@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 4.1 2015/03/25 12:37:08 kls Exp $
+ * $Id: dvbsubtitle.c 4.2 2020/05/15 12:32:51 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -479,11 +479,10 @@ void cSubtitleObject::DecodeCharacterString(const uchar *Data, int NumberOfCodes
      for (int i = 0; i < NumberOfCodes; i++)
          txt[i] = Data[i * 2 + 1];
      txt[NumberOfCodes] = 0;
-     bool singleByte;
      const uchar *from = (uchar *)txt;
      int len = NumberOfCodes;
-     const char *CharacterTable = SI::getCharacterTable(from, len, &singleByte);
-     dbgobjects(" table %s single %d raw '%s'", CharacterTable, singleByte, from);
+     const char *CharacterTable = SI::getCharacterTable(from, len);
+     dbgobjects(" table %s raw '%s'", CharacterTable, from);
      cCharSetConv conv(CharacterTable, cCharSetConv::SystemCharacterTable());
      const char *s = conv.Convert((const char *)from);
      dbgobjects(" conv '%s'", s);

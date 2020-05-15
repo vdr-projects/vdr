@@ -9441,3 +9441,5 @@ Video Disk Recorder Revision History
   the result of a sample call to iconv().
 - Setting the override character table now checks and reports whether the given value
   is valid (suggested by Helmut Binder).
+- The isSingleByte parameter in the call to getCharacterTable() is deprecated and only
+  present for backwards compatibility.
