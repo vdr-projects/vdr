@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 4.6 2017/11/08 10:10:30 kls Exp $
+ * $Id: skinlcars.c 4.7 2020/05/18 16:47:29 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1741,12 +1741,13 @@ void cSkinLCARSDisplayMenu::Flush(void)
 {
   if (MenuCategory() == mcMain) {
      cDevice *Device = cDevice::PrimaryDevice();
+     cMutexLock ControlMutexLock;
      if (!Device->Replaying() || Device->Transferring()) {
         LOCK_CHANNELS_READ;
         const cChannel *Channel = Channels->GetByNumber(cDevice::PrimaryDevice()->CurrentChannel());
         DrawLive(Channel);
         }
-     else if (cControl *Control = cControl::Control(true))
+     else if (cControl *Control = cControl::Control(ControlMutexLock, true))
         DrawPlay(Control);
      DrawTimers();
      DrawDevices();

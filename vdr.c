@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.32 2020/05/15 11:31:40 kls Exp $
+ * $Id: vdr.c 4.33 2020/05/18 16:47:29 kls Exp $
  */
 
 #include <getopt.h>
@@ -1196,8 +1196,19 @@ int main(int argc, char *argv[])
         // Queued messages:
         Skins.ProcessQueuedMessages();
         // User Input:
-        cOsdObject *Interact = Menu ? Menu : cControl::Control();
-        eKeys key = Interface->GetKey(!Interact || !Interact->NeedsFastResponse());
+        bool NeedsFastResponse = Menu && Menu->NeedsFastResponse();
+        if (!NeedsFastResponse) {
+           // Must limit the scope of ControlMutexLock here to not hold the lock during the call to Interface->GetKey().
+           cMutexLock ControlMutexLock;
+           cControl *Control = cControl::Control(ControlMutexLock);
+           NeedsFastResponse = Control && Control->NeedsFastResponse();
+           }
+        eKeys key = Interface->GetKey(!NeedsFastResponse);
+        cOsdObject *Interact = Menu;
+        cMutexLock ControlMutexLock;
+        cControl *Control = NULL;
+        if (!Menu)
+           Interact = Control = cControl::Control(ControlMutexLock);
         if (ISREALKEY(key)) {
            EITScanner.Activity();
            // Cancel shutdown countdown:
@@ -1215,9 +1226,9 @@ int main(int argc, char *argv[])
                bool WasMenu = Interact && Interact->IsMenu();
                if (Menu)
                   DELETE_MENU;
-               else if (cControl::Control()) {
+               else if (Control) {
                   if (cOsd::IsOpen())
-                     cControl::Control()->Hide();
+                     Control->Hide();
                   else
                      WasOpen = false;
                   }
@@ -1233,9 +1244,9 @@ int main(int argc, char *argv[])
                   }
                else if (!Menu) {
                   IsInfoMenu = true;
-                  if (cControl::Control()) {
-                     cControl::Control()->Hide();
-                     Menu = cControl::Control()->GetInfo();
+                  if (Control) {
+                     Control->Hide();
+                     Menu = Control->GetInfo();
                      if (Menu)
                         Menu->Show();
                      else
@@ -1252,8 +1263,8 @@ int main(int argc, char *argv[])
           // Direct main menu functions:
           #define DirectMainFunction(function)\
             { DELETE_MENU;\
-            if (cControl::Control())\
-               cControl::Control()->Hide();\
+            if (Control)\
+               Control->Hide();\
             Menu = new cMenuMain(function);\
             key = kNone; } // nobody else needs to see this key
           case kSchedule:   DirectMainFunction(osSchedule); break;
@@ -1267,8 +1278,8 @@ int main(int argc, char *argv[])
                const char *PluginName = cRemote::GetPlugin();
                if (PluginName) {
                   DELETE_MENU;
-                  if (cControl::Control())
-                     cControl::Control()->Hide();
+                  if (Control)
+                     Control->Hide();
                   cPlugin *plugin = cPluginManager::GetPlugin(PluginName);
                   if (plugin) {
                      Menu = plugin->MainMenuAction();
@@ -1290,7 +1301,7 @@ int main(int argc, char *argv[])
                   Menu = new cDisplayChannel(NORMALKEY(key));
                   continue;
                   }
-               else if (cDisplayChannel::IsOpen() || cControl::Control()) {
+               else if (cDisplayChannel::IsOpen() || Control) {
                   Interact->ProcessKey(key);
                   continue;
                   }
@@ -1318,8 +1329,8 @@ int main(int argc, char *argv[])
                break;
           // Audio track control:
           case kAudio:
-               if (cControl::Control())
-                  cControl::Control()->Hide();
+               if (Control)
+                  Control->Hide();
                if (!cDisplayTracks::IsOpen()) {
                   DELETE_MENU;
                   Menu = cDisplayTracks::Create();
@@ -1330,8 +1341,8 @@ int main(int argc, char *argv[])
                break;
           // Subtitle track control:
           case kSubtitles:
-               if (cControl::Control())
-                  cControl::Control()->Hide();
+               if (Control)
+                  Control->Hide();
                if (!cDisplaySubtitleTracks::IsOpen()) {
                   DELETE_MENU;
                   Menu = cDisplaySubtitleTracks::Create();
@@ -1343,7 +1354,7 @@ int main(int argc, char *argv[])
           // Pausing live video:
           case kPlayPause:
           case kPause:
-               if (!cControl::Control()) {
+               if (!Control) {
                   DELETE_MENU;
                   if (Setup.PauseKeyHandling) {
                      if (Setup.PauseKeyHandling > 1 || Interface->Confirm(tr("Pause live video?"))) {
@@ -1356,7 +1367,7 @@ int main(int argc, char *argv[])
                break;
           // Instant recording:
           case kRecord:
-               if (!cControl::Control()) {
+               if (!Control) {
                   if (Setup.RecordKeyHandling) {
                      if (Setup.RecordKeyHandling > 1 || Interface->Confirm(tr("Start recording?"))) {
                         if (cRecordControls::Start())
@@ -1395,15 +1406,16 @@ int main(int argc, char *argv[])
                break;
           default: break;
           }
-        Interact = Menu ? Menu : cControl::Control(); // might have been closed in the mean time
+        Interact = Menu ? Menu : Control; // might have been closed in the mean time
         if (Interact) {
            LastInteract = Now;
            eOSState state = Interact->ProcessKey(key);
-           if (state == osUnknown && Interact != cControl::Control()) {
-              if (ISMODELESSKEY(key) && cControl::Control()) {
-                 state = cControl::Control()->ProcessKey(key);
+           if (state == osUnknown && Interact != Control) {
+              if (ISMODELESSKEY(key) && Control) {
+                 state = Control->ProcessKey(key);
                  if (state == osEnd) {
                     // let's not close a menu when replay ends:
+                    Control = NULL;
                     cControl::Shutdown();
                     continue;
                     }
@@ -1422,15 +1434,18 @@ int main(int argc, char *argv[])
                             break;
              case osRecordings:
                             DELETE_MENU;
+                            Control = NULL;
                             cControl::Shutdown();
                             Menu = new cMenuMain(osRecordings, true);
                             break;
              case osReplay: DELETE_MENU;
+                            Control = NULL;
                             cControl::Shutdown();
                             cControl::Launch(new cReplayControl);
                             break;
              case osStopReplay:
                             DELETE_MENU;
+                            Control = NULL;
                             cControl::Shutdown();
                             break;
              case osPlugin: DELETE_MENU;
@@ -1441,8 +1456,10 @@ int main(int argc, char *argv[])
              case osBack:
              case osEnd:    if (Interact == Menu)
                                DELETE_MENU;
-                            else
+                            else {
+                               Control = NULL;
                                cControl::Shutdown();
+                               }
                             break;
              default:       ;
              }
@@ -1487,6 +1504,7 @@ int main(int argc, char *argv[])
              // Instant resume of the last viewed recording:
              case kPlay:
                   if (cReplayControl::LastReplayed()) {
+                     Control = NULL;
                      cControl::Shutdown();
                      cControl::Launch(new cReplayControl);
                      }
@@ -1512,6 +1530,7 @@ int main(int argc, char *argv[])
         int NewPrimaryDVB = Setup.PrimaryDVB;
         if (NewPrimaryDVB != OldPrimaryDVB) {
            DELETE_MENU;
+           Control = NULL;
            cControl::Shutdown();
            Skins.QueueMessage(mtInfo, tr("Switching primary DVB..."));
            cOsdProvider::Shutdown();
@@ -1532,7 +1551,7 @@ int main(int argc, char *argv[])
               ShutdownHandler.countdown.Cancel();
            }
 
-        if (!cControl::Control() && !cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
+        if (!Control && !cRecordControls::Active() && !RecordingsHandler.Active() && (Now - cRemote::LastActivity()) > ACTIVITYTIMEOUT) {
            // Shutdown:
            // Check whether VDR will be ready for shutdown in SHUTDOWNWAIT seconds:
            time_t Soon = Now + SHUTDOWNWAIT;

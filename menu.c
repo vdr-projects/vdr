@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.81 2020/04/11 09:22:05 kls Exp $
+ * $Id: menu.c 4.82 2020/05/18 16:47:29 kls Exp $
  */
 
 #include "menu.h"
@@ -2731,7 +2731,8 @@ eOSState cMenuRecordingEdit::DeleteMarks(void)
   if (buttonDeleteMarks && Interface->Confirm(tr("Delete editing marks for this recording?"))) {
      if (cMarks::DeleteMarksFile(recording)) {
         SetHelpKeys();
-        if (cControl *Control = cControl::Control(true)) {
+        cMutexLock ControlMutexLock;
+        if (cControl *Control = cControl::Control(ControlMutexLock, true)) {
            if (const cRecording *Recording = Control->GetRecording()) {
               if (strcmp(recording->FileName(), Recording->FileName()) == 0)
                  Control->ClearEditingMarks();
@@ -4457,7 +4458,11 @@ bool cMenuMain::Update(bool Force)
 {
   bool result = false;
 
-  bool NewReplaying = cControl::Control() != NULL;
+  bool NewReplaying = false;
+  {
+    cMutexLock ControlMutexLock;
+    NewReplaying = cControl::Control(ControlMutexLock) != NULL;
+  }
   if (Force || NewReplaying != replaying) {
      replaying = NewReplaying;
      // Replay control:

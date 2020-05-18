@@ -9420,7 +9420,7 @@ Video Disk Recorder Revision History
 - Fixed handling the S2SatelliteDeliverySystemDescriptor for transponders broadcasting
   in "backwards compatibility mode" according to ETSI EN 300 468 (thanks to Onur Sentürk).
 
-2020-05-15:
+2020-05-18: Version 2.4.2
 
 - Fixed moving channels between number groups in SVDRP's MOVC command and the Channels
   menu, in case a channel is moved to a higher number and into a numbered group
@@ -9443,3 +9443,12 @@ Video Disk Recorder Revision History
   is valid (suggested by Helmut Binder).
 - The isSingleByte parameter in the call to getCharacterTable() is deprecated and only
   present for backwards compatibility.
+- Fixed a possible crash in case replay is started and stopped in rapid sequence, by
+  adding missing locking to cControl::Control(). The caller of this function must now
+  provide a cMutexLock which stays alive as long as the result of this call is used.
+  The old version of this function is still there for backwards compatibility with
+  plugins, because this problem appears to occur only under very rare circumstances.
+  Authors of plugins that use this function should switch to the new version, because
+  the old one is deprecated and will be removed in a future version.
+  The version numbers (both VDRVERSNUM and APIVERSNUM) have been bumped to 2.4.2, so
+  that plugins can detect the presence of the new cControl::Control().

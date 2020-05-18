@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 2.2 2012/04/28 11:52:50 kls Exp $
+ * $Id: player.c 4.1 2020/05/18 16:47:29 kls Exp $
  */
 
 #include "player.h"
@@ -70,16 +70,24 @@ cString cControl::GetHeader(void)
   return "";
 }
 
+#if DEPRECATED_CCONTROL
 cControl *cControl::Control(bool Hidden)
 {
   cMutexLock MutexLock(&mutex);
+  return (control && (!control->hidden || Hidden)) ? control : NULL;
+}
+#endif
+
+cControl *cControl::Control(cMutexLock &MutexLock, bool Hidden)
+{
+  MutexLock.Lock(&mutex);
   return (control && (!control->hidden || Hidden)) ? control : NULL;
 }
 
 void cControl::Launch(cControl *Control)
 {
   cMutexLock MutexLock(&mutex);
-  cControl *c = control; // keeps control from pointing to uninitialized memory
+  cControl *c = control; // keeps control from pointing to uninitialized memory TODO obsolete once DEPRECATED_CCONTROL is gone
   control = Control;
   delete c;
 }
