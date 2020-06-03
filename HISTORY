@@ -9452,3 +9452,8 @@ Video Disk Recorder Revision History
   the old one is deprecated and will be removed in a future version.
   The version numbers (both VDRVERSNUM and APIVERSNUM) have been bumped to 2.4.2, so
   that plugins can detect the presence of the new cControl::Control().
+
+2020-06-03:
+
+- Added a missing '-D' to the 'plugins' target of the Makefile (thanks to Johann
+  Friedrichs).
