@@ -2744,9 +2744,14 @@ Benjamin Hess <benjamin.h@gmx.ch>
  for enhancing the SVDRP command CLRE to allow clearing the EPG data of a particular
  channel
 
-Winfried Koehler <w_koehl@gmx.de>
+Winfried Köhler <w_koehl@gmx.de>
  for fixing finding new transponders
+ for fixing wrong value for TableIdBAT in libsi/si.h
  for reporting a compiler warning in calculations involving FramesPerSecond()
+ for making several code modifications to avoid compiler warnings
+ for improving the description of the transponder parameters in vdr.5
+ for reporting a necessary fix in the description of cReceiver in PLUGINS.html,
+ regarding detaching a receiver from its device before deleting it
  for fixing some copy&paste errors in PLUGINS.html
 
 Hans-Werner Hilse <hilse@web.de>
@@ -2813,13 +2818,6 @@ Michael Nork <mnork0@gmx.net>
  for suggesting to remove the compile time option VFAT to allow users of precompiled
  binary distributions to have full control over whether or not to use the --vfat
  option at runtime
-
-Winfried Köhler <w_koehl@gmx.de>
- for fixing wrong value for TableIdBAT in libsi/si.h
- for making several code modifications to avoid compiler warnings
- for improving the description of the transponder parameters in vdr.5
- for reporting a necessary fix in the description of cReceiver in PLUGINS.html,
- regarding detaching a receiver from its device before deleting it
 
 Igor M. Liplianin <liplianin@tut.by>
  for a patch that was used to convert VDR to the S2API driver API
