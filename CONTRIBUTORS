@@ -2754,6 +2754,7 @@ Winfried Köhler <w_koehl@gmx.de>
  regarding detaching a receiver from its device before deleting it
  for fixing some copy&paste errors in PLUGINS.html
  for fixing the size of cChannel::dtypes[]
+ for adding a device hook for detecting whether a device provides EIT data
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR

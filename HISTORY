@@ -9460,3 +9460,5 @@ Video Disk Recorder Revision History
 - Fixed the size of cChannel::dtypes[] (thanks to Winfried Köhler).
   The version numbers (both VDRVERSNUM and APIVERSNUM) have been bumped to 2.4.3 to
   indicate this change.
+- Added a device hook for detecting whether a device provides EIT data (thanks to
+  Winfried Köhler).

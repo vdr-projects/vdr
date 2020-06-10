@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.30 2019/05/28 14:50:11 kls Exp $
+ * $Id: device.c 4.31 2020/06/10 14:52:43 kls Exp $
  */
 
 #include "device.h"
@@ -54,6 +54,11 @@ cDeviceHook::cDeviceHook(void)
 }
 
 bool cDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const
+{
+  return true;
+}
+
+bool cDeviceHook::DeviceProvidesEIT(const cDevice *Device) const
 {
   return true;
 }
@@ -712,6 +717,17 @@ bool cDevice::DeviceHooksProvidesTransponder(const cChannel *Channel) const
   cDeviceHook *Hook = deviceHooks.First();
   while (Hook) {
         if (!Hook->DeviceProvidesTransponder(this, Channel))
+           return false;
+        Hook = deviceHooks.Next(Hook);
+        }
+  return true;
+}
+
+bool cDevice::DeviceHooksProvidesEIT(void) const
+{
+  cDeviceHook *Hook = deviceHooks.First();
+  while (Hook) {
+        if (!Hook->DeviceProvidesEIT(this))
            return false;
         Hook = deviceHooks.Next(Hook);
         }

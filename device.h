@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.15 2020/05/04 11:40:44 kls Exp $
+ * $Id: device.h 4.16 2020/06/10 14:52:43 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -95,6 +95,8 @@ public:
           ///< program ends.
   virtual bool DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const;
           ///< Returns true if the given Device can provide the given Channel's transponder.
+  virtual bool DeviceProvidesEIT(const cDevice *Device) const;
+          ///< Returns true if the given Device can provide EIT data.
   };
 
 /// The cDevice class is the base from which actual devices can be derived.
@@ -236,6 +238,7 @@ private:
   static cList<cDeviceHook> deviceHooks;
 protected:
   bool DeviceHooksProvidesTransponder(const cChannel *Channel) const;
+  bool DeviceHooksProvidesEIT(void) const;
 
 // SPU facilities
 

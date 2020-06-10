@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.22 2020/05/04 08:50:20 kls Exp $
+ * $Id: dvbdevice.c 4.23 2020/06/10 14:52:43 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -2244,7 +2244,7 @@ bool cDvbDevice::ProvidesChannel(const cChannel *Channel, int Priority, bool *Ne
 
 bool cDvbDevice::ProvidesEIT(void) const
 {
-  return dvbTuner != NULL;
+  return dvbTuner != NULL && DeviceHooksProvidesEIT();
 }
 
 int cDvbDevice::NumProvidedSystems(void) const

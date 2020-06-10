@@ -2025,8 +2025,9 @@ operator!
 <b>Device hooks</b>
 <p>
 VDR has builtin facilities that select which device is able to provide a given
-transponder. However, there may be situations where the setup is so special
-that it requires considerations that exceed the scope of the core VDR code.
+transponder, or, which device may provide EIT data. However, there may be
+situations where the setup is so special that it requires considerations that
+exceed the scope of the core VDR code.
 This is where <i>device hooks</i> can be used.
 
 <p><table><tr><td class="code"><pre>
@@ -2034,6 +2035,7 @@ class cMyDeviceHook : public cDeviceHook {
 public:
   cMyDeviceHook(void);
   virtual bool DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const;
+  virtual bool DeviceProvidesEIT(const cDevice *Device) const;
   };
 </pre></td></tr></table><p>
 
@@ -2045,6 +2047,19 @@ provide the given Channel's transponder, as in
 bool cMyDeviceHook::DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const
 {
   if (<i>condition where Device can't provide Channel</i>)
+     return false;
+  return true;
+}
+</pre></td></tr></table><p>
+
+In its <tt>DeviceProvidesEIT()</tt> function the device hook can take
+whatever actions are necessary to determine whether the given Device can
+provide EIT data, as in
+
+<p><table><tr><td class="code"><pre>
+bool cMyDeviceHook::DeviceProvidesEIT(const cDevice *Device) const
+{
+  if (<i>condition where Device can't provide EIT data</i>)
      return false;
   return true;
 }
