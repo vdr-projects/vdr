@@ -9453,7 +9453,10 @@ Video Disk Recorder Revision History
   The version numbers (both VDRVERSNUM and APIVERSNUM) have been bumped to 2.4.2, so
   that plugins can detect the presence of the new cControl::Control().
 
-2020-06-03:
+2020-06-03: Version 2.4.3
 
 - Added a missing '-D' to the 'plugins' target of the Makefile (thanks to Johann
   Friedrichs).
+- Fixed the size of cChannel::dtypes[] (thanks to Winfried Köhler).
+  The version numbers (both VDRVERSNUM and APIVERSNUM) have been bumped to 2.4.3 to
+  indicate this change.

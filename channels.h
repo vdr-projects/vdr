@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 4.4 2020/04/11 09:22:05 kls Exp $
+ * $Id: channels.h 4.5 2020/06/10 14:00:36 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -105,7 +105,7 @@ private:
   int atypes[MAXAPIDS + 1]; // list is zero-terminated
   char alangs[MAXAPIDS][MAXLANGCODE2];
   int dpids[MAXDPIDS + 1]; // list is zero-terminated
-  int dtypes[MAXAPIDS + 1]; // list is zero-terminated
+  int dtypes[MAXDPIDS + 1]; // list is zero-terminated
   char dlangs[MAXDPIDS][MAXLANGCODE2];
   int spids[MAXSPIDS + 1]; // list is zero-terminated
   char slangs[MAXSPIDS][MAXLANGCODE2];
