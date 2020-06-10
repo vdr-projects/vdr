@@ -9462,3 +9462,4 @@ Video Disk Recorder Revision History
   indicate this change.
 - Added a device hook for detecting whether a device provides EIT data (thanks to
   Winfried Köhler).
+- Fixed memory handling in cString::Append() (reported by Stefan Herdler).

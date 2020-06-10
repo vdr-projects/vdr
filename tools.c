@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.11 2018/03/04 10:28:04 kls Exp $
+ * $Id: tools.c 4.12 2020/06/10 20:52:10 kls Exp $
  */
 
 #include "tools.h"
@@ -1099,12 +1099,16 @@ cString &cString::operator=(const char *String)
 
 cString &cString::Append(const char *String)
 {
-  int l1 = strlen(s);
-  int l2 = strlen(String);
-  char *p = (char *)realloc(s, l1 + l2 + 1);
-  if (p != s)
-     strcpy(p, s);
-  strcpy(p + l1, String);
+  if (String) {
+     int l1 = s ? strlen(s) : 0;
+     int l2 = strlen(String);
+     if (char *p = (char *)realloc(s, l1 + l2 + 1)) {
+        s = p;
+        strcpy(s + l1, String);
+        }
+     else
+        esyslog("ERROR: out of memory");
+     }
   return *this;
 }
 
