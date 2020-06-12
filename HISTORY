@@ -9463,3 +9463,6 @@ Video Disk Recorder Revision History
 - Added a device hook for detecting whether a device provides EIT data (thanks to
   Winfried Köhler).
 - Fixed memory handling in cString::Append() (reported by Stefan Herdler).
+- Revised 'Fixed a possible deadlock when detaching a receiver from a device' from
+  version 2.3.9, which sometimes caused a black screen when switching channels
+  (thanks to Stefan Verse).

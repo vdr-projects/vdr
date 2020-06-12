@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.31 2020/06/10 14:52:43 kls Exp $
+ * $Id: device.c 4.32 2020/06/12 09:28:44 kls Exp $
  */
 
 #include "device.h"
@@ -1822,17 +1822,16 @@ void cDevice::Detach(cReceiver *Receiver)
   bool receiversLeft = false;
   mutexReceiver.Lock();
   for (int i = 0; i < MAXRECEIVERS; i++) {
-      if (receiver[i] == Receiver) {
+      if (receiver[i] == Receiver)
          receiver[i] = NULL;
-         Receiver->device = NULL;
-         Receiver->Activate(false);
-         for (int n = 0; n < Receiver->numPids; n++)
-             DelPid(Receiver->pids[n]);
-         }
       else if (receiver[i])
          receiversLeft = true;
       }
   mutexReceiver.Unlock();
+  Receiver->device = NULL;
+  Receiver->Activate(false);
+  for (int n = 0; n < Receiver->numPids; n++)
+      DelPid(Receiver->pids[n]);
   if (camSlot) {
      if (Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
         camSlot->StartDecrypting();
