@@ -9466,3 +9466,5 @@ Video Disk Recorder Revision History
 - Revised 'Fixed a possible deadlock when detaching a receiver from a device' from
   version 2.3.9, which sometimes caused a black screen when switching channels
   (thanks to Stefan Verse).
+- Added failsafe defaults for 'make LCLBLD=1' to the Makefile (thanks to Stefan
+  Herdler).

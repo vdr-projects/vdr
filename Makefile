@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 4.7 2020/06/03 12:22:05 kls Exp $
+# $Id: Makefile 4.8 2020/06/15 13:07:55 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -27,6 +27,14 @@ INCLUDES ?= $(shell pkg-config --cflags freetype2 fontconfig)
 CWD       ?= $(shell pwd)
 LSIDIR    ?= $(CWD)/libsi
 PLUGINDIR ?= $(CWD)/PLUGINS
+
+# Failsafe defaults for "make LCLBLD=1":
+ifdef LCLBLD
+DESTDIR   ?= $(CWD)
+LOCDIR    ?= $(CWD)/locale
+HDRDIR    ?= $(CWD)/include
+LIBDIR    ?= $(PLUGINDIR)/lib
+endif
 
 DESTDIR   ?=
 VIDEODIR  ?= /srv/vdr/video
