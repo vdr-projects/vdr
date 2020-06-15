@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 4.1 2020/05/11 11:04:29 kls Exp $
+ * $Id: i18n.c 4.2 2020/06/15 15:57:32 kls Exp $
  */
 
 /*
@@ -37,31 +37,55 @@ const char *LanguageCode = trNOOP("LanguageCode$eng");
 const char *LanguageCodeList[] = {
   "eng,dos",
   "deu,ger",
-  "slv,slo",
-  "ita",
-  "dut,nla,nld",
-  "prt",
-  "fra,fre",
-  "nor",
-  "fin,suo",
-  "pol",
-  "esl,spa",
-  "ell,gre",
-  "sve,swe",
-  "rom,rum",
-  "hun",
+  "alb,sqi",
+  "ara",
+  "bos",
+  "bul",
   "cat,cln",
-  "rus",
-  "srb,srp,scr,scc",
-  "hrv",
-  "est",
-  "dan",
+  "chi,zho",
   "cze,ces",
+  "dan",
+  "dut,nla,nld",
+  "ell,gre",
+  "esl,spa",
+  "est",
+  "eus,baq",
+  "fin,suo",
+  "fra,fre",
+  "hrv",
+  "hun",
+  "iri,gle", // 'NorDig'
+  "ita",
+  "jpn",
+  "lav",
+  "lit",
+  "ltz",
+  "mac,mkd",
+  "mlt",
+  "nor",
+  "pol",
+  "por",
+  "rom,rum",
+  "rus",
+  "slk,slo",
+  "slv",
+  "smi",     // 'NorDig' Sami language (Norway, Sweden, Finnland, Russia)
+  "srb,srp,scr,scc",
+  "sve,swe",
   "tur",
   "ukr",
-  "ara",
-  "bul",
   NULL
+  };
+
+struct tSpecialLc { const char *Code; const char *Name; };
+const struct tSpecialLc SpecialLanguageCodeList[] = {
+  { "qaa", trNOOP("LanguageName$original language (qaa)") },
+  { "mis", trNOOP("LanguageName$uncoded languages (mis)") },
+  { "mul", trNOOP("LanguageName$multiple languages (mul)") },
+  { "nar", trNOOP("LanguageName$narrative (nar)") },
+  { "und", trNOOP("LanguageName$undetermined (und)") },
+  { "zxx", trNOOP("LanguageName$no linguistic content (zxx)") },
+  { NULL, NULL }
   };
 
 static cString I18nLocaleDir;
@@ -71,6 +95,7 @@ static cStringList LanguageNames;
 static cStringList LanguageCodes;
 
 static int NumLocales = 1;
+static int NumLanguages = 1;
 static int CurrentLanguage = 0;
 
 static bool ContainsCode(const char *Codes, const char *Code)
@@ -99,6 +124,17 @@ static void SetEnvLanguage(const char *Locale)
   setenv("LANGUAGE", Locale, 1);
   extern int _nl_msg_cat_cntr;
   ++_nl_msg_cat_cntr;
+}
+
+static void SetLanguageNames(void)
+{
+  // Update the translation for special language codes:
+  int i = NumLanguages;
+  for (const struct tSpecialLc *slc = SpecialLanguageCodeList; slc->Code; slc++) {
+      const char *TranslatedName = gettext(slc->Name);
+      free(LanguageNames[i]);
+      LanguageNames[i++] = strdup(TranslatedName != slc->Name ? TranslatedName : SkipContext(slc->Name));
+      }
 }
 
 void I18nInitialize(const char *LocaleDir)
@@ -145,6 +181,7 @@ void I18nInitialize(const char *LocaleDir)
      dsyslog("found %d locales in %s", NumLocales - 1, *I18nLocaleDir);
      }
   // Prepare any known language codes for which there was no locale:
+  NumLanguages = NumLocales;
   for (const char **lc = LanguageCodeList; *lc; lc++) {
       bool Found = false;
       for (int i = 0; i < LanguageCodes.Size(); i++) {
@@ -155,10 +192,17 @@ void I18nInitialize(const char *LocaleDir)
           }
       if (!Found) {
          dsyslog("no locale for language code '%s'", *lc);
+         NumLanguages++;
          LanguageLocales.Append(strdup(I18N_DEFAULT_LOCALE));
          LanguageNames.Append(strdup(*lc));
          LanguageCodes.Append(strdup(*lc));
          }
+      }
+  // Add special language codes and names:
+  for (const struct tSpecialLc *slc = SpecialLanguageCodeList; slc->Code; slc++) {
+      const char *TranslatedName = gettext(slc->Name);
+      LanguageNames.Append(strdup( TranslatedName != slc->Name ? TranslatedName : SkipContext(slc->Name)));
+      LanguageCodes.Append(strdup(slc->Code));
       }
 }
 
@@ -175,6 +219,7 @@ void I18nSetLocale(const char *Locale)
      if (i >= 0) {
         CurrentLanguage = i;
         SetEnvLanguage(Locale);
+        SetLanguageNames();
         }
      else
         dsyslog("unknown locale: '%s'", Locale);
@@ -188,7 +233,7 @@ int I18nCurrentLanguage(void)
 
 void I18nSetLanguage(int Language)
 {
-  if (Language < LanguageNames.Size()) {
+  if (Language < NumLanguages) {
      CurrentLanguage = Language;
      I18nSetLocale(I18nLocale(CurrentLanguage));
      }

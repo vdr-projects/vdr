@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2018-03-09 16:02+0100\n"
+"POT-Creation-Date: 2020-06-15 17:50+0200\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -343,6 +343,24 @@ msgstr "Deutsch"
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
 msgstr "deu"
+
+msgid "LanguageName$original language (qaa)"
+msgstr "Originalton (qaa)"
+
+msgid "LanguageName$uncoded languages (mis)"
+msgstr "einzelne andere Sprachen (mis)"
+
+msgid "LanguageName$multiple languages (mul)"
+msgstr "mehrere Sprachen (mul)"
+
+msgid "LanguageName$narrative (nar)"
+msgstr "Audiodeskription (nar)"
+
+msgid "LanguageName$undetermined (und)"
+msgstr "unbestimmt (und)"
+
+msgid "LanguageName$no linguistic content (zxx)"
+msgstr "kein sprachlicher Inhalt (zxx)"
 
 msgid "Phase 1: Detecting RC code type"
 msgstr "Phase 1: System der Fernbedienung ermitteln"
