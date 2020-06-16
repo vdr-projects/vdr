@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 4.7 2020/06/16 14:41:32 kls Exp $
+ * $Id: sdt.c 4.8 2020/06/16 14:50:07 kls Exp $
  */
 
 #include "sdt.h"
@@ -111,6 +111,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                    case 0x02: // digital radio sound service
                    case 0x04: // NVOD reference service
                    case 0x05: // NVOD time-shifted service
+                   case 0x0A: // advanced codec digital radio sound service
                    case 0x16: // digital SD television service
                    case 0x19: // digital HD television service
                    case 0x1F: // HEVC digital television service
