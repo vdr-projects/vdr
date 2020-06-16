@@ -9470,3 +9470,4 @@ Video Disk Recorder Revision History
   Herdler).
 - Added codes for more languages and special audio tracks (thanks to Helmut Binder).
 - Added cMtdCamSlot::TsPostProcess() (thanks to Helmut Binder).
+- Added cMtdHandler::StopDecrypting() (thanks to Helmut Binder).

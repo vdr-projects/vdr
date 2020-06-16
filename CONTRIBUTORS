@@ -3598,6 +3598,7 @@ Helmut Binder <cco@aon.at>
  override character table
  for adding codes for more languages and special audio tracks
  for adding cMtdCamSlot::TsPostProcess()
+ for adding cMtdHandler::StopDecrypting()
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

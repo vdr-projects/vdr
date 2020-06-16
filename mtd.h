@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.10 2020/06/16 14:25:43 kls Exp $
+ * $Id: mtd.h 1.11 2020/06/16 14:33:32 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -132,6 +132,8 @@ public:
       ///< Returns true if any of the active MTD CAM slots is currently decrypting.
   void StartDecrypting(void);
       ///< Tells all active MTD CAM slots to start decrypting.
+  void StopDecrypting(void);
+      ///< Tells all active MTD CAM slots to stop decrypting.
   void CancelActivation(void);
       ///< Tells all active MTD CAM slots to cancel activation.
   bool IsActivating(void);
