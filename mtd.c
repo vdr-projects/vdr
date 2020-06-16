@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.c 1.14 2019/05/28 14:59:47 kls Exp $
+ * $Id: mtd.c 1.15 2020/06/16 14:25:43 kls Exp $
  */
 
 #include "mtd.h"
@@ -335,6 +335,11 @@ uchar *cMtdCamSlot::Decrypt(uchar *Data, int &Count)
         d = NULL;
      }
   return d;
+}
+
+bool cMtdCamSlot::TsPostProcess(uchar *Data)
+{
+  return MasterSlot()->TsPostProcess(Data);
 }
 
 void cMtdCamSlot::InjectEit(int Sid)

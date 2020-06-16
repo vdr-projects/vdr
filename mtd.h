@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.9 2019/05/28 15:00:10 kls Exp $
+ * $Id: mtd.h 1.10 2020/06/16 14:25:43 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -172,6 +172,7 @@ public:
   virtual void StartDecrypting(void);
   virtual void StopDecrypting(void);
   virtual uchar *Decrypt(uchar *Data, int &Count);
+  virtual bool TsPostProcess(uchar *Data);
   virtual void InjectEit(int Sid);
   int PutData(const uchar *Data, int Count);
   int PutCat(const uchar *Data, int Count);

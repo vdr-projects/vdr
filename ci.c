@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.26 2019/05/28 15:01:29 kls Exp $
+ * $Id: ci.c 4.27 2020/06/16 14:25:43 kls Exp $
  */
 
 #include "ci.h"
@@ -587,6 +587,7 @@ uint8_t cTPDU::Status(void)
 class cCiTransportConnection {
 private:
   enum eState { stIDLE, stCREATION, stACTIVE, stDELETION };
+  cMutex mutex;
   cCamSlot *camSlot;
   uint8_t tcid;
   eState state;
@@ -1811,6 +1812,7 @@ void cCiTransportConnection::SetTsPostProcessor(cCiSession *CiSession)
 
 bool cCiTransportConnection::TsPostProcess(uint8_t *TsPacket)
 {
+  cMutexLock MutexLock(&mutex);
   if (tsPostProcessor)
      return tsPostProcessor->TsPostProcess(TsPacket);
   return false;
