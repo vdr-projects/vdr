@@ -9471,3 +9471,4 @@ Video Disk Recorder Revision History
 - Added codes for more languages and special audio tracks (thanks to Helmut Binder).
 - Added cMtdCamSlot::TsPostProcess() (thanks to Helmut Binder).
 - Added cMtdHandler::StopDecrypting() (thanks to Helmut Binder).
+- Added support for detecting new channels broadcast in HEVC (thanks to Helmut Binder).
