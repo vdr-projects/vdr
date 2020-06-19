@@ -3601,6 +3601,7 @@ Helmut Binder <cco@aon.at>
  for adding cMtdHandler::StopDecrypting()
  for adding support for detecting new channels broadcast in HEVC
  for adding support for detecting 'advanced codec digital radio sound service'
+ for adding handling shared PMT pids and multiple PMT sections
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

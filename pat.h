@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 4.1 2016/12/23 14:03:24 kls Exp $
+ * $Id: pat.h 4.2 2020/06/19 12:19:15 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -14,20 +14,21 @@
 #include "filter.h"
 #include "thread.h"
 
-#define MAXPMTENTRIES 64
+class cPmtPidEntry;
+class cPmtSidEntry;
 
 class cPatFilter : public cFilter {
 private:
   cMutex mutex;
   cTimeMs timer;
   int patVersion;
-  int pmtIndex;
-  int pmtId[MAXPMTENTRIES];
-  int pmtVersion[MAXPMTENTRIES];
-  int numPmtEntries;
   int sid;
-  int GetPmtPid(int Index) { return pmtId[Index] & 0x0000FFFF; }
-  int MakePmtId(int PmtPid, int Sid) { return PmtPid | (Sid << 16); }
+  cPmtPidEntry *activePmt;
+  cList<cPmtPidEntry> pmtPidList;
+  cList<cPmtSidEntry> pmtSidList;
+  cSectionSyncer sectionSyncer;
+  bool PmtPidComplete(int PmtPid);
+  void PmtPidReset(int PmtPid);
   bool PmtVersionChanged(int PmtPid, int Sid, int Version, bool SetNewVersion = false);
   void SwitchToNextPmtPid(void);
 protected:
