@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 4.8 2019/03/15 10:14:35 kls Exp $
+ * $Id: remux.c 4.9 2020/06/22 12:15:52 kls Exp $
  */
 
 #include "remux.h"
@@ -962,9 +962,9 @@ uchar *cEitGenerator::AddParentalRatingDescriptor(uchar *p, uchar ParentalRating
 {
   *p++ = SI::ParentalRatingDescriptorTag;
   *p++ = 0x04; // descriptor length
-  *p++ = 'D';  // country code
-  *p++ = 'E';
-  *p++ = 'U';
+  *p++ = '9';  // country code "902" ("All countries") -> EN 300 468 / 6.2.28; www.dvbservices.com/country_codes/index.php
+  *p++ = '0';
+  *p++ = '2';
   *p++ = ParentalRating;
   return p;
 }

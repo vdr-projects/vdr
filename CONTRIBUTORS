@@ -3602,6 +3602,8 @@ Helmut Binder <cco@aon.at>
  for adding support for detecting new channels broadcast in HEVC
  for adding support for detecting 'advanced codec digital radio sound service'
  for adding handling shared PMT pids and multiple PMT sections
+ for changing the country code in the generated ParentalRatingDescriptor from 'DEU' to
+ '902' to make it valid for all countries
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
