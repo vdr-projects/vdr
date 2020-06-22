@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.42 2020/05/06 11:51:33 kls Exp $
+ * $Id: svdrp.c 4.43 2020/06/22 20:59:49 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2009,7 +2009,7 @@ void cSVDRPServer::CmdMODC(const char *Option)
                  Channels->ReNumber();
                  Channels->SetModifiedByUser();
                  Channels->SetModified();
-                 isyslog("SVDRP %s < %s modifed channel %d %s", Setup.SVDRPHostName, *clientName, Channel->Number(), *Channel->ToText());
+                 isyslog("SVDRP %s < %s modified channel %d %s", Setup.SVDRPHostName, *clientName, Channel->Number(), *Channel->ToText());
                  Reply(250, "%d %s", Channel->Number(), *Channel->ToText());
                  }
               else

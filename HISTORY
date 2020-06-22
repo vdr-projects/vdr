@@ -9483,3 +9483,4 @@ Video Disk Recorder Revision History
   their Makefiles accordingly by adding the line 'PKG_CONFIG ?= pkg-config' and
   replacing every occurrence of 'pkg-config' with '$(PKG_CONFIG)', as can be seen in
   the Makefiles of the plugins that come with the VDR source.
+- Fixed a typo in svdrp.c (thanks to Tobias Grimm).
