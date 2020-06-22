@@ -4,11 +4,13 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 4.8 2020/06/15 13:07:55 kls Exp $
+# $Id: Makefile 4.9 2020/06/22 15:08:46 kls Exp $
 
 .DELETE_ON_ERROR:
 
 # Compiler flags:
+
+PKG_CONFIG ?= pkg-config
 
 CC       ?= gcc
 CFLAGS   ?= -g -O3 -Wall
@@ -19,8 +21,8 @@ CXXFLAGS ?= -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
 CDEFINES  = -D_GNU_SOURCE
 CDEFINES += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE
 
-LIBS      = -ljpeg -lpthread -ldl -lcap -lrt $(shell pkg-config --libs freetype2 fontconfig)
-INCLUDES ?= $(shell pkg-config --cflags freetype2 fontconfig)
+LIBS      = -ljpeg -lpthread -ldl -lcap -lrt $(shell $(PKG_CONFIG) --libs freetype2 fontconfig)
+INCLUDES ?= $(shell $(PKG_CONFIG) --cflags freetype2 fontconfig)
 
 # Directories:
 
@@ -107,14 +109,14 @@ ifdef VDR_USER
 DEFINES += -DVDR_USER=\"$(VDR_USER)\"
 endif
 ifdef BIDI
-INCLUDES += $(shell pkg-config --cflags fribidi)
+INCLUDES += $(shell $(PKG_CONFIG) --cflags fribidi)
 DEFINES += -DBIDI
-LIBS += $(shell pkg-config --libs fribidi)
+LIBS += $(shell $(PKG_CONFIG) --libs fribidi)
 endif
 ifdef SDNOTIFY
-INCLUDES += $(shell pkg-config --silence-errors --cflags libsystemd-daemon || pkg-config --cflags libsystemd)
+INCLUDES += $(shell $(PKG_CONFIG) --silence-errors --cflags libsystemd-daemon || $(PKG_CONFIG) --cflags libsystemd)
 DEFINES += -DSDNOTIFY
-LIBS += $(shell pkg-config --silence-errors --libs libsystemd-daemon || pkg-config --libs libsystemd)
+LIBS += $(shell $(PKG_CONFIG) --silence-errors --libs libsystemd-daemon || $(PKG_CONFIG) --libs libsystemd)
 endif
 
 LIRC_DEVICE ?= /var/run/lirc/lircd

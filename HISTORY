@@ -9478,3 +9478,8 @@ Video Disk Recorder Revision History
 - Changed the country code in the generated ParentalRatingDescriptor from 'DEU' to
   '902' to make it valid for all countries (thanks to Helmut Binder).
 - Added optional verbose output to the libsi Makefile (thanks to Tobias Grimm).
+- Made the call to pkg_config configurable via the PKG_CONFIG macro, which is necessary
+  for cross-building VDR (thanks to Tobias Grimm). Plugin authors may want to modify
+  their Makefiles accordingly by adding the line 'PKG_CONFIG ?= pkg-config' and
+  replacing every occurrence of 'pkg-config' with '$(PKG_CONFIG)', as can be seen in
+  the Makefiles of the plugins that come with the VDR source.
