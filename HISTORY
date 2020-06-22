@@ -9477,3 +9477,4 @@ Video Disk Recorder Revision History
 - Added handling shared PMT pids and multiple PMT sections (thanks to Helmut Binder).
 - Changed the country code in the generated ParentalRatingDescriptor from 'DEU' to
   '902' to make it valid for all countries (thanks to Helmut Binder).
+- Added optional verbose output to the libsi Makefile (thanks to Tobias Grimm).

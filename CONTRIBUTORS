@@ -2492,6 +2492,7 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for adding a manual page for 'svdrpsend'
  for adding a missing dependency to the Makefile to avoid error messages in the
  clean-plugins target
+ for adding optional verbose output to the libsi Makefile
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown

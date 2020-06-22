@@ -1,7 +1,7 @@
 #
 # Makefile for a libsi
 #
-# $Id: Makefile 4.2 2017/05/29 08:33:15 kls Exp $
+# $Id: Makefile 4.3 2020/06/22 14:31:10 kls Exp $
 
 ### The archiver options:
 
@@ -11,6 +11,15 @@ RANLIB   ?= ranlib
 
 -include ../Make.config
 
+# Output control
+
+ifdef VERBOSE
+Q =
+else
+Q = @
+endif
+export Q
+
 ### The object files (add further files here):
 
 OBJS = util.o si.o section.o descriptor.o
@@ -19,7 +28,7 @@ OBJS = util.o si.o section.o descriptor.o
 
 %.o: %.c
 	@echo CC libsi/$@
-	@$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) $<
+	$(Q)$(CXX) $(CXXFLAGS) -c $(DEFINES) $(INCLUDES) -o $@ $<
 
 ### Dependencies:
 
