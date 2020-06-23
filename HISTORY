@@ -9453,7 +9453,7 @@ Video Disk Recorder Revision History
   The version numbers (both VDRVERSNUM and APIVERSNUM) have been bumped to 2.4.2, so
   that plugins can detect the presence of the new cControl::Control().
 
-2020-06-19: Version 2.4.3
+2020-06-23: Version 2.4.3
 
 - Added a missing '-D' to the 'plugins' target of the Makefile (thanks to Johann
   Friedrichs).
@@ -9485,3 +9485,4 @@ Video Disk Recorder Revision History
   the Makefiles of the plugins that come with the VDR source.
 - Fixed a typo in svdrp.c (thanks to Tobias Grimm).
 - Added support for HEVC-video and AC-4-audio (thanks to Christoph Haubrich).
+- Added a comment about the semantics of cTimeMs::Set().

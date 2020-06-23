@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.16 2018/03/04 14:06:36 kls Exp $
+ * $Id: tools.h 4.17 2020/06/23 15:52:29 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -376,6 +376,12 @@ public:
       ///< time.
   static uint64_t Now(void);
   void Set(int Ms = 0);
+      ///< Sets the timer. If Ms is 0, call Elapsed() to get the number of milliseconds
+      ///< since the timer has been set. If Ms is greater than 0, TimedOut() returns
+      ///< true as soon as Ms milliseconds have passed since calling Set(). If Ms is
+      ///< negative, results are undefined.
+      ///< Depending on the value of Ms, an object of cTimeMs can handle either
+      ///< timeouts or elapsed times, not both at the same time.
   bool TimedOut(void) const;
   uint64_t Elapsed(void) const;
   };
