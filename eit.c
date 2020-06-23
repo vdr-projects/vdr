@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.9 2020/05/04 13:02:14 kls Exp $
+ * $Id: eit.c 4.10 2020/06/23 09:27:09 kls Exp $
  */
 
 #include "eit.h"
@@ -302,11 +302,15 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
             case SI::ComponentDescriptorTag: {
                  SI::ComponentDescriptor *cd = (SI::ComponentDescriptor *)d;
                  uchar Stream = cd->getStreamContent();
+                 uchar Ext = cd->getStreamContentExt();
                  uchar Type = cd->getComponentType();
-                 if (1 <= Stream && Stream <= 6 && Type != 0) { // 1=MPEG2-video, 2=MPEG1-audio, 3=subtitles, 4=AC3-audio, 5=H.264-video, 6=HEAAC-audio
+                 if ((1 <= Stream && Stream <= 6 && Type != 0) // 1=MPEG2-video, 2=MPEG1-audio, 3=subtitles, 4=AC3-audio, 5=H.264-video, 6=HEAAC-audio
+                    || (Stream == 9 && Ext < 2)) {             // 0x09=HEVC-video, 0x19=AC-4-audio
                     if (!Components)
                        Components = new cComponents;
                     char buffer[Utf8BufSize(256)];
+                    if (Stream == 9)
+                       Stream |= Ext << 4;
                     Components->SetComponent(Components->NumComponents(), Stream, Type, I18nNormalizeLanguageCode(cd->languageCode), cd->description.getText(buffer, sizeof(buffer)));
                     }
                  }

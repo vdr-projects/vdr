@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 4.2 2020/05/14 21:21:03 kls Exp $
+ *   $Id: descriptor.c 4.3 2020/06/23 09:27:09 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -565,6 +565,10 @@ void TimeShiftedServiceDescriptor::Parse() {
 
 int ComponentDescriptor::getStreamContent() const {
    return s->stream_content;
+}
+
+int ComponentDescriptor::getStreamContentExt() const {
+   return s->stream_content_ext;
 }
 
 int ComponentDescriptor::getComponentType() const {

@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 3.1 2013/10/30 10:16:18 kls Exp $
+ *   $Id: headers.h 4.1 2020/06/23 09:27:09 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -1176,11 +1176,11 @@ struct descr_component {
    u_char descriptor_tag                         :8;
    u_char descriptor_length                      :8;
 #if BYTE_ORDER == BIG_ENDIAN
-   u_char reserved                               :4;
+   u_char stream_content_ext                     :4;
    u_char stream_content                         :4;
 #else
    u_char stream_content                         :4;
-   u_char reserved                               :4;
+   u_char stream_content_ext                     :4;
 #endif
    u_char component_type                         :8;
    u_char component_tag                          :8;

@@ -9484,3 +9484,4 @@ Video Disk Recorder Revision History
   replacing every occurrence of 'pkg-config' with '$(PKG_CONFIG)', as can be seen in
   the Makefiles of the plugins that come with the VDR source.
 - Fixed a typo in svdrp.c (thanks to Tobias Grimm).
+- Added support for HEVC-video and AC-4-audio (thanks to Christoph Haubrich).
