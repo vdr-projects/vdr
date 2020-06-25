@@ -3608,6 +3608,7 @@ Helmut Binder <cco@aon.at>
  for adding handling shared PMT pids and multiple PMT sections
  for changing the country code in the generated ParentalRatingDescriptor from 'DEU' to
  '902' to make it valid for all countries
+ for adjusting device selection in GetDeviceForTransponder() to that in GetDevice()
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
