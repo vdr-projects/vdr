@@ -9490,3 +9490,4 @@ Video Disk Recorder Revision History
   to Helmut Binder).
 - Now adding CPPFLAGS to CXXFLAGS to allow extra preprocessor flags to be given when
   doing make (suggested by Tobisa Grimm).
+- Added CRC check of the CAT in cCaPidReceiver::Receive() (thanks to Helmut Binder).

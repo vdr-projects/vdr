@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.28 2020/06/16 14:33:32 kls Exp $
+ * $Id: ci.c 4.29 2020/06/27 10:05:56 kls Exp $
  */
 
 #include "ci.h"
@@ -230,38 +230,44 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
            }
         }
      if (p) {
-        DelEmmPids();
-        for (int i = 0; i < length - 4; i++) { // -4 = checksum
-            if (p[i] == 0x09) {
-               int CaId = int(p[i + 2] << 8) | p[i + 3];
-               int EmmPid = Peek13(p + i + 4);
-               AddEmmPid(EmmPid);
-               if (MtdCamSlot)
-                  MtdMapPid(const_cast<uchar *>(p + i + 4), MtdCamSlot->MtdMapper());
-               switch (CaId >> 8) {
-                 case 0x01: for (int j = i + 7; j < p[i + 1] + 2; j += 4) {
-                                EmmPid = Peek13(p + j);
-                                AddEmmPid(EmmPid);
-                                if (MtdCamSlot)
-                                   MtdMapPid(const_cast<uchar *>(p + j), MtdCamSlot->MtdMapper());
-                                }
-                            break;
-                 }
-               i += p[i + 1] + 2 - 1; // -1 to compensate for the loop increment
+        if (!SI::CRC32::crc32((const char *)p - 8, length + 8, 0xFFFFFFFF)) { // <TableIdCAT,....,crc32>
+           DelEmmPids();
+           for (int i = 0; i < length - 4; i++) { // -4 = checksum
+               if (p[i] == 0x09) {
+                  int CaId = int(p[i + 2] << 8) | p[i + 3];
+                  int EmmPid = Peek13(p + i + 4);
+                  AddEmmPid(EmmPid);
+                  if (MtdCamSlot)
+                     MtdMapPid(const_cast<uchar *>(p + i + 4), MtdCamSlot->MtdMapper());
+                  switch (CaId >> 8) {
+                    case 0x01: for (int j = i + 7; j < p[i + 1] + 2; j += 4) {
+                                   EmmPid = Peek13(p + j);
+                                   AddEmmPid(EmmPid);
+                                   if (MtdCamSlot)
+                                      MtdMapPid(const_cast<uchar *>(p + j), MtdCamSlot->MtdMapper());
+                                   }
+                               break;
+                    }
+                  i += p[i + 1] + 2 - 1; // -1 to compensate for the loop increment
+                  }
                }
-            }
-        if (MtdCamSlot) {
-           if (!bufp && length) {
-              // update crc32 - but only single packet CAT is handled for now:
-              uint32_t crc = SI::CRC32::crc32((const char *)p - 8, length + 8 - 4, 0xFFFFFFFF); // <TableIdCAT....>[crc32]
-              uchar *c = const_cast<uchar *>(p + length - 4);
-              *c++ = crc >> 24;
-              *c++ = crc >> 16;
-              *c++ = crc >> 8;
-              *c++ = crc;
+           if (MtdCamSlot) {
+              if (!bufp && length) {
+                 // update crc32 - but only single packet CAT is handled for now:
+                 uint32_t crc = SI::CRC32::crc32((const char *)p - 8, length + 8 - 4, 0xFFFFFFFF); // <TableIdCAT....>[crc32]
+                 uchar *c = const_cast<uchar *>(p + length - 4);
+                 *c++ = crc >> 24;
+                 *c++ = crc >> 16;
+                 *c++ = crc >> 8;
+                 *c++ = crc;
+                 }
+              memcpy(mtdCatBuffer, Data, TS_SIZE);
+              MtdCamSlot->PutCat(mtdCatBuffer, TS_SIZE);
               }
-           memcpy(mtdCatBuffer, Data, TS_SIZE);
-           MtdCamSlot->PutCat(mtdCatBuffer, TS_SIZE);
+           }
+        else {
+           esyslog("ERROR: wrong checksum in CAT");
+           catVersion = -1;
            }
         p = NULL;
         bufp = NULL;
