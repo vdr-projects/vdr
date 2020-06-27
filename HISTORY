@@ -9491,3 +9491,10 @@ Video Disk Recorder Revision History
 - Now adding CPPFLAGS to CXXFLAGS to allow extra preprocessor flags to be given when
   doing make (suggested by Tobisa Grimm).
 - Added CRC check of the CAT in cCaPidReceiver::Receive() (thanks to Helmut Binder).
+- Fixed the 'else if' branch in cDevice::GetDeviceForTransponder(), which hasn't
+  been active since version 1.7.29 (reported by Helmut Binder). The original purpose of
+  this branch was to use a device that is currently not recording for switching to the
+  transponder of an upcoming VPS timer. However, this caused problems with more than
+  two bonded devices, which was "fixed" in version 1.7.29. Apparently this fix merely
+  rendered the whole code branch inactive. Now this branch is only executed for devices
+  that are not bonded.

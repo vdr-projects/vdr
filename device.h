@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.16 2020/06/10 14:52:43 kls Exp $
+ * $Id: device.h 4.17 2020/06/27 10:24:46 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -211,6 +211,11 @@ protected:
          ///< device (On = false), it should do so in this function.
          ///< A derived class must call the MakePrimaryDevice() function of its
          ///< base class.
+  virtual bool IsBonded(void) const { return false; }
+         ///< Returns true if this device is bonded to an other device.
+         ///< Only implemented by cDvbDevice and used in GetDeviceForTransponder().
+         ///< May be dropped in a future version, if a better solution is found.
+         ///< Do not use otherwise!
 public:
   bool IsPrimaryDevice(void) const { return this == primaryDevice && HasDecoder(); }
   int CardIndex(void) const { return cardIndex; }

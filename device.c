@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.33 2020/06/25 13:46:16 kls Exp $
+ * $Id: device.c 4.34 2020/06/27 10:24:46 kls Exp $
  */
 
 #include "device.h"
@@ -427,7 +427,7 @@ cDevice *cDevice::GetDeviceForTransponder(const cChannel *Channel, int Priority)
          if (d->ProvidesTransponder(Channel)) {
             if (d->MaySwitchTransponder(Channel))
                return d; // this device may switch to the transponder without disturbing any receiver or live view
-            else if (!d->Occupied() && d->MaySwitchTransponder(Channel)) { // MaySwitchTransponder() implicitly calls Occupied()
+            else if (!d->Occupied() && !d->IsBonded()) { // MaySwitchTransponder() implicitly calls Occupied()
                if (d->Priority() < Priority && (!Device || d->Priority() < Device->Priority()))
                   Device = d; // use this one only if no other with less impact can be found
                }

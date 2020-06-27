@@ -3612,6 +3612,8 @@ Helmut Binder <cco@aon.at>
  '902' to make it valid for all countries
  for adjusting device selection in GetDeviceForTransponder() to that in GetDevice()
  for adding CRC check of the CAT in cCaPidReceiver::Receive()
+ for reporting that the 'else if' branch in cDevice::GetDeviceForTransponder() hasn't
+ been active since version 1.7.29
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

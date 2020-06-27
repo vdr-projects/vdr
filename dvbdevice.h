@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 4.6 2019/03/10 12:01:15 kls Exp $
+ * $Id: dvbdevice.h 4.7 2020/06/27 10:24:46 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -179,6 +179,7 @@ public:
          ///< Returns true if any devices are available.
 protected:
   int adapter, frontend;
+  virtual bool IsBonded(void) const { return bondedDevice; }
 private:
   int fd_dvr, fd_ca;
   bool checkTsBuffer;
