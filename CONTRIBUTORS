@@ -2496,6 +2496,8 @@ Tobias Grimm <tobias.grimm@e-tobi.net>
  for adding optional verbose output to the libsi Makefile
  for making the call to pkg_config configurable via the PKG_CONFIG macro
  for fixing a typo in svdrp.c
+ for suggesting to add CPPFLAGS to CXXFLAGS to allow extra preprocessor flags to be
+ given when doing make
 
 Helge Lenz <h.lenz@gmx.de>
  for reporting a bug in setting the 'Delta' parameter when calling the shutdown
