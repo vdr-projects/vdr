@@ -9498,3 +9498,9 @@ Video Disk Recorder Revision History
   two bonded devices, which was "fixed" in version 1.7.29. Apparently this fix merely
   rendered the whole code branch inactive. Now this branch is only executed for devices
   that are not bonded.
+
+2020-06-29:
+
+- Improved deleting plugins in case the plugin uses its own memory management (thanks
+  to Winfried Köhler). Plugins that have been compiled with previous versions of VDR
+  do not need to be recompiled, they will silently be handled as before.

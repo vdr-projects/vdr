@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 2.2 2012/09/01 13:08:54 kls Exp $
+ * $Id: plugin.h 4.1 2020/06/29 09:29:06 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -15,7 +15,9 @@
 #include "osdbase.h"
 #include "tools.h"
 
-#define VDRPLUGINCREATOR(PluginClass) extern "C" void *VDRPluginCreator(void) { return new PluginClass; }
+#define VDRPLUGINCREATOR(PluginClass) \
+  extern "C" void *VDRPluginCreator(void) { return new PluginClass; } \
+  extern "C" void VDRPluginDestroyer(PluginClass *p) { delete p; }
 
 class cPlugin {
   friend class cDll;
@@ -71,6 +73,8 @@ private:
   char *args;
   void *handle;
   cPlugin *plugin;
+  typedef void destroy_t(cPlugin *);
+  destroy_t *destroy;
 public:
   cDll(const char *FileName, const char *Args);
   virtual ~cDll();

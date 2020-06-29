@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 4.1 2015/04/18 14:51:20 kls Exp $
+ * $Id: plugin.c 4.2 2020/06/29 09:29:06 kls Exp $
  */
 
 #include "plugin.h"
@@ -182,11 +182,15 @@ cDll::cDll(const char *FileName, const char *Args)
   args = Args ? strdup(Args) : NULL;
   handle = NULL;
   plugin = NULL;
+  destroy = NULL;
 }
 
 cDll::~cDll()
 {
-  delete plugin;
+  if (destroy)
+     destroy(plugin);
+  else
+     delete plugin; // silently fall back for plugins compiled with VDR version <= 2.4.3
   if (handle)
      dlclose(handle);
   free(args);
@@ -223,10 +227,11 @@ bool cDll::Load(bool Log)
   handle = dlopen(fileName, RTLD_NOW);
   const char *error = dlerror();
   if (!error) {
-     void *(*creator)(void);
-     creator = (void *(*)(void))dlsym(handle, "VDRPluginCreator");
+     typedef cPlugin *create_t(void);
+     create_t *create = (create_t *)dlsym(handle, "VDRPluginCreator");
      if (!(error = dlerror()))
-        plugin = (cPlugin *)creator();
+        plugin = create();
+     destroy = (destroy_t *)dlsym(handle, "VDRPluginDestroyer");
      }
   if (!error) {
      if (plugin && args) {
