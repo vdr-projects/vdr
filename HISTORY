@@ -9507,3 +9507,4 @@ Video Disk Recorder Revision History
 - Now setting currentDisplayChannel = NULL before calling cStatus::MsgOsdClear() in
   ~cDisplayChannel(), to avoid possible problems in case a plugin calls IsOpen()
   (reported by Thomas Reufer).
+- Fixed handling inactive shared CA pids (thanks to Helmut Binder).
