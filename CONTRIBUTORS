@@ -3426,6 +3426,7 @@ Thomas Reufer <thomas@reufer.ch>
  for fixing regenerating the index of audio recordings
  for implementing the SVDRP commands 'LSTD' and 'PRIM'
  for adding some comments regarding font height
+ for reporting a possible problem with plugins calling IsOpen() in ~cDisplayChannel()
 
 Eike Sauer <EikeSauer@t-online.de>
  for reporting a problem with channels that need more than 5 TS packets for detecting

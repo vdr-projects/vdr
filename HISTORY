@@ -9499,8 +9499,11 @@ Video Disk Recorder Revision History
   rendered the whole code branch inactive. Now this branch is only executed for devices
   that are not bonded.
 
-2020-06-29:
+2020-07-01:
 
 - Improved deleting plugins in case the plugin uses its own memory management (thanks
   to Winfried Köhler). Plugins that have been compiled with previous versions of VDR
   do not need to be recompiled, they will silently be handled as before.
+- Now setting currentDisplayChannel = NULL before calling cStatus::MsgOsdClear() in
+  ~cDisplayChannel(), to avoid possible problems in case a plugin calls IsOpen()
+  (reported by Thomas Reufer).
