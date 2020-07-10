@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.30 2020/07/01 15:16:21 kls Exp $
+ * $Id: ci.c 4.31 2020/07/10 09:06:21 kls Exp $
  */
 
 #include "ci.h"
@@ -118,9 +118,11 @@ class cCaPidReceiver : public cReceiver {
 private:
   int catVersion;
   cVector<int> emmPids;
-  uchar buffer[2048]; // 11 bit length, max. 2048 byte
+  uchar buffer[1024]; // CAT table length: 10 bit -> max. 1021 + 3 bytes
   uchar *bufp;
-  uchar mtdCatBuffer[TS_SIZE]; // TODO: handle multi packet CATs!
+  #define CAT_MAXPACKETS  6 // 6 * 184 = 1104 bytes for CAT table
+  uchar mtdCatBuffer[CAT_MAXPACKETS][TS_SIZE]; // TODO: handle multi table CATs!
+  int mtdNumCatPackets;
   int length;
   cMutex mutex;
   bool handlingPid;
@@ -147,6 +149,7 @@ cCaPidReceiver::cCaPidReceiver(void)
 {
   catVersion = -1;
   bufp = NULL;
+  mtdNumCatPackets = 0;
   length = 0;
   handlingPid = false;
   cMutexLock MutexLock(&mutex);
@@ -185,30 +188,34 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
      const uchar *p = NULL;
      if (TsPayloadStart(Data)) {
         if (Data[5] == SI::TableIdCAT) {
-           length = (int(Data[6] & 0x03) << 8) | Data[7]; // section length
+           length = (int(Data[6] & 0x0F) << 8) | Data[7]; // section length (12 bit field)
            if (length > 5) {
               int v = (Data[10] & 0x3E) >> 1; // version number
               if (v != catVersion) {
                  if (Data[11] == 0 && Data[12] == 0) { // section number, last section number
-                    if (length > TS_SIZE - 8) {
-                       if (MtdCamSlot)
-                          esyslog("ERROR: need to implement multi packet CAT handling for MTD!");
-                       int n = TS_SIZE - 13;
-                       memcpy(buffer, Data + 13, n);
+                    length += 3; // with TableIdCAT -> Data[5]
+                    if (length > TS_SIZE - 5) {
+                       int n = TS_SIZE - 5;
+                       memcpy(buffer, Data + 5, n);
                        bufp = buffer + n;
-                       length -= n + 5; // 5 = header
+                       length -= n;
                        }
                     else {
-                       p = Data + 13; // no need to copy the data
-                       length -= 5; // header
+                       p = Data + 5; // no need to copy the data
+                       }
+                    if (MtdCamSlot) {
+                       mtdNumCatPackets = 0;
+                       memcpy(mtdCatBuffer[mtdNumCatPackets++], Data, TS_SIZE);
                        }
                     }
                  else
                     dsyslog("multi table CAT section - unhandled!");
                  catVersion = v;
                  }
-              else if (MtdCamSlot)
-                 MtdCamSlot->PutCat(mtdCatBuffer, TS_SIZE);
+              else if (MtdCamSlot) {
+                 for (int i = 0; i < mtdNumCatPackets; i++)
+                     MtdCamSlot->PutCat(mtdCatBuffer[i], TS_SIZE);
+                 }
               }
            }
         }
@@ -222,6 +229,8 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
               p = buffer;
               length = bufp - buffer;
               }
+           if (MtdCamSlot)
+              memcpy(mtdCatBuffer[mtdNumCatPackets++], Data, TS_SIZE);
            }
         else {
            esyslog("ERROR: buffer overflow in cCaPidReceiver::Receive()");
@@ -230,9 +239,9 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
            }
         }
      if (p) {
-        if (!SI::CRC32::crc32((const char *)p - 8, length + 8, 0xFFFFFFFF)) { // <TableIdCAT,....,crc32>
+        if (!SI::CRC32::crc32((const char *)p, length, 0xFFFFFFFF)) { // <TableIdCAT,....,crc32>
            DelEmmPids();
-           for (int i = 0; i < length - 4; i++) { // -4 = checksum
+           for (int i = 8; i < length - 4; i++) { // -4 = checksum
                if (p[i] == 0x09) {
                   int CaId = int(p[i + 2] << 8) | p[i + 3];
                   int EmmPid = Peek13(p + i + 4);
@@ -240,7 +249,7 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
                   if (MtdCamSlot)
                      MtdMapPid(const_cast<uchar *>(p + i + 4), MtdCamSlot->MtdMapper());
                   switch (CaId >> 8) {
-                    case 0x01: for (int j = i + 7; j < p[i + 1] + 2; j += 4) {
+                    case 0x01: for (int j = i + 7; j < i + p[i + 1] + 2; j += 4) {
                                    EmmPid = Peek13(p + j);
                                    AddEmmPid(EmmPid);
                                    if (MtdCamSlot)
@@ -252,17 +261,22 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
                   }
                }
            if (MtdCamSlot) {
-              if (!bufp && length) {
-                 // update crc32 - but only single packet CAT is handled for now:
-                 uint32_t crc = SI::CRC32::crc32((const char *)p - 8, length + 8 - 4, 0xFFFFFFFF); // <TableIdCAT....>[crc32]
-                 uchar *c = const_cast<uchar *>(p + length - 4);
-                 *c++ = crc >> 24;
-                 *c++ = crc >> 16;
-                 *c++ = crc >> 8;
-                 *c++ = crc;
-                 }
-              memcpy(mtdCatBuffer, Data, TS_SIZE);
-              MtdCamSlot->PutCat(mtdCatBuffer, TS_SIZE);
+              // update crc32
+              uint32_t crc = SI::CRC32::crc32((const char *)p, length - 4, 0xFFFFFFFF); // <TableIdCAT....>[crc32]
+              uchar *c = const_cast<uchar *>(p + length - 4);
+              *c++ = crc >> 24;
+              *c++ = crc >> 16;
+              *c++ = crc >> 8;
+              *c++ = crc;
+              // modify CAT packets
+              const uchar *t = p;
+              for (int i = 0, j = 5; i < mtdNumCatPackets; i++, j = 4) {
+                  int n = min(length, TS_SIZE - j);
+                  memcpy(mtdCatBuffer[i] + j, t, n);
+                  t += n;
+                  length -= n;
+                  MtdCamSlot->PutCat(mtdCatBuffer[i], TS_SIZE);
+                  }
               }
            }
         else {
