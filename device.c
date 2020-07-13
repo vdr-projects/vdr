@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.34 2020/06/27 10:24:46 kls Exp $
+ * $Id: device.c 4.35 2020/07/13 08:16:41 kls Exp $
  */
 
 #include "device.h"
@@ -808,9 +808,9 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
   for (int i = 3; i--;) {
       switch (SetChannel(Channel, LiveView)) {
         case scrOk:           return true;
-        case scrNotAvailable: Skins.Message(mtInfo, tr("Channel not available!"));
+        case scrNotAvailable: Skins.QueueMessage(mtInfo, tr("Channel not available!"));
                               return false;
-        case scrNoTransfer:   Skins.Message(mtError, tr("Can't start Transfer Mode!"));
+        case scrNoTransfer:   Skins.QueueMessage(mtError, tr("Can't start Transfer Mode!"));
                               return false;
         case scrFailed:       break; // loop will retry
         default:              esyslog("ERROR: invalid return value from SetChannel");
