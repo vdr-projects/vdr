@@ -9499,7 +9499,7 @@ Video Disk Recorder Revision History
   rendered the whole code branch inactive. Now this branch is only executed for devices
   that are not bonded.
 
-2020-07-13:
+2020-08-02: Version 2.4.4
 
 - Improved deleting plugins in case the plugin uses its own memory management (thanks
   to Winfried Köhler). Plugins that have been compiled with previous versions of VDR
@@ -9511,3 +9511,4 @@ Video Disk Recorder Revision History
 - Implemented handling multi packet CATs with MTD (thanks to Helmut Binder).
 - Fixed a possible 'invalid lock sequence' when switching to an unavailable channel
   with the main menu open.
+- Official release.
