@@ -350,22 +350,22 @@ msgid "LanguageCode$eng"
 msgstr "ita"
 
 msgid "LanguageName$original language (qaa)"
-msgstr ""
+msgstr "lingua originale (qaa)"
 
 msgid "LanguageName$uncoded languages (mis)"
-msgstr ""
+msgstr "lingue non codificate (mis)"
 
 msgid "LanguageName$multiple languages (mul)"
-msgstr ""
+msgstr "lingue multiple (mul)"
 
 msgid "LanguageName$narrative (nar)"
-msgstr ""
+msgstr "narrativa (nar)"
 
 msgid "LanguageName$undetermined (und)"
-msgstr ""
+msgstr "indeterminata (und)"
 
 msgid "LanguageName$no linguistic content (zxx)"
-msgstr ""
+msgstr "nessun contenuto linguistico (zxx)"
 
 msgid "Phase 1: Detecting RC code type"
 msgstr "Fase 1: Rilevamento tipo codice RC"

@@ -9512,3 +9512,7 @@ Video Disk Recorder Revision History
 - Fixed a possible 'invalid lock sequence' when switching to an unavailable channel
   with the main menu open.
 - Official release.
+
+2020-08-16:
+
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
