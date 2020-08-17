@@ -9513,6 +9513,7 @@ Video Disk Recorder Revision History
   with the main menu open.
 - Official release.
 
-2020-08-16:
+2020-08-17:
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Fixed handling newline characters in ci.c's CopyString() (reported by Winfried Köhler).

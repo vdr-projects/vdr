@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.31 2020/07/10 09:06:21 kls Exp $
+ * $Id: ci.c 4.32 2020/08/17 10:26:18 kls Exp $
  */
 
 #include "ci.h"
@@ -81,7 +81,7 @@ static char *CopyString(int Length, const uint8_t *Data)
   char *s = MALLOC(char, Length + 1);
   char *p = s;
   while (Length > 0) {
-        char c = *Data;
+        int c = *Data;
         if (isprint(c)) // some CAMs send funny characters in their strings, let's just skip them
            *p++ = c;
         else if (c == 0x8A) // the character 0x8A is used as newline, so let's put a real '\n' in there
