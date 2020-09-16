@@ -10,7 +10,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: headers.h 4.1 2020/06/23 09:27:09 kls Exp $
+ *   $Id: headers.h 4.2 2020/09/16 13:48:33 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -2081,7 +2081,7 @@ struct descr_application_icons_descriptor_end {
    u_char icon_flags_lo                          :8;
 };
 
-/* 0x15 simple application location descrptor */
+/* 0x15 simple application location descriptor */
 
 #define DESCR_SIMPLE_APPLICATION_LOCATION_LEN 3
 

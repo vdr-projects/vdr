@@ -408,7 +408,7 @@ Misc:
 - Updated sources.conf to reflect the fact that Astra 4A and SES5 are actually in
   two separate positions.
 - Fixed cMarks::GetNextBegin() and cMarks::GetNextEnd(). The behavior of these two
-  functions is now exacly as described in the header file. Editing marks that are
+  functions is now exactly as described in the header file. Editing marks that are
   placed at exactly the same offset in a recording are now preserved in the cutting
   process.
 - The new command line option --chartab can be used to set the default character

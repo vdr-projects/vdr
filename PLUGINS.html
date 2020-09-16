@@ -1710,7 +1710,7 @@ restricts this to a <tt>cOsdObject</tt> returned from the plugin's <tt>MainMenuA
 function, or any of the skin classes a plugin might implement.
 <p>
 If a plugin runs a separate thread and wants to issue a message directly from
-within that tread, it can call
+within that thread, it can call
 
 <p><table><tr><td class="code"><pre>
 int cSkins::QueueMessage(eMessageType Type, const char *s, int Seconds = 0, int Timeout = 0);

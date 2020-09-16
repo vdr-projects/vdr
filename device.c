@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 4.35 2020/07/13 08:16:41 kls Exp $
+ * $Id: device.c 4.36 2020/09/16 13:48:33 kls Exp $
  */
 
 #include "device.h"
@@ -803,7 +803,7 @@ bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
   if (LiveView) {
      isyslog("switching to channel %d %s (%s)", Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
-                           // and, if decrypted, this removes the now superflous PIDs from the CAM, too
+                           // and, if decrypted, this removes the now superfluous PIDs from the CAM, too
      }
   for (int i = 3; i--;) {
       switch (SetChannel(Channel, LiveView)) {
@@ -826,7 +826,7 @@ bool cDevice::SwitchChannel(int Direction)
   Direction = sgn(Direction);
   if (Direction) {
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
-                           // and, if decrypted, this removes the now superflous PIDs from the CAM, too
+                           // and, if decrypted, this removes the now superfluous PIDs from the CAM, too
      int n = CurrentChannel() + Direction;
      int first = n;
      LOCK_CHANNELS_READ;

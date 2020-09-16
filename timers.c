@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.19 2019/05/23 09:46:32 kls Exp $
+ * $Id: timers.c 4.20 2020/09/16 13:48:33 kls Exp $
  */
 
 #include "timers.h"
@@ -313,7 +313,7 @@ bool cTimer::Parse(const char *s)
   //XXX results in an empty string (this first occurred when the EIT gathering
   //XXX was put into a separate thread - don't know why this happens...
   //XXX As a cure we copy the original string and add a blank.
-  //XXX If anybody can shed some light on why sscanf() failes here, I'd love
+  //XXX If anybody can shed some light on why sscanf() fails here, I'd love
   //XXX to hear about that!
   char *s2 = NULL;
   int l2 = strlen(s);

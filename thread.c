@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.14 2018/03/05 22:38:10 kls Exp $
+ * $Id: thread.c 4.15 2020/09/16 13:48:33 kls Exp $
  */
 
 #include "thread.h"
@@ -184,7 +184,7 @@ bool cRwLock::Lock(bool Write, int TimeoutMs)
      }
   else if (writeLockThreadId == cThread::ThreadId()) {
      locked++; // there can be any number of stacked read locks, so we keep track here
-     Result = 0; // aquiring a read lock while holding a write lock within the same thread is OK
+     Result = 0; // acquiring a read lock while holding a write lock within the same thread is OK
      }
   else
      Result = TimeoutMs ? pthread_rwlock_timedrdlock(&rwlock, &abstime) : pthread_rwlock_rdlock(&rwlock);

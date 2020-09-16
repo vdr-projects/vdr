@@ -224,7 +224,7 @@ OSD:
 - The OSD size is now automatically adjusted to the actual video display
   (provided the output device implements the GetOsdSize() function).
 - The OSD now has full TrueColor support. There can be several "pixmaps" that can
-  be overlayed with alpha blending. All existing skins should work out of the box
+  be overlaid with alpha blending. All existing skins should work out of the box
   with the TrueColor OSD - the only exception being cOsd::GetBitmap(). Since the
   TrueColor OSD doesn't use bitmaps, this function will return a dummy bitmap, which
   may not be what the plugin expects. As long as this bitmap is only used for setting

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 4.5 2020/03/29 15:53:48 kls Exp $
+ * $Id: thread.h 4.6 2020/09/16 13:48:33 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -215,7 +215,7 @@ public:
        ///< a write lock.
   void SetSyncStateKey(cStateKey &StateKey);
        ///< Sets the given StateKey to be synchronized to the state of this lock.
-       ///< The caller must currenty hold a write lock on this lock, with a cStateKey
+       ///< The caller must currently hold a write lock on this lock, with a cStateKey
        ///< that is different from the given StateKey. If, when removing the key that
        ///< is holding the write lock, the StateKey's current state is the same as that
        ///< of the lock, it will be increased together with the lock's state.

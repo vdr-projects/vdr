@@ -56,7 +56,7 @@ Conditional Access:
   there is more than one CAM in the system.
   The file 'cam.data' is not written if it is read-only.
 - The mechanism of trying different CAMs when switching to an encrypted channel is
-  now only triggered if there acually is more than one CAM in the system.
+  now only triggered if there actually is more than one CAM in the system.
 - CAMs that can handle multiple devices at the same time can now indicate this
   by creating the first cCamSlot as usual, and every other cCamSlot by giving
   it the first one as its "MasterSlot". To VDR this means that when searching
@@ -79,7 +79,7 @@ Conditional Access:
 - CAMs are now sent a generated EIT packet that contains a single 'present event' for
   the current SID, in order to avoid any parental rating dialogs.
 - When selecting a device/CAM combination for live viewing, CAMs that are known to
-  decrypt the requested channel are now given a higher priority than prefering the
+  decrypt the requested channel are now given a higher priority than preferring the
   primary device.
 - Extended the CI API to allow plugins to implement additional CAM resources.
 - The new configuration file 'camresponses.conf' can be used to define automatic
@@ -402,7 +402,7 @@ Misc:
   buried under tons of text.
   Add VERBOSE=1 to the 'make' call in the VDR source directory to see the
   actual commands that are executed.
-  Plugin authors should modify their makefiles accordingly, by simply preceeding
+  Plugin authors should modify their makefiles accordingly, by simply preceding
   the respective commands with '$(Q)' and inserting '@echo XX $@' (where XX is one
   of the character combinations listed above) before the command.
   The newplugin script has also been modified accordingly.

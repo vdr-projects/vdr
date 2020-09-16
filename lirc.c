@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 4.1 2017/05/30 11:02:17 kls Exp $
+ * $Id: lirc.c 4.2 2020/09/16 13:48:33 kls Exp $
  */
 
 #include "lirc.h"
@@ -89,7 +89,7 @@ void cLircRemote::Action(void)
            int count;
            char KeyName[LIRC_KEY_BUF];
            if (sscanf(buf, "%*x %x %29s", &count, KeyName) != 2) { // '29' in '%29s' is LIRC_KEY_BUF-1!
-              esyslog("ERROR: unparseable lirc command: %s", buf);
+              esyslog("ERROR: unparsable lirc command: %s", buf);
               continue;
               }
            int Delta = ThisTime.Elapsed(); // the time between two subsequent LIRC events

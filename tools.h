@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.17 2020/06/23 15:52:29 kls Exp $
+ * $Id: tools.h 4.18 2020/09/16 13:48:33 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -222,7 +222,7 @@ cString strgetval(const char *s, const char *name, char d = '=');
     ///< Returns the value part of a 'name=value' pair in s.
     ///< name must either be at the beginning of s, or has to be preceded by white space.
     ///< There may be any number of white space around the '=' sign. The value is
-    ///< everyting up to (and excluding) the next white space, or the end of s.
+    ///< everything up to (and excluding) the next white space, or the end of s.
     ///< If an other delimiter shall be used (like, e.g., ':'), it can be given
     ///< as the third parameter.
     ///< If name occurs more than once in s, only the first occurrence is taken.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.9 2020/03/29 15:50:22 kls Exp $
+ * $Id: recording.h 4.10 2020/09/16 13:48:33 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -390,7 +390,7 @@ public:
        ///< If this cMarks object is used by multiple threads, the caller must Lock()
        ///< it before calling Add() and Unlock() it afterwards. The same applies to
        ///< calls to Del(), or any of the functions that return a "cMark *", in case
-       ///< an other thread might modifiy the list while the returned pointer is
+       ///< an other thread might modify the list while the returned pointer is
        ///< considered valid.
   const cMark *Get(int Position) const;
   const cMark *GetPrev(int Position) const;

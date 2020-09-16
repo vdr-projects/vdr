@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 4.5 2017/05/21 09:44:52 kls Exp $
+ * $Id: remux.h 4.6 2020/09/16 13:48:33 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -221,7 +221,7 @@ int64_t PtsDiff(int64_t Pts1, int64_t Pts2);
        ///< properly taking into account the 33bit wrap around. If Pts2 is "before"
        ///< Pts1, the result is negative.
 
-// A transprent TS payload handler:
+// A transparent TS payload handler:
 
 class cTsPayload {
 private:
