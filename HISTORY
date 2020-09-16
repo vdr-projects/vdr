@@ -9519,3 +9519,4 @@ Video Disk Recorder Revision History
 - Fixed handling newline characters in ci.c's CopyString() (reported by Winfried Köhler).
 - Fixed checking the return value of the Open() call in cFileName::SetOffset() (reported
   by Winfried Köhler).
+- Fixed a possible invalid lock sequence in cMenuTimers::OnOff().

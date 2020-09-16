@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.83 2020/07/01 15:05:17 kls Exp $
+ * $Id: menu.c 4.84 2020/09/16 13:35:30 kls Exp $
  */
 
 #include "menu.h"
@@ -1326,8 +1326,10 @@ eOSState cMenuTimers::OnOff(void)
         if (!ExecSVDRPCommand(Timer->Remote(), cString::sprintf("MODT %d %s", Timer->Id(), *Timer->ToText(true)), &Response) || SVDRPCode(Response[0]) != 250)
            RemoteTimerError(Timer);
         }
-     LOCK_SCHEDULES_READ;
-     Timer->SetEventFromSchedule(Schedules);
+     {
+       LOCK_SCHEDULES_READ;
+       Timer->SetEventFromSchedule(Schedules);
+     }
      RefreshCurrent();
      DisplayCurrent(true);
      if (Timer->FirstDay())
