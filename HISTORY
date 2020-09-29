@@ -9513,7 +9513,7 @@ Video Disk Recorder Revision History
   with the main menu open.
 - Official release.
 
-2020-09-16:
+2020-09-29: Version 2.4.5
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed handling newline characters in ci.c's CopyString() (reported by Winfried Köhler).
@@ -9521,3 +9521,6 @@ Video Disk Recorder Revision History
   by Winfried Köhler).
 - Fixed a possible invalid lock sequence in cMenuTimers::OnOff().
 - Fixed several typos (reported by Jens Schleusener).
+- Implemented anti-aliasing for cPixmap::DrawSlope() (thanks to Christoph Haubrich).
+  The version numbers (both VDRVERSNUM and APIVERSNUM) have been bumped to 2.4.5 to
+  indicate this change.

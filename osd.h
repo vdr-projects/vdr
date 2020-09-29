@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 4.6 2019/05/24 21:28:35 kls Exp $
+ * $Id: osd.h 4.7 2020/09/29 14:09:26 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -607,6 +607,10 @@ public:
        ///< a full 32 bit ARGB value. If the alpha value of Color is not 0xFF
        ///< (fully opaque), and this is the background pixmap (layer 0), the pixel is
        ///< alpha blended with the existing color at the given position in this pixmap.
+  virtual void DrawBlendedPixel(const cPoint &Point, tColor Color, uint8_t AlphaLayer = ALPHA_OPAQUE) { DrawPixel(Point, Color); }
+       ///< Like DrawPixel(), but with an additional AlphaLayer, and works on any
+       ///< pixmap, not only the background. The default implementation just calls
+       ///< DrawPixel(), ignoring AlphaLayer.
   virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false) = 0;
        ///< Sets the pixels in the OSD with the data from the given
        ///< Bitmap, putting the upper left corner of the Bitmap at Point.
@@ -697,6 +701,7 @@ public:
   virtual void DrawImage(const cPoint &Point, const cImage &Image);
   virtual void DrawImage(const cPoint &Point, int ImageHandle);
   virtual void DrawPixel(const cPoint &Point, tColor Color);
+  virtual void DrawBlendedPixel(const cPoint &Point, tColor Color, uint8_t AlphaLayer = ALPHA_OPAQUE);
   virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false);
   virtual void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
   virtual void DrawRectangle(const cRect &Rect, tColor Color);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.6 2019/05/24 21:28:35 kls Exp $
+ * $Id: osd.c 4.7 2020/09/29 14:09:26 kls Exp $
  */
 
 #include "osd.h"
@@ -1273,6 +1273,20 @@ void cPixmapMemory::DrawPixel(const cPoint &Point, tColor Color)
   Unlock();
 }
 
+void cPixmapMemory::DrawBlendedPixel(const cPoint &Point, tColor Color, uint8_t Alpha)
+{
+  Lock();
+  if (DrawPort().Size().Contains(Point)) {
+     int p = Point.Y() * DrawPort().Width() + Point.X();
+     if (Alpha != ALPHA_OPAQUE)
+        data[p] = AlphaBlend(Color, data[p], Alpha);
+     else
+        data[p] = Color;
+     MarkDrawPortDirty(Point);
+     }
+  Unlock();
+}
+
 void cPixmapMemory::DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg, tColor ColorBg, bool Overlay)
 {
   Lock();
@@ -1480,7 +1494,6 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
 
 void cPixmapMemory::DrawSlope(const cRect &Rect, tColor Color, int Type)
 {
-  //TODO anti-aliasing?
   //TODO also simplify cBitmap::DrawSlope()
   Lock();
   bool upper    = Type & 0x01;
@@ -1492,28 +1505,87 @@ void cPixmapMemory::DrawSlope(const cRect &Rect, tColor Color, int Type)
   int y2 = Rect.Bottom();
   int w  = Rect.Width();
   int h  = Rect.Height();
+  bool AntiAliased = Setup.AntiAlias;
+  uint8_t intensity = 0;
+
   if (vertical) {
-     for (int y = y1; y <= y2; y++) {
-         double c = cos((y - y1) * M_PI / h);
+     if (upper)
+        DrawRectangle(cRect(x1, y1, w, 1), Color);
+     else
+        DrawRectangle(cRect(x1, y2, w, 1), Color);
+     for (int y = 1; y <= (y2 - y1) / 2; y++) {
+         double c = cos(y * M_PI / (y2 - y1));
+         if (AntiAliased) {
+            double wc = (w * c + (w & 1)) / 2;
+            intensity = 255 * fabs(wc - floor(wc));
+            }
          if (falling)
             c = -c;
-         int x = (x1 + x2) / 2 + int(w * c / 2);
-         if (upper && !falling || !upper && falling)
-            DrawRectangle(cRect(x1, y, x - x1 + 1, 1), Color);
-         else
-            DrawRectangle(cRect(x, y, x2 - x + 1, 1), Color);
+         int x = (x1 + x2 + w * c + 1) / 2;
+         if (upper && !falling || !upper && falling) {
+            if (AntiAliased) {
+               DrawRectangle(cRect(x1, y1 + y, x - x1, 1), Color);
+               DrawBlendedPixel(cPoint(x, y1 + y), Color, upper ? intensity : 255 - intensity);
+               DrawRectangle(cRect(x1, y2 - y, x2 - x, 1), Color);
+               DrawBlendedPixel(cPoint(x1 + x2 - x, y2 - y), Color, upper ? 255 - intensity : intensity);
+               }
+            else {
+               DrawRectangle(cRect(x1, y1 + y, x - x1 + 1, 1), Color);
+               DrawRectangle(cRect(x1, y2 - y, x2 - x + 1, 1), Color);
+               }
+            }
+         else {
+            if (AntiAliased) {
+               DrawRectangle(cRect(x + 1, y1 + y, x2 - x, 1), Color);
+               DrawBlendedPixel(cPoint(x, y1 + y), Color, falling ? intensity : 255 - intensity);
+               DrawRectangle(cRect(x1 + x2 - x + 1, y2 - y, x - x1, 1), Color);
+               DrawBlendedPixel(cPoint(x1 + x2 - x, y2 - y), Color, falling ? 255 - intensity : intensity);
+               }
+            else {
+               DrawRectangle(cRect(x, y1 + y, x2 - x + 1, 1), Color);
+               DrawRectangle(cRect(x1 + x2 - x, y2 - y, x - x1 + 1, 1), Color);
+               }
+            }
          }
      }
   else {
-     for (int x = x1; x <= x2; x++) {
-         double c = cos((x - x1) * M_PI / w);
+     if ((upper && !falling) || (!upper && falling))
+        DrawRectangle(cRect(x1, y1, 1, h), Color);
+     else
+        DrawRectangle(cRect(x2, y1, 1, h), Color);
+     for (int x = 1; x <= (x2 - x1) / 2; x++) {
+         double c = cos(x * M_PI / (x2 - x1));
+         if (AntiAliased) {
+            double hc = (h * c + (h & 1)) / 2;
+            intensity = 255 * fabs(hc - floor(hc));
+            }
          if (falling)
             c = -c;
-         int y = (y1 + y2) / 2 + int(h * c / 2);
-         if (upper)
-            DrawRectangle(cRect(x, y1, 1, y - y1 + 1), Color);
-         else
-            DrawRectangle(cRect(x, y, 1, y2 - y + 1), Color);
+         int y = (y1 + y2 + h * c + 1) / 2;
+         if (upper) {
+            if (AntiAliased) {
+               DrawRectangle(cRect(x1 + x, y1, 1, y - y1), Color);
+               DrawBlendedPixel(cPoint(x1 + x, y), Color, falling ? 255 - intensity : intensity);
+               DrawRectangle(cRect(x2 - x, y1, 1, y2 - y), Color); 
+               DrawBlendedPixel(cPoint(x2 - x, y1 + y2 - y), Color, falling ? intensity : 255 - intensity);
+               }
+            else {
+               DrawRectangle(cRect(x1 + x, y1, 1, y - y1 + 1), Color);
+               DrawRectangle(cRect(x2 - x, y1, 1, y2 - y + 1), Color);
+               }
+            }
+         else {
+            if (AntiAliased) {
+               DrawRectangle(cRect(x1 + x, y + 1, 1, y2 - y), Color);
+               DrawBlendedPixel(cPoint(x1 + x, y), Color, falling ? intensity : 255 - intensity);
+               DrawRectangle(cRect(x2 - x, y1 + y2 - y + 1, 1, y - y1), Color);
+               DrawBlendedPixel(cPoint(x2 - x, y1 + y2 - y), Color, falling ? 255 - intensity : intensity);
+               }
+            else {
+               DrawRectangle(cRect(x1 + x, y, 1, y2 - y + 1), Color);
+               DrawRectangle(cRect(x2 - x, y1 + y2 - y, 1, y - y1 + 1), Color);
+               }
+            }
          }
      }
   MarkDrawPortDirty(Rect);
