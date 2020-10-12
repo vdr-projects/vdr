@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.7 2020/09/29 14:09:26 kls Exp $
+ * $Id: osd.c 4.8 2020/10/12 13:54:44 kls Exp $
  */
 
 #include "osd.h"
@@ -633,7 +633,7 @@ void cBitmap::DrawEllipse(int x1, int y1, int x2, int y2, tColor Color, int Quad
 {
   if (!Intersects(x1, y1, x2, y2))
      return;
-  // Algorithm based on http://homepage.smc.edu/kennedy_john/BELIPSE.PDF
+  // Algorithm based on https://dai.fmph.uniba.sk/upload/0/01/Ellipse.pdf
   int rx = x2 - x1;
   int ry = y2 - y1;
   int cx = (x1 + x2) / 2;
@@ -1278,8 +1278,12 @@ void cPixmapMemory::DrawBlendedPixel(const cPoint &Point, tColor Color, uint8_t 
   Lock();
   if (DrawPort().Size().Contains(Point)) {
      int p = Point.Y() * DrawPort().Width() + Point.X();
-     if (Alpha != ALPHA_OPAQUE)
-        data[p] = AlphaBlend(Color, data[p], Alpha);
+     if (Alpha != ALPHA_OPAQUE) {
+        if (Color == clrTransparent)
+           data[p] = (data[p] & 0x00FFFFFF) | ((((data[p] >> 24) * (255 - Alpha)) << 16) & 0xFF000000);
+        else
+           data[p] = AlphaBlend(Color, data[p], Alpha);
+        }
      else
         data[p] = Color;
      MarkDrawPortDirty(Point);
@@ -1392,10 +1396,9 @@ void cPixmapMemory::DrawRectangle(const cRect &Rect, tColor Color)
 
 void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
 {
-//TODO use anti-aliasing?
 //TODO fix alignment
   Lock();
-  // Algorithm based on http://homepage.smc.edu/kennedy_john/BELIPSE.PDF
+  // Algorithm based on https://dai.fmph.uniba.sk/upload/0/01/Ellipse.pdf
   int x1 = Rect.Left();
   int y1 = Rect.Top();
   int x2 = Rect.Right();
@@ -1425,23 +1428,79 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
   int EllipseError = 0;
   int StoppingX = TwoBSquare * rx;
   int StoppingY = 0;
+  int Delta = 0;
+  bool AntiAliased = Setup.AntiAlias;
   while (StoppingX >= StoppingY) {
-        switch (Quadrants) {
-          case  5: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); // no break
-          case  1: DrawRectangle(cRect(cx,     cy - y, x + 1, 1), Color); break;
-          case  7: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); // no break
-          case  2: DrawRectangle(cRect(cx - x, cy - y, x + 1, 1), Color); break;
-          case  3: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); break;
-          case  4: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); break;
-          case  0:
-          case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
-          case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
-          case -1: DrawRectangle(cRect(cx + x, cy - y, rx - x + 1,      1), Color); break;
-          case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
-          case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
-          case -4: DrawRectangle(cRect(cx + x, cy + y, rx - x + 1,      1), Color); break;
-          default: ;
-          }
+        if (!AntiAliased) {
+           switch (Quadrants) {
+             case  5: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); // no break
+             case  1: DrawRectangle(cRect(cx,     cy - y, x + 1, 1), Color); break;
+             case  7: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); // no break
+             case  2: DrawRectangle(cRect(cx - x, cy - y, x + 1, 1), Color); break;
+             case  3: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); break;
+             case  4: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); break;
+             case  0:
+             case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
+             case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
+             case -1: DrawRectangle(cRect(cx + x, cy - y, rx - x + 1,      1), Color); break;
+             case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
+             case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
+             case -4: DrawRectangle(cRect(cx + x, cy + y, rx - x + 1,      1), Color); break;
+             default: ;
+             }
+           }
+        else {
+           uint8_t intensity = abs(255 * (long int)EllipseError / XChange);
+           if (EllipseError >= 0) {
+              intensity = 255 - intensity;
+              Delta = 0;
+              }
+           else
+              Delta = 1;        
+           switch (Quadrants) {
+             case  5: DrawRectangle(   cRect( cx,             cy + y, x + Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx + x + Delta, cy + y),               Color, intensity);
+                      // no break
+             case  1: DrawRectangle(   cRect( cx,             cy - y, x + Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx + x + Delta, cy - y),               Color, intensity);
+                      break;
+             case  7: DrawRectangle(   cRect( cx - x + 1 - Delta, cy + y, x + Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx - x - Delta,     cy + y),               Color, intensity);
+                      // no break
+             case  2: DrawRectangle(   cRect( cx - x + 1 - Delta, cy - y, x + Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx - x - Delta,     cy - y),               Color, intensity);
+                      break;
+             case  3: DrawRectangle(   cRect( cx - x + 1 - Delta, cy + y, x + Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx - x - Delta,     cy + y),               Color, intensity);
+                      break;
+             case  4: DrawRectangle(   cRect( cx,             cy + y, x + Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx + x + Delta, cy + y),               Color, intensity);
+                      break;
+             case  0:
+             case  6: DrawRectangle(   cRect( cx - x + 1 - Delta, cy - y, 2 * (x + Delta) - 1, 1), Color);
+                      DrawBlendedPixel(cPoint(cx - x - Delta, cy - y),                             Color, intensity);
+                      DrawBlendedPixel(cPoint(cx + x + Delta, cy - y),                             Color, intensity);
+                      if (Quadrants == 6)
+                         break;
+             case  8: DrawRectangle(   cRect( cx - x + 1 - Delta, cy + y, 2 * (x + Delta) - 1 , 1), Color);   
+                      DrawBlendedPixel(cPoint(cx - x - Delta,     cy + y),                          Color, intensity);
+                      DrawBlendedPixel(cPoint(cx + x + Delta,     cy + y),                          Color, intensity);
+                      break;
+             case -1: DrawRectangle(   cRect( cx + x + 1 + Delta, cy - y, rx - (x + Delta), 1), Color);
+                      DrawBlendedPixel(cPoint(cx + x + Delta,     cy - y),                      Color, 255-intensity);
+                      break;
+             case -2: DrawRectangle(   cRect( x1,             cy - y, rx - x - Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx - x - Delta, cy - y),                    Color, 255-intensity);
+                      break;
+             case -3: DrawRectangle(   cRect( x1,             cy + y, rx - x - Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx - x - Delta, cy + y),                    Color, 255-intensity);
+                      break;
+             case -4: DrawRectangle(   cRect( cx + x + 1 + Delta, cy + y, rx - x - Delta, 1), Color);
+                      DrawBlendedPixel(cPoint(cx + x + Delta,     cy + y),                    Color, 255-intensity);
+                      break;
+             default: ;
+             }
+           }
         y++;
         StoppingY += TwoASquare;
         EllipseError += YChange;
@@ -1453,6 +1512,7 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
            XChange += TwoBSquare;
            }
         }
+  int ymax = y - 1;
   x = 0;
   y = ry;
   XChange = ry * ry;
@@ -1461,22 +1521,78 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
   StoppingX = 0;
   StoppingY = TwoASquare * ry;
   while (StoppingX <= StoppingY) {
-        switch (Quadrants) {
-          case  5: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); // no break
-          case  1: DrawRectangle(cRect(cx,     cy - y, x + 1, 1), Color); break;
-          case  7: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); // no break
-          case  2: DrawRectangle(cRect(cx - x, cy - y, x + 1, 1), Color); break;
-          case  3: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); break;
-          case  4: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); break;
-          case  0:
-          case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
-          case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
-          case -1: DrawRectangle(cRect(cx + x, cy - y, rx - x + 1,      1), Color); break;
-          case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
-          case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
-          case -4: DrawRectangle(cRect(cx + x, cy + y, rx - x + 1,      1), Color); break;
-          default: ;
-          }
+        if (!AntiAliased) {
+           switch (Quadrants) {
+             case  5: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); // no break
+             case  1: DrawRectangle(cRect(cx,     cy - y, x + 1, 1), Color); break;
+             case  7: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); // no break
+             case  2: DrawRectangle(cRect(cx - x, cy - y, x + 1, 1), Color); break;
+             case  3: DrawRectangle(cRect(cx - x, cy + y, x + 1, 1), Color); break;
+             case  4: DrawRectangle(cRect(cx,     cy + y, x + 1, 1), Color); break;
+             case  0:
+             case  6: DrawRectangle(cRect(cx - x, cy - y, 2 * x + 1,       1), Color); if (Quadrants == 6) break;
+             case  8: DrawRectangle(cRect(cx - x, cy + y, 2 * x + 1,       1), Color); break;
+             case -1: DrawRectangle(cRect(cx + x, cy - y, rx - x + 1,      1), Color); break;
+             case -2: DrawRectangle(cRect(x1,     cy - y, cx - x - x1 + 1, 1), Color); break;
+             case -3: DrawRectangle(cRect(x1,     cy + y, cx - x - x1 + 1, 1), Color); break;
+             case -4: DrawRectangle(cRect(cx + x, cy + y, rx - x + 1,      1), Color); break;
+             default: ;
+             }
+           }
+        else {
+           uint8_t intensity = abs(255 * (long int)EllipseError / YChange);
+           if (EllipseError >= 0) {
+              intensity = 255 - intensity;
+              Delta = 1;
+              }
+           else
+              Delta = 0;
+           switch (Quadrants) {
+             case  5: DrawRectangle(   cRect( cx + x, cy + 1 + ymax,  1, y - ymax - Delta), Color);
+                      DrawBlendedPixel(cPoint(cx + x, cy + y + 1 - Delta),                  Color, intensity);
+                      // no break
+             case  1: DrawRectangle(   cRect( cx + x, cy - y + Delta, 1, y - ymax - Delta), Color);
+                      DrawBlendedPixel(cPoint(cx + x, cy - y - 1 + Delta),                  Color, intensity);
+                      break;
+             case  7: DrawRectangle(   cRect( cx - x, cy + 1 + ymax,  1, y - ymax - Delta), Color);
+                      DrawBlendedPixel(cPoint(cx - x, cy + y + 1 - Delta),                  Color, intensity);
+                      // no break
+             case  2: DrawRectangle(   cRect( cx - x, cy - y + Delta, 1, y - ymax - Delta), Color);
+                      DrawBlendedPixel(cPoint(cx - x, cy - y - 1 + Delta),                  Color, intensity);
+                      break;
+             case  3: DrawRectangle(   cRect( cx - x, cy + 1 + ymax, 1, y - ymax - Delta),  Color);
+                      DrawBlendedPixel(cPoint(cx - x, cy + y + 1 - Delta),                  Color, intensity);
+                      break;
+             case  4: DrawRectangle(   cRect( cx + x, cy + 1 + ymax, 1, y - ymax - Delta), Color);
+                      DrawBlendedPixel(cPoint(cx + x, cy + y + 1 - Delta),                  Color, intensity);
+                      break;
+             case  0:
+             case  6: DrawRectangle(   cRect( cx + x, cy - y + Delta, 1, y - ymax - Delta), Color);
+                      DrawRectangle(   cRect( cx - x, cy - y + Delta, 1, y - ymax - Delta), Color);
+                      DrawBlendedPixel(cPoint(cx - x, cy - y - 1 + Delta),                  Color, intensity);
+                      DrawBlendedPixel(cPoint(cx + x, cy - y - 1 + Delta),                  Color, intensity);
+                      if (Quadrants == 6)
+                         break;
+             case  8: DrawRectangle(   cRect( cx - x, cy + 1 + ymax, 1, y - ymax - Delta), Color);
+                      DrawRectangle(   cRect( cx + x, cy + 1 + ymax, 1, y - ymax - Delta), Color);   
+                      DrawBlendedPixel(cPoint(cx - x, cy + y + 1 - Delta),                 Color, intensity);
+                      DrawBlendedPixel(cPoint(cx + x, cy + y + 1 - Delta),                 Color, intensity);
+                      break;
+             case -1: DrawRectangle(   cRect( cx + x, cy - ry, 1, ry - y - 1 + Delta), Color);
+                      DrawBlendedPixel(cPoint(cx + x, cy - y - 1 + Delta),             Color, 255-intensity);
+                      break;
+             case -2: DrawRectangle(   cRect( cx - x, cy - ry, 1, ry - y - 1 + Delta), Color);
+                      DrawBlendedPixel(cPoint(cx - x, cy - y - 1 + Delta),             Color, 255-intensity);
+                      break;
+             case -3: DrawRectangle(   cRect( cx - x, cy + y + 2 - Delta, 1, ry - y - 1 + Delta), Color);
+                      DrawBlendedPixel(cPoint(cx - x, cy + y + 1 - Delta),                        Color, 255-intensity);
+                      break;
+             case -4: DrawRectangle(   cRect( cx + x, cy + y + 2 - Delta, 1, ry - y - 1 + Delta), Color);
+                      DrawBlendedPixel(cPoint(cx + x, cy + y + 1 - Delta),                        Color, 255-intensity);
+                      break;
+             default: ;
+             }
+           }
         x++;
         StoppingX += TwoBSquare;
         EllipseError += XChange;
@@ -1488,6 +1604,15 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
            YChange += TwoASquare;
            }
         }
+  if (AntiAliased && Quadrants < 0 ) {
+     switch (Quadrants) {
+        case -1: DrawRectangle(cRect(cx + x, cy - ry,    rx - x + 1, ry - y), Color); break;
+        case -2: DrawRectangle(cRect(x1,     cy - ry,    rx - x + 1, ry - y), Color); break;
+        case -3: DrawRectangle(cRect(x1,     cy + y + 1, rx - x + 1, ry - y), Color); break;
+        case -4: DrawRectangle(cRect(cx + x, cy + y + 1, rx - x + 1, ry - y), Color); break;
+        default: ;
+        }
+     }
   MarkDrawPortDirty(Rect);
   Unlock();
 }

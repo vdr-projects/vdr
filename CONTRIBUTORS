@@ -2441,7 +2441,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for suggesting to add a confirmation before renaming a recording to its folder name
  for reporting a problem with data loss in case renaming a recording fails
  for adding support for HEVC-video and AC-4-audio
- for implementing anti-aliasing for cPixmap::DrawSlope()
+ for implementing anti-aliasing for cPixmap::DrawSlope() and cPixmap::DrawEllipse()
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
