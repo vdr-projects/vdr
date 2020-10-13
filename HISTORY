@@ -9525,3 +9525,4 @@ Video Disk Recorder Revision History
   to Christoph Haubrich).
   The version numbers (both VDRVERSNUM and APIVERSNUM) have been bumped to 2.4.5 to
   indicate this change.
+- Fixed alignment of semi-circles in case of odd sizes.
