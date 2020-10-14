@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 4.4 2018/04/10 13:00:27 kls Exp $
+ * $Id: osddemo.c 4.5 2020/10/14 20:32:41 kls Exp $
  */
 
 #include <vdr/osd.h>
 #include <vdr/plugin.h>
 
-static const char *VERSION        = "2.4.0";
+static const char *VERSION        = "2.4.1";
 static const char *DESCRIPTION    = "Demo of arbitrary OSD setup";
 static const char *MAINMENUENTRY  = "Osd Demo";
 
@@ -134,6 +134,91 @@ void DrawImages(cOsd *Osd)
   for (int i = 0; i < NUMOSDIMAGES; i++)
       cOsdProvider::DropImage(osdImages[i].image);
   Osd->Flush();
+}
+
+// --- DrawEllipseAlignments -------------------------------------------------
+
+void DrawEllipseAlignments(cOsd *Osd)
+{
+  cFont *Font = cFont::CreateFont(Setup.FontOsd, 20);
+  int xa = 0;
+  int ya = 0;
+  int xb = Osd->Width() - 1;
+  int yb = Osd->Height() - 1;
+  Osd->DrawRectangle(xa, ya, xb, yb, clrBlack);
+  int d = 50;
+  int a = d / 2 + 1;
+  int t = a * 2;
+  int n = 30;
+  for (int i = 0; i < n; i++) {
+      Osd->DrawRectangle(a, t, a + d - 1, t + d - 1, clrGreen);
+      Osd->DrawEllipse(a, t - d / 2, a + d - 1, t, clrGreen, 6);
+      Osd->DrawEllipse(a, t + d, a + d - 1, t + d + d / 2, clrGreen, 8);
+      Osd->DrawText(a + d / 3, t + d / 3, itoa(d), clrRed, clrGreen, Font);
+      a += d + 5;
+      d++;
+      }
+  d = 50;
+  a = d * 3;
+  n = 20;
+  for (int i = 0; i < n; i++) {
+      Osd->DrawRectangle(t, a, t + d - 1, a + d - 1, clrGreen);
+      Osd->DrawEllipse(t - d / 2, a, t, a + d - 1, clrGreen, 7);
+      Osd->DrawEllipse(t + d, a, t + d + d / 2, a + d - 1, clrGreen, 5);
+      Osd->DrawText(t + d / 3, a + d / 3, itoa(d), clrRed, clrGreen, Font);
+      a += d + 5;
+      d++;
+      }
+  d = 50;
+  a = d * 3;
+  t = d * 5;
+  n = 30;
+  for (int i = 0; i < n; i++) {
+      Osd->DrawRectangle(a, t, a + d - 1, t + d - 1, clrGreen);
+      Osd->DrawEllipse(a, t - d, a + d - 1, t, clrGreen, 2);
+      Osd->DrawEllipse(a, t + d, a + d - 1, t + d + d, clrGreen, 3);
+      Osd->DrawText(a + d / 3, t + d / 3, itoa(d), clrRed, clrGreen, Font);
+      a += d + 5;
+      d++;
+      }
+  d = 50;
+  a = d * 3;
+  t = d * 9;
+  n = 30;
+  for (int i = 0; i < n; i++) {
+      Osd->DrawRectangle(a, t, a + d - 1, t + d - 1, clrGreen);
+      Osd->DrawEllipse(a, t - d, a + d - 1, t, clrGreen, 1);
+      Osd->DrawEllipse(a, t + d, a + d - 1, t + d + d, clrGreen, 4);
+      Osd->DrawText(a + d / 3, t + d / 3, itoa(d), clrRed, clrGreen, Font);
+      a += d + 5;
+      d++;
+      }
+  d = 50;
+  a = d * 12;
+  t = d * 5;
+  n = 20;
+  for (int i = 0; i < n; i++) {
+      Osd->DrawRectangle(t, a, t + d - 1, a + d - 1, clrGreen);
+      Osd->DrawEllipse(t - d, a, t, a + d - 1, clrGreen, 2);
+      Osd->DrawEllipse(t + d, a, t + d + d, a + d - 1, clrGreen, 1);
+      Osd->DrawText(t + d / 3, a + d / 3, itoa(d), clrRed, clrGreen, Font);
+      a += d + 5;
+      d++;
+      }
+  d = 50;
+  a = d * 12;
+  t = d * 9;
+  n = 20;
+  for (int i = 0; i < n; i++) {
+      Osd->DrawRectangle(t, a, t + d - 1, a + d - 1, clrGreen);
+      Osd->DrawEllipse(t - d, a, t, a + d - 1, clrGreen, 3);
+      Osd->DrawEllipse(t + d, a, t + d + d, a + d - 1, clrGreen, 4);
+      Osd->DrawText(t + d / 3, a + d / 3, itoa(d), clrRed, clrGreen, Font);
+      a += d + 5;
+      d++;
+      }
+  Osd->Flush();
+  delete Font;
 }
 
 // --- cLineGame -------------------------------------------------------------
@@ -590,6 +675,10 @@ eOSState cTrueColorDemo::ProcessKey(eKeys Key)
                      SetArea();
                      DrawImages(osd);
                      break;
+       case k4:      Cancel(3);
+                     SetArea();
+                     DrawEllipseAlignments(osd);
+                     return osContinue;
        case kBack:
        case kOk:     return osEnd;
        default: return state;

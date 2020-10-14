@@ -83,3 +83,7 @@ VDR Plugin 'osddemo' Revision History
 2018-04-15: Version 2.4.0
 
 - Official release.
+
+2020-10-12: Version 2.4.1
+
+- Added test cases for alignment of semi-circles (press key '4').
