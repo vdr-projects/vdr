@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.23 2020/06/10 14:52:43 kls Exp $
+ * $Id: dvbdevice.c 4.24 2020/10/15 10:16:38 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -33,6 +33,8 @@ static int DvbApiVersion = 0x0000; // the version of the DVB driver actually in 
 #define ATSC_LOCK_TIMEOUT  2000 //ms
 
 #define SCR_RANDOM_TIMEOUT  500 // ms (add random value up to this when tuning SCR device to avoid lockups)
+
+#define TSBUFFERSIZE MEGABYTE(16)
 
 // --- DVB Parameter Maps ----------------------------------------------------
 
@@ -2311,7 +2313,7 @@ bool cDvbDevice::OpenDvr(void)
   CloseDvr();
   fd_dvr = DvbOpen(DEV_DVB_DVR, adapter, frontend, O_RDONLY | O_NONBLOCK, true);
   if (fd_dvr >= 0)
-     tsBuffer = new cTSBuffer(fd_dvr, MEGABYTE(5), DeviceNumber() + 1);
+     tsBuffer = new cTSBuffer(fd_dvr, TSBUFFERSIZE, DeviceNumber() + 1);
   return fd_dvr >= 0;
 }
 
