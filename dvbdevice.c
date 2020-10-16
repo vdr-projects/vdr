@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.24 2020/10/15 10:16:38 kls Exp $
+ * $Id: dvbdevice.c 4.25 2020/10/16 13:42:13 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -792,7 +792,7 @@ bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
 {
   if (tunerStatus == tsIdle)
      return false; // not tuned to
-  if (channel.Source() != Channel->Source() || channel.Transponder() != Channel->Transponder())
+  if (channel.Source() != Channel->Source() || channel.Transponder() != Channel->Transponder() || channel.Srate() != Channel->Srate())
      return false; // sufficient mismatch
   // Polarization is already checked as part of the Transponder.
   return strcmp(channel.Parameters(), Channel->Parameters()) == 0;
