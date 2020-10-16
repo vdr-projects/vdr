@@ -3624,6 +3624,8 @@ Helmut Binder <cco@aon.at>
  for implementing handling multi packet CATs with MTD
  for adding checking the symbol rate to cDvbTuner::IsTunedTo(), which apparently got
  lost in version 1.7.13
+ for adding a check for an empty command in cDvbTuner::GetSignalStats() to avoid a
+ possible error message
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

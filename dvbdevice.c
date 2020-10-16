@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.25 2020/10/16 13:42:13 kls Exp $
+ * $Id: dvbdevice.c 4.26 2020/10/16 13:50:36 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -900,7 +900,7 @@ bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double
                   SETCMD(DTV_STAT_POST_TOTAL_BIT_COUNT, 0); }
   if (Per)      { SETCMD(DTV_STAT_ERROR_BLOCK_COUNT, 0);
                   SETCMD(DTV_STAT_TOTAL_BLOCK_COUNT, 0); }
-  if (ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
+  if (CmdSeq.num && ioctl(fd_frontend, FE_GET_PROPERTY, &CmdSeq) != 0) {
      esyslog("ERROR: frontend %d/%d: %m (%s:%d)", adapter, frontend, __FILE__, __LINE__);
      return false;
      }
