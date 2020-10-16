@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.26 2020/10/16 13:50:36 kls Exp $
+ * $Id: dvbdevice.c 4.27 2020/10/16 13:58:45 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -856,6 +856,7 @@ void cDvbTuner::ClearEventQueue(void) const
 bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
 {
   ClearEventQueue();
+  Status = (fe_status_t)0; // initialize here to fix buggy drivers
   while (1) {
         if (ioctl(fd_frontend, FE_READ_STATUS, &Status) != -1)
            return true;
@@ -872,7 +873,7 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
 bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
   ClearEventQueue();
-  fe_status_t FeStatus;
+  fe_status_t FeStatus = (fe_status_t)0; // initialize here to fix buggy drivers
   dtv_property Props[MAXFRONTENDCMDS];
   dtv_properties CmdSeq;
   memset(&Props, 0, sizeof(Props));

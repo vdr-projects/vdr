@@ -9532,3 +9532,6 @@ Video Disk Recorder Revision History
   in version 1.7.13 (thanks to Helmut Binder).
 - Now checking for an empty command in cDvbTuner::GetSignalStats() to avoid a possible
   error message (thanks to Helmut Binder).
+- Now initializing the status variable in cDvbTuner::GetFrontendStatus() and
+  cDvbTuner::GetSignalStats() to avoid problems with drivers that don't do this
+  (thanks to Helmut Binder).
