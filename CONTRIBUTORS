@@ -3484,6 +3484,8 @@ Stefan Schallenberg <infos@nafets.de>
 Claus Muus <email@clausmuus.de>
  for adding the new parameters "Setup/Miscellaneous/Volume steps" and
  ".../Volume linearize"
+ for reporting multiple recording entries in case a recording is started during the
+ initial reading of the video directory
 
 Dieter Ferdinand <dieter.ferdinand@gmx.de>
  for reporting a problem with jumping to an absolute position via the Red key in

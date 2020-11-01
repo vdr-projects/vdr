@@ -9535,3 +9535,8 @@ Video Disk Recorder Revision History
 - Now initializing the status variable in cDvbTuner::GetFrontendStatus() and
   cDvbTuner::GetSignalStats() to avoid problems with drivers that don't do this
   (thanks to Helmut Binder).
+
+2020-10-30:
+
+- Fixed multiple recording entries in case a recording is started during the initial
+  reading of the video directory (reported by Claus Muus).

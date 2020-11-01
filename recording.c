@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.28 2020/09/16 13:30:59 kls Exp $
+ * $Id: recording.c 4.29 2020/10/30 16:08:29 kls Exp $
  */
 
 #include "recording.h"
@@ -1375,6 +1375,7 @@ class cVideoDirectoryScannerThread : public cThread {
 private:
   cRecordings *recordings;
   cRecordings *deletedRecordings;
+  int count;
   bool initial;
   void ScanVideoDir(const char *DirName, int LinkLevel = 0, int DirLevel = 0);
 protected:
@@ -1389,6 +1390,7 @@ cVideoDirectoryScannerThread::cVideoDirectoryScannerThread(cRecordings *Recordin
 {
   recordings = Recordings;
   deletedRecordings = DeletedRecordings;
+  count = 0;
   initial = true;
 }
 
@@ -1401,7 +1403,8 @@ void cVideoDirectoryScannerThread::Action(void)
 {
   cStateKey StateKey;
   recordings->Lock(StateKey);
-  initial = recordings->Count() == 0; // no name checking if the list is initially empty
+  count = recordings->Count();
+  initial = count == 0; // no name checking if the list is initially empty
   StateKey.Remove();
   deletedRecordings->Lock(StateKey, true);
   deletedRecordings->Clear();
@@ -1439,6 +1442,10 @@ void cVideoDirectoryScannerThread::ScanVideoDir(const char *DirName, int LinkLev
               if (Recordings) {
                  cStateKey StateKey;
                  Recordings->Lock(StateKey, true);
+                 if (initial && count != recordings->Count()) {
+                    dsyslog("activated name checking for initial read of video directory");
+                    initial = false;
+                    }
                  if (Recordings == deletedRecordings || initial || !Recordings->GetByName(buffer)) {
                     cRecording *r = new cRecording(buffer);
                     if (r->Name()) {
@@ -1448,6 +1455,7 @@ void cVideoDirectoryScannerThread::ScanVideoDir(const char *DirName, int LinkLev
                        if (Recordings == deletedRecordings)
                           r->SetDeleted();
                        Recordings->Add(r);
+                       count = recordings->Count();
                        }
                     else
                        delete r;
