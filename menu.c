@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.85 2020/09/16 13:48:33 kls Exp $
+ * $Id: menu.c 4.86 2020/11/03 22:12:38 kls Exp $
  */
 
 #include "menu.h"
@@ -2834,6 +2834,8 @@ cMenuRecording::cMenuRecording(const cRecording *Recording, bool WithButtons)
 :cOsdMenu(tr("Recording info"))
 {
   SetMenuCategory(mcRecordingInfo);
+  if (cRecordings::GetRecordingsRead(recordingsStateKey)) // initializes recordingsStateKey, so we don't call Display() unnecessarily
+     recordingsStateKey.Remove();
   recording = Recording;
   originalFileName = recording->FileName();
   withButtons = WithButtons;
