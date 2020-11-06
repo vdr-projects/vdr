@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.86 2020/11/03 22:12:38 kls Exp $
+ * $Id: menu.c 4.87 2020/11/06 13:13:05 kls Exp $
  */
 
 #include "menu.h"
@@ -1130,7 +1130,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                            addedTimer = timer;
                            if (!HandleRemoteModifications(timer)) {
                               // must add the timer before HandleRemoteModifications to get proper log messages with timer ids
-                              Timers->Del(timer);
+                              Timers->Del(timer, false);
                               addedTimer = NULL;
                               return osContinue;
                               }

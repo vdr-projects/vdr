@@ -9536,9 +9536,10 @@ Video Disk Recorder Revision History
   cDvbTuner::GetSignalStats() to avoid problems with drivers that don't do this
   (thanks to Helmut Binder).
 
-2020-11-03:
+2020-11-06:
 
 - Fixed multiple recording entries in case a recording is started during the initial
   reading of the video directory (reported by Claus Muus).
 - Fixed an unnecessary double call to Display() in cMenuRecording::RefreshRecording()
   (reported by Christoph Haubrich).
+- Fixed a crash in case an error occurs when setting a remote timer.
