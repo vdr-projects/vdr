@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.9 2020/10/13 13:47:10 kls Exp $
+ * $Id: osd.c 4.10 2020/11/16 15:53:53 kls Exp $
  */
 
 #include "osd.h"
@@ -1109,18 +1109,18 @@ cImage::cImage(void)
 cImage::cImage(const cImage &Image)
 {
   size = Image.Size();
-  int l = size.Width() * size.Height() * sizeof(tColor);
+  int l = size.Width() * size.Height();
   data = MALLOC(tColor, l);
-  memcpy(data, Image.Data(), l);
+  memcpy(data, Image.Data(), l * sizeof(tColor));
 }
 
 cImage::cImage(const cSize &Size, const tColor *Data)
 {
   size = Size;
-  int l = size.Width() * size.Height() * sizeof(tColor);
+  int l = size.Width() * size.Height();
   data = MALLOC(tColor, l);
   if (Data)
-     memcpy(data, Data, l);
+     memcpy(data, Data, l * sizeof(tColor));
 }
 
 cImage::~cImage()
