@@ -2184,6 +2184,7 @@ Hardy Flor <HFlor@web.de>
 
 Harald Milz <hm@seneca.muc.de>
  for his CUTR patch, which was used as a base to implement the SVDRP command EDIT
+ for reporting a bug in parsing the '-l' command line option
 
 Marko Mäkelä <marko.makela@hut.fi>
  for making repeat keys be ignored when waiting for a keypress to cancel an operation

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.33 2020/05/18 16:47:29 kls Exp $
+ * $Id: vdr.c 4.34 2020/11/20 13:49:58 kls Exp $
  */
 
 #include <getopt.h>
@@ -422,6 +422,7 @@ int main(int argc, char *argv[])
                           SysLogLevel = l;
                           if (!p)
                              break;
+                          *p = '.';
                           if (isnumber(p + 1)) {
                              int l = atoi(p + 1);
                              if (0 <= l && l <= 7) {
