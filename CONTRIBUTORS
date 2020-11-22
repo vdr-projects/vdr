@@ -3651,3 +3651,6 @@ Stefan Verse <Verse@amotronics.de>
 
 Jens Schleusener <Jens.Schleusener@fossies.org>
  for reporting several typos
+
+Bernd Kuhls <bernd.kuhls@t-online.de>
+ for fixing possible compilation errors with libjpeg

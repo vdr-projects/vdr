@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.12 2020/06/10 20:52:10 kls Exp $
+ * $Id: tools.c 4.13 2020/11/22 13:32:05 kls Exp $
  */
 
 #include "tools.h"
@@ -1272,15 +1272,15 @@ static boolean JpegCompressEmptyOutputBuffer(j_compress_ptr cinfo)
         }
      else {
         esyslog("ERROR: out of memory");
-        return false;
+        return FALSE;
         }
      if (jcd->mem) {
         cinfo->dest->next_output_byte = jcd->mem + Used;
         cinfo->dest->free_in_buffer = jcd->size - Used;
-        return true;
+        return TRUE;
         }
      }
-  return false;
+  return FALSE;
 }
 
 static void JpegCompressTermDestination(j_compress_ptr cinfo)
@@ -1325,8 +1325,8 @@ uchar *RgbToJpeg(uchar *Mem, int Width, int Height, int &Size, int Quality)
   cinfo.in_color_space = JCS_RGB;
 
   jpeg_set_defaults(&cinfo);
-  jpeg_set_quality(&cinfo, Quality, true);
-  jpeg_start_compress(&cinfo, true);
+  jpeg_set_quality(&cinfo, Quality, TRUE);
+  jpeg_start_compress(&cinfo, TRUE);
 
   int rs = Width * 3;
   JSAMPROW rp[Height];
