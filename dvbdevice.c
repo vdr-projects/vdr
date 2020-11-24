@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.27 2020/10/16 13:58:45 kls Exp $
+ * $Id: dvbdevice.c 4.28 2020/11/24 21:19:49 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -2138,11 +2138,17 @@ bool cDvbDevice::SetPid(cPidHandle *Handle, int Type, bool On)
   return true;
 }
 
+#define RB_NUM_SECTIONS 8 // default: 2 sections = 8192 bytes
+
 int cDvbDevice::OpenFilter(u_short Pid, u_char Tid, u_char Mask)
 {
   cString FileName = DvbName(DEV_DVB_DEMUX, adapter, frontend);
   int f = open(FileName, O_RDWR | O_NONBLOCK);
   if (f >= 0) {
+     if (Pid == EITPID) { // increase ringbuffer size for EIT
+        if (ioctl(f, DMX_SET_BUFFER_SIZE, MAX_SECTION_SIZE * RB_NUM_SECTIONS) < 0)
+           dsyslog("OpenFilter (pid=%d, tid=%02X): ioctl DMX_SET_BUFFER_SIZE failed", Pid, Tid);
+        }
      dmx_sct_filter_params sctFilterParams;
      memset(&sctFilterParams, 0, sizeof(sctFilterParams));
      sctFilterParams.pid = Pid;

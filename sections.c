@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 4.1 2019/05/28 14:09:04 kls Exp $
+ * $Id: sections.c 4.2 2020/11/24 21:19:49 kls Exp $
  */
 
 #include "sections.h"
@@ -48,7 +48,6 @@ cSectionHandler::cSectionHandler(cDevice *Device)
   statusCount = 0;
   on = false;
   waitForLock = false;
-  lastIncompleteSection = 0;
   Start();
 }
 
@@ -212,10 +211,8 @@ void cSectionHandler::Action(void)
                                   fi->Process(pid, tid, buf, len);
                                }
                            }
-                        else if (time(NULL) - lastIncompleteSection > 10) { // log them only every 10 seconds
-                           dsyslog("read incomplete section - len = %d, r = %d", len, r);
-                           lastIncompleteSection = time(NULL);
-                           }
+                        else
+                           dsyslog("tp %d (%d/%02X) read incomplete section - len = %d, r = %d", Transponder(), fh->filterData.pid, buf[0], len, r);
                         }
                      }
                   }
