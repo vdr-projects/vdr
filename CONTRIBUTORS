@@ -3634,6 +3634,7 @@ Helmut Binder <cco@aon.at>
  for initializing the status variable in cDvbTuner::GetFrontendStatus() and
  cDvbTuner::GetSignalStats() to avoid problems with drivers that don't do this
  for fixing "read incomplete section" errors
+ for fixing generating the HashId in cEIT::cEIT()
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

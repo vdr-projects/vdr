@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.10 2020/06/23 09:27:09 kls Exp $
+ * $Id: eit.c 4.11 2020/11/28 21:45:05 kls Exp $
  */
 
 #include "eit.h"
@@ -34,7 +34,7 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
 {
   if (!CheckCRCAndParse())
      return;
-  int HashId = Tid * getServiceId();
+  int HashId = Tid + (getServiceId() << 8);
   cSectionSyncerEntry *SectionSyncerEntry = SectionSyncerHash.Get(HashId);
   if (!SectionSyncerEntry) {
      SectionSyncerEntry = new cSectionSyncerEntry;
