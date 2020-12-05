@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.28 2020/11/24 21:19:49 kls Exp $
+ * $Id: dvbdevice.c 4.29 2020/12/05 15:48:40 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -367,6 +367,8 @@ cDvbFrontend::cDvbFrontend(int Adapter, int Frontend)
   frontend = Frontend;
   fd_frontend = -1;
   subsystemId = cDvbDeviceProbe::GetSubsystemId(adapter, frontend);
+  memset(&frontendInfo, 0, sizeof(frontendInfo));
+  strn0cpy(frontendInfo.name, "???", sizeof(frontendInfo.name));
   numModulations = 0;
   Open();
   QueryDeliverySystems();
