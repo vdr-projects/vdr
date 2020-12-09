@@ -9536,7 +9536,7 @@ Video Disk Recorder Revision History
   cDvbTuner::GetSignalStats() to avoid problems with drivers that don't do this
   (thanks to Helmut Binder).
 
-2020-12-05:
+2020-12-09:
 
 - Fixed multiple recording entries in case a recording is started during the initial
   reading of the video directory (reported by Claus Muus).
@@ -9549,3 +9549,5 @@ Video Disk Recorder Revision History
 - Fixed "read incomplete section" errors (thanks to Helmut Binder).
 - Fixed generating the HashId in cEIT::cEIT() (thanks to Helmut Binder).
 - Added initialization of cDvbFrontend::frontendInfo (thanks to Winfried Köhler).
+- Fixed a bug in handling shared PMTs, where after the first pass not all SIDs of a
+  PMT pid were checked any more (thanks to Helmut Binder).

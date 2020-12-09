@@ -3636,6 +3636,8 @@ Helmut Binder <cco@aon.at>
  cDvbTuner::GetSignalStats() to avoid problems with drivers that don't do this
  for fixing "read incomplete section" errors
  for fixing generating the HashId in cEIT::cEIT()
+ for fixing a bug in handling shared PMTs, where after the first pass not all SIDs of a
+ PMT pid were checked any more
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

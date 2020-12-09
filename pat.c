@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 4.6 2020/06/19 12:19:15 kls Exp $
+ * $Id: pat.c 4.7 2020/12/09 21:42:26 kls Exp $
  */
 
 #include "pat.h"
@@ -389,8 +389,7 @@ bool cPatFilter::PmtVersionChanged(int PmtPid, int Sid, int Version, bool SetNew
       if (se->Sid() == Sid && se->Pid() == PmtPid) {
          if (!se->Received()) {
             se->SetReceived(true);
-            if (PmtPidComplete(PmtPid))
-               se->PidEntry()->SetComplete(true);
+            se->PidEntry()->SetComplete(PmtPidComplete(PmtPid));
             }
          if (se->Version() != Version) {
             DBGLOG("PMT %d  %2d %5d/%d %2d -> %2d", Transponder(), i, PmtPid, Sid, se->Version(), Version);
@@ -411,6 +410,7 @@ void cPatFilter::SwitchToNextPmtPid(void)
      if (!(activePmt = pmtPidList.Next(activePmt)))
         activePmt = pmtPidList.First();
      PmtPidReset(activePmt->Pid());
+     activePmt->SetComplete(false);
      Add(activePmt->Pid(), SI::TableIdPMT);
      }
 }
