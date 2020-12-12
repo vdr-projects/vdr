@@ -3638,6 +3638,7 @@ Helmut Binder <cco@aon.at>
  for fixing generating the HashId in cEIT::cEIT()
  for fixing a bug in handling shared PMTs, where after the first pass not all SIDs of a
  PMT pid were checked any more
+ for reporting a problem with PMT handling in case locking the Channels list times out
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

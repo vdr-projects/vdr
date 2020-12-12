@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 4.7 2020/12/09 21:42:26 kls Exp $
+ * $Id: pat.c 4.8 2020/12/12 10:31:52 kls Exp $
  */
 
 #include "pat.h"
@@ -392,9 +392,10 @@ bool cPatFilter::PmtVersionChanged(int PmtPid, int Sid, int Version, bool SetNew
             se->PidEntry()->SetComplete(PmtPidComplete(PmtPid));
             }
          if (se->Version() != Version) {
-            DBGLOG("PMT %d  %2d %5d/%d %2d -> %2d", Transponder(), i, PmtPid, Sid, se->Version(), Version);
             if (SetNewVersion)
                se->SetVersion(Version);
+            else
+               DBGLOG("PMT %d  %2d %5d/%d %2d -> %2d", Transponder(), i, PmtPid, Sid, se->Version(), Version);
             return true;
             }
          break;
@@ -473,7 +474,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      SI::PMT pmt(Data, false);
      if (!pmt.CheckCRCAndParse())
         return;
-     if (!PmtVersionChanged(Pid, pmt.getTableIdExtension(), pmt.getVersionNumber(), true)) {
+     if (!PmtVersionChanged(Pid, pmt.getTableIdExtension(), pmt.getVersionNumber(), false)) {
         if (activePmt && activePmt->Complete())
            SwitchToNextPmtPid();
         return;
@@ -482,6 +483,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      cChannels *Channels = cChannels::GetChannelsWrite(StateKey, 10);
      if (!Channels)
         return;
+     PmtVersionChanged(Pid, pmt.getTableIdExtension(), pmt.getVersionNumber(), true);
      bool ChannelsModified = false;
      if (activePmt && activePmt->Complete())
         SwitchToNextPmtPid();
