@@ -9553,3 +9553,5 @@ Video Disk Recorder Revision History
   PMT pid were checked any more (thanks to Helmut Binder).
 - Fixed PMT handling in case locking the Channels list times out (reported by Helmut
   Binder).
+- Avoiding a lengthy lock on the Channels list when starting a recording (thanks to
+  Helmut Binder).
