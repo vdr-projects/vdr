@@ -2771,6 +2771,7 @@ Winfried Köhler <w_koehl@gmx.de>
  for reporting a bug in checking the return value of the Open() call in
  cFileName::SetOffset()
  for adding initialization of cDvbFrontend::frontendInfo
+ for improving handling missing VDRPluginDestroyer()
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
