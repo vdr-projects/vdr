@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.c 4.3 2020/06/23 09:27:09 kls Exp $
+ *   $Id: descriptor.c 4.4 2020/12/17 12:52:57 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -94,6 +94,7 @@ char *ExtendedEventDescriptors::getText(char *buffer, int size, const char *sepa
    char tmpbuf[tmpsize];
    const char *fromCode = NULL;
    int index=0, len;
+   *tmpbuf = 0; // just in case length is 0
    for (int i=0;i<length;i++) {
       ExtendedEventDescriptor *d=(ExtendedEventDescriptor *)array[i];
       if (!d)

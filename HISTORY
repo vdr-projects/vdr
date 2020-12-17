@@ -9536,7 +9536,7 @@ Video Disk Recorder Revision History
   cDvbTuner::GetSignalStats() to avoid problems with drivers that don't do this
   (thanks to Helmut Binder).
 
-2020-12-16:
+2020-12-17:
 
 - Fixed multiple recording entries in case a recording is started during the initial
   reading of the video directory (reported by Claus Muus).
@@ -9557,3 +9557,5 @@ Video Disk Recorder Revision History
   Helmut Binder).
 - Fixed error handling when loading a plugin (reported by Markus Ehrnsperger).
 - Improved handling missing VDRPluginDestroyer() (thanks to Winfried Köhler).
+- Fixed initializing tmpbuf in ExtendedEventDescriptors::getText() (thanks to Helmut
+  Binder).
