@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 4.8 2020/12/12 10:31:52 kls Exp $
+ * $Id: pat.c 4.9 2020/12/18 14:51:57 kls Exp $
  */
 
 #include "pat.h"
@@ -334,7 +334,7 @@ cPmtSidEntry::cPmtSidEntry(int Sid, int Pid, cPmtPidEntry *PidEntry)
 #ifdef DEBUG_PAT_PMT
 #define DBGLOG(a...) { cString s = cString::sprintf(a); fprintf(stderr, "%s\n", *s); dsyslog("%s", *s); }
 #else
-#define DBGLOG(a...)
+#define DBGLOG(a...) void()
 #endif
 
 cPatFilter::cPatFilter(void)

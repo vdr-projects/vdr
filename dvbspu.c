@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 2.11 2013/02/22 15:25:16 kls Exp $
+ * $Id: dvbspu.c 4.1 2020/12/18 14:51:57 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -38,7 +38,7 @@
 #ifdef SPUDEBUG
 #define DEBUG(format, args...) printf (format, ## args)
 #else
-#define DEBUG(format, args...)
+#define DEBUG(format, args...) void()
 #endif
 
 // --- cDvbSpuPalette---------------------------------------------------------
