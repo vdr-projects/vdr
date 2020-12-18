@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.10 2020/11/16 15:53:53 kls Exp $
+ * $Id: osd.c 4.11 2020/12/18 23:02:47 kls Exp $
  */
 
 #include "osd.h"
@@ -1457,7 +1457,7 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
               Delta = 0;
               }
            else
-              Delta = 1;        
+              Delta = 1;
            switch (Quadrants) {
              case  5: DrawRectangle(   cRect( cx,             cy + y + ay, x + Delta, 1), Color);
                       DrawBlendedPixel(cPoint(cx + x + Delta, cy + y + ay),               Color, intensity);
@@ -1483,7 +1483,7 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
                       DrawBlendedPixel(cPoint(cx + x + Delta + ax, cy - y),                              Color, intensity);
                       if (Quadrants == 6)
                          break;
-             case  8: DrawRectangle(   cRect( cx - x - Delta + 1,  cy + y, 2 * (x + Delta) + ax - 1 , 1), Color);   
+             case  8: DrawRectangle(   cRect( cx - x - Delta + 1,  cy + y, 2 * (x + Delta) + ax - 1 , 1), Color);
                       DrawBlendedPixel(cPoint(cx - x - Delta,      cy + y),                               Color, intensity);
                       DrawBlendedPixel(cPoint(cx + x + Delta + ax, cy + y),                               Color, intensity);
                       break;
@@ -1575,7 +1575,7 @@ void cPixmapMemory::DrawEllipse(const cRect &Rect, tColor Color, int Quadrants)
                       if (Quadrants == 6)
                          break;
              case  8: DrawRectangle(   cRect( cx - x,      cy + 1 + ymax, 1, y - ymax - Delta), Color);
-                      DrawRectangle(   cRect( cx + x + ax, cy + 1 + ymax, 1, y - ymax - Delta), Color);   
+                      DrawRectangle(   cRect( cx + x + ax, cy + 1 + ymax, 1, y - ymax - Delta), Color);
                       DrawBlendedPixel(cPoint(cx - x,      cy + y + 1 - Delta),                 Color, intensity);
                       DrawBlendedPixel(cPoint(cx + x + ax, cy + y + 1 - Delta),                 Color, intensity);
                       break;
@@ -1692,7 +1692,7 @@ void cPixmapMemory::DrawSlope(const cRect &Rect, tColor Color, int Type)
             if (AntiAliased) {
                DrawRectangle(cRect(x1 + x, y1, 1, y - y1), Color);
                DrawBlendedPixel(cPoint(x1 + x, y), Color, falling ? 255 - intensity : intensity);
-               DrawRectangle(cRect(x2 - x, y1, 1, y2 - y), Color); 
+               DrawRectangle(cRect(x2 - x, y1, 1, y2 - y), Color);
                DrawBlendedPixel(cPoint(x2 - x, y1 + y2 - y), Color, falling ? intensity : 255 - intensity);
                }
             else {
