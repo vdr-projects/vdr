@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 4.2 2020/05/15 11:31:40 kls Exp $
+ *   $Id: si.c 4.3 2020/12/19 14:41:41 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -413,6 +413,7 @@ static int Utf8CharLen(const char *s)
 
 size_t convertCharacterTable(const char *from, size_t fromLength, char *to, size_t toLength, const char *fromCode)
 {
+  bool converted = false;
   char *result = to;
   if (SystemCharacterTable && fromCode) {
      iconv_t cd = iconv_open(SystemCharacterTable, fromCode);
@@ -433,9 +434,10 @@ size_t convertCharacterTable(const char *from, size_t fromLength, char *to, size
         }
         *to = 0;
         iconv_close(cd);
+        converted = true;
      }
   }
-  else {
+  if (!converted) {
      size_t len = fromLength;
      if (len >= toLength)
         len = toLength - 1;
