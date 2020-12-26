@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2020-06-15 17:50+0200\n"
+"POT-Creation-Date: 2020-12-24 17:42+0100\n"
 "PO-Revision-Date: 2018-02-19 00:42+0100\n"
 "Last-Translator: Tomasz Maciej Nowak <tmn505@gmail.com>\n"
 "Language-Team: Polish <vdr@linuxtv.org>\n"
@@ -692,8 +692,20 @@ msgstr "Pojedynczy"
 msgid "Button$Repeating"
 msgstr "Powtarzanie"
 
+msgid "Button$Regular"
+msgstr ""
+
+msgid "Button$Pattern"
+msgstr ""
+
 msgid "First day"
 msgstr "Pierwszy dzień"
+
+msgid "Timer is recording!"
+msgstr ""
+
+msgid "Pattern"
+msgstr ""
 
 msgid "Error while accessing remote timer"
 msgstr "Błąd podczas dostępu do zdalnego timera"
@@ -1495,6 +1507,9 @@ msgstr "Nadpisz"
 
 msgid "Button$Insert"
 msgstr "Wstaw"
+
+msgid "Button$Macro"
+msgstr ""
 
 msgid "Plugin"
 msgstr "Wtyczka"

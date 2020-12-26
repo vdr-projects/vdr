@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 4.4 2018/04/10 13:58:06 kls Exp $
+.\" $Id: vdr.1 5.1 2020/12/26 15:49:01 kls Exp $
 .\"
 .TH vdr 1 "15 Apr 2018" "2.4" "Video Disk Recorder"
 .SH NAME
@@ -304,6 +304,11 @@ The actual data files of a recording.
 .I epg.data
 Contains all current EPG data. Can be used for external processing and will
 also be read at program startup to have the full EPG data available immediately.
+.TP
+.I donerecs.data
+Contains the names of recordings that have been done by pattern timers with '@'
+as the first character of the pattern. File names are appended to this file after
+a recording has finished, and the entire file is read upon startup of VDR.
 .TP
 .I .update
 If this file is present in the video directory, its last modification time will

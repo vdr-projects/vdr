@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.h 4.1 2015/09/06 10:38:37 kls Exp $
+ * $Id: menuitems.h 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #ifndef __MENUITEMS_H
@@ -111,6 +111,9 @@ private:
   int length;
   const char *allowed;
   int pos, offset;
+  bool keepSpace;
+  const char **macros;
+  int macro, lastMacro;
   bool insert, newchar, uppercase;
   int lengthUtf8;
   uint *valueUtf8;
@@ -127,6 +130,7 @@ private:
   void Type(uint c);
   void Insert(void);
   void Delete(void);
+  void InsertMacro(void);
 protected:
   void EnterEditMode(void);
   void LeaveEditMode(bool SaveValue = false);
@@ -134,6 +138,8 @@ protected:
 public:
   cMenuEditStrItem(const char *Name, char *Value, int Length, const char *Allowed = NULL);
   ~cMenuEditStrItem();
+  void SetKeepSpace(void) { keepSpace = true; }
+  void SetMacros(const char **Macros);
   virtual eOSState ProcessKey(eKeys Key);
   };
 

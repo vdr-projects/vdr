@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2020-06-15 17:50+0200\n"
+"POT-Creation-Date: 2020-12-24 17:42+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -689,8 +689,20 @@ msgstr "单个"
 msgid "Button$Repeating"
 msgstr "重复"
 
+msgid "Button$Regular"
+msgstr ""
+
+msgid "Button$Pattern"
+msgstr ""
+
 msgid "First day"
 msgstr "第一天"
+
+msgid "Timer is recording!"
+msgstr ""
+
+msgid "Pattern"
+msgstr ""
 
 msgid "Error while accessing remote timer"
 msgstr ""
@@ -1492,6 +1504,9 @@ msgstr "覆盖"
 
 msgid "Button$Insert"
 msgstr "插入"
+
+msgid "Button$Macro"
+msgstr ""
 
 msgid "Plugin"
 msgstr "插件"

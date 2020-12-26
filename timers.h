@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 4.12 2019/05/23 09:47:19 kls Exp $
+ * $Id: timers.h 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -20,9 +20,13 @@ enum eTimerFlags { tfNone      = 0x0000,
                    tfInstant   = 0x0002,
                    tfVps       = 0x0004,
                    tfRecording = 0x0008,
+                   tfSpawned   = 0x0010,
+                   tfAvoid     = 0x0020,
                    tfAll       = 0xFFFF,
                  };
 enum eTimerMatch { tmNone, tmPartial, tmFull };
+
+class cTimers;
 
 class cTimer : public cListObject {
   friend class cMenuEditTimer;
@@ -40,13 +44,14 @@ private:
   int stop;
   int priority;
   int lifetime;
+  mutable char pattern[NAME_MAX * 2 + 1]; // same size as 'file', to be able to initially fill 'pattern' with 'file' in the 'Edit timer' menu
   mutable char file[NAME_MAX * 2 + 1]; // *2 to be able to hold 'title' and 'episode', which can each be up to 255 characters long
   char *aux;
   char *remote;
   const cEvent *event;
 public:
   cTimer(bool Instant = false, bool Pause = false, const cChannel *Channel = NULL);
-  cTimer(const cEvent *Event);
+  cTimer(const cEvent *Event, const char *FileName = NULL, const cTimer *PatternTimer = NULL);
   cTimer(const cTimer &Timer);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
@@ -63,12 +68,14 @@ public:
   int Stop(void) const { return stop; }
   int Priority(void) const { return priority; }
   int Lifetime(void) const { return lifetime; }
+  const char *Pattern(void) const { return pattern; }
   const char *File(void) const { return file; }
   time_t FirstDay(void) const { return weekdays ? day : 0; }
   const char *Aux(void) const { return aux; }
   const char *Remote(void) const { return remote; }
   bool Local(void) const { return !remote; } // convenience
   time_t Deferred(void) const { return deferred; }
+  cString PatternAndFile(void) const;
   cString ToText(bool UseChannelID = false) const;
   cString ToDescr(void) const;
   const cEvent *Event(void) const { return event; }
@@ -80,13 +87,17 @@ public:
   bool DayMatches(time_t t) const;
   static time_t IncDay(time_t t, int Days);
   static time_t SetTime(time_t t, int SecondsFromMidnight);
+  void SetPattern(const char *Pattern);
   void SetFile(const char *File);
+  bool IsPatternTimer(void) const { return *pattern; }
   bool Matches(time_t t = 0, bool Directly = false, int Margin = 0) const;
   eTimerMatch Matches(const cEvent *Event, int *Overlap = NULL) const;
   bool Expired(void) const;
   time_t StartTime(void) const;
   time_t StopTime(void) const;
   void SetId(int Id);
+  void SpawnPatternTimer(const cEvent *Event, cTimers *Timers);
+  bool SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers);
   bool SetEventFromSchedule(const cSchedules *Schedules);
   bool SetEvent(const cEvent *Event);
   void SetRecording(bool Recording);
@@ -182,6 +193,7 @@ public:
   const cTimer *GetNextActiveTimer(void) const;
   const cTimer *UsesChannel(const cChannel *Channel) const;
   bool SetEvents(const cSchedules *Schedules);
+  bool SpawnPatternTimers(const cSchedules *Schedules);
   bool DeleteExpired(void);
   void Add(cTimer *Timer, cTimer *After = NULL);
   void Ins(cTimer *Timer, cTimer *Before = NULL);

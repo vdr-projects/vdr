@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 4.34 2020/11/20 13:49:58 kls Exp $
+ * $Id: vdr.c 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #include <getopt.h>
@@ -784,6 +784,7 @@ int main(int argc, char *argv[])
   KeyMacros.Load(AddDirectory(ConfigDirectory, "keymacros.conf"), true);
   Folders.Load(AddDirectory(ConfigDirectory, "folders.conf"));
   CamResponsesLoad(AddDirectory(ConfigDirectory, "camresponses.conf"), true);
+  DoneRecordingsPattern.Load(AddDirectory(CacheDirectory, "donerecs.data"));
 
   if (!*cFont::GetFontFileName(Setup.FontOsd)) {
      const char *msg = "no fonts available - OSD will not show any text!";
@@ -1098,15 +1099,20 @@ int main(int argc, char *argv[])
           static cStateKey TimersStateKey;
           cTimers *Timers = cTimers::GetTimersWrite(TimersStateKey);
           {
+            LOCK_CHANNELS_READ; // Channels are needed for spawning pattern timers!
             // Assign events to timers:
             static cStateKey SchedulesStateKey;
             if (TimersStateKey.StateChanged())
                SchedulesStateKey.Reset(); // we assign events if either the Timers or the Schedules have changed
             bool TimersModified = false;
             if (const cSchedules *Schedules = cSchedules::GetSchedulesRead(SchedulesStateKey)) {
-               Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
+               Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll); // setting events shall not trigger a remote timer poll...
                if (Timers->SetEvents(Schedules))
                   TimersModified = true;
+               if (Timers->SpawnPatternTimers(Schedules)) {
+                  StateKeySVDRPRemoteTimersPoll.Reset(); // ...but spawning new timers must!
+                  TimersModified = true;
+                  }
                SchedulesStateKey.Remove();
                }
             TimersStateKey.Remove(TimersModified); // we need to remove the key here, so that syncing StateKeySVDRPRemoteTimersPoll takes effect!

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 4.10 2020/09/16 13:48:33 kls Exp $
+ * $Id: recording.h 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -503,6 +503,20 @@ public:
   cUnbufferedFile *SetOffset(int Number, off_t Offset = 0); // yes, Number is int for easier internal calculating
   cUnbufferedFile *NextFile(void);
   };
+
+class cDoneRecordings {
+private:
+  cString fileName;
+  cStringList doneRecordings;
+  void Add(const char *Title);
+public:
+  bool Load(const char *FileName);
+  bool Save(void) const;
+  void Append(const char *Title);
+  bool Contains(const char *Title) const;
+  };
+
+extern cDoneRecordings DoneRecordingsPattern;
 
 cString IndexToHMSF(int Index, bool WithFrame = false, double FramesPerSecond = DEFAULTFRAMESPERSECOND);
       // Converts the given index to a string, optionally containing the frame number.

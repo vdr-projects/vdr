@@ -480,6 +480,8 @@ Version 2.4
              "forever", and a value of 0 means that this recording can be
              deleted any time if a recording with a higher priority needs disk
              space.
+  Pattern:   The pattern to use for recordings matching events (only available
+             for pattern timers). See section "Pattern timers" below.
   File:      The name under which a recording created through this timer will
              be stored on disk (the actual name will also contain the date and
              time, so it is possible to have a "repeating timer" store all its
@@ -510,6 +512,129 @@ Version 2.4
 
   The "Red" key in the "Edit timer" menu opens a list of folders, which can be
   used to define the file name in which the recording will be stored.
+
+  The "Yellow" key in the "Edit timer" menu toggles the timer between "Pattern"
+  and "Regular".
+
+  When editing the "File" field, the "Blue" key in can be used to insert useful
+  macros.
+
+* Pattern timers
+
+There are cases where it would make sense to have a more flexible kind of
+recording timer. For instance, some channels that provide VPS don't always
+use the exact same VPS time for a series, which is extremely annoying.
+Or you might want to record all films that have a certain pattern in their
+title, no matter when they are broadcast. In such cases, "pattern timers"
+can help.
+
+In the "Edit timer" menu press the Yellow button to turn a regular timer into
+a pattern timer. Pressing this button again switches back to regular.
+
+The following rules apply to pattern timers:
+
+- Pattern timers can only work for channels that provide EPG data.
+- When using pattern timers, there should always be at least one free device that
+  can be used to regularly receive the EPG of the pattern timer's channel.
+- A pattern timer records every matching event on the given channel that overlaps
+  with the given start/stop time. Overlapping events are recorded in full,
+  even if they extend outside the given start/stop interval.
+- In order to actually record an event, a pattern timer "spawns" a separate timer
+  that does the recording. At most two timers are spawned from a pattern timer at
+  any given time, one for the next upcoming matching event, and one for
+  the event immediately following that one, in case it also matches.
+- Spawned timers are marked with the flag tfSpawned.
+- Spawned timers take the Priority, Lifetime and VPS settings from the pattern timer.
+- The special pattern "*" matches every event. So a timer with
+  a start/stop time of 00:00/23:59 will record every event of that day
+  into separate recordings. Note that when using this pattern there should
+  be no other timers for the same channel, because these might interfere.
+- Once a timer has been spawned, it is treated like any other regular
+  timer. Any changes made to the corresponding pattern timer thereafter will have
+  no effect on spawned timers. Note that after deleting a spawned timer,
+  the corresponding pattern timer may respawn it.
+- Recording is done according to the event's begin/end times, either
+  by adding the start/stop margins (for non-VPS timers) or by using the
+  event's running status (for VPS timers).
+- The recording of a pattern timer is stored under the given file name, just like
+  regular timers do. In addition to the "TITLE" and "EPISODE" macros the file
+  name of a pattern timer can also use "{<}" and "{>}" to reference the part of the
+  event's title before and after the pattern, respectively. For instance,
+  if the event's title is "Abc def ghi" and the pattern is "def ", "{<}"
+  would contain "Abc " and "{>}" would contain "ghi" (note the matching of the
+  blanks). For completeness, "{=}" can be used to reference the matching
+  pattern itself.
+- In the "Timers" menu pressing the Red button on a pattern timer only toggles the
+  timer between "on" and "off", even if this is a repeating timer.
+- In the "Timers" menu pattern timers are sorted alphabetically to the end of the
+  list of timers.
+- A regular timer that is currently recording can't be changed into a pattern timer.
+- In the "Edit timer" menu the file name and pattern are displayed as
+  separate items. The Yellow button can be used to toggle between a regular
+  timer and a pattern timer. When going from regular to pattern, the Pattern item will
+  be initialized with the base part of the file name.
+- The characters '^' and '$' can be used at the very beginning and end of
+  the pattern to anchor the pattern to the begin or end of the title.
+  Using both of these will match only titles that consist of exactly the given pattern,
+  with nothing before and nothing after it.
+- The Pattern field in the "Edit timer" menu allows blanks at the end of the string,
+  which may help to separate the text after the matching pattern.
+- If the first character of the pattern is '@', an event that matches the
+  rest of the pattern is only recorded if the resulting recording's file
+  name (without any folders) is not contained in the donerecs.data file.
+  This avoids duplicate recordings of the same programme. Timers spawned from
+  such a pattern timer are marked with the flag tfAvoid.
+- When editing the "File" field of a timer, the Blue button can be pressed to
+  insert one of the macros "TITLE", "EPISODE", "{<}", "{=}" or "{>}",
+  respectively. Pressing the Blue button repeatedly loops through the available
+  macros. The "{...}" macros are only available for pattern timers.
+- In the "Schedule" and "What's on...?" menus the events that will be recorded
+  by a pattern timer are marked in the same way as regular timers.
+- The TIMERS column in the LCARS skin doesn't show the basic definitions of
+  pattern timers, it only shows timers actually spawned from pattern timers.
+
+If the pattern is prepended with '@', the name of the resulting recording (everything
+after the rightmost '~', or the entire file name, if there is no '~') will be stored
+in the file donerecs.data, so that multiple recordings of the same programme can be
+avoided. When using this feature, special care must be taken regarding the recording's
+file name. For instance, with a combination of
+
+  pattern   file name
+  @Columbo  Movies~TITLE
+
+if the event's title is just "Columbo", this pattern timer would only record once,
+and ignore any future events with that title, even if the episode would be different.
+So you may want to use the episode name, as in
+
+  pattern   file name
+  @Columbo  Movies~TITLE - EPISODE
+
+to make the file name unique. If you have several pattern timers for the same show on
+different channels, chances are that the broadcasters handle title and episode
+differently, as for example in
+
+  TITLE                           EPISODE                pattern      file name
+  Columbo                         Blueprint for Murder   @^Columbo$   TITLE - EPISODE
+  Columbo - Blueprint for Murder                         @^Columbo    TITLE
+  Columbo: Blueprint for Murder                          @^Columbo:_  Columbo - {>}
+
+(note the '_' in the pattern of the third example; this is just used to visualize
+the blank at the end of the pattern)
+
+In order to have the same episode result in the same recording file name on all
+channels, the file name needs to be generated differently for each channel. First
+you need to decide on a proper combination of title and episode name, preferably
+one that is already used by one of your channels (let's say the second one).
+In the first case, title and episode name are correctly put in their respective
+places, and "TITLE - EPISODE" as file name will do. The second case is our common
+version, where everything is in the title, so TITLE is just fine. The third case
+poses a problem, because everything is in the title, but with a different separator.
+Here the special macro "{>}" can be used in the file name, which contains everything
+following the matching pattern. There are three macros that can be used here:
+
+  {<}  everything before the matching pattern
+  {>}  everything after the matching pattern
+  {=}  the matching pattern itself (just for completeness)
 
 * Managing folders
 

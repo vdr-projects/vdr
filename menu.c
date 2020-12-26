@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 4.88 2020/12/12 22:01:01 kls Exp $
+ * $Id: menu.c 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #include "menu.h"
@@ -993,6 +993,23 @@ eOSState cMenuFolder::ProcessKey(eKeys Key)
 
 // --- cMenuEditTimer --------------------------------------------------------
 
+static const char *TimerFileMacrosForPattern[] = {
+  TIMERMACRO_TITLE,
+  TIMERMACRO_EPISODE,
+  TIMERMACRO_BEFORE,
+  TIMERMACRO_MATCH,
+  TIMERMACRO_AFTER,
+  "",
+  NULL
+  };
+
+static const char *TimerFileMacros[] = {
+  TIMERMACRO_TITLE,
+  TIMERMACRO_EPISODE,
+  "",
+  NULL
+  };
+
 const cTimer *cMenuEditTimer::addedTimer = NULL;
 
 cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
@@ -1000,6 +1017,7 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
 {
   SetMenuCategory(mcTimerEdit);
   addedTimer = NULL;
+  pattern = NULL;
   file = NULL;
   day = firstday = NULL;
   timer = Timer;
@@ -1019,6 +1037,7 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
      Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
      Add(file = new cMenuEditStrItem( tr("File"),   data.file, sizeof(data.file)));
      SetFirstDayItem();
+     SetPatternItem(true);
      if (data.remote)
         strn0cpy(remote, data.remote, sizeof(remote));
      else
@@ -1047,7 +1066,7 @@ const cTimer *cMenuEditTimer::AddedTimer(void)
 
 void cMenuEditTimer::SetHelpKeys(void)
 {
-  SetHelp(tr("Button$Folder"), data.weekdays ? tr("Button$Single") : tr("Button$Repeating"));
+  SetHelp(tr("Button$Folder"), data.weekdays ? tr("Button$Single") : tr("Button$Repeating"), *data.pattern ? tr("Button$Regular") : tr("Button$Pattern"));
 }
 
 void cMenuEditTimer::SetFirstDayItem(void)
@@ -1061,6 +1080,40 @@ void cMenuEditTimer::SetFirstDayItem(void)
      firstday = NULL;
      Display();
      }
+}
+
+void cMenuEditTimer::SetPatternItem(bool Initial)
+{
+  if (Initial && !*data.pattern) {
+     file->SetMacros(TimerFileMacros);
+     return;
+     }
+  if (!pattern) {
+     if (data.HasFlags(tfRecording)) {
+        Skins.Message(mtWarning, tr("Timer is recording!"));
+        return;
+        }
+     if (!*data.pattern) {
+        char *p = strrchr(data.file, FOLDERDELIMCHAR);
+        if (p)
+           p++;
+        else
+           p = data.file;
+        strn0cpy(data.pattern, p, sizeof(data.pattern));
+        }
+     Ins(pattern = new cMenuEditStrItem( tr("Pattern"), data.pattern, sizeof(data.pattern)), true, file);
+     pattern->SetKeepSpace();
+     file->SetMacros(TimerFileMacrosForPattern);
+     Display();
+     }
+  else {
+     Del(pattern->Index());
+     pattern = NULL;
+     *data.pattern = 0;
+     file->SetMacros(TimerFileMacros);
+     Display();
+     }
+  SetHelpKeys();
 }
 
 eOSState cMenuEditTimer::SetFolder(void)
@@ -1142,6 +1195,8 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                               cRecordControls::Stop(timer);
                            if (timer->Remote() && data.Remote())
                               Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll);
+                           if (data.Local() && !timer->IsPatternTimer() && data.IsPatternTimer())
+                              data.SetEvent(NULL);
                            *timer = data;
                            }
                         LOCK_SCHEDULES_READ;
@@ -1159,7 +1214,8 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                         Display();
                         }
                      return osContinue;
-       case kYellow:
+       case kYellow: SetPatternItem();
+                     return osContinue;
        case kBlue:   return osContinue;
        default: break;
        }
@@ -1212,12 +1268,19 @@ void cMenuTimerItem::Set(void)
      strftime(buffer, sizeof(buffer), "%Y%m%d", &tm_r);
      day = buffer;
      }
-  const char *File = Setup.FoldersInTimerMenu ? NULL : strrchr(timer->File(), FOLDERDELIMCHAR);
-  if (File && strcmp(File + 1, TIMERMACRO_TITLE) && strcmp(File + 1, TIMERMACRO_EPISODE))
-     File++;
-  else
-     File = timer->File();
-  SetText(cString::sprintf("%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s%s",
+  const char *File = timer->Pattern();
+  if (!*File) {
+     if (timer->HasFlags(tfSpawned) && timer->Event() && timer->Event()->Title())
+        File = timer->Event()->Title();
+     else {
+        File = Setup.FoldersInTimerMenu ? NULL : strrchr(timer->File(), FOLDERDELIMCHAR);
+        if (File && strcmp(File + 1, TIMERMACRO_TITLE) && strcmp(File + 1, TIMERMACRO_EPISODE))
+           File++;
+        else
+           File = timer->File();
+        }
+     }
+  SetText(cString::sprintf("%c\t%d\t%s%s%s\t%02d:%02d\t%02d:%02d\t%s%s%s%s",
                     !(timer->HasFlags(tfActive)) ? ' ' : timer->FirstDay() ? '!' : timer->Recording() ? '#' : '>',
                     timer->Channel()->Number(),
                     *name,
@@ -1228,7 +1291,9 @@ void cMenuTimerItem::Set(void)
                     timer->Stop() / 100,
                     timer->Stop() % 100,
                     timer->Remote() ? *cString::sprintf("@%s: ", timer->Remote()) : "",
-                    File));
+                    timer->IsPatternTimer() ? "{" : "",
+                    File,
+                    timer->IsPatternTimer() ? "}" : ""));
 }
 
 void cMenuTimerItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
@@ -1544,6 +1609,8 @@ bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
   eTimerMatch OldTimerMatch = timerMatch;
   bool OldTimerActive = timerActive;
   const cTimer *Timer = Timers->GetMatch(event, &timerMatch);
+  if (event->EndTime() < time(NULL) && !event->IsRunning())
+     timerMatch = tmNone;
   timerActive = Timer && Timer->HasFlags(tfActive);
   if (Force || timerMatch != OldTimerMatch || timerActive != OldTimerActive) {
      cString buffer;
@@ -5354,8 +5421,13 @@ void cRecordControl::Stop(bool ExecuteUserCommand)
 bool cRecordControl::Process(time_t t)
 {
   if (!recorder || !recorder->IsAttached() || !timer || !timer->Matches(t)) {
-     if (timer)
+     if (timer) {
         timer->SetPending(false);
+        if (timer->HasFlags(tfAvoid)) {
+           const char *p = strgetlast(timer->File(), FOLDERDELIMCHAR);
+           DoneRecordingsPattern.Append(p);
+           }
+        }
      return false;
      }
   return true;

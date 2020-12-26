@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.13 2020/11/22 13:32:05 kls Exp $
+ * $Id: tools.c 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #include "tools.h"
@@ -196,6 +196,12 @@ int strcountchr(const char *s, char c)
          }
      }
   return n;
+}
+
+const char *strgetlast(const char *s, char c)
+{
+  const char *p = strrchr(s, c);
+  return p ? p + 1 : s;
 }
 
 char *stripspace(char *s)

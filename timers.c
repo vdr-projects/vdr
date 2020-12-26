@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 4.20 2020/09/16 13:48:33 kls Exp $
+ * $Id: timers.c 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #include "timers.h"
@@ -31,6 +31,7 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
   deferred = 0;
   pending = inVpsMargin = false;
   flags = tfNone;
+  *pattern = 0;
   *file = 0;
   aux = NULL;
   remote = NULL;
@@ -81,7 +82,94 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
      snprintf(file, sizeof(file), "%s%s", Setup.MarkInstantRecord ? "@" : "", *Setup.NameInstantRecord ? Setup.NameInstantRecord : channel->Name());
 }
 
-cTimer::cTimer(const cEvent *Event)
+static bool MatchPattern(const char *Pattern, const char *Title, cString *Before = NULL, cString *Match = NULL, cString *After = NULL)
+{
+  if (Title) {
+     bool AvoidDuplicates = startswith(Pattern, TIMERPATTERN_AVOID);
+     if (AvoidDuplicates)
+        Pattern++;
+     if (strcmp(Pattern, "*") == 0) {
+        if (Before)
+           *Before = "";
+        if (Match)
+           *Match = Title;
+        if (After)
+           *After = "";
+        return true;
+        }
+     bool AnchorBegin = startswith(Pattern, TIMERPATTERN_BEGIN);
+     if (AnchorBegin)
+        Pattern++;
+     bool AnchorEnd = endswith(Pattern, TIMERPATTERN_END);
+     cNullTerminate nt;
+     if (AnchorEnd)
+        nt.Set(const_cast<char *>(Pattern + strlen(Pattern) - 1));
+     if (AnchorBegin && AnchorEnd) {
+        if (strcmp(Title, Pattern) == 0) {
+           if (Before)
+              *Before = "";
+           if (Match)
+              *Match = Title;
+           if (After)
+              *After = "";
+           return true;
+           }
+        }
+     else if (AnchorBegin) {
+        if (strstr(Title, Pattern) == Title) {
+           if (Before)
+              *Before = "";
+           if (Match)
+              *Match = Pattern;
+           if (After)
+              *After = cString(Title + strlen(Pattern));
+           return true;
+           }
+        }
+     else if (AnchorEnd) {
+        if (endswith(Title, Pattern)) {
+           if (Before)
+              *Before = cString(Title, Title + strlen(Title) - strlen(Pattern));
+           if (Match)
+              *Match = Pattern;
+           if (After)
+              *After = "";
+           return true;
+           }
+        }
+     else if (const char *p = strstr(Title, Pattern)) {
+        if (Before)
+           *Before = cString(Title, p);
+        if (Match)
+           *Match = Pattern;
+        if (After)
+           *After = cString(p + strlen(Pattern));
+        return true;
+        }
+     }
+  return false;
+}
+
+static cString MakePatternFileName(const char *Pattern, const char *Title, const char *Episode, const char *File)
+{
+  if (!Pattern || !Title || !File)
+     return NULL;
+  cString Before = "";
+  cString Match = "";
+  cString After = "";
+  if (MatchPattern(Pattern, Title, &Before, &Match, &After)) {
+     char *Result = strdup(File);
+     Result = strreplace(Result, TIMERMACRO_TITLE, Title);
+     Result = strreplace(Result, TIMERMACRO_EPISODE, Episode);
+     Result = strreplace(Result, TIMERMACRO_BEFORE, Before);
+     Result = strreplace(Result, TIMERMACRO_MATCH, Match);
+     Result = strreplace(Result, TIMERMACRO_AFTER, After);
+     return cString(Result, true);;
+     }
+  return NULL;
+}
+
+cTimer::cTimer(const cEvent *Event, const char *FileName, const cTimer *PatternTimer)
 {
   id = 0;
   startTime = stopTime = 0;
@@ -89,12 +177,15 @@ cTimer::cTimer(const cEvent *Event)
   deferred = 0;
   pending = inVpsMargin = false;
   flags = tfActive;
+  *pattern = 0;
   *file = 0;
   aux = NULL;
   remote = NULL;
   event = NULL;
-  if (Event->Vps() && Setup.UseVps)
-     SetFlags(tfVps);
+  if (!PatternTimer || PatternTimer->HasFlags(tfVps)) {
+     if (Event->Vps() && Setup.UseVps)
+        SetFlags(tfVps);
+     }
   LOCK_CHANNELS_READ;
   channel = Channels->GetByChannelID(Event->ChannelID(), true);
   time_t tstart = (flags & tfVps) ? Event->Vps() : Event->StartTime();
@@ -112,11 +203,12 @@ cTimer::cTimer(const cEvent *Event)
   stop = time->tm_hour * 100 + time->tm_min;
   if (stop >= 2400)
      stop -= 2400;
-  priority = Setup.DefaultPriority;
-  lifetime = Setup.DefaultLifetime;
-  const char *Title = Event->Title();
-  if (!isempty(Title))
-     Utf8Strn0Cpy(file, Event->Title(), sizeof(file));
+  priority = PatternTimer ? PatternTimer->Priority() : Setup.DefaultPriority;
+  lifetime = PatternTimer ? PatternTimer->Lifetime() : Setup.DefaultLifetime;
+  if (!FileName)
+     FileName = Event->Title();
+  if (!isempty(FileName))
+     Utf8Strn0Cpy(file, FileName, sizeof(file));
   SetEvent(Event);
 }
 
@@ -156,6 +248,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
      stop         = Timer.stop;
      priority     = Timer.priority;
      lifetime     = Timer.lifetime;
+     strncpy(pattern, Timer.pattern, sizeof(pattern));
      strncpy(file, Timer.file, sizeof(file));
      free(aux);
      aux = Timer.aux ? strdup(Timer.aux) : NULL;
@@ -178,20 +271,37 @@ int cTimer::Compare(const cListObject &ListObject) const
   int r = t1 - t2;
   if (r == 0)
      r = ti->priority - priority;
+  if (IsPatternTimer() ^ ti->IsPatternTimer()) {
+     if (IsPatternTimer())
+        r = 1;
+     else
+        r = -1;
+     }
+  else if (IsPatternTimer() && ti->IsPatternTimer())
+     r = strcoll(Pattern(), ti->Pattern());
   return r;
+}
+
+cString cTimer::PatternAndFile(void) const
+{
+  if (IsPatternTimer())
+     return cString::sprintf("{%s}%s", pattern, file);
+  return file;
 }
 
 cString cTimer::ToText(bool UseChannelID) const
 {
+  strreplace(pattern, ':', '|');
   strreplace(file, ':', '|');
-  cString buffer = cString::sprintf("%u:%s:%s:%04d:%04d:%d:%d:%s:%s", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, file, aux ? aux : "");
+  cString buffer = cString::sprintf("%u:%s:%s:%04d:%04d:%d:%d:%s:%s", flags, UseChannelID ? *Channel()->GetChannelID().ToString() : *itoa(Channel()->Number()), *PrintDay(day, weekdays, true), start, stop, priority, lifetime, *PatternAndFile(), aux ? aux : "");
+  strreplace(pattern, '|', ':');
   strreplace(file, '|', ':');
   return buffer;
 }
 
 cString cTimer::ToDescr(void) const
 {
-  return cString::sprintf("%d%s%s (%d %04d-%04d %s'%s')", Id(), remote ? "@" : "", remote ? remote : "", Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", file);
+  return cString::sprintf("%d%s%s (%d %04d-%04d %s'%s')", Id(), remote ? "@" : "", remote ? remote : "", Channel()->Number(), start, stop, HasFlags(tfVps) ? "VPS " : "", *PatternAndFile());
 }
 
 int cTimer::TimeToInt(int t)
@@ -332,7 +442,18 @@ bool cTimer::Parse(const char *s)
         }
      //TODO add more plausibility checks
      result = ParseDay(daybuffer, day, weekdays);
-     Utf8Strn0Cpy(file, filebuffer, sizeof(file));
+     char *fb = filebuffer;
+     if (*fb == '{') {
+        if (char *p = strchr(fb, '}')) {
+           *p = 0;
+           Utf8Strn0Cpy(pattern, fb + 1, sizeof(pattern));
+           strreplace(pattern, '|', ':');
+           fb = p + 1;
+           }
+        }
+     else
+        *pattern = 0;
+     Utf8Strn0Cpy(file, fb, sizeof(file));
      strreplace(file, '|', ':');
      LOCK_CHANNELS_READ;
      if (isnumber(channelbuffer))
@@ -404,6 +525,11 @@ time_t cTimer::SetTime(time_t t, int SecondsFromMidnight)
   return mktime(&tm);
 }
 
+void cTimer::SetPattern(const char *Pattern)
+{
+  Utf8Strn0Cpy(pattern, Pattern, sizeof(pattern));
+}
+
 void cTimer::SetFile(const char *File)
 {
   if (!isempty(File))
@@ -451,6 +577,9 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
         day = 0;
      }
 
+  if (IsPatternTimer())
+     return false; // we only need to have start/stopTime initialized
+
   if (t < deferred)
      return false;
   deferred = 0;
@@ -483,6 +612,21 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
   // gets 200 added to the FULLMATCH.
   if (channel->GetChannelID() == Event->ChannelID()) {
      bool UseVps = HasFlags(tfVps) && Event->Vps();
+     if (IsPatternTimer()) {
+        if (startswith(Pattern(), TIMERPATTERN_AVOID)) {
+           cString FileName = MakePatternFileName(Pattern(), Event->Title(), Event->ShortText(), File());
+           if (*FileName) {
+              const char *p = strgetlast(*FileName, FOLDERDELIMCHAR);
+              if (DoneRecordingsPattern.Contains(p))
+                 return tmNone;
+              }
+           else
+              return tmNone;
+           }
+        else if (!MatchPattern(Pattern(), Event->Title()))
+           return tmNone;
+        UseVps = false;
+        }
      Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
      int overlap = 0;
      if (UseVps) {
@@ -499,8 +643,11 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
            overlap = FULLMATCH;
         else if (stopTime <= Event->StartTime() || Event->EndTime() <= startTime)
            overlap = 0;
-        else
+        else {
            overlap = (min(stopTime, Event->EndTime()) - max(startTime, Event->StartTime())) * FULLMATCH / max(Event->Duration(), 1);
+           if (IsPatternTimer() && overlap > 0)
+              overlap = FULLMATCH;
+           }
         }
      startTime = stopTime = 0;
      if (Overlap)
@@ -542,8 +689,60 @@ void cTimer::SetId(int Id)
   id = Id;
 }
 
+void cTimer::SpawnPatternTimer(const cEvent *Event, cTimers *Timers)
+{
+  cString FileName = MakePatternFileName(Pattern(), Event->Title(), Event->ShortText(), File());
+  isyslog("spawning timer %s for event %s", *ToDescr(), *Event->ToDescr());
+  cTimer *t = new cTimer(Event, FileName, this);
+  t->SetFlags(tfSpawned);
+  if (startswith(Pattern(), TIMERPATTERN_AVOID))
+     t->SetFlags(tfAvoid);
+  Timers->Add(t);
+  HandleRemoteTimerModifications(t);
+}
+
+bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
+{
+  bool TimersSpawned = false;
+  const cSchedule *Schedule = Schedules->GetSchedule(Channel());
+  if (Schedule && Schedule->Events()->First()) {
+     if (Schedule->Modified(scheduleState)) {
+        time_t Now = time(NULL);
+        for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
+            if (Matches(e) != tmNone) {
+               bool CheckThis = false;
+               bool CheckNext = false;
+               if (e->HasTimer()) // a matching event that already has a timer
+                  CheckNext = true;
+               else if (e->EndTime() > Now) { // only look at events that have not yet ended
+                  CheckThis = true;
+                  CheckNext = true;
+                  }
+               if (CheckThis) {
+                  SpawnPatternTimer(e, Timers);
+                  TimersSpawned = true;
+                  }
+               if (CheckNext) {
+                  // We also check the event immediately following this one:
+                  e = Schedule->Events()->Next(e);
+                  if (e && !e->HasTimer() && Matches(e) != tmNone) {
+                     SpawnPatternTimer(e, Timers);
+                     TimersSpawned = true;
+                     }
+                  }
+               if (CheckThis || CheckNext)
+                  break;
+               }
+            }
+        }
+     }
+  return TimersSpawned;
+}
+
 bool cTimer::SetEventFromSchedule(const cSchedules *Schedules)
 {
+  if (IsPatternTimer())
+     return SetEvent(NULL);
   const cSchedule *Schedule = Schedules->GetSchedule(Channel());
   if (Schedule && Schedule->Events()->First()) {
      if (Schedule->Modified(scheduleState)) {
@@ -707,7 +906,7 @@ void cTimer::Skip(void)
 
 void cTimer::OnOff(void)
 {
-  if (IsSingleEvent())
+  if (IsSingleEvent() || IsPatternTimer())
      InvFlags(tfActive);
   else if (day) {
      day = 0;
@@ -718,6 +917,8 @@ void cTimer::OnOff(void)
   else
      SetFlags(tfActive);
   SetEvent(NULL);
+  if (HasFlags(tfActive))
+     scheduleState = -1; // have pattern timers spawn if necessary
   Matches(); // refresh start and end time
 }
 
@@ -831,7 +1032,7 @@ const cTimer *cTimers::GetNextActiveTimer(void) const
 {
   const cTimer *t0 = NULL;
   for (const cTimer *ti = First(); ti; ti = Next(ti)) {
-      if (!ti->Remote()) {
+      if (!ti->Remote() && !ti->IsPatternTimer()) {
          ti->Matches();
          if ((ti->HasFlags(tfActive)) && (!t0 || ti->StopTime() > time(NULL) && ti->Compare(*t0) < 0))
             t0 = ti;
@@ -882,8 +1083,22 @@ const cTimer *cTimers::UsesChannel(const cChannel *Channel) const
 bool cTimers::SetEvents(const cSchedules *Schedules)
 {
   bool TimersModified = false;
-  for (cTimer *ti = First(); ti; ti = Next(ti))
-      TimersModified |= ti->SetEventFromSchedule(Schedules);
+  for (cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (!ti->IsPatternTimer())
+         TimersModified |= ti->SetEventFromSchedule(Schedules);
+      }
+  return TimersModified;
+}
+
+bool cTimers::SpawnPatternTimers(const cSchedules *Schedules)
+{
+  bool TimersModified = false;
+  for (cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (ti->IsPatternTimer() && ti->Local()) {
+         if (ti->HasFlags(tfActive))
+            TimersModified |= ti->SpawnPatternTimers(Schedules, this);
+         }
+      }
   return TimersModified;
 }
 
@@ -896,6 +1111,7 @@ bool cTimers::DeleteExpired(void)
   while (ti) {
         cTimer *next = Next(ti);
         if (!ti->Remote() && ti->Expired()) {
+           ti->SetEvent(NULL); // Del() doesn't call ~cTimer() right away, so this is necessary here
            isyslog("deleting timer %s", *ti->ToDescr());
            Del(ti);
            TimersModified = true;

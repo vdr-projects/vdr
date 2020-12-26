@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 4.43 2020/06/22 20:59:49 kls Exp $
+ * $Id: svdrp.c 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2048,6 +2048,10 @@ void cSVDRPServer::CmdMODT(const char *Option)
               Reply(501, "Error in timer settings");
               return;
               }
+           if (IsRecording && t.IsPatternTimer()) {
+              Reply(550, "Timer is recording");
+              return;
+              }
            *Timer = t;
            if (IsRecording)
               Timer->SetFlags(tfRecording);
@@ -2055,6 +2059,8 @@ void cSVDRPServer::CmdMODT(const char *Option)
               Timer->ClrFlags(tfRecording);
            Timers->SetModified();
            isyslog("SVDRP %s < %s modified timer %s (%s)", Setup.SVDRPHostName, *clientName, *Timer->ToDescr(), Timer->HasFlags(tfActive) ? "active" : "inactive");
+           if (Timer->IsPatternTimer())
+              Timer->SetEvent(NULL);
            Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
            }
         else

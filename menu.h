@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 4.8 2018/04/14 10:24:41 kls Exp $
+ * $Id: menu.h 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -79,11 +79,13 @@ private:
   bool addIfConfirmed;
   cStringList svdrpServerNames;
   char remote[HOST_NAME_MAX];
+  cMenuEditStrItem *pattern;
   cMenuEditStrItem *file;
   cMenuEditDateItem *day;
   cMenuEditDateItem *firstday;
   eOSState SetFolder(void);
   void SetFirstDayItem(void);
+  void SetPatternItem(bool Initial = false);
   void SetHelpKeys(void);
 public:
   cMenuEditTimer(cTimer *Timer, bool New = false);

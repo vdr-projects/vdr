@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2020-06-15 17:50+0200\n"
+"POT-Creation-Date: 2020-12-24 17:42+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Aleš Juřík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -690,8 +690,20 @@ msgstr "Bez opakování"
 msgid "Button$Repeating"
 msgstr "S opakováním"
 
+msgid "Button$Regular"
+msgstr ""
+
+msgid "Button$Pattern"
+msgstr ""
+
 msgid "First day"
 msgstr "První den"
+
+msgid "Timer is recording!"
+msgstr ""
+
+msgid "Pattern"
+msgstr ""
 
 msgid "Error while accessing remote timer"
 msgstr ""
@@ -1493,6 +1505,9 @@ msgstr "Přepsat"
 
 msgid "Button$Insert"
 msgstr "Vložit"
+
+msgid "Button$Macro"
+msgstr ""
 
 msgid "Plugin"
 msgstr "Modul"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 4.18 2020/09/16 13:48:33 kls Exp $
+ * $Id: tools.h 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -193,6 +193,33 @@ public:
   static cString vsprintf(const char *fmt, va_list &ap);
   };
 
+class cNullTerminate {
+private:
+  char *p;
+  char c;
+public:
+  cNullTerminate(void) {
+    p = NULL;
+    c = 0;
+    }
+  cNullTerminate(char *s) {
+    Set(s);
+    }
+  ~cNullTerminate() {
+    if (p)
+       *p = c;
+    }
+  void Set(char *s) {
+    if (s) {
+       p = s;
+       c = *s;
+       *s = 0;
+       }
+    else
+       p = NULL;
+    }
+  };
+
 ssize_t safe_read(int filedes, void *buffer, size_t size);
 ssize_t safe_write(int filedes, const void *buffer, size_t size);
 void writechar(int filedes, char c);
@@ -206,6 +233,7 @@ char *strreplace(char *s, char c1, char c2);
 char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's' and deletes the original string if necessary!
 const char *strchrn(const char *s, char c, size_t n); ///< returns a pointer to the n'th occurrence (counting from 1) of c in s, or NULL if no such character was found. If n is 0, s is returned.
 int strcountchr(const char *s, char c); ///< returns the number of occurrences of 'c' in 's'.
+const char *strgetlast(const char *s, char c); // returns the part of 's' after the last occurrence of 'c', or 's' if there is no 'c'.
 inline char *skipspace(const char *s)
 {
   if ((uchar)*s > ' ') // most strings don't have any leading space, so handle this case as fast as possible

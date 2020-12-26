@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 4.21 2020/12/22 17:23:51 kls Exp $
+ * $Id: config.h 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -22,13 +22,13 @@
 
 // VDR's own version number:
 
-#define VDRVERSION  "2.4.6"
-#define VDRVERSNUM   20406  // Version * 10000 + Major * 100 + Minor
+#define VDRVERSION  "2.5.1"
+#define VDRVERSNUM   20501  // Version * 10000 + Major * 100 + Minor
 
 // The plugin API's version number:
 
-#define APIVERSION  "2.4.6"
-#define APIVERSNUM   20406  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION  "2.5.1"
+#define APIVERSNUM   20501  // Version * 10000 + Major * 100 + Minor
 
 // When loading plugins, VDR searches them by their APIVERSION, which
 // may be smaller than VDRVERSION in case there have been no changes to
@@ -46,6 +46,13 @@
 
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
+#define TIMERMACRO_BEFORE   "{<}"
+#define TIMERMACRO_MATCH    "{=}"
+#define TIMERMACRO_AFTER    "{>}"
+
+#define TIMERPATTERN_AVOID  "@"
+#define TIMERPATTERN_BEGIN  "^"
+#define TIMERPATTERN_END    "$"
 
 #define MINOSDWIDTH   480
 #define MAXOSDWIDTH  1920

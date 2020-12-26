@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 4.3 2018/03/23 15:37:02 kls Exp $
+ * $Id: menuitems.c 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #include "menuitems.h"
@@ -390,6 +390,10 @@ cMenuEditStrItem::cMenuEditStrItem(const char *Name, char *Value, int Length, co
   allowed = Allowed ? Allowed : tr(FileNameChars);
   pos = -1;
   offset = 0;
+  keepSpace = false;
+  macro = -1;
+  lastMacro = -1;
+  macros = NULL;
   insert = uppercase = false;
   newchar = true;
   lengthUtf8 = 0;
@@ -406,6 +410,13 @@ cMenuEditStrItem::~cMenuEditStrItem()
   delete[] valueUtf8;
   delete[] allowedUtf8;
   delete[] charMapUtf8;
+}
+
+void cMenuEditStrItem::SetMacros(const char **Macros)
+{
+  macros = Macros;
+  macro = 0;
+  lastMacro = -1;
 }
 
 void cMenuEditStrItem::EnterEditMode(void)
@@ -430,7 +441,8 @@ void cMenuEditStrItem::LeaveEditMode(bool SaveValue)
   if (valueUtf8) {
      if (SaveValue) {
         Utf8FromArray(valueUtf8, value, length);
-        stripspace(value);
+        if (!keepSpace)
+           stripspace(value);
         }
      lengthUtf8 = 0;
      delete[] valueUtf8;
@@ -448,7 +460,7 @@ void cMenuEditStrItem::LeaveEditMode(bool SaveValue)
 void cMenuEditStrItem::SetHelpKeys(void)
 {
   if (InEditMode())
-     SetHelp(tr("Button$ABC/abc"), insert ? tr("Button$Overwrite") : tr("Button$Insert"), tr("Button$Delete"));
+     SetHelp(tr("Button$ABC/abc"), insert ? tr("Button$Overwrite") : tr("Button$Insert"), tr("Button$Delete"), macros ? tr("Button$Macro") : NULL);
   else
      SetHelp(NULL);
 }
@@ -581,11 +593,39 @@ void cMenuEditStrItem::Delete(void)
   lengthUtf8--;
 }
 
+void cMenuEditStrItem::InsertMacro(void)
+{
+  if (!macros)
+     return;
+  if (lastMacro >= 0) {
+     int l = strlen(macros[lastMacro]);
+     while (l-- > 0)
+           Delete();
+     }
+  const char *p = macros[macro];
+  int oldPos = pos;
+  bool oldInsert = insert;
+  insert = true;
+  newchar = true;
+  while (*p) {
+        Type(*p);
+        p++;
+        }
+  insert = oldInsert;
+  pos = oldPos;
+  lastMacro = macro;
+  if (!macros[++macro])
+     macro = 0;
+}
+
 eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
 {
   bool SameKey = NORMALKEY(Key) == lastKey;
-  if (Key != kNone)
+  if (Key != kNone) {
      lastKey = NORMALKEY(Key);
+     if (Key != kBlue)
+        lastMacro = -1;
+     }
   else if (!newchar && k0 <= lastKey && lastKey <= k9 && autoAdvanceTimeout.TimedOut()) {
      AdvancePos();
      newchar = true;
@@ -635,8 +675,9 @@ eOSState cMenuEditStrItem::ProcessKey(eKeys Key)
                     return osUnknown;
                  break;
     case kBlue|k_Repeat:
-    case kBlue:  // consume the key only if in edit-mode
-                 if (!InEditMode())
+    case kBlue:  if (InEditMode())
+                    InsertMacro();
+                 else
                     return osUnknown;
                  break;
     case kLeft|k_Repeat:

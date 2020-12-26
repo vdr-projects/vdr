@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 4.7 2020/05/18 16:47:29 kls Exp $
+ * $Id: skinlcars.c 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1264,7 +1264,9 @@ void cSkinLCARSDisplayMenu::DrawTimers(void)
                if (y + lineHeight > ys05)
                   break;
                if (const cTimer *Timer = SortedTimers[i]) {
-                  if (Timer->Recording()) {
+                  if (Timer->IsPatternTimer())
+                     SortedTimers[i] = NULL;
+                  else if (Timer->Recording()) {
                      if (Timer->Remote()) {
                         if (!Device && Timer->HasFlags(tfActive)) {
                            DrawTimer(Timer, y, false);

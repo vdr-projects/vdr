@@ -9562,3 +9562,9 @@ Video Disk Recorder Revision History
 - Fixed a compiler warning (thanks to Winfried Köhler).
 - Fixed convertCharacterTable() in case iconv_open() fails (thanks to Helmut Binder).
 - Official release.
+
+2020-12-26: Version 2.5.1
+
+- Implemented "Pattern Timers" (see MANUAL, vdr.1 and vdr.5 for details).
+- Events in the past are no longer marked as having a timer in the Schedules
+  menu.

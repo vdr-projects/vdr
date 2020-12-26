@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 4.8 2018/04/10 13:58:16 kls Exp $
+.\" $Id: vdr.5 5.1 2020/12/26 15:49:01 kls Exp $
 .\"
 .TH vdr 5 "15 Apr 2018" "2.4" "Video Disk Recorder Files"
 .SH NAME
@@ -317,10 +317,12 @@ The individual bits in this field have the following meaning:
 .TS
 tab (@);
 l l.
-\fB1\fR@the timer is active (and will record if it hits)
-\fB2\fR@this is an instant recording timer
-\fB4\fR@this timer uses VPS
-\fB8\fR@this timer is currently recording (may only be up-to-date with SVDRP)
+\fB0x0001\fR@the timer is active (and will record if it hits)
+\fB0x0002\fR@this is an instant recording timer
+\fB0x0004\fR@this timer uses VPS
+\fB0x0008\fR@this timer is currently recording (may only be up-to-date with SVDRP)
+\fB0x0010\fR@this timer was spawned from a pattern timer
+\fB0x0020\fR@this timer will store the recording's name in donerecs.data
 .TE
 
 All other bits are reserved for future use.
@@ -425,6 +427,37 @@ by the title and episode information from the EPG data at the time of
 recording (if that data is available). If at the time of recording either
 of these cannot be determined, \fBTITLE\fR will default to the channel name, and
 \fBEPISODE\fR will default to a blank.
+
+The file name can be prepended with a pattern, enclosed in curly braces, as in
+
+{Columbo}Movies~TITLE
+
+which makes this a "pattern timer". A pattern timer records every event on the
+given channel where the title contains the pattern (case sensitive).
+The following special characters can be used in a pattern:
+.TS
+tab (;);
+l l.
+\fB^\fR;anchor to the beginning of the event's title
+\fB$\fR;anchor to the end of the event's title
+\fB*\fR;match every event
+\fB@\fR;avoid duplicate recordings
+.TE
+
+If \fB@\fR is used, it must be the very first character of the pattern.
+If both \fB@\fR and \fB^\fR are used, \fB@\fR must come first.
+If \fB*\fR is used, it must be the only character in the pattern and may only be
+prepended with \fB@\fR.
+
+In addition to TITLE and EPISODE you can use the following macros to compose the file
+name (the curly braces are part of the macros):
+.TS
+tab (@);
+l l.
+{<}@everything before the matching pattern
+{>}@everything after the matching pattern
+{=}@the matching pattern itself (just for completeness)
+.TE
 .TP
 .B Auxiliary data
 An arbitrary string that can be used by external applications to store any

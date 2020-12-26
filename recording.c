@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 4.29 2020/10/30 16:08:29 kls Exp $
+ * $Id: recording.c 5.1 2020/12/26 15:49:01 kls Exp $
  */
 
 #include "recording.h"
@@ -3048,6 +3048,74 @@ cUnbufferedFile *cFileName::SetOffset(int Number, off_t Offset)
 cUnbufferedFile *cFileName::NextFile(void)
 {
   return SetOffset(fileNumber + 1);
+}
+
+// --- cDoneRecordings -------------------------------------------------------
+
+cDoneRecordings DoneRecordingsPattern;
+
+bool cDoneRecordings::Load(const char *FileName)
+{
+  fileName = FileName;
+  if (*fileName && access(fileName, F_OK) == 0) {
+     isyslog("loading %s", *fileName);
+     FILE *f = fopen(fileName, "r");
+     if (f) {
+        char *s;
+        cReadLine ReadLine;
+        while ((s = ReadLine.Read(f)) != NULL)
+              Add(s);
+        fclose(f);
+        }
+     else {
+        LOG_ERROR_STR(*fileName);
+        return false;
+        }
+     }
+  return true;
+}
+
+bool cDoneRecordings::Save(void) const
+{
+  bool result = true;
+  cSafeFile f(fileName);
+  if (f.Open()) {
+     for (int i = 0; i < doneRecordings.Size(); i++) {
+         if (fputs(doneRecordings[i], f) == EOF || fputc('\n', f) == EOF) {
+            result = false;
+            break;
+            }
+         }
+     if (!f.Close())
+        result = false;
+     }
+  else
+     result = false;
+  return result;
+}
+
+void cDoneRecordings::Add(const char *Title)
+{
+  doneRecordings.Append(strdup(Title));
+}
+
+void cDoneRecordings::Append(const char *Title)
+{
+  if (!Contains(Title)) {
+     Add(Title);
+     if (FILE *f = fopen(fileName, "a")) {
+        fputs(Title, f);
+        fputc('\n', f);
+        fclose(f);
+        }
+     else
+        esyslog("ERROR: can't open '%s' for appending '%s'", *fileName, Title);
+     }
+}
+
+bool cDoneRecordings::Contains(const char *Title) const
+{
+  return doneRecordings.Find(Title) >= 0;
 }
 
 // --- Index stuff -----------------------------------------------------------
