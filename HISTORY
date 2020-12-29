@@ -9568,3 +9568,7 @@ Video Disk Recorder Revision History
 - Implemented "Pattern Timers" (see MANUAL, vdr.1 and vdr.5 for details).
 - Events in the past are no longer marked as having a timer in the Schedules
   menu.
+
+2020-12-29:
+
+- Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).

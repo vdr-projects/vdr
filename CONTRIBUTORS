@@ -3655,6 +3655,8 @@ Jürgen Schneider <jsffm@web.de>
  for reporting a possible discrepancy of the primary device number in the LSTD and
  PRIM commands
  for adding support for EAC3 audio from other sources
+ for reporting a crash if a pattern timer spawns a timer that uses EPISODE and the
+ event has no short text
 
 Stefan Verse <Verse@amotronics.de>
  for fixing an occasional black screen when switching channels
