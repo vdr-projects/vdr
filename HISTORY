@@ -9575,3 +9575,5 @@ Video Disk Recorder Revision History
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
   Makefile now makes sure it is set before calling doxygen.
 - Using strgetlast() in more places.
+- Fixed a crash in the SVDRP command CLRE in case a non-existing channel number is
+  given (reported by Manuel Reimer).

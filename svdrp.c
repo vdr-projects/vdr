@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: svdrp.c 5.2 2021/01/01 21:23:00 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1301,8 +1301,10 @@ void cSVDRPServer::CmdCLRE(const char *Option)
      tChannelID ChannelID = tChannelID::InvalidID;
      if (isnumber(Option)) {
         int o = strtol(Option, NULL, 10);
-        if (o >= 1 && o <= cChannels::MaxNumber())
-           ChannelID = Channels->GetByNumber(o)->GetChannelID();
+        if (o >= 1 && o <= cChannels::MaxNumber()) {
+           if (const cChannel *Channel = Channels->GetByNumber(o))
+              ChannelID = Channel->GetChannelID();
+           }
         }
      else {
         ChannelID = tChannelID::FromString(Option);
