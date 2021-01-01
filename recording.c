@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: recording.c 5.2 2021/01/01 15:26:27 kls Exp $
  */
 
 #include "recording.h"
@@ -1050,9 +1050,7 @@ cString cRecording::Folder(void) const
 
 cString cRecording::BaseName(void) const
 {
-  if (char *s = strrchr(name, FOLDERDELIMCHAR))
-     return cString(s + 1);
-  return name;
+  return strgetlast(name, FOLDERDELIMCHAR);
 }
 
 const char *cRecording::FileName(void) const
@@ -1158,8 +1156,7 @@ int cRecording::HierarchyLevels(void) const
 
 bool cRecording::IsEdited(void) const
 {
-  const char *s = strrchr(name, FOLDERDELIMCHAR);
-  s = !s ? name : s + 1;
+  const char *s = strgetlast(name, FOLDERDELIMCHAR);
   return *s == '%';
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: tools.h 5.2 2021/01/01 15:26:27 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -234,6 +234,7 @@ char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's'
 const char *strchrn(const char *s, char c, size_t n); ///< returns a pointer to the n'th occurrence (counting from 1) of c in s, or NULL if no such character was found. If n is 0, s is returned.
 int strcountchr(const char *s, char c); ///< returns the number of occurrences of 'c' in 's'.
 const char *strgetlast(const char *s, char c); // returns the part of 's' after the last occurrence of 'c', or 's' if there is no 'c'.
+inline char *strgetlast(char *s, char c) { return const_cast<char *>(strgetlast(static_cast<const char *>(s), c)); } // returns the part of 's' after the last occurrence of 'c', or 's' if there is no 'c'.
 inline char *skipspace(const char *s)
 {
   if ((uchar)*s > ' ') // most strings don't have any leading space, so handle this case as fast as possible

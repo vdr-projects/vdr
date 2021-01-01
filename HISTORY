@@ -9569,8 +9569,9 @@ Video Disk Recorder Revision History
 - Events in the past are no longer marked as having a timer in the Schedules
   menu.
 
-2020-12-31:
+2021-01-01:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
   Makefile now makes sure it is set before calling doxygen.
+- Using strgetlast() in more places.

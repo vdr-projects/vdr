@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: menu.c 5.2 2021/01/01 15:26:27 kls Exp $
  */
 
 #include "menu.h"
@@ -1094,11 +1094,7 @@ void cMenuEditTimer::SetPatternItem(bool Initial)
         return;
         }
      if (!*data.pattern) {
-        char *p = strrchr(data.file, FOLDERDELIMCHAR);
-        if (p)
-           p++;
-        else
-           p = data.file;
+        char *p = strgetlast(data.file, FOLDERDELIMCHAR);
         strn0cpy(data.pattern, p, sizeof(data.pattern));
         }
      Ins(pattern = new cMenuEditStrItem( tr("Pattern"), data.pattern, sizeof(data.pattern)), true, file);
@@ -1120,11 +1116,7 @@ eOSState cMenuEditTimer::SetFolder(void)
 {
   if (cMenuFolder *mf = dynamic_cast<cMenuFolder *>(SubMenu())) {
      cString Folder = mf->GetFolder();
-     char *p = strrchr(data.file, FOLDERDELIMCHAR);
-     if (p)
-        p++;
-     else
-        p = data.file;
+     char *p = strgetlast(data.file, FOLDERDELIMCHAR);
      if (!isempty(*Folder))
         strn0cpy(data.file, cString::sprintf("%s%c%s", *Folder, FOLDERDELIMCHAR, p), sizeof(data.file));
      else if (p != data.file)
