@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 4.13 2020/11/22 13:32:05 kls Exp $
+ * $Id: tools.c 4.13.1.1 2021/01/02 15:05:48 kls Exp $
  */
 
 #include "tools.h"
@@ -151,6 +151,8 @@ char *strreplace(char *s, char c1, char c2)
 
 char *strreplace(char *s, const char *s1, const char *s2)
 {
+  if (!s || !s1 || !s2)
+     return s;
   char *p = strstr(s, s1);
   if (p) {
      int of = p - s;

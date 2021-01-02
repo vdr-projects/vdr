@@ -9562,3 +9562,7 @@ Video Disk Recorder Revision History
 - Fixed a compiler warning (thanks to Winfried Köhler).
 - Fixed convertCharacterTable() in case iconv_open() fails (thanks to Helmut Binder).
 - Official release.
+
+2021-01-02: Version 2.4.7
+
+- Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
