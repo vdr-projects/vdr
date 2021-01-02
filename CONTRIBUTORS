@@ -2773,6 +2773,7 @@ Winfried Köhler <w_koehl@gmx.de>
  for adding initialization of cDvbFrontend::frontendInfo
  for improving handling missing VDRPluginDestroyer()
  for fixing a compiler warning
+ for fixing handling $(PKG_CONFIG) in newplugin
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR

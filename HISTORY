@@ -9570,3 +9570,4 @@ Video Disk Recorder Revision History
   Makefile now makes sure it is set before calling doxygen.
 - Fixed a crash in the SVDRP command CLRE in case a non-existing channel number is
   given (reported by Manuel Reimer).
+- Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
