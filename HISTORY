@@ -9569,7 +9569,7 @@ Video Disk Recorder Revision History
 - Events in the past are no longer marked as having a timer in the Schedules
   menu.
 
-2021-01-01:
+2021-01-02:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9577,3 +9577,4 @@ Video Disk Recorder Revision History
 - Using strgetlast() in more places.
 - Fixed a crash in the SVDRP command CLRE in case a non-existing channel number is
   given (reported by Manuel Reimer).
+- Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
