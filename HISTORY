@@ -9566,3 +9566,5 @@ Video Disk Recorder Revision History
 2021-01-02: Version 2.4.7
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
+- Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
+  Makefile now makes sure it is set before calling doxygen.

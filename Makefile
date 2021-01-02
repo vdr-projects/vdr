@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 4.10 2020/06/27 09:13:04 kls Exp $
+# $Id: Makefile 4.10.1.1 2021/01/02 15:11:20 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -342,6 +342,7 @@ install-pc: vdr.pc
 srcdoc:
 	@cat $(DOXYFILE) > $(DOXYFILE).tmp
 	@echo PROJECT_NUMBER = $(VDRVERSION) >> $(DOXYFILE).tmp
+	@chmod +x $(DOXYFILE).filter
 	$(DOXYGEN) $(DOXYFILE).tmp
 	@rm $(DOXYFILE).tmp
 
