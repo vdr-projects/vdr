@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-01-02:
+2021-01-04:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9587,3 +9587,5 @@ Video Disk Recorder Revision History
 - Fixed a crash in the SVDRP command CLRE in case a non-existing channel number is
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
+- Fixed initializing the cChannel::schedule pointer after reading EPG data with PUTE
+  (reported by Manuel Reimer).
