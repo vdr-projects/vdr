@@ -2941,6 +2941,8 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
  for suggesting to make the SVDRP command DELC accept a channel id
  for reporting a crash in the SVDRP command CLRE in case a non-existing channel
  number is given
+ for reporting that LSTE doesn't work after PUTE in case a channel didn't already
+ have EPG data
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in

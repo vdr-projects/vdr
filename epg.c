@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 4.9 2019/05/20 09:55:22 kls Exp $
+ * $Id: epg.c 4.9.1.1 2021/01/04 14:58:58 kls Exp $
  */
 
 #include "epg.h"
@@ -1311,8 +1311,13 @@ bool cSchedules::Read(FILE *f)
      fclose(f);
   if (result) {
      // Initialize the channels' schedule pointers, so that the first WhatsOn menu will come up faster:
-     for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel))
+     for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel)) {
+         if (const cSchedule *Schedule = Channel->schedule) {
+            if (!Schedule->ChannelID().Valid()) // this is the DummySchedule
+               Channel->schedule = NULL;
+            }
          Schedules->GetSchedule(Channel);
+         }
      }
   return result;
 }
