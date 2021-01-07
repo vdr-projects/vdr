@@ -3662,6 +3662,8 @@ Jürgen Schneider <jsffm@web.de>
  for adding support for EAC3 audio from other sources
  for reporting a crash if a pattern timer spawns a timer that uses EPISODE and the
  event has no short text
+ for reporting a bug in VPS handling when spawning a pattern timer, in case Setup.UseVps
+ is false
 
 Stefan Verse <Verse@amotronics.de>
  for fixing an occasional black screen when switching channels

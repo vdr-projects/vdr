@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: timers.c 5.2 2021/01/07 16:00:17 kls Exp $
  */
 
 #include "timers.h"
@@ -183,7 +183,7 @@ cTimer::cTimer(const cEvent *Event, const char *FileName, const cTimer *PatternT
   remote = NULL;
   event = NULL;
   if (!PatternTimer || PatternTimer->HasFlags(tfVps)) {
-     if (Event->Vps() && Setup.UseVps)
+     if (Event->Vps() && (PatternTimer || Setup.UseVps))
         SetFlags(tfVps);
      }
   LOCK_CHANNELS_READ;

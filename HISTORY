@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-01-04:
+2021-01-07:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9589,3 +9589,5 @@ Video Disk Recorder Revision History
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 - Fixed initializing the cChannel::schedule pointer after reading EPG data with PUTE
   (reported by Manuel Reimer).
+- Fixed VPS handling when spawning a pattern timer, in case Setup.UseVps is false
+  (reported by Jürgen Schneider).
