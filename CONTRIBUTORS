@@ -3673,3 +3673,6 @@ Jens Schleusener <Jens.Schleusener@fossies.org>
 
 Bernd Kuhls <bernd.kuhls@t-online.de>
  for fixing possible compilation errors with libjpeg
+
+Ulf Grüne <ulf.gruene@t-online.de>
+ for reporting the need for more than 15 modulation systems in cDevice::GetDevice()
