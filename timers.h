@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: timers.h 5.2 2021/01/14 10:29:05 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -98,6 +98,7 @@ public:
   void SetId(int Id);
   void SpawnPatternTimer(const cEvent *Event, cTimers *Timers);
   bool SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers);
+  void TriggerRespawn(void);
   bool SetEventFromSchedule(const cSchedules *Schedules);
   bool SetEvent(const cEvent *Event);
   void SetRecording(bool Recording);

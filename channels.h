@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 4.5 2020/06/10 14:00:36 kls Exp $
+ * $Id: channels.h 5.1 2021/01/14 10:29:05 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -178,6 +178,7 @@ public:
   void SetNumber(int Number) { number = Number; }
   bool GroupSep(void) const { return groupSep; }
   const char *Parameters(void) const { return parameters; }
+  const cSchedule *Schedule(void) const { return schedule; }
   const cLinkChannels* LinkChannels(void) const { return linkChannels; }
   const cChannel *RefChannel(void) const { return refChannel; }
   bool IsAtsc(void) const { return cSource::IsAtsc(source); }

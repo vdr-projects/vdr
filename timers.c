@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.2 2021/01/07 16:00:17 kls Exp $
+ * $Id: timers.c 5.3 2021/01/14 10:29:05 kls Exp $
  */
 
 #include "timers.h"
@@ -739,6 +739,20 @@ bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
   return TimersSpawned;
 }
 
+void cTimer::TriggerRespawn(void)
+{
+  if (HasFlags(tfSpawned) || IsPatternTimer()) {
+     if (Channel()) {
+        LOCK_CHANNELS_READ;
+        if (const cSchedule *Schedule = Channel()->Schedule()) {
+           dsyslog("triggering respawn for timer %s", *ToDescr());
+           LOCK_SCHEDULES_WRITE;
+           const_cast<cSchedule *>(Schedule)->SetModified();
+           }
+        }
+     }
+}
+
 bool cTimer::SetEventFromSchedule(const cSchedules *Schedules)
 {
   if (IsPatternTimer())
@@ -918,7 +932,7 @@ void cTimer::OnOff(void)
      SetFlags(tfActive);
   SetEvent(NULL);
   if (HasFlags(tfActive))
-     scheduleState = -1; // have pattern timers spawn if necessary
+     TriggerRespawn(); // have pattern timers spawn if necessary
   Matches(); // refresh start and end time
 }
 
@@ -1112,6 +1126,7 @@ bool cTimers::DeleteExpired(void)
         cTimer *next = Next(ti);
         if (!ti->Remote() && ti->Expired()) {
            ti->SetEvent(NULL); // Del() doesn't call ~cTimer() right away, so this is necessary here
+           ti->TriggerRespawn(); // in case this is a spawned timer
            isyslog("deleting timer %s", *ti->ToDescr());
            Del(ti);
            TimersModified = true;

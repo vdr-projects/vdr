@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.2 2021/01/01 15:26:27 kls Exp $
+ * $Id: menu.c 5.3 2021/01/14 10:29:05 kls Exp $
  */
 
 #include "menu.h"
@@ -1191,6 +1191,7 @@ eOSState cMenuEditTimer::ProcessKey(eKeys Key)
                               data.SetEvent(NULL);
                            *timer = data;
                            }
+                        timer->TriggerRespawn();
                         LOCK_SCHEDULES_READ;
                         timer->SetEventFromSchedule(Schedules);
                         timer->Matches();

@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.2 2021/01/01 21:23:00 kls Exp $
+ * $Id: svdrp.c 5.3 2021/01/14 10:29:05 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1484,6 +1484,7 @@ void cSVDRPServer::CmdDELT(const char *Option)
               Timer->Skip();
               cRecordControls::Process(Timers, time(NULL));
               }
+           Timer->TriggerRespawn();
            Timers->Del(Timer);
            Timers->SetModified();
            isyslog("SVDRP %s < %s deleted timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
@@ -2063,6 +2064,7 @@ void cSVDRPServer::CmdMODT(const char *Option)
            isyslog("SVDRP %s < %s modified timer %s (%s)", Setup.SVDRPHostName, *clientName, *Timer->ToDescr(), Timer->HasFlags(tfActive) ? "active" : "inactive");
            if (Timer->IsPatternTimer())
               Timer->SetEvent(NULL);
+           Timer->TriggerRespawn();
            Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
            }
         else
