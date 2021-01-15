@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-01-14:
+2021-01-15:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9594,3 +9594,6 @@ Video Disk Recorder Revision History
 - Increased the number of possible modulation systems in cDevice::GetDevice()
   (reported by Ulf Grüne).
 - Now explicitly triggering respawning of pattern timers.
+- If an event in the Schedules menu is marked with a 'T' or 'I' and the user presses the
+  Red button to edit the timer, spawned timers are now preferred over pattern timers
+  in case there is more than one timer that will match that event.
