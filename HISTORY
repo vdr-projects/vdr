@@ -9599,3 +9599,5 @@ Video Disk Recorder Revision History
   in case there is more than one timer that will match that event.
 - Made the functions cRecordingInfo::SetData() and cRecordingInfo::SetAux() public
   (thanks to Peter Bieringer).
+- Fixed setting the 'title' of a recording's info to the recording's name if there
+  is no info file (the change in version 1.7.28 broke the fallback to the old 'summary.vdr').
