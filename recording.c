@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.2 2021/01/01 15:26:27 kls Exp $
+ * $Id: recording.c 5.3 2021/01/18 12:55:47 kls Exp $
  */
 
 #include "recording.h"
@@ -430,11 +430,11 @@ cRecordingInfo::~cRecordingInfo()
 
 void cRecordingInfo::SetData(const char *Title, const char *ShortText, const char *Description)
 {
-  if (!isempty(Title))
+  if (Title)
      ((cEvent *)event)->SetTitle(Title);
-  if (!isempty(ShortText))
+  if (ShortText)
      ((cEvent *)event)->SetShortText(ShortText);
-  if (!isempty(Description))
+  if (Description)
      ((cEvent *)event)->SetDescription(Description);
 }
 

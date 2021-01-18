@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-01-15:
+2021-01-18:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9597,3 +9597,5 @@ Video Disk Recorder Revision History
 - If an event in the Schedules menu is marked with a 'T' or 'I' and the user presses the
   Red button to edit the timer, spawned timers are now preferred over pattern timers
   in case there is more than one timer that will match that event.
+- Made the functions cRecordingInfo::SetData() and cRecordingInfo::SetAux() public
+  (thanks to Peter Bieringer).

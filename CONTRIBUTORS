@@ -1226,6 +1226,7 @@ Peter Bieringer <pb@bieringer.de>
  for suggesting to ignore lines tagged with '#' in the 'info.vdr' file of a recording
  for reporting a problem with the backslash ('\') in parameters when executing
  external commands
+ for making the functions cRecordingInfo::SetData() and cRecordingInfo::SetAux() public
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording

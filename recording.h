@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: recording.h 5.2 2021/01/18 12:55:47 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -74,8 +74,6 @@ private:
   char *fileName;
   cRecordingInfo(const cChannel *Channel = NULL, const cEvent *Event = NULL);
   bool Read(FILE *f);
-  void SetData(const char *Title, const char *ShortText, const char *Description);
-  void SetAux(const char *Aux);
 public:
   cRecordingInfo(const char *FileName);
   ~cRecordingInfo();
@@ -93,6 +91,8 @@ public:
   bool Write(FILE *f, const char *Prefix = "") const;
   bool Read(void);
   bool Write(void) const;
+  void SetData(const char *Title, const char *ShortText, const char *Description);
+  void SetAux(const char *Aux);
   };
 
 class cRecording : public cListObject {
@@ -150,7 +150,7 @@ public:
        ///< Returns the full path name to the recording directory, including the
        ///< video directory and the actual '*.rec'. For disk file access use.
   const char *Title(char Delimiter = ' ', bool NewIndicator = false, int Level = -1) const;
-  const cRecordingInfo *Info(void) const { return info; }
+  cRecordingInfo *Info(void) const { return info; }
   const char *PrefixFileName(char Prefix);
   int HierarchyLevels(void) const;
   void ResetResume(void) const;
