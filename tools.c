@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.2 2020/12/29 21:40:29 kls Exp $
+ * $Id: tools.c 5.3 2021/01/19 20:38:28 kls Exp $
  */
 
 #include "tools.h"
@@ -198,6 +198,16 @@ int strcountchr(const char *s, char c)
          }
      }
   return n;
+}
+
+cString strgetbefore(const char *s, char c, int n)
+{
+  const char *p = strrchr(s, 0); // points to the terminating 0 of s
+  while (--p >= s) {
+        if (*p == c && --n == 0)
+           break;
+        }
+  return cString(s, p);
 }
 
 const char *strgetlast(const char *s, char c)

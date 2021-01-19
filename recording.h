@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.2 2021/01/18 12:55:47 kls Exp $
+ * $Id: recording.h 5.3 2021/01/19 20:38:28 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -421,6 +421,10 @@ public:
 #define RUC_EDITINGRECORDING "editing"
 #define RUC_EDITEDRECORDING  "edited"
 #define RUC_DELETERECORDING  "deleted"
+#define RUC_RENAMEDRECORDING "renamed" // same directory, only the base name is changed
+#define RUC_MOVEDRECORDING   "moved"   // different directory (and maybe base name), or "copy" to other filesystem + delete original (triggers copying->copied->deleted)
+#define RUC_COPYINGRECORDING "copying"
+#define RUC_COPIEDRECORDING  "copied"
 
 class cRecordingUserCommand {
 private:

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.2 2021/01/01 15:26:27 kls Exp $
+ * $Id: tools.h 5.3 2021/01/19 20:38:28 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -233,6 +233,7 @@ char *strreplace(char *s, char c1, char c2);
 char *strreplace(char *s, const char *s1, const char *s2); ///< re-allocates 's' and deletes the original string if necessary!
 const char *strchrn(const char *s, char c, size_t n); ///< returns a pointer to the n'th occurrence (counting from 1) of c in s, or NULL if no such character was found. If n is 0, s is returned.
 int strcountchr(const char *s, char c); ///< returns the number of occurrences of 'c' in 's'.
+cString strgetbefore(const char *s, char c, int n = 1); // returns the part of 's' before (and excluding) the n'th occurrence of 'c' from the right, or an empty string if there is no such 'c'.
 const char *strgetlast(const char *s, char c); // returns the part of 's' after the last occurrence of 'c', or 's' if there is no 'c'.
 inline char *strgetlast(char *s, char c) { return const_cast<char *>(strgetlast(static_cast<const char *>(s), c)); } // returns the part of 's' after the last occurrence of 'c', or 's' if there is no 'c'.
 inline char *skipspace(const char *s)

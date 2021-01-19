@@ -264,11 +264,10 @@ Executing commands before and after a recording:
 ------------------------------------------------
 
 You can use the '-r' option to define a program or script that gets called
-before and after a recording is performed, and after an editing process
-has finished or a recording has been deleted.
+at various stages of handling recordings.
 
-The program will be called with two or three (in case of "editing" and "edited")
-string parameters. The first parameter is one of
+The program will be called with two or three string parameters.
+The first parameter is one of
 
   before      if this is *before* a recording starts
   started     if this is after a recording has *started*
@@ -276,13 +275,16 @@ string parameters. The first parameter is one of
   editing     if this is before *editing* a recording
   edited      if this is after a recording has been *edited*
   deleted     if this is after a recording has been *deleted*
+  copying     if this is before *copying* a recording
+  copied      if this is after a recording has been *copied*
+  renamed     if this is after a recording has been *renamed*
+  moved       if this is after a recording has been *moved*
+              (note that a move across file system borders triggers a sequence
+              of "copying", "copied" and "deleted")
 
-and the second parameter contains the full name of the recording's
+and the second and third parameter (if present) contain the full name of the recording's
 directory (which may not yet exists at that moment in the "before" case).
-In the "editing" and "edited" case it will be the name of the edited version
-(second parameter) and the name of the source version (third parameter).
-In the "deleted" case the extension of the directory name is ".del"
-instead of ".rec".
+See the example below for the exact meaning of these parameters.
 
 Within this program you can do anything you would like to do before and/or
 after a recording or after an editing process. However, the program must return
@@ -314,6 +316,22 @@ case "$1" in
             ;;
      deleted)
             echo "Deleted recording $2"
+            ;;
+     copying)
+            echo "Destination recording $2"
+            echo "Source recording $3"
+            ;;
+     copied)
+            echo "Destination recording $2"
+            echo "Source recording $3"
+            ;;
+     renamed)
+            echo "New name of recording $2"
+            echo "Old name of recording $3"
+            ;;
+     moved)
+            echo "New path of recording $2"
+            echo "Old path of recording $3"
             ;;
      *)
             echo "ERROR: unknown state: $1"

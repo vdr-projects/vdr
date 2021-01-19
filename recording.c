@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.4 2021/01/18 13:35:16 kls Exp $
+ * $Id: recording.c 5.5 2021/01/19 20:38:28 kls Exp $
  */
 
 #include "recording.h"
@@ -1924,6 +1924,7 @@ bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
         Recordings->AddByName(FileNameDst(), false);
         }
      else if ((Usage() & (ruMove | ruCopy)) != 0) {
+        cRecordingUserCommand::InvokeCommand(RUC_COPYINGRECORDING, FileNameDst(), FileNameSrc());
         copier = new cDirCopier(FileNameSrc(), FileNameDst());
         copier->Start();
         }
@@ -1932,10 +1933,14 @@ bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
      return true;
      }
   // We're done:
+  if (!error && (usage & (ruMove | ruCopy)) != 0)
+     cRecordingUserCommand::InvokeCommand(RUC_COPIEDRECORDING, FileNameDst(), FileNameSrc());
   if (!error && (usage & ruMove) != 0) {
      cRecording Recording(FileNameSrc());
-     if (Recording.Delete())
+     if (Recording.Delete()) {
+        cRecordingUserCommand::InvokeCommand(RUC_MOVEDRECORDING, FileNameDst(), FileNameSrc());
         Recordings->DelByName(Recording.FileName());
+        }
      }
   Recordings->SetModified(); // to trigger a state change
   Recordings->TouchUpdate();

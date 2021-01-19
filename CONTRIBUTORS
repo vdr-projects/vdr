@@ -1227,6 +1227,7 @@ Peter Bieringer <pb@bieringer.de>
  for reporting a problem with the backslash ('\') in parameters when executing
  external commands
  for making the functions cRecordingInfo::SetData() and cRecordingInfo::SetAux() public
+ for adding some missing user command calls for copying, renaming and moving recordings
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording

@@ -9603,3 +9603,5 @@ Video Disk Recorder Revision History
   is no info file (the change in version 1.7.28 broke the fallback to the old 'summary.vdr').
 - Now making sure a spawned timer only fully overlaps the given event (reported by
   Jürgen Schneider).
+- Added some missing user command calls for copying, renaming and moving recordings
+  (thanks to Peter Bieringer).

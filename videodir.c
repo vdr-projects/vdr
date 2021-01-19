@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 4.1 2015/08/11 13:39:59 kls Exp $
+ * $Id: videodir.c 5.1 2021/01/19 20:38:28 kls Exp $
  */
 
 #include "videodir.h"
@@ -96,6 +96,11 @@ bool cVideoDirectory::Move(const char *FromName, const char *ToName)
         LOG_ERROR_STR(ToName);
         return false;
         }
+     // detect whether it's a real recording move inside same file system or a recording rename
+     if (strcmp(strgetbefore(FromName, '/', 2), strgetbefore(ToName, '/', 2)))
+        cRecordingUserCommand::InvokeCommand(RUC_MOVEDRECORDING, ToName, FromName);
+     else
+        cRecordingUserCommand::InvokeCommand(RUC_RENAMEDRECORDING, ToName, FromName);
      }
   else
      return RecordingsHandler.Add(ruMove, FromName, ToName);
