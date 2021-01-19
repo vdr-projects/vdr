@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-01-18:
+2021-01-19:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9601,3 +9601,5 @@ Video Disk Recorder Revision History
   (thanks to Peter Bieringer).
 - Fixed setting the 'title' of a recording's info to the recording's name if there
   is no info file (the change in version 1.7.28 broke the fallback to the old 'summary.vdr').
+- Now making sure a spawned timer only fully overlaps the given event (reported by
+  Jürgen Schneider).

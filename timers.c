@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.4 2021/01/15 13:52:40 kls Exp $
+ * $Id: timers.c 5.5 2021/01/19 13:21:51 kls Exp $
  */
 
 #include "timers.h"
@@ -191,8 +191,18 @@ cTimer::cTimer(const cEvent *Event, const char *FileName, const cTimer *PatternT
   time_t tstart = (flags & tfVps) ? Event->Vps() : Event->StartTime();
   time_t tstop = tstart + Event->Duration();
   if (!(HasFlags(tfVps))) {
-     tstop  += Setup.MarginStop * 60;
-     tstart -= Setup.MarginStart * 60;
+     int MarginStart = Setup.MarginStart * 60;
+     int MarginStop  = Setup.MarginStop * 60;
+     if (PatternTimer) {
+        // To make sure a spawned timer gets assigned to the correct event, we must
+        // make sure that this is the only event that overlaps 100%:
+        if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Prev()))
+           MarginStart = max(0, min(MarginStart, e->Duration() - 60));
+        if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Next()))
+           MarginStop = max(0, min(MarginStop, e->Duration() - 60));
+        }
+     tstart -= MarginStart;
+     tstop  += MarginStop;
      }
   struct tm tm_r;
   struct tm *time = localtime_r(&tstart, &tm_r);

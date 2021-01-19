@@ -3665,6 +3665,8 @@ Jürgen Schneider <jsffm@web.de>
  event has no short text
  for reporting a bug in VPS handling when spawning a pattern timer, in case Setup.UseVps
  is false
+ for reporting an endless spawning of pattern timers in case the spawned timer doesn't
+ use VPS and fully overlaps a second event that is longer than the original one
 
 Stefan Verse <Verse@amotronics.de>
  for fixing an occasional black screen when switching channels
