@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.11 2020/11/28 21:45:05 kls Exp $
+ * $Id: eit.c 5.1 2021/03/16 15:10:54 kls Exp $
  */
 
 #include "eit.h"
@@ -22,6 +22,28 @@
 
 #define DBGEIT 0
 
+// --- cEitTables ------------------------------------------------------------
+
+bool cEitTables::Check(uchar TableId, uchar Version, int SectionNumber)
+{
+  int ti = Index(TableId);
+  return sectionSyncer[ti].Check(Version, SectionNumber);
+}
+
+bool cEitTables::Processed(uchar TableId, uchar LastTableId, int SectionNumber, int LastSectionNumber, int SegmentLastSectionNumber)
+{
+  int ti = Index(TableId);
+  int LastIndex = Index(LastTableId);
+  if (sectionSyncer[ti].Processed(SectionNumber, LastSectionNumber, SegmentLastSectionNumber)) {
+     for (int i = 0; i <= LastIndex; i++) {
+         if (!sectionSyncer[i].Complete())
+            return false;
+         }
+     return true; // all tables have been processed
+     }
+  return false;
+}
+
 // --- cEIT ------------------------------------------------------------------
 
 class cEIT : public SI::EIT {
@@ -34,13 +56,13 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
 {
   if (!CheckCRCAndParse())
      return;
-  int HashId = Tid + (getServiceId() << 8);
-  cSectionSyncerEntry *SectionSyncerEntry = SectionSyncerHash.Get(HashId);
-  if (!SectionSyncerEntry) {
-     SectionSyncerEntry = new cSectionSyncerEntry;
-     SectionSyncerHash.Add(SectionSyncerEntry, HashId);
+  int HashId = getServiceId();
+  cEitTables *EitTables = SectionSyncerHash.Get(HashId);
+  if (!EitTables) {
+     EitTables = new cEitTables;
+     SectionSyncerHash.Add(EitTables, HashId);
      }
-  bool Process = SectionSyncerEntry->Sync(getVersionNumber(), getSectionNumber(), getLastSectionNumber());
+  bool Process = EitTables->Check(Tid, getVersionNumber(), getSectionNumber());
   if (Tid != 0x4E && !Process) // we need to set the 'seen' tag to watch the running status of the present/following event
      return;
 
@@ -50,10 +72,8 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
 
   cStateKey ChannelsStateKey;
   cChannels *Channels = cChannels::GetChannelsWrite(ChannelsStateKey, 10);
-  if (!Channels) {
-     SectionSyncerEntry->Repeat(); // let's not miss any section of the EIT
+  if (!Channels)
      return;
-     }
   tChannelID channelID(Source, getOriginalNetworkId(), getTransportStreamId(), getServiceId());
   cChannel *Channel = Channels->GetByChannelID(channelID, true);
   if (!Channel || EpgHandlers.IgnoreChannel(Channel)) {
@@ -64,7 +84,6 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
   cStateKey SchedulesStateKey;
   cSchedules *Schedules = cSchedules::GetSchedulesWrite(SchedulesStateKey, 10);
   if (!Schedules) {
-     SectionSyncerEntry->Repeat(); // let's not miss any section of the EIT
      ChannelsStateKey.Remove(false);
      return;
      }
@@ -361,6 +380,8 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
      EpgHandlers.DropOutdated(pSchedule, SegmentStart, SegmentEnd, Tid, getVersionNumber());
      pSchedule->SetModified();
      }
+  if (Process)
+     EitTables->Processed(Tid, getLastTableId(), getSectionNumber(), getLastSectionNumber(), getSegmentLastSectionNumber());
   SchedulesStateKey.Remove(Modified);
   ChannelsStateKey.Remove(ChannelsModified);
   EpgHandlers.EndSegmentTransfer(Modified);

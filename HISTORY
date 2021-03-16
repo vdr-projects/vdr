@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-01-19:
+2021-03-16:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9605,3 +9605,9 @@ Video Disk Recorder Revision History
   Jürgen Schneider).
 - Added some missing user command calls for copying, renaming and moving recordings
   (thanks to Peter Bieringer).
+- Improved cSectionSyncer to make sure that no sections are missed, and to allow
+  handling partially used segments (as in the EIT) and processing sections in random
+  order. Segment syncing is now done with the two member functions Check() and
+  Processed(). The old functions Sync() and Repeat() are deprecated and may be
+  removed in a future version. See the comments in filter.h for a description on
+  how to use these new function.

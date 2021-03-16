@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 4.9 2020/12/18 14:51:57 kls Exp $
+ * $Id: pat.c 5.1 2021/03/16 15:10:54 kls Exp $
  */
 
 #include "pat.h"
@@ -424,7 +424,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
         SI::PAT pat(Data, false);
         if (!pat.CheckCRCAndParse())
            return;
-        if (sectionSyncer.Sync(pat.getVersionNumber(), pat.getSectionNumber(), pat.getLastSectionNumber())) {
+        if (sectionSyncer.Check(pat.getVersionNumber(), pat.getSectionNumber())) {
            DBGLOG("PAT %d %d -> %d %d/%d", Transponder(), patVersion, pat.getVersionNumber(), pat.getSectionNumber(), pat.getLastSectionNumber());
            if (pat.getVersionNumber() != patVersion) {
               if (pat.getLastSectionNumber() > 0)
@@ -457,7 +457,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                      }
                   }
                }
-           if (sectionSyncer.Complete()) { // all PAT sections done
+           if (sectionSyncer.Processed(pat.getSectionNumber(), pat.getLastSectionNumber())) { // all PAT sections done
               if (pmtPidList.Count() != pmtSidList.Count())
                  DBGLOG("  PAT %d: shared PMT PIDs", Transponder());
               if (pmtSidList.Count() && !activePmt)

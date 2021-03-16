@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.9 2019/05/31 13:25:00 kls Exp $
+ * $Id: nit.c 5.1 2021/03/16 15:10:54 kls Exp $
  */
 
 #include "nit.h"
@@ -43,7 +43,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
   SI::NIT nit(Data, false);
   if (!nit.CheckCRCAndParse())
      return;
-  if (!sectionSyncer.Sync(nit.getVersionNumber(), nit.getSectionNumber(), nit.getLastSectionNumber()))
+  if (!sectionSyncer.Check(nit.getVersionNumber(), nit.getSectionNumber()))
      return;
   if (DebugNit) {
      char NetworkName[MAXNETWORKNAME] = "";
@@ -63,10 +63,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      }
   cStateKey StateKey;
   cChannels *Channels = cChannels::GetChannelsWrite(StateKey, 10);
-  if (!Channels) {
-     sectionSyncer.Repeat(); // let's not miss any section of the NIT
+  if (!Channels)
      return;
-     }
   bool ChannelsModified = false;
   SI::NIT::TransportStream ts;
   for (SI::Loop::Iterator it; nit.transportStreamLoop.getNext(ts, it); ) {
@@ -371,7 +369,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
           delete d;
           }
       }
-  if (nit.getSectionNumber() == nit.getLastSectionNumber()) {
+  if (sectionSyncer.Processed(nit.getSectionNumber(), nit.getLastSectionNumber())) {
      dbgnit("    trigger sdtFilter for current tp %d\n", Transponder());
      sdtFilter->Trigger(Source());
      }

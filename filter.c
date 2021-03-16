@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.c 4.3 2017/05/09 08:37:23 kls Exp $
+ * $Id: filter.c 5.1 2021/03/16 15:10:54 kls Exp $
  */
 
 #include "filter.h"
@@ -12,8 +12,9 @@
 
 // --- cSectionSyncer --------------------------------------------------------
 
-cSectionSyncer::cSectionSyncer(void)
+cSectionSyncer::cSectionSyncer(bool Random)
 {
+  random = Random;
   Reset();
 }
 
@@ -23,9 +24,56 @@ void cSectionSyncer::Reset(void)
   currentSection = -1;
   synced = false;
   complete = false;
+  segments = 0;
   memset(sections, 0x00, sizeof(sections));
 }
 
+bool cSectionSyncer::Check(uchar Version, int SectionNumber)
+{
+  if (Version != currentVersion) {
+     Reset();
+     currentVersion = Version;
+     }
+  if (complete)
+     return false;
+  if (!random) {
+     if (!synced) {
+        if (SectionNumber == 0) {
+           currentSection = 0;
+           synced = true;
+           }
+        else
+           return false;
+        }
+     if (SectionNumber != currentSection)
+        return false;
+     }
+  return !GetSectionFlag(SectionNumber);
+}
+
+bool cSectionSyncer::Processed(int SectionNumber, int LastSectionNumber, int SegmentLastSectionNumber)
+{
+  SetSectionFlag(SectionNumber, true); // the flag for this section
+  if (!random)
+     currentSection++;           // expect the next section
+  int Index = SectionNumber / 8; // the segment (byte) in which this section lies
+  uchar b = 0xFF;                // all sections in this segment
+  if (SegmentLastSectionNumber < 0 && Index == LastSectionNumber / 8)
+     SegmentLastSectionNumber = LastSectionNumber;
+  if (SegmentLastSectionNumber >= 0) {
+     b >>= 7 - (SegmentLastSectionNumber & 0x07); // limits them up to the last section in this segment
+     if (!random && SectionNumber == SegmentLastSectionNumber)
+        currentSection = (SectionNumber + 8) & ~0x07; // expect first section of next segment
+     }
+  if (sections[Index] == b)           // all expected sections in this segment have been received
+     segments |= 1 << Index;          // so we set the respective bit in the segments flags
+  uint32_t s = 0xFFFFFFFF;            // all segments
+  s >>= 31 - (LastSectionNumber / 8); // limits them up to the last expected segment
+  complete = segments == s;
+  return complete;
+}
+
+#if DEPRECATED_SECTIONSYNCER_SYNC_REPEAT
 void cSectionSyncer::Repeat(void)
 {
   SetSectionFlag(currentSection, false);
@@ -52,6 +100,7 @@ bool cSectionSyncer::Sync(uchar Version, int Number, int LastNumber)
      complete = true;
   return Result;
 }
+#endif
 
 // --- cFilterData -----------------------------------------------------------
 

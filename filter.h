@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.h 4.3 2017/05/09 08:37:23 kls Exp $
+ * $Id: filter.h 5.1 2021/03/16 15:10:54 kls Exp $
  */
 
 #ifndef __FILTER_H
@@ -13,21 +13,52 @@
 #include <sys/types.h>
 #include "tools.h"
 
+#define DEPRECATED_SECTIONSYNCER_SYNC_REPEAT 1
+
 class cSectionSyncer {
 private:
   int currentVersion;
   int currentSection;
+  bool random;
   bool synced;
   bool complete;
+  uint32_t segments;  // bit flags for the 32 segments
   uchar sections[32]; // holds 32 * 8 = 256 bits, as flags for the sections
   void SetSectionFlag(uchar Section, bool On) { if (On) sections[Section / 8] |= (1 << (Section % 8)); else sections[Section / 8] &= ~(1 << (Section % 8)); }
   bool GetSectionFlag(uchar Section) { return sections[Section / 8] & (1 << (Section % 8)); }
 public:
-  cSectionSyncer(void);
+  cSectionSyncer(bool Random = false);
+       ///< Sets up a new section syncer.
+       ///< Call Check() to see whether a given section needs processing. Once the section
+       ///< has been processed, call Processed() to mark it as such. If, for any reason,
+       ///< processing is not completed after calling Check(), nothing special needs to be
+       ///< done. Just don't call Processed() and a later call to Check() with the same
+       ///< SectionNumber will return true again.
+       ///< If Random is true, sections can be processed in random order, not necessarily
+       ///< starting with section 0.
   void Reset(void);
-  void Repeat(void);
+  bool Check(uchar Version, int SectionNumber);
+       ///< Returns true if Version is not the current version, or the given SectionNumber has not
+       ///< been marked as processed, yet. Sections are handled in ascending order, starting at 0,
+       ///< unless Random is true in the constructor call.
+  bool Processed(int SectionNumber, int LastSectionNumber, int SegmentLastSectionNumber = -1);
+       ///< Marks the given SectionNumber as processed.
+       ///< LastSectionNumber is used to determine whether all sections have been processed.
+       ///< SegmentLastSectionNumber can be given to handle partially filled segments (like,
+       ///< for instance in the EIT).
+       ///< Returns true if all sections have been processed.
   bool Complete(void) { return complete; }
+       ///< Returns true if all sections have been processed.
+#if DEPRECATED_SECTIONSYNCER_SYNC_REPEAT
+  void Repeat(void);
   bool Sync(uchar Version, int Number, int LastNumber);
+#endif
+  };
+
+class cSectionSyncerRandom : public cSectionSyncer {
+  ///< Helper class for having an array of random section syncers.
+public:
+  cSectionSyncerRandom(void): cSectionSyncer(true) {}
   };
 
 class cFilterData : public cListObject {

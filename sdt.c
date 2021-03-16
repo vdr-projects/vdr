@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 4.8 2020/06/16 14:50:07 kls Exp $
+ * $Id: sdt.c 5.1 2021/03/16 15:10:54 kls Exp $
  */
 
 #include "sdt.h"
@@ -82,14 +82,12 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      }
   if (!(source && Transponder()))
      return;
-  if (!sectionSyncer.Sync(sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber()))
+  if (!sectionSyncer.Check(sdt.getVersionNumber(), sdt.getSectionNumber()))
      return;
   cStateKey StateKey;
   cChannels *Channels = cChannels::GetChannelsWrite(StateKey, 10);
-  if (!Channels) {
-     sectionSyncer.Repeat(); // let's not miss any section of the SDT
+  if (!Channels)
      return;
-     }
   dbgsdt("SDT: %2d %2d %2d %s %d\n", sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber(), *cSource::ToString(source), Transponder());
   bool ChannelsModified = false;
   SI::SDT::Service SiSdtService;
@@ -203,7 +201,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             delete LinkChannels;
          }
       }
-  if (sdt.getSectionNumber() == sdt.getLastSectionNumber()) {
+  if (sectionSyncer.Processed(sdt.getSectionNumber(), sdt.getLastSectionNumber())) {
      if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3) {
         ChannelsModified |= Channels->MarkObsoleteChannels(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId());
         if (source != Source())
