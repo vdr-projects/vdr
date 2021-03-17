@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 4.2 2020/05/15 12:32:51 kls Exp $
+ * $Id: dvbsubtitle.c 5.1 2021/03/17 15:24:34 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -993,7 +993,9 @@ public:
   int64_t Pts(void) const { return pts; }
   bool Pending(void) { return pending; }
   cSubtitleObjects *Objects(void) { return &objects; }
-  tArea *GetAreas(int &NumAreas, double FactorX, double FactorY);
+  tArea *GetAreas(int &NumAreas);
+  tArea CombineAreas(int NumAreas, const tArea *Areas);
+  tArea ScaleArea(const tArea &Area, double FactorX, double FactorY);
   cSubtitleObject *GetObjectById(int ObjectId, bool New = false);
   cSubtitleClut *GetClutById(int ClutId, bool New = false);
   cSubtitleRegion *GetRegionById(int RegionId, bool New = false);
@@ -1077,7 +1079,7 @@ void cDvbSubtitlePage::ParsePgs(int64_t Pts, cBitStream &bs)
   pending = true;
 }
 
-tArea *cDvbSubtitlePage::GetAreas(int &NumAreas, double FactorX, double FactorY)
+tArea *cDvbSubtitlePage::GetAreas(int &NumAreas)
 {
   if (regions.Count() > 0) {
      NumAreas = regionRefs.Count();
@@ -1085,13 +1087,11 @@ tArea *cDvbSubtitlePage::GetAreas(int &NumAreas, double FactorX, double FactorY)
      tArea *a = Areas;
      for (cSubtitleRegionRef *srr = regionRefs.First(); srr; srr = regionRefs.Next(srr)) {
          if (cSubtitleRegion *sr = GetRegionById(srr->RegionId())) {
-            a->x1 = int(round(FactorX * srr->RegionHorizontalAddress()));
-            a->y1 = int(round(FactorY * srr->RegionVerticalAddress()));
-            a->x2 = int(round(FactorX * (srr->RegionHorizontalAddress() + sr->RegionWidth() - 1)));
-            a->y2 = int(round(FactorY * (srr->RegionVerticalAddress() + sr->RegionHeight() - 1)));
+            a->x1 = srr->RegionHorizontalAddress();
+            a->y1 = srr->RegionVerticalAddress();
+            a->x2 = srr->RegionHorizontalAddress() + sr->RegionWidth() - 1;
+            a->y2 = srr->RegionVerticalAddress() + sr->RegionHeight() - 1;
             a->bpp = sr->RegionDepth();
-            while ((a->Width() & 3) != 0)
-                  a->x2++; // aligns width to a multiple of 4, so 2, 4 and 8 bpp will work
             }
          else
             a->x1 = a->y1 = a->x2 = a->y2 = a->bpp = 0;
@@ -1101,6 +1101,37 @@ tArea *cDvbSubtitlePage::GetAreas(int &NumAreas, double FactorX, double FactorY)
      }
   NumAreas = 0;
   return NULL;
+}
+
+tArea cDvbSubtitlePage::CombineAreas(int NumAreas, const tArea *Areas)
+{
+  tArea a;
+  a.x1 = INT_MAX;
+  a.x2 = INT_MIN;
+  a.y1 = INT_MAX;
+  a.y2 = INT_MIN;
+  a.bpp = 1;
+  for (int i = 0; i < NumAreas; i++) {
+      a.x1 = min(a.x1, Areas[i].x1);
+      a.x2 = max(a.x2, Areas[i].x2);
+      a.y1 = min(a.y1, Areas[i].y1);
+      a.y2 = max(a.y2, Areas[i].y2);
+      a.bpp = max(a.bpp, Areas[i].bpp);
+      }
+  return a;
+}
+
+tArea cDvbSubtitlePage::ScaleArea(const tArea &Area, double FactorX, double FactorY)
+{
+  tArea a;
+  a.x1  = int(round(FactorX * Area.x1)    );
+  a.x2  = int(round(FactorX * Area.x2) - 1);
+  a.y1  = int(round(FactorY * Area.y1)    );
+  a.y2  = int(round(FactorY * Area.y2) - 1);
+  a.bpp = Area.bpp;
+  while ((a.Width() & 3) != 0)
+        a.x2++; // aligns width to a multiple of 4, so 2, 4 and 8 bpp will work
+  return a;
 }
 
 cSubtitleClut *cDvbSubtitlePage::GetClutById(int ClutId, bool New)
@@ -1219,11 +1250,13 @@ private:
   int timeout;
   tArea *areas;
   int numAreas;
+  tArea areaCombined;
+  tArea areaOsd;
   double osdFactorX;
   double osdFactorY;
   cVector<cBitmap *> bitmaps;
 public:
-  cDvbSubtitleBitmaps(int State, int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY);
+  cDvbSubtitleBitmaps(int State, int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY, tArea &AreaCombined, tArea &AreaOsd);
   ~cDvbSubtitleBitmaps();
   int State(void) { return state; }
   int64_t Pts(void) { return pts; }
@@ -1234,13 +1267,15 @@ public:
   void DbgDump(int WindowWidth, int WindowHeight);
   };
 
-cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int State, int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY)
+cDvbSubtitleBitmaps::cDvbSubtitleBitmaps(int State, int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY, tArea &AreaCombined, tArea &AreaOsd)
 {
   state = State;
   pts = Pts;
   timeout = Timeout;
   areas = Areas;
   numAreas = NumAreas;
+  areaCombined = AreaCombined;
+  areaOsd = AreaOsd;
   osdFactorX = OsdFactorX;
   osdFactorY = OsdFactorY;
 }
@@ -1260,25 +1295,25 @@ void cDvbSubtitleBitmaps::AddBitmap(cBitmap *Bitmap)
 void cDvbSubtitleBitmaps::Draw(cOsd *Osd)
 {
   bool Scale = !(DoubleEqual(osdFactorX, 1.0) && DoubleEqual(osdFactorY, 1.0));
-  bool AntiAlias = true;
+  bool AntiAlias = Setup.AntiAlias;
   if (Scale && osdFactorX > 1.0 || osdFactorY > 1.0) {
      // Upscaling requires 8bpp:
-     int Bpp[MAXOSDAREAS];
-     for (int i = 0; i < numAreas; i++) {
-         Bpp[i] = areas[i].bpp;
-         areas[i].bpp = 8;
-         }
-     if (Osd->CanHandleAreas(areas, numAreas) != oeOk) {
-        for (int i = 0; i < numAreas; i++)
-            areas[i].bpp = Bpp[i];
+     int Bpp = areaOsd.bpp;
+     areaOsd.bpp = 8;
+     if (Osd->CanHandleAreas(&areaOsd, 1) != oeOk) {
+        areaOsd.bpp = Bpp;
         AntiAlias = false;
         }
      }
-  if (State() == 0 || Osd->SetAreas(areas, numAreas) == oeOk) {
+  if (State() == 0 || Osd->SetAreas(&areaOsd, 1) == oeOk) {
+     cBitmap combined(areaCombined.Width(), areaCombined.Height(), areaCombined.bpp);
+     combined.SetOffset(areaCombined.x1, areaCombined.y1);
      for (int i = 0; i < bitmaps.Size(); i++) {
+         // merge bitmaps into combined
          cBitmap *b = bitmaps[i];
-         Osd->DrawScaledBitmap(int(round(b->X0() * osdFactorX)), int(round(b->Y0() * osdFactorY)), *b, osdFactorX, osdFactorY, AntiAlias);
+         combined.DrawBitmap(b->X0(), b->Y0(), *b);
          }
+     Osd->DrawScaledBitmap(int(round(combined.X0() * osdFactorX)), int(round(combined.Y0() * osdFactorY)), combined, osdFactorX, osdFactorY, AntiAlias);
      Osd->Flush();
      }
 }
@@ -1734,25 +1769,27 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
   if (!AssertOsd())
      return;
   int NumAreas;
-  tArea *Areas = Page->GetAreas(NumAreas, osdFactorX, osdFactorY);
+  tArea *Areas = Page->GetAreas(NumAreas);
+  tArea AreaCombined = Page->CombineAreas(NumAreas, Areas);
+  tArea AreaOsd = Page->ScaleArea(AreaCombined, osdFactorX, osdFactorY);
   int Bpp = 8;
   bool Reduced = false;
-  while (osd && osd->CanHandleAreas(Areas, NumAreas) != oeOk) {
-        dbgoutput("CanHandleAreas: %d<br>\n", osd->CanHandleAreas(Areas, NumAreas));
-        int HalfBpp = Bpp / 2;
-        if (HalfBpp >= 2) {
-           for (int i = 0; i < NumAreas; i++) {
-               if (Areas[i].bpp >= Bpp) {
-                  Areas[i].bpp = HalfBpp;
+  if (osd && NumAreas > 0) {
+     while (osd->CanHandleAreas(&AreaOsd, 1) != oeOk) {
+           dbgoutput("CanHandleAreas: %d<br>\n", osd->CanHandleAreas(&AreaOsd, 1));
+           int HalfBpp = Bpp / 2;
+           if (HalfBpp >= 2) {
+              if (AreaOsd.bpp >= Bpp) {
+                  AreaOsd.bpp = HalfBpp;
                   Reduced = true;
                   }
-               }
-           Bpp = HalfBpp;
+              Bpp = HalfBpp;
+              }
+           else
+              return; // unable to draw bitmaps
            }
-        else
-           return; // unable to draw bitmaps
-        }
-  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->PageState(), Page->Pts(), Page->PageTimeout(), Areas, NumAreas, osdFactorX, osdFactorY);
+     }
+  cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->PageState(), Page->Pts(), Page->PageTimeout(), Areas, NumAreas, osdFactorX, osdFactorY, AreaCombined, AreaOsd);
   bitmaps->Add(Bitmaps);
   for (int i = 0; i < NumAreas; i++) {
       if (cSubtitleRegionRef *srr = Page->GetRegionRefByIndex(i)) {

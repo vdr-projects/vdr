@@ -1228,6 +1228,7 @@ Peter Bieringer <pb@bieringer.de>
  external commands
  for making the functions cRecordingInfo::SetData() and cRecordingInfo::SetAux() public
  for adding some missing user command calls for copying, renaming and moving recordings
+ for fixing scaling subtitles with anti-aliasing
 
 Alexander Damhuis <ad@phonedation.de>
  for reporting problems when deleting a timer that is currently recording

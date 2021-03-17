@@ -9616,3 +9616,4 @@ Video Disk Recorder Revision History
   "TITLE - EPISODE" and "TITLE: EPISODE" the same.
 - Decreased the scrambling timeout for CAMs known to decrypt a certain channel, so
   that it won't collide with MAXBROKENTIMEOUT in recorder.c.
+- Fixed scaling subtitles with anti-aliasing (thanks to Peter Bieringer).
