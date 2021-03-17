@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.1 2021/01/11 10:36:05 kls Exp $
+ * $Id: device.c 5.2 2021/03/17 10:59:36 kls Exp $
  */
 
 #include "device.h"
@@ -1802,7 +1802,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
                Receiver->scramblingTimeout = TS_SCRAMBLING_TIMEOUT;
                bool KnownToDecrypt = ChannelCamRelations.CamDecrypt(Receiver->ChannelID(), camSlot->MasterSlotNumber());
                if (KnownToDecrypt)
-                  Receiver->scramblingTimeout *= 10; // give it time to receive ECM/EMM
+                  Receiver->scramblingTimeout *= 9; // give it time to receive ECM/EMM (must be less than MAXBROKENTIMEOUT in recorder.c!)
                if (Receiver->ChannelID().Valid())
                   dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->MasterSlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), Receiver->scramblingTimeout);
                }
