@@ -636,6 +636,10 @@ following the matching pattern. There are three macros that can be used here:
   {>}  everything after the matching pattern
   {=}  the matching pattern itself (just for completeness)
 
+As of VDR version 2.5.2, the characters ' ' (blank), ':' and '-' are ignored
+when checking whether a particular recording has already been made by a pattern
+timer, making "TITLE - EPISODE" and "TITLE: EPISODE" the same.
+
 * Managing folders
 
   The "Select folder" menu, which can be accessed by pressing the "Red" key in

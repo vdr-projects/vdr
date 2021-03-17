@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.5 2021/01/19 20:38:28 kls Exp $
+ * $Id: recording.c 5.6 2021/03/17 10:55:43 kls Exp $
  */
 
 #include "recording.h"
@@ -3115,9 +3115,32 @@ void cDoneRecordings::Append(const char *Title)
      }
 }
 
+static const char *FuzzyChars = " -:";
+
+static const char *SkipFuzzyChars(const char *s)
+{
+  while (*s && strchr(FuzzyChars, *s))
+        s++;
+  return s;
+}
+
 bool cDoneRecordings::Contains(const char *Title) const
 {
-  return doneRecordings.Find(Title) >= 0;
+  for (int i = 0; i < doneRecordings.Size(); i++) {
+      const char *s = doneRecordings[i];
+      const char *t = Title;
+      while (*s && *t) {
+            s = SkipFuzzyChars(s);
+            t = SkipFuzzyChars(t);
+            if (*s != *t)
+               break;
+            s++;
+            t++;
+            }
+      if (!*s && !*t)
+         return true;
+      }
+  return false;
 }
 
 // --- Index stuff -----------------------------------------------------------

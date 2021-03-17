@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-03-16:
+2021-03-17:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9611,3 +9611,6 @@ Video Disk Recorder Revision History
   Processed(). The old functions Sync() and Repeat() are deprecated and may be
   removed in a future version. See the comments in filter.h for a description on
   how to use these new function.
+- When checking whether a particular recording has already been made by a pattern
+  timer, the characters ' ' (blank), ':' and '-' are now ignored, making
+  "TITLE - EPISODE" and "TITLE: EPISODE" the same.
