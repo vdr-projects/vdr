@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.1 2021/01/04 09:05:26 kls Exp $
+ * $Id: epg.c 5.2 2021/04/04 11:06:30 kls Exp $
  */
 
 #include "epg.h"
@@ -547,7 +547,7 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule, int &Line)
                           unsigned int Version = 0xFF; // actual value is ignored
                           int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
                           if (n >= 3 && n <= 5) {
-                             Event = (cEvent *)Schedule->GetEvent(EventID, StartTime);
+                             Event = (cEvent *)Schedule->GetEventByTime(StartTime);
                              cEvent *newEvent = NULL;
                              if (Event)
                                 DELETENULL(Event->components);
@@ -913,6 +913,7 @@ cSchedule::cSchedule(tChannelID ChannelID)
   numTimers = 0;
   hasRunning = false;
   modified = 0;
+  onActualTp = false;
   presentSeen = 0;
 }
 
@@ -930,6 +931,13 @@ void cSchedule::DecNumTimers(void) const
   numTimersMutex.Unlock();
 }
 
+bool cSchedule::OnActualTp(uchar TableId)
+{
+  if ((TableId & 0xF0) == 0x50)
+     onActualTp = true;
+  return onActualTp;
+}
+
 cEvent *cSchedule::AddEvent(cEvent *Event)
 {
   events.Add(Event);
@@ -942,15 +950,21 @@ void cSchedule::DelEvent(cEvent *Event)
 {
   if (Event->schedule == this) {
      UnhashEvent(Event);
+     Event->schedule = NULL;
      events.Del(Event);
      }
 }
 
 void cSchedule::HashEvent(cEvent *Event)
 {
+  if (cEvent *p = eventsHashID.Get(Event->EventID()))
+     eventsHashID.Del(p, p->EventID());
   eventsHashID.Add(Event, Event->EventID());
-  if (Event->StartTime() > 0) // 'StartTime < 0' is apparently used with NVOD channels
+  if (Event->StartTime() > 0) { // 'StartTime < 0' is apparently used with NVOD channels
+     if (cEvent *p = eventsHashStartTime.Get(Event->StartTime()))
+        eventsHashStartTime.Del(p, p->StartTime());
      eventsHashStartTime.Add(Event, Event->StartTime());
+     }
 }
 
 void cSchedule::UnhashEvent(cEvent *Event)
@@ -990,6 +1004,7 @@ const cEvent *cSchedule::GetFollowingEvent(void) const
   return p;
 }
 
+#if DEPRECATED_SCHEDULE_GET_EVENT
 const cEvent *cSchedule::GetEvent(tEventID EventID, time_t StartTime) const
 {
   // Returns the event info with the given StartTime or, if no actual StartTime
@@ -998,6 +1013,19 @@ const cEvent *cSchedule::GetEvent(tEventID EventID, time_t StartTime) const
      return eventsHashStartTime.Get(StartTime);
   else
      return eventsHashID.Get(EventID);
+}
+#endif
+
+const cEvent *cSchedule::GetEventById(tEventID EventID) const
+{
+  return eventsHashID.Get(EventID);
+}
+
+const cEvent *cSchedule::GetEventByTime(time_t StartTime) const
+{
+  if (StartTime > 0) // 'StartTime < 0' is apparently used with NVOD channels
+     return eventsHashStartTime.Get(StartTime);
+  return NULL;
 }
 
 const cEvent *cSchedule::GetEventAround(time_t Time) const
@@ -1039,6 +1067,7 @@ void cSchedule::ClrRunningStatus(cChannel *Channel)
          if (p->RunningStatus() >= SI::RunningStatusPausing) {
             p->SetRunningStatus(SI::RunningStatusNotRunning, Channel);
             hasRunning = false;
+            SetModified();
             break;
             }
          }
@@ -1067,22 +1096,24 @@ void cSchedule::Sort(void)
 
 void cSchedule::DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar TableID, uchar Version)
 {
+  // Events are sorted by start time.
   if (SegmentStart > 0 && SegmentEnd > 0) {
      cEvent *p = events.First();
      while (p) {
            cEvent *n = events.Next(p);
-           if (p->EndTime() > SegmentStart) {
+           if (p->StartTime() >= SegmentStart) {
               if (p->StartTime() < SegmentEnd) {
-                 // The event overlaps with the given time segment.
-                 if (p->TableID() > TableID || p->TableID() == TableID && p->Version() != Version) {
-                    // The segment overwrites all events from tables with higher ids, and
+                 // The event starts within the given time segment.
+                 if ((p->TableID() > 0x4E || TableID == 0x4E) && (p->TableID() != TableID || p->Version() != Version)) {
+                    // The segment overwrites all events from tables with other ids, and
                     // within the same table id all events must have the same version.
+                    // Special consideration: table 0x4E can only be overwritten with the same id!
                     DelEvent(p);
                     }
                  }
-              else
-                 break;
               }
+           else
+              break;
            p = n;
            }
      }

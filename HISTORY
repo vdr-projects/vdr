@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-03-17:
+2021-04-04:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9617,3 +9617,17 @@ Video Disk Recorder Revision History
 - Decreased the scrambling timeout for CAMs known to decrypt a certain channel, so
   that it won't collide with MAXBROKENTIMEOUT in recorder.c.
 - Fixed scaling subtitles with anti-aliasing (thanks to Peter Bieringer).
+- Improved handling EPG data from the EIT tables:
+  + Table 0x4F is now completely ignored.
+  + Once a schedule has seen events from 0x5X, tables 0x6X are ignored for that
+    schedule.
+  + When looking up an event in its schedule, the start time is used for tables 0x6X, and the
+    event id for tables 0x4E and 0x5X.
+  + When hashing events by event id or start time, existing older entries in the hash
+    tables are now deleted before entering the new ones.
+  + The function cSchedule::GetEvent() is now deprecated and may be removed in a future
+    version. Use GetEventById() and GetEventByTime() instead.
+  + On channels that use proper event ids a change of the start time no longer
+    causes a new event to be created, but rather modifies the existing one. This
+    avoids possible interruptions in VPS recordings in case the event's start time
+    is changed while the recording is already going on.

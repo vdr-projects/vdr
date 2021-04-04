@@ -8,8 +8,25 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 5.1 2021/03/16 15:10:54 kls Exp $
+ * $Id: eit.c 5.2 2021/04/04 11:06:30 kls Exp $
  */
+
+// The various ways in which broadcasters handle (or screw up) their EPG:
+// - Some use the same version for all tables, and use unique event ids, which are the same in
+//   both the 0x5X and the 0x6X tables. And once an event has an id, it keeps it until it is
+//   no longer in the tables. Those are the good guys!
+// - Some use separate versions for each table (0x50, 0x51, ...).
+// - Some broadcast tables 0x5X and 0x6X, but use different event ids for the same event in both
+//   sets of tables, and sometimes even use different titles, short texts or descriptions.
+// - Some broadcast the full EPG only on one transponder (tables 0x6X), and on the actual transponder
+//   they provide only the present/following information.
+// - Some have overlapping events, especially when they mess up daylight saving time.
+// - Some use all new event ids every time they update their tables.
+// So, to bring order to chaos, VDR does as follows:
+// - Completely ignore table 0x4F.
+// - Once a schedule has seen events from 0x5X, tables 0x6X are ignored for that schedule.
+// - When looking up an event in its schedule, the start time is used for tables 0x6X, and the
+//   event id for tables 0x4E and 0x5X.
 
 #include "eit.h"
 #include <sys/time.h>
@@ -24,6 +41,13 @@
 
 // --- cEitTables ------------------------------------------------------------
 
+cEitTables::cEitTables(void)
+{
+  complete = false;
+  tableStart = 0;
+  tableEnd = 0;
+}
+
 bool cEitTables::Check(uchar TableId, uchar Version, int SectionNumber)
 {
   int ti = Index(TableId);
@@ -32,35 +56,38 @@ bool cEitTables::Check(uchar TableId, uchar Version, int SectionNumber)
 
 bool cEitTables::Processed(uchar TableId, uchar LastTableId, int SectionNumber, int LastSectionNumber, int SegmentLastSectionNumber)
 {
+  bool Result = false;
   int ti = Index(TableId);
   int LastIndex = Index(LastTableId);
+  complete = false;
   if (sectionSyncer[ti].Processed(SectionNumber, LastSectionNumber, SegmentLastSectionNumber)) {
+     Result = true; // the table with TableId is complete
      for (int i = 0; i <= LastIndex; i++) {
          if (!sectionSyncer[i].Complete())
-            return false;
+            return Result;
          }
-     return true; // all tables have been processed
+     complete = true; // all tables have been processed
      }
-  return false;
+  return Result;
 }
 
 // --- cEIT ------------------------------------------------------------------
 
 class cEIT : public SI::EIT {
 public:
-  cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const u_char *Data);
+  cEIT(cEitTablesHash &EitTablesHash, int Source, u_char Tid, const u_char *Data);
   };
 
-cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const u_char *Data)
+cEIT::cEIT(cEitTablesHash &EitTablesHash, int Source, u_char Tid, const u_char *Data)
 :SI::EIT(Data, false)
 {
   if (!CheckCRCAndParse())
      return;
   int HashId = getServiceId();
-  cEitTables *EitTables = SectionSyncerHash.Get(HashId);
+  cEitTables *EitTables = EitTablesHash.Get(HashId);
   if (!EitTables) {
      EitTables = new cEitTables;
-     SectionSyncerHash.Add(EitTables, HashId);
+     EitTablesHash.Add(EitTables, HashId);
      }
   bool Process = EitTables->Check(Tid, getVersionNumber(), getSectionNumber());
   if (Tid != 0x4E && !Process) // we need to set the 'seen' tag to watch the running status of the present/following event
@@ -98,10 +125,16 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
   bool handledExternally = EpgHandlers.HandledExternally(Channel);
   cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(Channel, true);
 
+  if (pSchedule->OnActualTp(Tid) && (Tid & 0xF0) == 0x60) {
+     SchedulesStateKey.Remove(false);
+     ChannelsStateKey.Remove(false);
+     return;
+     }
+
   bool Empty = true;
   bool Modified = false;
   time_t LingerLimit = Now - Setup.EPGLinger * 60;
-  time_t SegmentStart = 0;
+  time_t SegmentStart = 0; // these are actually "section" start/end times
   time_t SegmentEnd = 0;
   struct tm t = { 0 };
   localtime_r(&Now, &t); // this initializes the time zone in 't'
@@ -122,9 +155,19 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
       if (!SegmentStart)
          SegmentStart = StartTime;
       SegmentEnd = StartTime + Duration;
+      if (Tid == 0x4E) {
+         if (getSectionNumber() == 0)
+            EitTables->SetTableStart(SegmentStart);
+         else
+            EitTables->SetTableEnd(SegmentEnd);
+         }
       cEvent *newEvent = NULL;
       cEvent *rEvent = NULL;
-      cEvent *pEvent = (cEvent *)pSchedule->GetEvent(SiEitEvent.getEventId(), StartTime);
+      cEvent *pEvent = NULL;
+      if (Tid == 0x4E || (Tid & 0xF0) == 0x50)
+         pEvent = const_cast<cEvent *>(pSchedule->GetEventById(SiEitEvent.getEventId()));
+      else
+         pEvent = const_cast<cEvent *>(pSchedule->GetEventByTime(StartTime));
       if (!pEvent || handledExternally) {
          if (handledExternally && !EpgHandlers.IsUpdate(SiEitEvent.getEventId(), StartTime, Tid, getVersionNumber()))
             continue;
@@ -140,10 +183,13 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
          // We have found an existing event, either through its event ID or its start time.
          pEvent->SetSeen();
          uchar TableID = max(pEvent->TableID(), uchar(0x4E)); // for backwards compatibility, table ids less than 0x4E are treated as if they were "present"
-         // If the new event has a higher table ID, let's skip it.
-         // The lower the table ID, the more "current" the information.
-         if (Tid > TableID)
+         // We never overwrite present/following with events from other tables:
+         if (TableID == 0x4E && Tid != 0x4E)
             continue;
+         if (pEvent->HasTimer()) {
+            if (pEvent->StartTime() != StartTime || pEvent->Duration() != Duration)
+               dsyslog("channel %d (%s) event %s times changed to %s-%s", Channel->Number(), Channel->Name(), *pEvent->ToDescr(), *TimeString(StartTime), *TimeString(StartTime + Duration));
+            }
          EpgHandlers.SetEventID(pEvent, SiEitEvent.getEventId()); // unfortunately some stations use different event ids for the same event in different tables :-(
          EpgHandlers.SetStartTime(pEvent, StartTime);
          EpgHandlers.SetDuration(pEvent, Duration);
@@ -275,7 +321,7 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
                  cSchedule *rSchedule = (cSchedule *)Schedules->GetSchedule(tChannelID(Source, Channel->Nid(), Channel->Tid(), tsed->getReferenceServiceId()));
                  if (!rSchedule)
                     break;
-                 rEvent = (cEvent *)rSchedule->GetEvent(tsed->getReferenceEventId());
+                 rEvent = (cEvent *)rSchedule->GetEventById(tsed->getReferenceEventId());
                  if (!rEvent)
                     break;
                  EpgHandlers.SetTitle(pEvent, rEvent->Title());
@@ -375,13 +421,17 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
         pSchedule->ClrRunningStatus(Channel);
      pSchedule->SetPresentSeen();
      }
-  if (Modified) {
-     EpgHandlers.SortSchedule(pSchedule);
-     EpgHandlers.DropOutdated(pSchedule, SegmentStart, SegmentEnd, Tid, getVersionNumber());
-     pSchedule->SetModified();
+  if (Process) {
+     bool Complete = EitTables->Processed(Tid, getLastTableId(), getSectionNumber(), getLastSectionNumber(), getSegmentLastSectionNumber());
+     if (Modified && (Tid >= 0x50 || Complete)) { // we process the 0x5X tables segment by segment, but 0x4E only if we have received ALL its segments (0 and 1, i.e. "present" and "following")
+        if (Tid == 0x4E && getLastSectionNumber() == 1) {
+           SegmentStart = EitTables->TableStart();
+           SegmentEnd = EitTables->TableEnd();
+           }
+        EpgHandlers.SortSchedule(pSchedule);
+        EpgHandlers.DropOutdated(pSchedule, SegmentStart, SegmentEnd, Tid, getVersionNumber());
+        }
      }
-  if (Process)
-     EitTables->Processed(Tid, getLastTableId(), getSectionNumber(), getLastSectionNumber(), getSegmentLastSectionNumber());
   SchedulesStateKey.Remove(Modified);
   ChannelsStateKey.Remove(ChannelsModified);
   EpgHandlers.EndSegmentTransfer(Modified);
@@ -443,7 +493,7 @@ time_t cEitFilter::disableUntil = 0;
 
 cEitFilter::cEitFilter(void)
 {
-  Set(0x12, 0x40, 0xC0);  // event info now&next actual/other TS (0x4E/0x4F), future actual/other TS (0x5X/0x6X)
+  Set(0x12, 0x40, 0xC0);  // event info present&following actual/other TS (0x4E/0x4F), future actual/other TS (0x5X/0x6X)
   Set(0x14, 0x70);        // TDT
 }
 
@@ -451,7 +501,7 @@ void cEitFilter::SetStatus(bool On)
 {
   cMutexLock MutexLock(&mutex);
   cFilter::SetStatus(On);
-  sectionSyncerHash.Clear();
+  eitTablesHash.Clear();
 }
 
 void cEitFilter::SetDisableUntil(time_t Time)
@@ -470,8 +520,8 @@ void cEitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      }
   switch (Pid) {
     case 0x12: {
-         if (Tid >= 0x4E && Tid <= 0x6F)
-            cEIT EIT(sectionSyncerHash, Source(), Tid, Data);
+         if (Tid == 0x4E || Tid >= 0x50 && Tid <= 0x6F) // we ignore 0x4F, which only causes trouble
+            cEIT EIT(eitTablesHash, Source(), Tid, Data);
          }
          break;
     case 0x14: {

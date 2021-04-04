@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 4.7 2017/05/28 12:59:20 kls Exp $
+ * $Id: epg.h 5.1 2021/04/04 11:06:30 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -156,12 +156,14 @@ private:
   cHash<cEvent> eventsHashStartTime;
   mutable u_int16_t numTimers;// The number of timers that use this schedule
   bool hasRunning;
+  bool onActualTp;
   int modified;
   time_t presentSeen;
 public:
   cSchedule(tChannelID ChannelID);
   tChannelID ChannelID(void) const { return channelID; }
   bool Modified(int &State) const { bool Result = State != modified; State = modified; return Result; }
+  bool OnActualTp(uchar TableId);
   time_t PresentSeen(void) const { return presentSeen; }
   bool PresentSeenWithin(int Seconds) const { return time(NULL) - presentSeen < Seconds; }
   void SetModified(void) { modified++; }
@@ -183,7 +185,12 @@ public:
   const cList<cEvent> *Events(void) const { return &events; }
   const cEvent *GetPresentEvent(void) const;
   const cEvent *GetFollowingEvent(void) const;
+#define DEPRECATED_SCHEDULE_GET_EVENT 1
+#if DEPRECATED_SCHEDULE_GET_EVENT
   const cEvent *GetEvent(tEventID EventID, time_t StartTime = 0) const;
+#endif
+  const cEvent *GetEventById(tEventID EventID) const;
+  const cEvent *GetEventByTime(time_t StartTime) const;
   const cEvent *GetEventAround(time_t Time) const;
   void Dump(const cChannels *Channels, FILE *f, const char *Prefix = "", eDumpMode DumpMode = dmAll, time_t AtTime = 0) const;
   static bool Read(FILE *f, cSchedules *Schedules);
