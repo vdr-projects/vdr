@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.2 2021/01/14 10:29:05 kls Exp $
+ * $Id: timers.h 5.3 2021/04/04 13:38:13 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -55,6 +55,7 @@ public:
   cTimer(const cTimer &Timer);
   virtual ~cTimer();
   cTimer& operator= (const cTimer &Timer);
+  void CalcMargins(int &MarginStart, int &MarginStop, const cEvent *Event);
   virtual int Compare(const cListObject &ListObject) const;
   int Id(void) const { return id; }
   bool Recording(void) const { return HasFlags(tfRecording); }

@@ -9631,3 +9631,5 @@ Video Disk Recorder Revision History
     causes a new event to be created, but rather modifies the existing one. This
     avoids possible interruptions in VPS recordings in case the event's start time
     is changed while the recording is already going on.
+- The margins for timer recordings are now always limited to the duration of the
+  previous and next event.

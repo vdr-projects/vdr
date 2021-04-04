@@ -1023,6 +1023,9 @@ timer, making "TITLE - EPISODE" and "TITLE: EPISODE" the same.
                          after the official end time it shall stop recording.
                          These margins are added automatically to timers that
                          are created from the EPG data.
+                         Note that the actual margins used may be smaller than the
+                         given values, if the event before and/or after the event
+                         to be recorded is shorter than the respective margin.
 
   Default priority = 50  The default Priority and Lifetime values used when
   Default lifetime = 99  creating a new timer event. A Lifetime value of 99

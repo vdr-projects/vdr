@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.5 2021/01/19 13:21:51 kls Exp $
+ * $Id: timers.c 5.6 2021/04/04 13:38:13 kls Exp $
  */
 
 #include "timers.h"
@@ -58,8 +58,11 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
               tstart = Event->Vps();
               }
            else {
-              tstop  += Setup.MarginStop * 60;
-              tstart -= Setup.MarginStart * 60;
+              int MarginStart = 0;
+              int MarginStop  = 0;
+              CalcMargins(MarginStart, MarginStop, Event);
+              tstart -= MarginStart;
+              tstop  += MarginStop;
               }
            day = SetTime(tstart, 0);
            struct tm *time = localtime_r(&tstart, &tm_r);
@@ -191,16 +194,9 @@ cTimer::cTimer(const cEvent *Event, const char *FileName, const cTimer *PatternT
   time_t tstart = (flags & tfVps) ? Event->Vps() : Event->StartTime();
   time_t tstop = tstart + Event->Duration();
   if (!(HasFlags(tfVps))) {
-     int MarginStart = Setup.MarginStart * 60;
-     int MarginStop  = Setup.MarginStop * 60;
-     if (PatternTimer) {
-        // To make sure a spawned timer gets assigned to the correct event, we must
-        // make sure that this is the only event that overlaps 100%:
-        if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Prev()))
-           MarginStart = max(0, min(MarginStart, e->Duration() - 60));
-        if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Next()))
-           MarginStop = max(0, min(MarginStop, e->Duration() - 60));
-        }
+     int MarginStart = 0;
+     int MarginStop  = 0;
+     CalcMargins(MarginStart, MarginStop, Event);
      tstart -= MarginStart;
      tstop  += MarginStop;
      }
@@ -271,6 +267,18 @@ cTimer& cTimer::operator= (const cTimer &Timer)
         event->IncNumTimers();
      }
   return *this;
+}
+
+void cTimer::CalcMargins(int &MarginStart, int &MarginStop, const cEvent *Event)
+{
+  MarginStart = Setup.MarginStart * 60;
+  MarginStop  = Setup.MarginStop * 60;
+  // To make sure the timer gets assigned to the correct event, we must
+  // make sure that this is the only event that overlaps 100%:
+  if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Prev()))
+     MarginStart = max(0, min(MarginStart, e->Duration() - 60));
+  if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Next()))
+     MarginStop = max(0, min(MarginStop, e->Duration() - 60));
 }
 
 int cTimer::Compare(const cListObject &ListObject) const
