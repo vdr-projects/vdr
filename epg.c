@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.2 2021/04/04 11:06:30 kls Exp $
+ * $Id: epg.c 5.3 2021/04/06 09:01:26 kls Exp $
  */
 
 #include "epg.h"
@@ -951,6 +951,13 @@ void cSchedule::DelEvent(cEvent *Event)
   if (Event->schedule == this) {
      UnhashEvent(Event);
      Event->schedule = NULL;
+     // Removing the event from its schedule prevents it from decrementing the
+     // schedule's timer counter, so we do it here:
+     cEvent::numTimersMutex.Lock();
+     numTimersMutex.Lock();
+     numTimers -= Event->numTimers;
+     numTimersMutex.Unlock();
+     cEvent::numTimersMutex.Unlock();
      events.Del(Event);
      }
 }

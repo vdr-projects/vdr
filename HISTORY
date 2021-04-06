@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-04-05:
+2021-04-06:
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
@@ -9635,3 +9635,4 @@ Video Disk Recorder Revision History
   previous and next event.
 - Spawned timers that don't use VPS now automatically adjust their start/stop times
   to changes in the respective event's times.
+- Fixed handling the timer counter in cSchedule::DelEvent().
