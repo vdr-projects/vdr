@@ -3669,6 +3669,8 @@ Jürgen Schneider <jsffm@web.de>
  is false
  for reporting an endless spawning of pattern timers in case the spawned timer doesn't
  use VPS and fully overlaps a second event that is longer than the original one
+ for reporting a missing EPISODE macro expansion in case the event doesn't yet have a
+ short text when generating the pattern timer file name
 
 Stefan Verse <Verse@amotronics.de>
  for fixing an occasional black screen when switching channels

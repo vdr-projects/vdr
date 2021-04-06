@@ -9636,3 +9636,5 @@ Video Disk Recorder Revision History
 - Spawned timers that don't use VPS now automatically adjust their start/stop times
   to changes in the respective event's times.
 - Fixed handling the timer counter in cSchedule::DelEvent().
+- Fixed MakePatternFileName() in case the event doesn't yet have a short text (reported
+  by Jürgen Schneider).

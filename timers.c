@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.7 2021/04/06 08:48:35 kls Exp $
+ * $Id: timers.c 5.8 2021/04/06 09:50:30 kls Exp $
  */
 
 #include "timers.h"
@@ -163,7 +163,8 @@ static cString MakePatternFileName(const char *Pattern, const char *Title, const
   if (MatchPattern(Pattern, Title, &Before, &Match, &After)) {
      char *Result = strdup(File);
      Result = strreplace(Result, TIMERMACRO_TITLE, Title);
-     Result = strreplace(Result, TIMERMACRO_EPISODE, Episode);
+     if (!isempty(Episode)) // the event might not yet have a "short text", so we leave this to the actual recording
+        Result = strreplace(Result, TIMERMACRO_EPISODE, Episode);
      Result = strreplace(Result, TIMERMACRO_BEFORE, Before);
      Result = strreplace(Result, TIMERMACRO_MATCH, Match);
      Result = strreplace(Result, TIMERMACRO_AFTER, After);
