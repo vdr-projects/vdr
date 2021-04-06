@@ -9638,3 +9638,4 @@ Video Disk Recorder Revision History
 - Fixed handling the timer counter in cSchedule::DelEvent().
 - Fixed MakePatternFileName() in case the event doesn't yet have a short text (reported
   by Jürgen Schneider).
+- No longer switching devices for pattern timers (thanks to Helmut Binder).

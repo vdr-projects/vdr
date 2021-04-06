@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.2 2021/04/06 08:48:35 kls Exp $
+ * $Id: vdr.c 5.3 2021/04/06 10:00:27 kls Exp $
  */
 
 #include <getopt.h>
@@ -1136,7 +1136,7 @@ int main(int argc, char *argv[])
           if (Now - LastTimerCheck > TIMERCHECKDELTA) { // don't do this too often
              InhibitEpgScan = false;
              for (cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer)) {
-                 if (Timer->Remote())
+                 if (Timer->Remote() || Timer->IsPatternTimer())
                     continue;
                  bool InVpsMargin = false;
                  bool NeedsTransponder = false;
