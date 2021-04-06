@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.8 2021/04/06 09:50:30 kls Exp $
+ * $Id: timers.c 5.9 2021/04/06 14:25:05 kls Exp $
  */
 
 #include "timers.h"
@@ -795,7 +795,7 @@ bool cTimer::AdjustSpawnedTimer(void)
 
 void cTimer::TriggerRespawn(void)
 {
-  if (HasFlags(tfSpawned) || IsPatternTimer()) {
+  if (Local() && HasFlags(tfSpawned) || IsPatternTimer()) {
      if (Channel()) {
         LOCK_CHANNELS_READ;
         if (const cSchedule *Schedule = Channel()->Schedule()) {

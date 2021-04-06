@@ -9639,3 +9639,4 @@ Video Disk Recorder Revision History
 - Fixed MakePatternFileName() in case the event doesn't yet have a short text (reported
   by Jürgen Schneider).
 - No longer switching devices for pattern timers (thanks to Helmut Binder).
+- cTimer::TriggerRespawn() now only acts on local timers.
