@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.6 2021/04/04 13:38:13 kls Exp $
+ * $Id: timers.c 5.7 2021/04/06 08:48:35 kls Exp $
  */
 
 #include "timers.h"
@@ -27,7 +27,7 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
 {
   id = 0;
   startTime = stopTime = 0;
-  scheduleState = -1;
+  scheduleStateSet = scheduleStateSpawn = scheduleStateAdjust = -1;
   deferred = 0;
   pending = inVpsMargin = false;
   flags = tfNone;
@@ -176,7 +176,7 @@ cTimer::cTimer(const cEvent *Event, const char *FileName, const cTimer *PatternT
 {
   id = 0;
   startTime = stopTime = 0;
-  scheduleState = -1;
+  scheduleStateSet = scheduleStateSpawn = scheduleStateAdjust = -1;
   deferred = 0;
   pending = inVpsMargin = false;
   flags = tfActive;
@@ -242,7 +242,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
      id           = Timer.id;
      startTime    = Timer.startTime;
      stopTime     = Timer.stopTime;
-     scheduleState = -1;
+     scheduleStateSet = scheduleStateSpawn = scheduleStateAdjust = -1;
      deferred     = 0;
      pending      = Timer.pending;
      inVpsMargin  = Timer.inVpsMargin;
@@ -724,7 +724,7 @@ bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
   bool TimersSpawned = false;
   const cSchedule *Schedule = Schedules->GetSchedule(Channel());
   if (Schedule && Schedule->Events()->First()) {
-     if (Schedule->Modified(scheduleState)) {
+     if (Schedule->Modified(scheduleStateSpawn)) {
         time_t Now = time(NULL);
         for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
             if (Matches(e) != tmNone) {
@@ -757,6 +757,41 @@ bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
   return TimersSpawned;
 }
 
+bool cTimer::AdjustSpawnedTimer(void)
+{
+  if (Event()) {
+     if (const cSchedule *Schedule = Event()->Schedule()) { // events may be deleted from their schedule in cSchedule::DropOutdated()!
+        if (Schedule->Modified(scheduleStateAdjust)) {
+           // Adjust the timer to shifted start/stop times of the event if necessary:
+           time_t tstart = Event()->StartTime();
+           time_t tstop = Event()->EndTime();
+           int MarginStart = 0;
+           int MarginStop  = 0;
+           CalcMargins(MarginStart, MarginStop, Event());
+           tstart -= MarginStart;
+           tstop  += MarginStop;
+           // Event start/end times are given in "seconds since the epoch". Some broadcasters use values
+           // that result in full minutes (with zero seconds), while others use any values. VDR's timers
+           // use times given in full minutes, truncating any seconds. Thus we only react if the start/stop
+           // times of the timer are off by at least one minute:
+           if (abs(StartTime() - tstart) >= 60 || abs(StopTime() - tstop) >= 60) {
+              cTimer OldTimer = *this;
+              struct tm tm_r;
+              struct tm *time = localtime_r(&tstart, &tm_r);
+              SetDay(cTimer::SetTime(tstart, 0));
+              SetStart(time->tm_hour * 100 + time->tm_min);
+              time = localtime_r(&tstop, &tm_r);
+              SetStop(time->tm_hour * 100 + time->tm_min);
+              Matches();
+              isyslog("timer %s times changed to %s-%s", *ToDescr(), *TimeString(tstart), *TimeString(tstop));
+              return true;
+              }
+           }
+        }
+     }
+  return false;
+}
+
 void cTimer::TriggerRespawn(void)
 {
   if (HasFlags(tfSpawned) || IsPatternTimer()) {
@@ -777,7 +812,7 @@ bool cTimer::SetEventFromSchedule(const cSchedules *Schedules)
      return SetEvent(NULL);
   const cSchedule *Schedule = Schedules->GetSchedule(Channel());
   if (Schedule && Schedule->Events()->First()) {
-     if (Schedule->Modified(scheduleState)) {
+     if (Schedule->Modified(scheduleStateSet)) {
         const cEvent *Event = NULL;
         if (HasFlags(tfVps) && Schedule->Events()->First()->Vps()) {
            // VPS timers only match if their start time exactly matches the event's VPS time:
@@ -828,11 +863,11 @@ bool cTimer::SetEvent(const cEvent *Event)
      if (Event) {
         isyslog("timer %s set to event %s", *ToDescr(), *Event->ToDescr());
         Event->IncNumTimers();
-        Event->Schedule()->Modified(scheduleState); // to get the current state
+        Event->Schedule()->Modified(scheduleStateSet); // to get the current state
         }
      else {
         isyslog("timer %s set to no event", *ToDescr());
-        scheduleState = -1;
+        scheduleStateSet = scheduleStateSpawn = scheduleStateAdjust = -1;
         }
      event = Event;
      return true;
@@ -1127,6 +1162,18 @@ bool cTimers::SpawnPatternTimers(const cSchedules *Schedules)
       if (ti->IsPatternTimer() && ti->Local()) {
          if (ti->HasFlags(tfActive))
             TimersModified |= ti->SpawnPatternTimers(Schedules, this);
+         }
+      }
+  return TimersModified;
+}
+
+bool cTimers::AdjustSpawnedTimers(void)
+{
+  bool TimersModified = false;
+  for (cTimer *ti = First(); ti; ti = Next(ti)) {
+      if (ti->Local()) {
+         if (ti->HasFlags(tfSpawned) && !ti->HasFlags(tfVps))
+            TimersModified |= ti->AdjustSpawnedTimer();
          }
       }
   return TimersModified;

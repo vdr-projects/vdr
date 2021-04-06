@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: vdr.c 5.2 2021/04/06 08:48:35 kls Exp $
  */
 
 #include <getopt.h>
@@ -1109,8 +1109,8 @@ int main(int argc, char *argv[])
                Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll); // setting events shall not trigger a remote timer poll...
                if (Timers->SetEvents(Schedules))
                   TimersModified = true;
-               if (Timers->SpawnPatternTimers(Schedules)) {
-                  StateKeySVDRPRemoteTimersPoll.Reset(); // ...but spawning new timers must!
+               if (Timers->SpawnPatternTimers(Schedules) | Timers->AdjustSpawnedTimers()) { // this really is '|', not '||'!
+                  StateKeySVDRPRemoteTimersPoll.Reset(); // ...but spawning new timers or adjusting spawned timers must!
                   TimersModified = true;
                   }
                SchedulesStateKey.Remove();

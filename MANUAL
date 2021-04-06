@@ -556,6 +556,9 @@ The following rules apply to pattern timers:
 - Recording is done according to the event's begin/end times, either
   by adding the start/stop margins (for non-VPS timers) or by using the
   event's running status (for VPS timers).
+- If the times of the event change, a non-VPS pattern timer automatically adjusts
+  itself to the new times. This also happens if the start/stop margins are changed
+  in the setup.
 - The recording of a pattern timer is stored under the given file name, just like
   regular timers do. In addition to the "TITLE" and "EPISODE" macros the file
   name of a pattern timer can also use "{<}" and "{>}" to reference the part of the

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.3 2021/04/04 13:38:13 kls Exp $
+ * $Id: timers.h 5.4 2021/04/06 08:48:35 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -33,7 +33,9 @@ class cTimer : public cListObject {
 private:
   int id;
   mutable time_t startTime, stopTime;
-  int scheduleState;
+  int scheduleStateSet;
+  int scheduleStateSpawn;
+  int scheduleStateAdjust;
   mutable time_t deferred; ///< Matches(time_t, ...) will return false if the current time is before this value
   bool pending, inVpsMargin;
   uint flags;
@@ -99,6 +101,7 @@ public:
   void SetId(int Id);
   void SpawnPatternTimer(const cEvent *Event, cTimers *Timers);
   bool SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers);
+  bool AdjustSpawnedTimer(void);
   void TriggerRespawn(void);
   bool SetEventFromSchedule(const cSchedules *Schedules);
   bool SetEvent(const cEvent *Event);
@@ -196,6 +199,7 @@ public:
   const cTimer *UsesChannel(const cChannel *Channel) const;
   bool SetEvents(const cSchedules *Schedules);
   bool SpawnPatternTimers(const cSchedules *Schedules);
+  bool AdjustSpawnedTimers(void);
   bool DeleteExpired(void);
   void Add(cTimer *Timer, cTimer *After = NULL);
   void Ins(cTimer *Timer, cTimer *Before = NULL);
