@@ -9578,7 +9578,7 @@ Video Disk Recorder Revision History
   given (reported by Manuel Reimer).
 - Fixed handling $(PKG_CONFIG) in newplugin (thanks to Winfried Köhler).
 
-2021-04-06:
+2021-04-06: Version 2.5.2
 
 - Fixed strreplace() to handle NULL strings (reported by Jürgen Schneider).
 - Somewhere down the road the 'x' bit of Doxyfile.filter got lost, so the
