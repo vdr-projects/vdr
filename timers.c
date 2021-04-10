@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.10 2021/04/10 10:09:50 kls Exp $
+ * $Id: timers.c 5.11 2021/04/10 11:32:50 kls Exp $
  */
 
 #include "timers.h"
@@ -776,7 +776,7 @@ bool cTimer::AdjustSpawnedTimer(void)
            // use times given in full minutes, truncating any seconds. Thus we only react if the start/stop
            // times of the timer are off by at least one minute:
            if (abs(StartTime() - tstart) >= 60 || abs(StopTime() - tstop) >= 60) {
-              cTimer OldTimer = *this;
+              cString OldDescr = ToDescr();
               struct tm tm_r;
               struct tm *time = localtime_r(&tstart, &tm_r);
               SetDay(cTimer::SetTime(tstart, 0));
@@ -784,7 +784,7 @@ bool cTimer::AdjustSpawnedTimer(void)
               time = localtime_r(&tstop, &tm_r);
               SetStop(time->tm_hour * 100 + time->tm_min);
               Matches();
-              isyslog("timer %s times changed to %s-%s", *ToDescr(), *TimeString(tstart), *TimeString(tstop));
+              isyslog("timer %s times changed to %s-%s", *OldDescr, *TimeString(tstart), *TimeString(tstop));
               return true;
               }
            }
