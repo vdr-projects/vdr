@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.3 2021/04/06 10:00:27 kls Exp $
+ * $Id: vdr.c 5.4 2021/04/10 11:32:50 kls Exp $
  */
 
 #include <getopt.h>
@@ -1107,10 +1107,14 @@ int main(int argc, char *argv[])
             bool TimersModified = false;
             if (const cSchedules *Schedules = cSchedules::GetSchedulesRead(SchedulesStateKey)) {
                Timers->SetSyncStateKey(StateKeySVDRPRemoteTimersPoll); // setting events shall not trigger a remote timer poll...
+               if (Timers->AdjustSpawnedTimers()) { // must do this *before* SetEvents()!
+                  StateKeySVDRPRemoteTimersPoll.Reset(); // ...but adjusting spawned timers...
+                  TimersModified = true;
+                  }
                if (Timers->SetEvents(Schedules))
                   TimersModified = true;
-               if (Timers->SpawnPatternTimers(Schedules) | Timers->AdjustSpawnedTimers()) { // this really is '|', not '||'!
-                  StateKeySVDRPRemoteTimersPoll.Reset(); // ...but spawning new timers or adjusting spawned timers must!
+               if (Timers->SpawnPatternTimers(Schedules)) {
+                  StateKeySVDRPRemoteTimersPoll.Reset(); // ...or spawning new timers must!
                   TimersModified = true;
                   }
                SchedulesStateKey.Remove();

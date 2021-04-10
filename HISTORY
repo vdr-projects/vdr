@@ -9650,3 +9650,4 @@ Video Disk Recorder Revision History
   an immediate respawn on the remote machine, because at that time the event on the remote
   machine was still covered by the initial timer (which, from the remote machine's standpoint,
   was "remote").
+- Now adjusting spawned timers before setting events to timers.
