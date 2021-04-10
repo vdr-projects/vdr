@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.9 2021/04/06 14:25:05 kls Exp $
+ * $Id: timers.c 5.10 2021/04/10 10:09:50 kls Exp $
  */
 
 #include "timers.h"
@@ -731,7 +731,7 @@ bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
             if (Matches(e) != tmNone) {
                bool CheckThis = false;
                bool CheckNext = false;
-               if (e->HasTimer()) // a matching event that already has a timer
+               if (Timers->GetTimerForEvent(e, tfSpawned)) // a matching event that already has a spawned timer
                   CheckNext = true;
                else if (e->EndTime() > Now) { // only look at events that have not yet ended
                   CheckThis = true;
@@ -744,7 +744,7 @@ bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
                if (CheckNext) {
                   // We also check the event immediately following this one:
                   e = Schedule->Events()->Next(e);
-                  if (e && !e->HasTimer() && Matches(e) != tmNone) {
+                  if (e && !Timers->GetTimerForEvent(e, tfSpawned) && Matches(e) != tmNone) {
                      SpawnPatternTimer(e, Timers);
                      TimersSpawned = true;
                      }
@@ -1082,6 +1082,17 @@ const cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match) const
   if (Match)
      *Match = m;
   return t;
+}
+
+const cTimer *cTimers::GetTimerForEvent(const cEvent *Event, eTimerFlags Flags)
+{
+  if (Event && Event->HasTimer()) {
+     for (const cTimer *ti = First(); ti; ti = Next(ti)) {
+         if (ti->Event() == Event && ti->Local() && ti->HasFlags(Flags))
+            return ti;
+         }
+     }
+  return NULL;
 }
 
 int cTimers::GetMaxPriority(void) const

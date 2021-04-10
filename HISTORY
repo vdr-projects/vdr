@@ -9640,3 +9640,13 @@ Video Disk Recorder Revision History
   by Jürgen Schneider).
 - No longer switching devices for pattern timers (thanks to Helmut Binder).
 - cTimer::TriggerRespawn() now only acts on local timers.
+
+2021-04-10:
+
+- When spawning pattern timers, the new function cTimers::GetTimerForEvent() is now used
+  to check whether a matching event already has a local spawned timer. Reason: creating a timer
+  from the Schedule menu (by pressing the Red button), then pressing Red again to edit
+  the timer, making it a pattern timer and moving it to a remote machine, did not cause
+  an immediate respawn on the remote machine, because at that time the event on the remote
+  machine was still covered by the initial timer (which, from the remote machine's standpoint,
+  was "remote").
