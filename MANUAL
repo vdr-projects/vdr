@@ -540,9 +540,9 @@ The following rules apply to pattern timers:
   with the given start/stop time. Overlapping events are recorded in full,
   even if they extend outside the given start/stop interval.
 - In order to actually record an event, a pattern timer "spawns" a separate timer
-  that does the recording. At most two timers are spawned from a pattern timer at
-  any given time, one for the next upcoming matching event, and one for
-  the event immediately following that one, in case it also matches.
+  that does the recording. If there are matching events that would start while
+  the first spawned timer is still recording (due to the start/stop margins), timers
+  for those events are also spawned.
 - Spawned timers are marked with the flag tfSpawned.
 - Spawned timers take the Priority, Lifetime and VPS settings from the pattern timer.
 - The special pattern "*" matches every event. So a timer with

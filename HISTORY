@@ -9652,3 +9652,5 @@ Video Disk Recorder Revision History
   was "remote").
 - Now adjusting spawned timers before setting events to timers.
 - Fixed dropping outdated events.
+- To avoid problems with very short events, non-VPS pattern timers now spawn timers for all
+  matching events that would start while the first one is still recording.

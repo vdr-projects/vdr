@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.11 2021/04/10 11:32:50 kls Exp $
+ * $Id: timers.c 5.12 2021/04/13 13:54:00 kls Exp $
  */
 
 #include "timers.h"
@@ -708,7 +708,7 @@ void cTimer::SetId(int Id)
   id = Id;
 }
 
-void cTimer::SpawnPatternTimer(const cEvent *Event, cTimers *Timers)
+cTimer *cTimer::SpawnPatternTimer(const cEvent *Event, cTimers *Timers)
 {
   cString FileName = MakePatternFileName(Pattern(), Event->Title(), Event->ShortText(), File());
   isyslog("spawning timer %s for event %s", *ToDescr(), *Event->ToDescr());
@@ -718,6 +718,7 @@ void cTimer::SpawnPatternTimer(const cEvent *Event, cTimers *Timers)
      t->SetFlags(tfAvoid);
   Timers->Add(t);
   HandleRemoteTimerModifications(t);
+  return t;
 }
 
 bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
@@ -727,30 +728,36 @@ bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
   if (Schedule && Schedule->Events()->First()) {
      if (Schedule->Modified(scheduleStateSpawn)) {
         time_t Now = time(NULL);
+        // Find the first event that matches this pattern timer and either already has a spawned
+        // timer, or has not yet ended:
         for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
             if (Matches(e) != tmNone) {
-               bool CheckThis = false;
-               bool CheckNext = false;
-               if (Timers->GetTimerForEvent(e, tfSpawned)) // a matching event that already has a spawned timer
-                  CheckNext = true;
-               else if (e->EndTime() > Now) { // only look at events that have not yet ended
-                  CheckThis = true;
-                  CheckNext = true;
-                  }
-               if (CheckThis) {
-                  SpawnPatternTimer(e, Timers);
+               const cTimer *Timer = Timers->GetTimerForEvent(e, tfSpawned); // a matching event that already has a spawned timer
+               if (!Timer && e->EndTime() > Now) { // only look at events that have not yet ended
+                  Timer = SpawnPatternTimer(e, Timers);
                   TimersSpawned = true;
                   }
-               if (CheckNext) {
-                  // We also check the event immediately following this one:
-                  e = Schedule->Events()->Next(e);
-                  if (e && !Timers->GetTimerForEvent(e, tfSpawned) && Matches(e) != tmNone) {
-                     SpawnPatternTimer(e, Timers);
-                     TimersSpawned = true;
-                     }
-                  }
-               if (CheckThis || CheckNext)
+               if (Timer) {
+                  // Check all following matching events that would start while the first timer
+                  // is still recording:
+                  bool UseVps = Timer->HasFlags(tfVps);
+                  time_t Limit = Timer->StopTime() + EXPIRELATENCY;
+                  if (!UseVps)
+                     Limit += Setup.MarginStart * 60;
+                  for (e = Schedule->Events()->Next(e); e; e = Schedule->Events()->Next(e)) {
+                      if (e->StartTime() <= Limit) {
+                         if (!Timers->GetTimerForEvent(e, tfSpawned) && Matches(e) != tmNone) {
+                            SpawnPatternTimer(e, Timers);
+                            TimersSpawned = true;
+                            }
+                         if (UseVps)
+                            break; // with VPS we only need to check the event immediately following the first one
+                         }
+                      else
+                         break; // no need to check events that are too far in the future
+                      }
                   break;
+                  }
                }
             }
         }
