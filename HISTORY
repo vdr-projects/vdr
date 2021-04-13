@@ -9641,7 +9641,7 @@ Video Disk Recorder Revision History
 - No longer switching devices for pattern timers (thanks to Helmut Binder).
 - cTimer::TriggerRespawn() now only acts on local timers.
 
-2021-04-10:
+2021-04-13:
 
 - When spawning pattern timers, the new function cTimers::GetTimerForEvent() is now used
   to check whether a matching event already has a local spawned timer. Reason: creating a timer
@@ -9651,3 +9651,4 @@ Video Disk Recorder Revision History
   machine was still covered by the initial timer (which, from the remote machine's standpoint,
   was "remote").
 - Now adjusting spawned timers before setting events to timers.
+- Fixed dropping outdated events.

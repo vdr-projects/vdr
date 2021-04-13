@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.3 2021/04/06 09:01:26 kls Exp $
+ * $Id: epg.c 5.4 2021/04/13 13:35:17 kls Exp $
  */
 
 #include "epg.h"
@@ -1118,9 +1118,9 @@ void cSchedule::DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar Table
                     DelEvent(p);
                     }
                  }
+              else
+                 break;
               }
-           else
-              break;
            p = n;
            }
      }
