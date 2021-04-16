@@ -556,6 +556,9 @@ The following rules apply to pattern timers:
 - Recording is done according to the event's begin/end times, either
   by adding the start/stop margins (for non-VPS timers) or by using the
   event's running status (for VPS timers).
+- If the start/stop margins of a spawned timer are reduced because the event
+  before and/or after that timer's event is shorter than the respective margin,
+  the actual recording still uses the full margins.
 - If the times of the event change, a non-VPS pattern timer automatically adjusts
   itself to the new times. This also happens if the start/stop margins are changed
   in the setup.

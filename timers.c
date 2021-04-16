@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.12 2021/04/13 13:54:00 kls Exp $
+ * $Id: timers.c 5.13 2021/04/16 16:26:47 kls Exp $
  */
 
 #include "timers.h"
@@ -604,14 +604,27 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
   deferred = 0;
 
   if (HasFlags(tfActive)) {
-     if (HasFlags(tfVps) && event && event->Vps()) {
-        if (Margin || !Directly) {
-           startTime = event->StartTime();
-           stopTime = event->EndTime();
-           if (!Margin) { // this is an actual check
-              if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) // VPS control can only work with up-to-date events...
-                 return event->IsRunning(true);
-              return startTime <= t && t < stopTime; // ...otherwise we fall back to normal timer handling
+     if (event) {
+        if (HasFlags(tfVps)) {
+           if (event->Vps()) {
+              if (Margin || !Directly) {
+                 startTime = event->StartTime();
+                 stopTime = event->EndTime();
+                 if (!Margin) { // this is an actual check
+                    if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) // VPS control can only work with up-to-date events...
+                       return event->IsRunning(true);
+                    // ...otherwise we fall back to normal timer handling below (note: Margin == 0!)
+                    }
+                 }
+              }
+           }
+        else if (HasFlags(tfSpawned)) {
+           if (!Margin && !Directly) { // this is an actual check
+              // The spawned timer's start-/stopTimes are adjusted to the event's times in AdjustSpawnedTimer().
+              // However, in order to make sure the timer is set to the correct event, the margins at begin
+              // end end are limited by the durations of the events before and after this timer's event.
+              // The recording, though, shall always use the full start/stop margins, hence this calculation:
+              return event->StartTime() - Setup.MarginStart * 60 <= t && t < event->EndTime() + Setup.MarginStop * 60;
               }
            }
         }
