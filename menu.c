@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.3 2021/01/14 10:29:05 kls Exp $
+ * $Id: menu.c 5.4 2021/04/17 09:44:01 kls Exp $
  */
 
 #include "menu.h"
@@ -1602,7 +1602,7 @@ bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
   eTimerMatch OldTimerMatch = timerMatch;
   bool OldTimerActive = timerActive;
   const cTimer *Timer = Timers->GetMatch(event, &timerMatch);
-  if (event->EndTime() < time(NULL) && !event->IsRunning())
+  if (event->EndTime() < time(NULL) && !event->IsRunning() && (!Timer || !Timer->Recording()))
      timerMatch = tmNone;
   timerActive = Timer && Timer->HasFlags(tfActive);
   if (Force || timerMatch != OldTimerMatch || timerActive != OldTimerActive) {
