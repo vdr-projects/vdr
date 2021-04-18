@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.13 2021/04/16 16:26:47 kls Exp $
+ * $Id: timers.c 5.14 2021/04/18 14:56:40 kls Exp $
  */
 
 #include "timers.h"
@@ -711,6 +711,28 @@ time_t cTimer::StopTime(void) const
   if (!stopTime)
      Matches();
   return stopTime;
+}
+
+time_t cTimer::StartTimeEvent(void) const
+{
+  if (event) {
+     if (HasFlags(tfVps) && event->Vps())
+        return event->StartTime();
+     else if (HasFlags(tfSpawned))
+        return event->StartTime() - Setup.MarginStart * 60;
+     }
+  return StartTime();
+}
+
+time_t cTimer::StopTimeEvent(void) const
+{
+  if (event) {
+     if (HasFlags(tfVps) && event->Vps())
+        return event->EndTime();
+     else if (HasFlags(tfSpawned))
+        return event->EndTime() + Setup.MarginStop * 60;
+     }
+  return StopTime();
 }
 
 #define EPGLIMITBEFORE   (1 * 3600) // Time in seconds before a timer's start time and

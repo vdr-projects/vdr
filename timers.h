@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.6 2021/04/13 13:54:00 kls Exp $
+ * $Id: timers.h 5.7 2021/04/18 14:56:40 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -32,7 +32,7 @@ class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
   int id;
-  mutable time_t startTime, stopTime;
+  mutable time_t startTime, stopTime; ///< the time_t value calculated from 'day', 'start' and 'stop'
   int scheduleStateSet;
   int scheduleStateSpawn;
   int scheduleStateAdjust;
@@ -42,8 +42,8 @@ private:
   const cChannel *channel;
   mutable time_t day; ///< midnight of the day this timer shall hit, or of the first day it shall hit in case of a repeating timer
   int weekdays;       ///< bitmask, lowest bits: SSFTWTM  (the 'M' is the LSB)
-  int start;
-  int stop;
+  int start;          ///< the start and stop time of this timer as given by the user,
+  int stop;           ///< in the form hhmm, with hh (00..23) and mm (00..59) added as hh*100+mm
   int priority;
   int lifetime;
   mutable char pattern[NAME_MAX * 2 + 1]; // same size as 'file', to be able to initially fill 'pattern' with 'file' in the 'Edit timer' menu
@@ -96,8 +96,10 @@ public:
   bool Matches(time_t t = 0, bool Directly = false, int Margin = 0) const;
   eTimerMatch Matches(const cEvent *Event, int *Overlap = NULL) const;
   bool Expired(void) const;
-  time_t StartTime(void) const;
-  time_t StopTime(void) const;
+  time_t StartTime(void) const; ///< the start time as given by the user
+  time_t StopTime(void) const; ///< the stop time as given by the user
+  time_t StartTimeEvent(void) const; ///< the start/stop times as given by the event (for VPS timers), by event plus margins (for spawned non-VPS timers),
+  time_t StopTimeEvent(void) const; ///< or by the user (for normal timers)
   void SetId(int Id);
   cTimer *SpawnPatternTimer(const cEvent *Event, cTimers *Timers);
   bool SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: skinlcars.c 5.2 2021/04/18 14:56:40 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1213,14 +1213,15 @@ void cSkinLCARSDisplayMenu::DrawTimer(const cTimer *Timer, int y, bool MultiRec)
   osd->DrawRectangle(xs00, y, xs03 - 1, y + lineHeight - 1, ColorBg);
   cString Date;
   if (Timer->Recording())
-     Date = cString::sprintf("-%s", *TimeString(Timer->StopTime()));
+     Date = cString::sprintf("-%s", *TimeString(Timer->StopTimeEvent()));
   else {
      time_t Now = time(NULL);
+     time_t StartTime = Timer->StartTimeEvent();
      cString Today = WeekDayName(Now);
-     cString Time = TimeString(Timer->StartTime());
-     cString Day = WeekDayName(Timer->StartTime());
-     if (Timer->StartTime() > Now + 6 * SECSINDAY)
-        Date = DayDateTime(Timer->StartTime());
+     cString Time = TimeString(StartTime);
+     cString Day = WeekDayName(StartTime);
+     if (StartTime > Now + 6 * SECSINDAY)
+        Date = DayDateTime(StartTime);
      else if (strcmp(Day, Today) != 0)
         Date = cString::sprintf("%s %s", *Day, *Time);
      else
