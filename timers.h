@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.7 2021/04/18 14:56:40 kls Exp $
+ * $Id: timers.h 5.8 2021/04/20 13:22:37 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -203,7 +203,7 @@ public:
   bool SetEvents(const cSchedules *Schedules);
   bool SpawnPatternTimers(const cSchedules *Schedules);
   bool AdjustSpawnedTimers(void);
-  bool DeleteExpired(void);
+  bool DeleteExpired(bool Force);
   void Add(cTimer *Timer, cTimer *After = NULL);
   void Ins(cTimer *Timer, cTimer *Before = NULL);
   void Del(cTimer *Timer, bool DeleteObject = true);

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.4 2021/04/10 11:32:50 kls Exp $
+ * $Id: vdr.c 5.5 2021/04/20 13:22:37 kls Exp $
  */
 
 #include <getopt.h>
@@ -1188,7 +1188,7 @@ int main(int argc, char *argv[])
              LastTimerCheck = Now;
              }
           // Delete expired timers:
-          if (Timers->DeleteExpired())
+          if (Timers->DeleteExpired(TimersModified))
              TimersModified = true;
           // Make sure there is enough free disk space for ongoing recordings:
           int MaxPriority = Timers->GetMaxPriority();

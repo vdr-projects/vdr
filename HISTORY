@@ -9641,7 +9641,7 @@ Video Disk Recorder Revision History
 - No longer switching devices for pattern timers (thanks to Helmut Binder).
 - cTimer::TriggerRespawn() now only acts on local timers.
 
-2021-04-19:
+2021-04-20:
 
 - When spawning pattern timers, the new function cTimers::GetTimerForEvent() is now used
   to check whether a matching event already has a local spawned timer. Reason: creating a timer
@@ -9661,3 +9661,4 @@ Video Disk Recorder Revision History
 - The new functions cTimer::Start/StopTimeEvent() are now used in the LCARS skin to display
   the start/stop times of timers in the main menu.
 - EXPIRELATENCY now only applies to VPS timers.
+- Deleting expired timers is now triggered immediately after the timers are modified.

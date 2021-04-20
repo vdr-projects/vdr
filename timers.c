@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.15 2021/04/20 09:50:02 kls Exp $
+ * $Id: timers.c 5.16 2021/04/20 13:22:37 kls Exp $
  */
 
 #include "timers.h"
@@ -1238,9 +1238,11 @@ bool cTimers::AdjustSpawnedTimers(void)
   return TimersModified;
 }
 
-bool cTimers::DeleteExpired(void)
+#define DELETE_EXPIRED_TIMEOUT  30 // seconds
+
+bool cTimers::DeleteExpired(bool Force)
 {
-  if (time(NULL) - lastDeleteExpired < 30)
+  if (!Force && time(NULL) - lastDeleteExpired < DELETE_EXPIRED_TIMEOUT)
      return false;
   bool TimersModified = false;
   cTimer *ti = First();
