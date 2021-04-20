@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.14 2021/04/18 14:56:40 kls Exp $
+ * $Id: timers.c 5.15 2021/04/20 09:50:02 kls Exp $
  */
 
 #include "timers.h"
@@ -693,10 +693,13 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
 
 bool cTimer::Expired(void) const
 {
-  return IsSingleEvent()
-      && !Recording()
-      && StopTime() + EXPIRELATENCY <= time(NULL)
-      && (!HasFlags(tfVps) || !event || !event->Vps() || event->EndTime() + EXPIRELATENCY <= time(NULL));
+  if (IsSingleEvent() && !Recording()) {
+     time_t ExpireTime = StopTimeEvent();
+     if (HasFlags(tfVps))
+        ExpireTime += EXPIRELATENCY;
+     return ExpireTime <= time(NULL);
+     }
+  return false;
 }
 
 time_t cTimer::StartTime(void) const
@@ -776,8 +779,10 @@ bool cTimer::SpawnPatternTimers(const cSchedules *Schedules, cTimers *Timers)
                   // Check all following matching events that would start while the first timer
                   // is still recording:
                   bool UseVps = Timer->HasFlags(tfVps);
-                  time_t Limit = Timer->StopTime() + EXPIRELATENCY;
-                  if (!UseVps)
+                  time_t Limit = Timer->StopTimeEvent();
+                  if (UseVps)
+                     Limit += EXPIRELATENCY;
+                  else
                      Limit += Setup.MarginStart * 60;
                   for (e = Schedule->Events()->Next(e); e; e = Schedule->Events()->Next(e)) {
                       if (e->StartTime() <= Limit) {
