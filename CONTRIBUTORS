@@ -3672,6 +3672,8 @@ Jürgen Schneider <jsffm@web.de>
  use VPS and fully overlaps a second event that is longer than the original one
  for reporting a missing EPISODE macro expansion in case the event doesn't yet have a
  short text when generating the pattern timer file name
+ for reporting a problem with spawned timers jumping to the next event in case
+ Setup.EPGLinger is very small
 
 Stefan Verse <Verse@amotronics.de>
  for fixing an occasional black screen when switching channels

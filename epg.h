@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 5.1 2021/04/04 11:06:30 kls Exp $
+ * $Id: epg.h 5.2 2021/04/28 20:44:56 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -19,6 +19,8 @@
 #include "tools.h"
 
 #define MAXEPGBUGFIXLEVEL 3
+
+#define EPG_LINGER_TIME (max(Setup.EPGLinger, 180) * 60) // seconds to keep old EPG data (internal, must be at least Setup.EPGLinger)
 
 enum { MaxEventContents = 4 };
 

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 5.2 2021/04/04 11:06:30 kls Exp $
+ * $Id: eit.c 5.3 2021/04/28 20:44:56 kls Exp $
  */
 
 // The various ways in which broadcasters handle (or screw up) their EPG:
@@ -133,7 +133,7 @@ cEIT::cEIT(cEitTablesHash &EitTablesHash, int Source, u_char Tid, const u_char *
 
   bool Empty = true;
   bool Modified = false;
-  time_t LingerLimit = Now - Setup.EPGLinger * 60;
+  time_t LingerLimit = Now - EPG_LINGER_TIME;
   time_t SegmentStart = 0; // these are actually "section" start/end times
   time_t SegmentEnd = 0;
   struct tm t = { 0 };
