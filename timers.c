@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.16 2021/04/20 13:22:37 kls Exp $
+ * $Id: timers.c 5.17 2021/05/03 14:06:12 kls Exp $
  */
 
 #include "timers.h"
@@ -168,7 +168,7 @@ static cString MakePatternFileName(const char *Pattern, const char *Title, const
      Result = strreplace(Result, TIMERMACRO_BEFORE, Before);
      Result = strreplace(Result, TIMERMACRO_MATCH, Match);
      Result = strreplace(Result, TIMERMACRO_AFTER, After);
-     return cString(Result, true);;
+     return cString(Result, true);
      }
   return NULL;
 }
