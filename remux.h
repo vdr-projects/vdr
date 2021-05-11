@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 4.6 2020/09/16 13:48:33 kls Exp $
+ * $Id: remux.h 5.1 2021/05/11 20:47:31 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -225,6 +225,7 @@ int64_t PtsDiff(int64_t Pts1, int64_t Pts2);
 
 class cTsPayload {
 private:
+public://XXX
   uchar *data;
   int length;
   int pid;
@@ -249,7 +250,7 @@ public:
   bool AtTsStart(void) { return index < length && (index % TS_SIZE) == 0; }
        ///< Returns true if this payload handler is currently pointing to first byte
        ///< of a TS packet.
-  bool AtPayloadStart(void) { return AtTsStart() && TsPayloadStart(data + index); }
+  bool AtPayloadStart(void) { return AtTsStart() && TsPayloadStart(data + index) && TsPid(data + index) == pid; }
        ///< Returns true if this payload handler is currently pointing to the first byte
        ///< of a TS packet that starts a new payload.
   int Available(void) { return length - index; }

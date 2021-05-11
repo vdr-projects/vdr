@@ -9663,9 +9663,10 @@ Video Disk Recorder Revision History
 - EXPIRELATENCY now only applies to VPS timers.
 - Deleting expired timers is now triggered immediately after the timers are modified.
 
-2021-04-29:
+2021-05-11:
 
 - Now using a separate fixed value for internal EPG linger time. This fixes problems with
   spawned timers jumping to the next event in case Setup.EPGLinger is very small. (reported
   by Jürgen Schneider).
 - Fixed a possible crash in the Schedule menu, in case Setup.EPGLinger is 0.
+- Fixed cTsPayload::AtPayloadStart() to ignore TS packets from other PIDs.
