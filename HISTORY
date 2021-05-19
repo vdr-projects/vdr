@@ -9679,3 +9679,6 @@ Video Disk Recorder Revision History
   + Spawned timers that shall avoid recording reruns only store the recording's name in
     the donerecs,data file if there were no errors during recording, and if the timer has
     actually finished.
+- Removed the macros __STL_CONFIG_H, _STL_ALGOBASE_H and _MOVE_H from tools.h. If your
+  plugin insists in using "using namespace std;" you can still define
+  DISABLE_TEMPLATES_COLLIDING_WITH_STL before including any VDR header files.

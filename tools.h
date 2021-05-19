@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.3 2021/01/19 20:38:28 kls Exp $
+ * $Id: tools.h 5.4 2021/05/19 11:50:24 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -53,17 +53,13 @@ template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; 
 
 // In case some plugin needs to use the STL and gets an error message regarding one
 // of these functions, you can #define DISABLE_TEMPLATES_COLLIDING_WITH_STL before
-// including tools.h.
-#if !defined(__STL_CONFIG_H) // for old versions of the STL
-#if !defined(DISABLE_TEMPLATES_COLLIDING_WITH_STL) && !defined(_STL_ALGOBASE_H)
+// including any VDR header files.
+#if !defined(DISABLE_TEMPLATES_COLLIDING_WITH_STL)
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
-#endif
-template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
-#if !defined(DISABLE_TEMPLATES_COLLIDING_WITH_STL) && !defined(_MOVE_H)
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
-#endif
+template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 
 template<class T> inline T constrain(T v, T l, T h) { return v < l ? l : v > h ? h : v; }
 
