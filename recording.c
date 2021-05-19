@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.6 2021/03/17 10:55:43 kls Exp $
+ * $Id: recording.c 5.7 2021/05/19 11:22:20 kls Exp $
  */
 
 #include "recording.h"
@@ -359,6 +359,7 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
   priority = MAXPRIORITY;
   lifetime = MAXLIFETIME;
   fileName = NULL;
+  errors = 0;
   if (Channel) {
      // Since the EPG data's component records can carry only a single
      // language code, let's see whether the channel's PID data has
@@ -414,6 +415,7 @@ cRecordingInfo::cRecordingInfo(const char *FileName)
   ownEvent = new cEvent(0);
   event = ownEvent;
   aux = NULL;
+  errors = 0;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   priority = MAXPRIORITY;
   lifetime = MAXLIFETIME;
@@ -454,6 +456,11 @@ void cRecordingInfo::SetFileName(const char *FileName)
   bool IsPesRecording = fileName && endswith(fileName, ".vdr");
   free(fileName);
   fileName = strdup(cString::sprintf("%s%s", FileName, IsPesRecording ? INFOFILESUFFIX ".vdr" : INFOFILESUFFIX));
+}
+
+void cRecordingInfo::SetErrors(int Errors)
+{
+  errors = Errors;
 }
 
 bool cRecordingInfo::Read(FILE *f)
@@ -499,6 +506,8 @@ bool cRecordingInfo::Read(FILE *f)
                        break;
              case 'P': priority = atoi(t);
                        break;
+             case 'O': errors = atoi(t);
+                       break;
              case '@': free(aux);
                        aux = strdup(t);
                        break;
@@ -523,6 +532,7 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
   fprintf(f, "%sF %s\n", Prefix, *dtoa(framesPerSecond, "%.10g"));
   fprintf(f, "%sP %d\n", Prefix, priority);
   fprintf(f, "%sL %d\n", Prefix, lifetime);
+  fprintf(f, "%sO %d\n", Prefix, errors);
   if (aux)
      fprintf(f, "%s@ %s\n", Prefix, aux);
   return true;
@@ -1188,6 +1198,16 @@ void cRecording::ReadInfo(void)
 bool cRecording::WriteInfo(const char *OtherFileName)
 {
   cString InfoFileName = cString::sprintf("%s%s", OtherFileName ? OtherFileName : FileName(), isPesRecording ? INFOFILESUFFIX ".vdr" : INFOFILESUFFIX);
+  if (!OtherFileName) {
+     // Let's keep the error counter if this is a re-started recording:
+     cRecordingInfo ExistingInfo(FileName());
+     if (ExistingInfo.Read())
+        info->SetErrors(ExistingInfo.Errors());
+     }
+  else {
+     // This is an edited recording, so let's clear the error counter:
+     info->SetErrors(0);
+     }
   cSafeFile f(InfoFileName);
   if (f.Open()) {
      info->Write(f);

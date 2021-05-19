@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.3 2021/01/19 20:38:28 kls Exp $
+ * $Id: recording.h 5.4 2021/05/19 11:22:20 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -72,6 +72,7 @@ private:
   int priority;
   int lifetime;
   char *fileName;
+  int errors;
   cRecordingInfo(const cChannel *Channel = NULL, const cEvent *Event = NULL);
   bool Read(FILE *f);
 public:
@@ -88,6 +89,8 @@ public:
   double FramesPerSecond(void) const { return framesPerSecond; }
   void SetFramesPerSecond(double FramesPerSecond);
   void SetFileName(const char *FileName);
+  int Errors(void) { return errors; }
+  void SetErrors(int Errors);
   bool Write(FILE *f, const char *Prefix = "") const;
   bool Read(void);
   bool Write(void) const;

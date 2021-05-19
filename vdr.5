@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 5.1 2020/12/26 15:49:01 kls Exp $
+.\" $Id: vdr.5 5.2 2021/05/19 11:22:20 kls Exp $
 .\"
 .TH vdr 5 "15 Apr 2018" "2.4" "Video Disk Recorder Files"
 .SH NAME
@@ -817,8 +817,13 @@ l l.
 \fBF\fR|<frame rate>
 \fBL\fR|<lifetime>
 \fBP\fR|<priority>
+\fBO\fR|<errors>
 \fB@\fR|<auxiliary data>
 .TE
+
+The 'O' tag contains the number of errors that occurred during recording.
+If it is zero, the recording can be safely considered error free. The higher the value,
+the more damaged the recording is.
 .SS RESUME
 The file \fIresume\fR (if present in a recording directory) contains
 the position within the recording where the last replay session left off.

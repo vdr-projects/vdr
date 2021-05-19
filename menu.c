@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.4 2021/04/17 09:44:01 kls Exp $
+ * $Id: menu.c 5.5 2021/05/19 11:22:20 kls Exp $
  */
 
 #include "menu.h"
@@ -5401,6 +5401,15 @@ bool cRecordControl::GetEvent(void)
 void cRecordControl::Stop(bool ExecuteUserCommand)
 {
   if (timer) {
+     if (recorder) {
+        int Errors = recorder->Errors();
+        bool Finished = timer->HasFlags(tfActive) && !timer->Matches();
+        isyslog("timer %s %s with %d error%s", *timer->ToDescr(), Finished ? "finished" : "stopped", Errors, Errors != 1 ? "s" : "");
+        if (timer->HasFlags(tfAvoid) && Errors == 0 && Finished) {
+           const char *p = strgetlast(timer->File(), FOLDERDELIMCHAR);
+           DoneRecordingsPattern.Append(p);
+           }
+        }
      DELETENULL(recorder);
      timer->SetRecording(false);
      timer = NULL;
@@ -5414,13 +5423,8 @@ void cRecordControl::Stop(bool ExecuteUserCommand)
 bool cRecordControl::Process(time_t t)
 {
   if (!recorder || !recorder->IsAttached() || !timer || !timer->Matches(t)) {
-     if (timer) {
+     if (timer)
         timer->SetPending(false);
-        if (timer->HasFlags(tfAvoid)) {
-           const char *p = strgetlast(timer->File(), FOLDERDELIMCHAR);
-           DoneRecordingsPattern.Append(p);
-           }
-        }
      return false;
      }
   return true;

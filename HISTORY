@@ -9663,10 +9663,19 @@ Video Disk Recorder Revision History
 - EXPIRELATENCY now only applies to VPS timers.
 - Deleting expired timers is now triggered immediately after the timers are modified.
 
-2021-05-11:
+2021-05-19:
 
 - Now using a separate fixed value for internal EPG linger time. This fixes problems with
   spawned timers jumping to the next event in case Setup.EPGLinger is very small. (reported
   by Jürgen Schneider).
 - Fixed a possible crash in the Schedule menu, in case Setup.EPGLinger is 0.
 - Fixed cTsPayload::AtPayloadStart() to ignore TS packets from other PIDs.
+- Recordings are now checked for errors:
+  + On TS level, the continuity counter, transport error indicator and scramble flags are
+    checked.
+  + On frame level it is checked whether there are no gaps in the PTS.
+  + The number of errors during a recording is stored in the recording's 'info' file, with
+    the new tag 'O'.
+  + Spawned timers that shall avoid recording reruns only store the recording's name in
+    the donerecs,data file if there were no errors during recording, and if the timer has
+    actually finished.
