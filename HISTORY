@@ -9682,3 +9682,4 @@ Video Disk Recorder Revision History
 - Removed the macros __STL_CONFIG_H, _STL_ALGOBASE_H and _MOVE_H from tools.h. If your
   plugin insists in using "using namespace std;" you can still define
   DISABLE_TEMPLATES_COLLIDING_WITH_STL before including any VDR header files.
+- Removed 'register' from libsi/util.c to avoid a warning with  ISO-C++17.
