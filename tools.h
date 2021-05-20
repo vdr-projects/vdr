@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.4 2021/05/19 11:50:24 kls Exp $
+ * $Id: tools.h 5.5 2021/05/20 10:13:43 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -451,10 +451,15 @@ public:
   struct dirent *Next(void);
   };
 
+#ifndef DEPRECATED_CFILE
+#define DEPRECATED_CFILE 0
+#endif
 class cFile {
 private:
+#if DEPRECATED_CFILE
   static bool files[];
   static int maxFiles;
+#endif
   int f;
 public:
   cFile(void);
@@ -465,9 +470,13 @@ public:
   void Close(void);
   bool IsOpen(void) { return f >= 0; }
   bool Ready(bool Wait = true);
+#if DEPRECATED_CFILE
   static bool AnyFileReady(int FileDes = -1, int TimeoutMs = 1000);
+#endif
   static bool FileReady(int FileDes, int TimeoutMs = 1000);
+#if DEPRECATED_CFILE
   static bool FileReadyForWriting(int FileDes, int TimeoutMs = 1000);
+#endif
   };
 
 class cSafeFile {

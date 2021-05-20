@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.3 2021/01/19 20:38:28 kls Exp $
+ * $Id: tools.c 5.4 2021/05/20 10:13:43 kls Exp $
  */
 
 #include "tools.h"
@@ -1633,8 +1633,10 @@ bool cFileNameList::Load(const char *Directory, bool DirsOnly)
 
 // --- cFile -----------------------------------------------------------------
 
+#if DEPRECATED_CFILE
 bool cFile::files[FD_SETSIZE] = { false };
 int cFile::maxFiles = 0;
+#endif
 
 cFile::cFile(void)
 {
@@ -1659,6 +1661,7 @@ bool cFile::Open(int FileDes)
   if (FileDes >= 0) {
      if (!IsOpen()) {
         f = FileDes;
+#if DEPRECATED_CFILE
         if (f >= 0) {
            if (f < FD_SETSIZE) {
               if (f >= maxFiles)
@@ -1672,27 +1675,31 @@ bool cFile::Open(int FileDes)
            else
               esyslog("ERROR: file descriptor %d is larger than FD_SETSIZE (%d)", f, FD_SETSIZE);
            }
+#endif
         }
      else
         esyslog("ERROR: attempt to re-open file descriptor %d", FileDes);
      }
-  return false;
+  return IsOpen();
 }
 
 void cFile::Close(void)
 {
   if (f >= 0) {
      close(f);
+#if DEPRECATED_CFILE
      files[f] = false;
+#endif
      f = -1;
      }
 }
 
 bool cFile::Ready(bool Wait)
 {
-  return f >= 0 && AnyFileReady(f, Wait ? 1000 : 0);
+  return f >= 0 && FileReady(f, Wait ? 1000 : 0);
 }
 
+#if DEPRECATED_CFILE
 bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
 {
   fd_set set;
@@ -1710,6 +1717,7 @@ bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
   timeout.tv_usec = (TimeoutMs % 1000) * 1000;
   return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && (FileDes < 0 || FD_ISSET(FileDes, &set));
 }
+#endif
 
 bool cFile::FileReady(int FileDes, int TimeoutMs)
 {
@@ -1726,6 +1734,7 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
   return select(FD_SETSIZE, &set, NULL, NULL, (TimeoutMs >= 0) ? &timeout : NULL) > 0 && FD_ISSET(FileDes, &set);
 }
 
+#if DEPRECATED_CFILE
 bool cFile::FileReadyForWriting(int FileDes, int TimeoutMs)
 {
   fd_set set;
@@ -1738,6 +1747,7 @@ bool cFile::FileReadyForWriting(int FileDes, int TimeoutMs)
   timeout.tv_usec = TimeoutMs * 1000;
   return select(FD_SETSIZE, NULL, &set, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
 }
+#endif
 
 // --- cSafeFile -------------------------------------------------------------
 
