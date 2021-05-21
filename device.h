@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 4.17 2020/06/27 10:24:46 kls Exp $
+ * $Id: device.h 5.1 2021/05/21 12:51:16 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -358,7 +358,7 @@ public:
   static int CurrentChannel(void) { return primaryDevice ? currentChannel : 0; }
          ///< Returns the number of the current channel on the primary device.
 #ifndef DEPRECATED_SETCURRENTCHANNEL
-#define DEPRECATED_SETCURRENTCHANNEL 1
+#define DEPRECATED_SETCURRENTCHANNEL 0
 #endif
 #if DEPRECATED_SETCURRENTCHANNEL
   static void SetCurrentChannel(const cChannel *Channel) { currentChannel = Channel ? Channel->Number() : 0; }

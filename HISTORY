@@ -9694,3 +9694,8 @@ Video Disk Recorder Revision History
 - The 'Edit path' dialog now also shows the total size of all recordings in that path
   (thanks to Christoph Haubrich).
 - The macro DEPRECATED_VDR_CHARSET_OVERRIDE and the related code has been removed.
+- The default for DEPRECATED_SETCURRENTCHANNEL has been set to 0, which means that
+  the function SetCurrentChannel(const cChannel *Channel) is no longer available.
+  You can add 'DEPRECATED_SETCURRENTCHANNEL=1' when compiling in order to restore this
+  functionality. However, it is recommended to use SetCurrentChannel(int ChannelNumber)
+  instead.
