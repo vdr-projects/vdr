@@ -3652,6 +3652,7 @@ Helmut Binder <cco@aon.at>
  for reporting a problem with PMT handling in case locking the Channels list times out
  for avoiding a lengthy lock on the Channels list when starting a recording
  for preventing switching devices for pattern timers
+ for pointing out that cChannel::Transponder(void) is called very often
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

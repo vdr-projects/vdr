@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 4.6 2020/04/11 09:22:05 kls Exp $
+ * $Id: channels.c 5.1 2021/05/21 09:38:34 kls Exp $
  */
 
 #include "channels.h"
@@ -145,15 +145,18 @@ int cChannel::Transponder(int Frequency, char Polarization)
 
 int cChannel::Transponder(void) const
 {
-  int tf = frequency;
-  while (tf > 20000)
-        tf /= 1000;
-  if (IsSat()) {
-     const char *p = strpbrk(parameters, "HVLRhvlr"); // lowercase for backwards compatibility
-     if (p)
-        tf = Transponder(tf, *p);
+  if (!transponder) {
+     int tf = frequency;
+     while (tf > 20000)
+           tf /= 1000;
+     if (IsSat()) {
+        const char *p = strpbrk(parameters, "HVLRhvlr"); // lowercase for backwards compatibility
+        if (p)
+           tf = Transponder(tf, *p);
+        }
+     transponder = tf;
      }
-  return tf;
+  return transponder;
 }
 
 int cChannel::Modification(int Mask) const
@@ -167,6 +170,7 @@ void cChannel::CopyTransponderData(const cChannel *Channel)
 {
   if (Channel) {
      frequency    = Channel->frequency;
+     transponder  = Channel->transponder;
      source       = Channel->source;
      srate        = Channel->srate;
      parameters   = Channel->parameters;
@@ -195,6 +199,7 @@ bool cChannel::SetTransponderData(int Source, int Frequency, int Srate, const ch
      cString OldTransponderData = TransponderDataToString();
      source = Source;
      frequency = Frequency;
+     transponder = 0;
      srate = Srate;
      parameters = Parameters;
      schedule = NULL;
@@ -655,6 +660,7 @@ bool cChannel::Parse(const char *s)
         if (parambuf && sourcebuf && vpidbuf && apidbuf) {
            parameters = parambuf;
            ok = (source = cSource::FromString(sourcebuf)) >= 0;
+           transponder = 0;
 
            char *p;
            if ((p = strchr(vpidbuf, '=')) != NULL) {

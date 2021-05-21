@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 5.1 2021/01/14 10:29:05 kls Exp $
+ * $Id: channels.h 5.2 2021/05/21 09:38:34 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -96,6 +96,7 @@ private:
   char *portalName;
   int __BeginData__;
   int frequency; // MHz
+  mutable int transponder; // cached value
   int source;
   int srate;
   int vpid;

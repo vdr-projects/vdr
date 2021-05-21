@@ -9663,7 +9663,7 @@ Video Disk Recorder Revision History
 - EXPIRELATENCY now only applies to VPS timers.
 - Deleting expired timers is now triggered immediately after the timers are modified.
 
-2021-05-20:
+2021-05-21:
 
 - Now using a separate fixed value for internal EPG linger time. This fixes problems with
   spawned timers jumping to the next event in case Setup.EPGLinger is very small. (reported
@@ -9688,3 +9688,5 @@ Video Disk Recorder Revision History
   + It was only actually used in svdrp.c.
   + cFile::Ready() now processes only its own file descriptor by calling FileReady()
     instead of AnyFileReady().
+- The transponder value of channels is now cached, because cChannel::Transponder(void)
+  is called very often (pointed out by Helmut Binder).
