@@ -9690,3 +9690,4 @@ Video Disk Recorder Revision History
     instead of AnyFileReady().
 - The transponder value of channels is now cached, because cChannel::Transponder(void)
   is called very often (pointed out by Helmut Binder).
+- Added code for the 'qad' audio track (thanks to Helmut Binder).

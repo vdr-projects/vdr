@@ -347,6 +347,9 @@ msgstr "deu"
 msgid "LanguageName$original language (qaa)"
 msgstr "Originalton (qaa)"
 
+msgid "LanguageName$audio description (qad)"
+msgstr "Audiodeskription (qad)"
+
 msgid "LanguageName$uncoded languages (mis)"
 msgstr "einzelne andere Sprachen (mis)"
 

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2020-12-24 17:42+0100\n"
+"POT-Creation-Date: 2021-05-21 11:46+0200\n"
 "PO-Revision-Date: 2016-12-27 17:13+0100\n"
 "Last-Translator: Pridvorov Andrey <ua0lnj@bk.ru>\n"
 "Language-Team: Russian <vdr@linuxtv.org>\n"
@@ -345,6 +345,9 @@ msgid "LanguageCode$eng"
 msgstr "rus"
 
 msgid "LanguageName$original language (qaa)"
+msgstr ""
+
+msgid "LanguageName$audio description (qad)"
 msgstr ""
 
 msgid "LanguageName$uncoded languages (mis)"
