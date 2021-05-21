@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 4.7 2020/09/29 14:09:26 kls Exp $
+ * $Id: osd.h 5.1 2021/05/21 12:54:08 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -790,12 +790,6 @@ protected:
        ///< If there are no dirty pixmaps, or if this is not a true color OSD,
        ///< this function returns NULL.
        ///< The caller must call DestroyPixmap() for the returned pixmap after use.
-#ifndef DEPRECATED_GETBITMAP
-#define DEPRECATED_GETBITMAP 0
-#endif
-#if DEPRECATED_GETBITMAP
-public:
-#endif
   cBitmap *GetBitmap(int Area);
        ///< Returns a pointer to the bitmap for the given Area, or NULL if no
        ///< such bitmap exists.

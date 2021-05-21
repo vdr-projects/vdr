@@ -9699,3 +9699,4 @@ Video Disk Recorder Revision History
   You can add 'DEPRECATED_SETCURRENTCHANNEL=1' when compiling in order to restore this
   functionality. However, it is recommended to use SetCurrentChannel(int ChannelNumber)
   instead.
+- The macro DEPRECATED_GETBITMAP and the related code has been removed.
