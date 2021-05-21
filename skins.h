@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 4.6 2019/05/29 16:36:41 kls Exp $
+ * $Id: skins.h 5.1 2021/05/21 13:03:42 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -245,7 +245,7 @@ public:
        ///< The default implementation does nothing and returns false, which results in
        ///< a call to SetItem() with a proper text.
 #ifndef DEPRECATED_SKIN_SETITEMEVENT
-#define DEPRECATED_SKIN_SETITEMEVENT 1
+#define DEPRECATED_SKIN_SETITEMEVENT 0
 #endif
 #if DEPRECATED_SKIN_SETITEMEVENT
   virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, eTimerMatch TimerMatch) { return SetItemEvent(Event, Index, Current, Selectable, Channel, WithDate, TimerMatch, true); }

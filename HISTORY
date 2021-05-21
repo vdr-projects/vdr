@@ -9700,3 +9700,8 @@ Video Disk Recorder Revision History
   functionality. However, it is recommended to use SetCurrentChannel(int ChannelNumber)
   instead.
 - The macro DEPRECATED_GETBITMAP and the related code has been removed.
+- The default for DEPRECATED_SKIN_SETITEMEVENT has been set to 0, which means that
+  the function cSkinDisplayMenu::SetItemEvent() without the TimerActive parameter is
+  no longer available. You can add 'DEPRECATED_SKIN_SETITEMEVENT=1' when compiling in
+  order to restore this functionality. However, it is recommended to use the function
+  with the TimerActive parameter instead.
