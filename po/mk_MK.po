@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2021-05-21 11:46+0200\n"
+"POT-Creation-Date: 2021-05-21 12:36+0200\n"
 "PO-Revision-Date: 2018-03-31 21:47+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <kde-i18n-doc@kde.org>\n"
@@ -790,6 +790,9 @@ msgstr "Уреди патека"
 
 msgid "Folder"
 msgstr "Папка"
+
+msgid "Size"
+msgstr ""
 
 msgid "This folder is currently in use - no changes are possible!"
 msgstr "Оваа папка е моментално во употреба - промени не се возможни!"

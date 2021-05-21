@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.5 2021/05/19 11:22:20 kls Exp $
+ * $Id: menu.c 5.6 2021/05/21 10:41:31 kls Exp $
  */
 
 #include "menu.h"
@@ -2549,6 +2549,23 @@ cMenuPathEdit::cMenuPathEdit(const char *Path)
   p->SetSelectable(!pathIsInUse);
   Add(p = new cMenuEditStrItem(tr("Name"), name, sizeof(name)));
   p->SetSelectable(!pathIsInUse);
+  if (*path) {
+     int DirSize = 0;
+     {
+       LOCK_RECORDINGS_READ;
+       for (const cRecording *Recording = Recordings->First(); Recording; Recording = Recordings->Next(Recording)) {
+           if (Recording->IsInPath(path)) {
+              int FileSizeMB = Recording->FileSizeMB();
+              if (FileSizeMB > 0 )
+                 DirSize += FileSizeMB;
+              }
+           }
+     }
+     if (DirSize > 1023)
+        Add(new cOsdItem(cString::sprintf("%s:\t%.2f GB", tr("Size"), DirSize / 1024.), osUnknown, false));
+     else
+        Add(new cOsdItem(cString::sprintf("%s:\t%d MB", tr("Size"), DirSize), osUnknown, false));
+     }
   if (pathIsInUse) {
      Add(new cOsdItem("", osUnknown, false));
      Add(new cOsdItem(tr("This folder is currently in use - no changes are possible!"), osUnknown, false));

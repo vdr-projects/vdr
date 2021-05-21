@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2021-05-21 11:46+0200\n"
+"POT-Creation-Date: 2021-05-21 12:36+0200\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Aleš Juřík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -791,6 +791,9 @@ msgstr "Editace cesty"
 
 msgid "Folder"
 msgstr "Složka"
+
+msgid "Size"
+msgstr ""
 
 msgid "This folder is currently in use - no changes are possible!"
 msgstr "Tato složka je používána - změny nejsou možné!"

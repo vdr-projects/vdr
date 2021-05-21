@@ -9691,3 +9691,5 @@ Video Disk Recorder Revision History
 - The transponder value of channels is now cached, because cChannel::Transponder(void)
   is called very often (pointed out by Helmut Binder).
 - Added code for the 'qad' audio track (thanks to Helmut Binder).
+- The 'Edit path' dialog now also shows the total size of all recordings in that path
+  (thanks to Christoph Haubrich).

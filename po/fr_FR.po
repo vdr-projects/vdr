@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2021-05-21 11:46+0200\n"
+"POT-Creation-Date: 2021-05-21 12:36+0200\n"
 "PO-Revision-Date: 2018-04-14 10:16+0100\n"
 "Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -799,6 +799,9 @@ msgstr "Éditer le chemin"
 
 msgid "Folder"
 msgstr "Dossier"
+
+msgid "Size"
+msgstr ""
 
 msgid "This folder is currently in use - no changes are possible!"
 msgstr "Ce dossier est en cours d'utilisation - pas de modification possible !"

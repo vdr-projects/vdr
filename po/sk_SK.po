@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2021-05-21 11:46+0200\n"
+"POT-Creation-Date: 2021-05-21 12:36+0200\n"
 "PO-Revision-Date: 2015-02-17 18:59+0100\n"
 "Last-Translator: Milan Hrala <hrala.milan@gmail.com>\n"
 "Language-Team: Slovak <vdr@linuxtv.org>\n"
@@ -789,6 +789,9 @@ msgstr "Upravi» umiestnenie"
 
 msgid "Folder"
 msgstr "Prieèinok"
+
+msgid "Size"
+msgstr ""
 
 msgid "This folder is currently in use - no changes are possible!"
 msgstr "Tento prieèinok sa práve pou¾íva - ¾iadne zmeny nie sú mo¾né!"

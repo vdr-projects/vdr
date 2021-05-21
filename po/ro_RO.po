@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.4.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2021-05-21 11:46+0200\n"
+"POT-Creation-Date: 2021-05-21 12:36+0200\n"
 "PO-Revision-Date: 2015-02-11 22:26+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -790,6 +790,9 @@ msgstr "Editează calea"
 
 msgid "Folder"
 msgstr "Director"
+
+msgid "Size"
+msgstr ""
 
 msgid "This folder is currently in use - no changes are possible!"
 msgstr "Acest director tocmai este accesat - nu sunt posibile modificări!"
