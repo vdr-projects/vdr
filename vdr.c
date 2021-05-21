@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.5 2021/04/20 13:22:37 kls Exp $
+ * $Id: vdr.c 5.6 2021/05/21 12:43:18 kls Exp $
  */
 
 #include <getopt.h>
@@ -237,13 +237,6 @@ int main(int argc, char *argv[])
   int WatchdogTimeout = DEFAULTWATCHDOG;
   const char *Terminal = NULL;
   const char *OverrideCharacterTable = NULL;
-#ifndef DEPRECATED_VDR_CHARSET_OVERRIDE
-#define DEPRECATED_VDR_CHARSET_OVERRIDE 0
-#endif
-#if DEPRECATED_VDR_CHARSET_OVERRIDE
-  OverrideCharacterTable = getenv("VDR_CHARSET_OVERRIDE");
-  const char *DeprecatedVdrCharsetOverride = OverrideCharacterTable;
-#endif
 
   bool UseKbd = true;
   const char *LircDevice = NULL;
@@ -722,10 +715,6 @@ int main(int argc, char *argv[])
      isyslog("codeset is '%s' - %s", CodeSet, known ? "known" : "unknown");
      cCharSetConv::SetSystemCharacterTable(CodeSet);
      }
-#if DEPRECATED_VDR_CHARSET_OVERRIDE
-  if (DeprecatedVdrCharsetOverride)
-     isyslog("use of environment variable VDR_CHARSET_OVERRIDE (%s) is deprecated!", DeprecatedVdrCharsetOverride);
-#endif
   if (OverrideCharacterTable) {
      bool known = SI::SetOverrideCharacterTable(OverrideCharacterTable);
      isyslog("override character table is '%s' - %s", OverrideCharacterTable, known ? "known" : "unknown");

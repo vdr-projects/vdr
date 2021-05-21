@@ -9693,3 +9693,4 @@ Video Disk Recorder Revision History
 - Added code for the 'qad' audio track (thanks to Helmut Binder).
 - The 'Edit path' dialog now also shows the total size of all recordings in that path
   (thanks to Christoph Haubrich).
+- The macro DEPRECATED_VDR_CHARSET_OVERRIDE and the related code has been removed.
