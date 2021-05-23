@@ -2449,6 +2449,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for reporting an unnecessary double call to Display() in cMenuRecording::RefreshRecording()
  for reporting too much memory being allocated in the cImage constructors
  for making the 'Edit path' dialog also show the total size of all recordings in that path
+ for suggesting to make cRecordingInfo::Errors() return -1 for old recordings, and
+ reporting a missing 'const'
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

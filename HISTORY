@@ -9705,3 +9705,8 @@ Video Disk Recorder Revision History
   no longer available. You can add 'DEPRECATED_SKIN_SETITEMEVENT=1' when compiling in
   order to restore this functionality. However, it is recommended to use the function
   with the TimerActive parameter instead.
+
+2021-05-23:
+
+- cRecordingInfo::Errors() now returns -1 for old recordings; added a missing 'const'
+  (suggested by Christoph Haubrich).

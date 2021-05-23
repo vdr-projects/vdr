@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.7 2021/05/19 11:22:20 kls Exp $
+ * $Id: recording.c 5.8 2021/05/23 15:03:17 kls Exp $
  */
 
 #include "recording.h"
@@ -359,7 +359,7 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
   priority = MAXPRIORITY;
   lifetime = MAXLIFETIME;
   fileName = NULL;
-  errors = 0;
+  errors = -1;
   if (Channel) {
      // Since the EPG data's component records can carry only a single
      // language code, let's see whether the channel's PID data has
@@ -415,7 +415,7 @@ cRecordingInfo::cRecordingInfo(const char *FileName)
   ownEvent = new cEvent(0);
   event = ownEvent;
   aux = NULL;
-  errors = 0;
+  errors = -1;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   priority = MAXPRIORITY;
   lifetime = MAXLIFETIME;
@@ -1202,7 +1202,9 @@ bool cRecording::WriteInfo(const char *OtherFileName)
      // Let's keep the error counter if this is a re-started recording:
      cRecordingInfo ExistingInfo(FileName());
      if (ExistingInfo.Read())
-        info->SetErrors(ExistingInfo.Errors());
+        info->SetErrors(max(0, ExistingInfo.Errors()));
+     else
+        info->SetErrors(0);
      }
   else {
      // This is an edited recording, so let's clear the error counter:
