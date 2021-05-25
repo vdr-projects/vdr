@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.8 2021/05/23 15:03:17 kls Exp $
+ * $Id: recording.c 5.9 2021/05/25 20:09:29 kls Exp $
  */
 
 #include "recording.h"
@@ -1205,10 +1205,6 @@ bool cRecording::WriteInfo(const char *OtherFileName)
         info->SetErrors(max(0, ExistingInfo.Errors()));
      else
         info->SetErrors(0);
-     }
-  else {
-     // This is an edited recording, so let's clear the error counter:
-     info->SetErrors(0);
      }
   cSafeFile f(InfoFileName);
   if (f.Open()) {
