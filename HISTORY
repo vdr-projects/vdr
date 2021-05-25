@@ -9711,3 +9711,4 @@ Video Disk Recorder Revision History
 - cRecordingInfo::Errors() now returns -1 for old recordings; added a missing 'const'
   (suggested by Christoph Haubrich).
 - The error counter of a recording is now copied as is when editing a recording.
+- Added missing initialization of cRecorder::lastErrors.

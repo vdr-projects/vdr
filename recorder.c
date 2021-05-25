@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.2 2021/05/23 15:03:17 kls Exp $
+ * $Id: recorder.c 5.3 2021/05/25 20:14:06 kls Exp $
  */
 
 #include "recorder.h"
@@ -172,6 +172,7 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
   recordingInfo->Read();
   oldErrors = max(0, recordingInfo->Errors()); // in case this is a re-started recording
   errors = oldErrors;
+  lastErrors = errors;
   firstIframeSeen = false;
 
   // Make sure the disk is up and running:
