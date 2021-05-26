@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.5 2021/05/20 10:13:43 kls Exp $
+ * $Id: tools.h 5.6 2021/05/26 13:37:53 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -51,14 +51,20 @@ template<class T> inline void DELETENULL(T *&p) { T *q = p; p = NULL; delete q; 
 #define CHECK(s) { if ((s) < 0) LOG_ERROR; } // used for 'ioctl()' calls
 #define FATALERRNO (errno && errno != EAGAIN && errno != EINTR)
 
-// In case some plugin needs to use the STL and gets an error message regarding one
-// of these functions, you can #define DISABLE_TEMPLATES_COLLIDING_WITH_STL before
-// including any VDR header files.
-#if !defined(DISABLE_TEMPLATES_COLLIDING_WITH_STL)
+#if __cplusplus >= 201103L
+// any gcc >= 4.8.1; we have swap, min, max
+#include <algorithm> // std::min, std::max, (c++98: also swap)
+#include <utility> // std::swap (since c++11)
+using std::min;
+using std::max;
+using std::swap;
+#else
+// no c++11 and old compiler, let's include our own templates
 template<class T> inline T min(T a, T b) { return a <= b ? a : b; }
 template<class T> inline T max(T a, T b) { return a >= b ? a : b; }
 template<class T> inline void swap(T &a, T &b) { T t = a; a = b; b = t; }
 #endif
+
 template<class T> inline int sgn(T a) { return a < 0 ? -1 : a > 0 ? 1 : 0; }
 
 template<class T> inline T constrain(T v, T l, T h) { return v < l ? l : v > h ? h : v; }

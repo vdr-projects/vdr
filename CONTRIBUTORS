@@ -2780,6 +2780,8 @@ Winfried Köhler <w_koehl@gmx.de>
  for improving handling missing VDRPluginDestroyer()
  for fixing a compiler warning
  for fixing handling $(PKG_CONFIG) in newplugin
+ for using __cplusplus instead of DISABLE_TEMPLATES_COLLIDING_WITH_STL, and using
+ std::min(), std::max() and std::swap() is available
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
