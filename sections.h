@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.h 4.1 2020/11/24 21:19:49 kls Exp $
+ * $Id: sections.h 5.1 2021/06/08 15:10:51 kls Exp $
  */
 
 #ifndef __SECTIONS_H
@@ -27,6 +27,9 @@ private:
   cDevice *device;
   int statusCount;
   bool on, waitForLock;
+  bool flush;
+  bool startFilters;
+  cTimeMs flushTimer;
   cList<cFilter> filters;
   cList<cFilterHandle> filterHandles;
   void Add(const cFilterData *FilterData);

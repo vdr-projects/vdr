@@ -9716,3 +9716,4 @@ Video Disk Recorder Revision History
   std::min(), std::max() and std::swap() if available (thanks to Winfried Köhler).
 - No longer permanently looping through PMT PIDs, which caused problems with some
   SatIP receivers (reported by André Weidemann; with help from Helmut Binder).
+- Fixed flushing old data from the section handler (thanks to Helmut Binder).
