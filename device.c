@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.2 2021/03/17 10:59:36 kls Exp $
+ * $Id: device.c 5.3 2021/06/08 14:57:26 kls Exp $
  */
 
 #include "device.h"
@@ -858,6 +858,13 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
   cStatus::MsgChannelSwitch(this, 0, LiveView);
 
   if (LiveView) {
+     if (IsPrimaryDevice() && !Replaying() && !Transferring()) { // this is only for FF DVB cards!
+        LOCK_CHANNELS_READ;
+        if (const cChannel *ch = Channels->GetByNumber(currentChannel)) {
+           if (patFilter)
+              patFilter->Release(ch->Sid());
+           }
+        }
      StopReplay();
      DELETENULL(liveSubtitle);
      DELETENULL(dvbSubtitleConverter);
@@ -898,8 +905,6 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      if (SetChannelDevice(Channel, LiveView)) {
         // Start section handling:
         if (sectionHandler) {
-           if (patFilter)
-              patFilter->Trigger(Channel->Sid());
            sectionHandler->SetChannel(Channel);
            sectionHandler->SetStatus(true);
            }
@@ -913,6 +918,8 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (Result == scrOk) {
      if (LiveView && IsPrimaryDevice()) {
+        if (patFilter) // this is only for FF DVB cards!
+           patFilter->Request(Channel->Sid());
         currentChannel = Channel->Number();
         // Set the available audio tracks:
         ClrAvailableTracks();
@@ -1807,6 +1814,8 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
                   dsyslog("CAM %d: %sknown to decrypt channel %s (scramblingTimeout = %ds)", camSlot->MasterSlotNumber(), KnownToDecrypt ? "" : "not ", *Receiver->ChannelID().ToString(), Receiver->scramblingTimeout);
                }
             }
+         if (patFilter && Receiver->ChannelID().Valid())
+            patFilter->Request(Receiver->ChannelID().Sid());
          Start();
          return true;
          }
@@ -1827,6 +1836,8 @@ void cDevice::Detach(cReceiver *Receiver)
       else if (receiver[i])
          receiversLeft = true;
       }
+  if (patFilter && Receiver->ChannelID().Valid())
+     patFilter->Release(Receiver->ChannelID().Sid());
   mutexReceiver.Unlock();
   Receiver->device = NULL;
   Receiver->Activate(false);

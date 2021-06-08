@@ -9706,7 +9706,7 @@ Video Disk Recorder Revision History
   order to restore this functionality. However, it is recommended to use the function
   with the TimerActive parameter instead.
 
-2021-05-26:
+2021-06-08:
 
 - cRecordingInfo::Errors() now returns -1 for old recordings; added a missing 'const'
   (suggested by Christoph Haubrich).
@@ -9714,3 +9714,5 @@ Video Disk Recorder Revision History
 - Added missing initialization of cRecorder::lastErrors.
 - Now using __cplusplus instead of DISABLE_TEMPLATES_COLLIDING_WITH_STL, and using
   std::min(), std::max() and std::swap() if available (thanks to Winfried Köhler).
+- No longer permanently looping through PMT PIDs, which caused problems with some
+  SatIP receivers (reported by André Weidemann; with help from Helmut Binder).

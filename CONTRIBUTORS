@@ -2343,6 +2343,7 @@ André Weidemann <Andre.Weidemann@web.de>
  for reporting a bug in selecting the last replayed recording in the Recordings menu
  in case there are folders and plain recordings with names that differ only in
  non-alphanumeric characters
+ for reporting a problem with permanently looping through PMT PIDs on a SatIP receiver
 
 Jürgen Schilling <juergen_schilling@web.de>
  for reporting that color buttons were displayed in the recording info menu if it

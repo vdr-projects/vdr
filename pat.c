@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 5.1 2021/03/16 15:10:54 kls Exp $
+ * $Id: pat.c 5.2 2021/06/08 14:57:26 kls Exp $
  */
 
 #include "pat.h"
@@ -285,10 +285,20 @@ int GetPmtPid(int Source, int Transponder, int ServiceId)
 class cPmtPidEntry : public cListObject {
 private:
   int pid;
-  bool complete;
+  int count; // the number of SIDs currently requested from this PID
+  int state; // adding/deleting PIDs to/from the filter may only be done from within the Process() function,
+             // otherwise there could be a deadlock between cPatFilter::mutex and cSectionHandler::mutex;
+             // this member tells whether this PID needs to be added to (>0) or deleted from (<0) the filter
+  bool complete; // true if all SIDs on this PID have been received
 public:
   cPmtPidEntry(int Pid);
   int Pid(void) { return pid; }
+  int Count(void) { return count; }
+  int State(void) { int s = state; state = 0; return s; } // returns the current state and resets it
+  void SetState(void) { state = 1; }
+  void ClrState(void) { state = -1; }
+  void Inc(void) { if (++count == 1) state = 1; }
+  void Dec(void) { if (--count == 0) state = -1; }
   int Complete(void) { return complete; }
   void SetComplete(bool State) { complete = State; }
   };
@@ -296,6 +306,8 @@ public:
 cPmtPidEntry::cPmtPidEntry(int Pid)
 {
   pid = Pid;
+  count = 0;
+  state = 0;
   complete = false;
 }
 
@@ -309,7 +321,7 @@ private:
   int version;
   bool received;
 public:
-  cPmtSidEntry(int Sid, int Pid, cPmtPidEntry *PidEntry);
+  cPmtSidEntry(int Sid, cPmtPidEntry *PidEntry);
   int Sid(void) { return sid; }
   int Pid(void) { return pid; }
   cPmtPidEntry *PidEntry(void) { return pidEntry; }
@@ -319,14 +331,28 @@ public:
   void SetReceived(bool State) { received = State; }
   };
 
-cPmtSidEntry::cPmtSidEntry(int Sid, int Pid, cPmtPidEntry *PidEntry)
+cPmtSidEntry::cPmtSidEntry(int Sid, cPmtPidEntry *PidEntry)
 {
   sid = Sid;
-  pid = Pid;
+  pid = PidEntry->Pid();
   pidEntry = PidEntry;
   version = -1;
   received = false;
 }
+
+// --- cPmtSidRequest --------------------------------------------------------
+
+class cPmtSidRequest : public cListObject {
+private:
+  int sid;
+  int count; // the number of requests for this SID
+public:
+  cPmtSidRequest(int Sid) { sid = Sid; count = 1; }
+  int Sid(void) { return sid; }
+  int Count(void) { return count; }
+  void Inc(void) { count++; }
+  void Dec(void) { count--; }
+  };
 
 // --- cPatFilter ------------------------------------------------------------
 
@@ -339,30 +365,93 @@ cPmtSidEntry::cPmtSidEntry(int Sid, int Pid, cPmtPidEntry *PidEntry)
 
 cPatFilter::cPatFilter(void)
 {
-  Trigger(0);
+  patVersion = -1;
+  activePmt = NULL;
+  transponder = 0;
+  source = 0;
   Set(0x00, 0x00);  // PAT
 }
 
-void cPatFilter::SetStatus(bool On)
+bool cPatFilter::TransponderChanged(void)
 {
-  cMutexLock MutexLock(&mutex);
-  DBGLOG("PAT filter set status %d", On);
-  cFilter::SetStatus(On);
-  Trigger();
+  if (source != Source() || transponder != Transponder()) {
+     DBGLOG("PAT filter transponder changed from %d/%d to %d/%d", source, transponder, Source(), Transponder());
+     source = Source();
+     transponder = Transponder();
+     return true;
+     }
+  return false;
 }
 
-void cPatFilter::Trigger(int Sid)
+void cPatFilter::Trigger(int)
 {
   cMutexLock MutexLock(&mutex);
-  patVersion = -1;
-  sectionSyncer.Reset();
-  if (Sid != 0 && activePmt)
-     Del(activePmt->Pid(), SI::TableIdPMT);
-  activePmt = NULL;
-  if (Sid >= 0) {
-     sid = Sid;
-     DBGLOG("PAT filter trigger SID %d", Sid);
+  DBGLOG("PAT filter trigger");
+  if (activePmt != pmtPidList.First()) {
+     if (activePmt && activePmt->Count() == 0)
+        activePmt->ClrState();
+     activePmt = pmtPidList.First();
+     if (activePmt && activePmt->Count() == 0) {
+        activePmt->SetState();
+        timer.Set(PMT_SCAN_TIMEOUT);
+        }
      }
+}
+
+void cPatFilter::Request(int Sid)
+{
+  cMutexLock MutexLock(&mutex);
+  DBGLOG("PAT filter request SID %d", Sid);
+  for (cPmtSidRequest *sr = pmtSidRequestList.First(); sr; sr = pmtSidRequestList.Next(sr)) {
+      if (sr->Sid() == Sid) {
+         sr->Inc();
+         DBGLOG("PAT filter add SID request %d (%d)", Sid, sr->Count());
+         return;
+         }
+      }
+  DBGLOG("PAT filter new SID request %d", Sid);
+  pmtSidRequestList.Add(new cPmtSidRequest(Sid));
+  for (cPmtSidEntry *se = pmtSidList.First(); se; se = pmtSidList.Next(se)) {
+      if (se->Sid() == Sid) {
+         cPmtPidEntry *pPid = se->PidEntry();
+         pPid->Inc();
+         DBGLOG("    PMT pid %5d  SID %5d (%d)", pPid->Pid(), se->Sid(), pPid->Count());
+         break;
+         }
+      }
+}
+
+void cPatFilter::Release(int Sid)
+{
+  cMutexLock MutexLock(&mutex);
+  DBGLOG("PAT filter release SID %d", Sid);
+  for (cPmtSidRequest *sr = pmtSidRequestList.First(); sr; sr = pmtSidRequestList.Next(sr)) {
+      if (sr->Sid() == Sid) {
+         sr->Dec();
+         DBGLOG("PAT filter del SID request %d (%d)", Sid, sr->Count());
+         if (sr->Count() == 0) {
+            pmtSidRequestList.Del(sr);
+            for (cPmtSidEntry *se = pmtSidList.First(); se; se = pmtSidList.Next(se)) {
+                if (se->Sid() == Sid) {
+                   cPmtPidEntry *pPid = se->PidEntry();
+                   pPid->Dec();
+                   DBGLOG("    PMT pid %5d  SID %5d (%d)", pPid->Pid(), se->Sid(), pPid->Count());
+                   break;
+                   }
+                }
+            }
+         break;
+         }
+      }
+}
+
+int cPatFilter::NumSidRequests(int Sid)
+{
+  for (cPmtSidRequest *sr = pmtSidRequestList.First(); sr; sr = pmtSidRequestList.Next(sr)) {
+      if (sr->Sid() == Sid)
+         return sr->Count();
+      }
+  return 0;
 }
 
 bool cPatFilter::PmtPidComplete(int PmtPid)
@@ -377,15 +466,16 @@ bool cPatFilter::PmtPidComplete(int PmtPid)
 void cPatFilter::PmtPidReset(int PmtPid)
 {
   for (cPmtSidEntry *se = pmtSidList.First(); se; se = pmtSidList.Next(se)) {
-      if (se->Pid() == PmtPid)
+      if (se->Pid() == PmtPid) {
          se->SetReceived(false);
+         se->PidEntry()->SetComplete(false);
+         }
       }
 }
 
 bool cPatFilter::PmtVersionChanged(int PmtPid, int Sid, int Version, bool SetNewVersion)
 {
-  int i = 0;
-  for (cPmtSidEntry *se = pmtSidList.First(); se; se = pmtSidList.Next(se), i++) {
+  for (cPmtSidEntry *se = pmtSidList.First(); se; se = pmtSidList.Next(se)) {
       if (se->Sid() == Sid && se->Pid() == PmtPid) {
          if (!se->Received()) {
             se->SetReceived(true);
@@ -395,7 +485,7 @@ bool cPatFilter::PmtVersionChanged(int PmtPid, int Sid, int Version, bool SetNew
             if (SetNewVersion)
                se->SetVersion(Version);
             else
-               DBGLOG("PMT %d  %2d %5d/%d %2d -> %2d", Transponder(), i, PmtPid, Sid, se->Version(), Version);
+               DBGLOG("PMT %d  %5d/%5d  %2d -> %2d  %d", Transponder(), PmtPid, Sid, se->Version(), Version, NumSidRequests(Sid));
             return true;
             }
          break;
@@ -407,18 +497,39 @@ bool cPatFilter::PmtVersionChanged(int PmtPid, int Sid, int Version, bool SetNew
 void cPatFilter::SwitchToNextPmtPid(void)
 {
   if (activePmt) {
-     Del(activePmt->Pid(), SI::TableIdPMT);
-     if (!(activePmt = pmtPidList.Next(activePmt)))
-        activePmt = pmtPidList.First();
-     PmtPidReset(activePmt->Pid());
-     activePmt->SetComplete(false);
-     Add(activePmt->Pid(), SI::TableIdPMT);
+     if (activePmt->Count() == 0)
+        Del(activePmt->Pid(), SI::TableIdPMT);
+     for (;;) {
+         activePmt = pmtPidList.Next(activePmt);
+         if (!activePmt || activePmt->Count() == 0)
+            break;
+         }
+     if (activePmt) {
+        PmtPidReset(activePmt->Pid());
+        Add(activePmt->Pid(), SI::TableIdPMT);
+        timer.Set(PMT_SCAN_TIMEOUT);
+        }
      }
 }
 
 void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
 {
   cMutexLock MutexLock(&mutex);
+  if (TransponderChanged()) {
+     patVersion = -1;
+     sectionSyncer.Reset();
+     }
+  if (patVersion >= 0) {
+     for (cPmtPidEntry *pPid = pmtPidList.First(); pPid; pPid = pmtPidList.Next(pPid)) {
+         int State = pPid->State();
+         if (State > 0)
+            Add(pPid->Pid(), SI::TableIdPMT);
+         else if (State < 0)
+            Del(pPid->Pid(), SI::TableIdPMT);
+         }
+     }
+  else if (Pid != 0x00)
+     return;
   if (Pid == 0x00) {
      if (Tid == SI::TableIdPAT) {
         SI::PAT pat(Data, false);
@@ -426,13 +537,11 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
            return;
         if (sectionSyncer.Check(pat.getVersionNumber(), pat.getSectionNumber())) {
            DBGLOG("PAT %d %d -> %d %d/%d", Transponder(), patVersion, pat.getVersionNumber(), pat.getSectionNumber(), pat.getLastSectionNumber());
+           bool NeedsSetStatus = patVersion >= 0;
            if (pat.getVersionNumber() != patVersion) {
-              if (pat.getLastSectionNumber() > 0)
-                 DBGLOG("  PAT %d: %d sections", Transponder(), pat.getLastSectionNumber() + 1);
-              if (activePmt) {
-                 Del(activePmt->Pid(), SI::TableIdPMT);
-                 activePmt = NULL;
-                 }
+              if (NeedsSetStatus)
+                 SetStatus(false); // deletes all PIDs from the filter
+              activePmt = NULL;
               pmtSidList.Clear();
               pmtPidList.Clear();
               patVersion = pat.getVersionNumber();
@@ -441,36 +550,39 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
            for (SI::Loop::Iterator it; pat.associationLoop.getNext(assoc, it); ) {
                if (!assoc.isNITPid()) {
                   int PmtPid = assoc.getPid();
+                  int PmtSid = assoc.getServiceId();
                   cPmtPidEntry *pPid = NULL;
-                  int PidIndex = 0;
-                  for (pPid = pmtPidList.First(); pPid && pPid->Pid() != PmtPid; pPid = pmtPidList.Next(pPid))
-                      PidIndex++;
+                  for (pPid = pmtPidList.First(); pPid; pPid = pmtPidList.Next(pPid)) {
+                      if (pPid->Pid() == PmtPid)
+                         break;
+                      }
+                  int SidRequest = NumSidRequests(PmtSid);
+                  DBGLOG("    PMT pid %5d  SID %5d%s%s", PmtPid, PmtSid, SidRequest ? " R" : "", pPid ? " S" : "");
                   if (!pPid) { // new PMT Pid
                      pPid = new cPmtPidEntry(PmtPid);
                      pmtPidList.Add(pPid);
                      }
-                  pmtSidList.Add(new cPmtSidEntry(assoc.getServiceId(), PmtPid, pPid));
-                  DBGLOG("    PMT pid %2d/%2d %5d  SID %5d", PidIndex, pmtSidList.Count() - 1, PmtPid, assoc.getServiceId());
-                  if (sid == assoc.getServiceId()) {
-                     activePmt = pPid;
-                     DBGLOG("sid = %d pidIndex = %d", sid, PidIndex);
-                     }
+                  pmtSidList.Add(new cPmtSidEntry(PmtSid, pPid));
+                  if (SidRequest > 0)
+                     pPid->Inc();
                   }
                }
            if (sectionSyncer.Processed(pat.getSectionNumber(), pat.getLastSectionNumber())) { // all PAT sections done
-              if (pmtPidList.Count() != pmtSidList.Count())
-                 DBGLOG("  PAT %d: shared PMT PIDs", Transponder());
-              if (pmtSidList.Count() && !activePmt)
-                 activePmt = pmtPidList.First();
-              if (activePmt)
-                 Add(activePmt->Pid(), SI::TableIdPMT);
-              timer.Set(PMT_SCAN_TIMEOUT);
+              for (cPmtPidEntry *pPid = pmtPidList.First(); pPid; pPid = pmtPidList.Next(pPid)) {
+                  if (pPid->Count() == 0) {
+                     pPid->SetState();
+                     activePmt = pPid;
+                     timer.Set(PMT_SCAN_TIMEOUT);
+                     break;
+                     }
+                  }
+              if (NeedsSetStatus)
+                 SetStatus(true);
               }
            }
         }
      }
   else if (Tid == SI::TableIdPMT && Source() && Transponder()) {
-     timer.Set(PMT_SCAN_TIMEOUT);
      SI::PMT pmt(Data, false);
      if (!pmt.CheckCRCAndParse())
         return;
@@ -731,6 +843,5 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      if (activePmt)
         DBGLOG("PMT timeout Pid %d", activePmt->Pid());
      SwitchToNextPmtPid();
-     timer.Set(PMT_SCAN_TIMEOUT);
      }
 }

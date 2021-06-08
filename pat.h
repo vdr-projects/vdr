@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 4.2 2020/06/19 12:19:15 kls Exp $
+ * $Id: pat.h 5.1 2021/06/08 14:57:26 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -16,27 +16,33 @@
 
 class cPmtPidEntry;
 class cPmtSidEntry;
+class cPmtSidRequest;
 
 class cPatFilter : public cFilter {
 private:
   cMutex mutex;
   cTimeMs timer;
   int patVersion;
-  int sid;
   cPmtPidEntry *activePmt;
   cList<cPmtPidEntry> pmtPidList;
   cList<cPmtSidEntry> pmtSidList;
+  cList<cPmtSidRequest> pmtSidRequestList;
+  int source;
+  int transponder;
   cSectionSyncer sectionSyncer;
+  bool TransponderChanged(void);
   bool PmtPidComplete(int PmtPid);
   void PmtPidReset(int PmtPid);
   bool PmtVersionChanged(int PmtPid, int Sid, int Version, bool SetNewVersion = false);
+  int  NumSidRequests(int Sid);
   void SwitchToNextPmtPid(void);
 protected:
   virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
 public:
   cPatFilter(void);
-  virtual void SetStatus(bool On);
-  void Trigger(int Sid = -1);
+  void Trigger(int); // triggers reading the PMT PIDs that are currently not requested (dummy parameter for backwards compatibility, value is ignored)
+  void Request(int Sid); // requests permanent reading of the PMT PID for this SID
+  void Release(int Sid); // releases permanent reading of the PMT PID for this SID
   };
 
 void GetCaDescriptors(int Source, int Transponder, int ServiceId, const int *CaSystemIds, cDynamicBuffer &Buffer, int EsPid);
