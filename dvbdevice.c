@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 4.29 2020/12/05 15:48:40 kls Exp $
+ * $Id: dvbdevice.c 5.1 2021/06/09 09:12:25 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -558,7 +558,6 @@ private:
   cCondVar newSet;
   cDvbTuner *bondedTuner;
   bool bondedMaster;
-  bool SetFrontendType(const cChannel *Channel);
   cString GetBondingParams(const cChannel *Channel = NULL) const;
   cDvbTuner *GetBondedMaster(void);
   bool IsBondedMaster(void) const { return !bondedTuner || bondedMaster; }

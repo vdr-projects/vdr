@@ -9706,7 +9706,7 @@ Video Disk Recorder Revision History
   order to restore this functionality. However, it is recommended to use the function
   with the TimerActive parameter instead.
 
-2021-06-08:
+2021-06-09:
 
 - cRecordingInfo::Errors() now returns -1 for old recordings; added a missing 'const'
   (suggested by Christoph Haubrich).
@@ -9717,3 +9717,4 @@ Video Disk Recorder Revision History
 - No longer permanently looping through PMT PIDs, which caused problems with some
   SatIP receivers (reported by André Weidemann; with help from Helmut Binder).
 - Fixed flushing old data from the section handler (thanks to Helmut Binder).
+- Removed unused declaration of cDvbTuner::SetFrontendType() (thanks to Helmut Binder).
