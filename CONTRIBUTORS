@@ -3661,6 +3661,7 @@ Helmut Binder <cco@aon.at>
  for pointing out that cChannel::Transponder(void) is called very often
  for fixing flushing old data from the section handler
  for removing unused declaration of cDvbTuner::SetFrontendType()
+ for fixing handling incomplete multi-packet CAT
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is

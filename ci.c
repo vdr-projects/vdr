@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 4.32 2020/08/17 10:26:18 kls Exp $
+ * $Id: ci.c 5.1 2021/06/09 09:41:18 kls Exp $
  */
 
 #include "ci.h"
@@ -188,6 +188,10 @@ void cCaPidReceiver::Receive(const uchar *Data, int Length)
      const uchar *p = NULL;
      if (TsPayloadStart(Data)) {
         if (Data[5] == SI::TableIdCAT) {
+           if (bufp) { // incomplete multi-packet CAT
+              catVersion = -1;
+              bufp = NULL;
+              }
            length = (int(Data[6] & 0x0F) << 8) | Data[7]; // section length (12 bit field)
            if (length > 5) {
               int v = (Data[10] & 0x3E) >> 1; // version number
