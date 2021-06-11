@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 5.2 2021/06/08 14:57:26 kls Exp $
+ * $Id: pat.c 5.3 2021/06/11 09:38:38 kls Exp $
  */
 
 #include "pat.h"
@@ -295,8 +295,7 @@ public:
   int Pid(void) { return pid; }
   int Count(void) { return count; }
   int State(void) { int s = state; state = 0; return s; } // returns the current state and resets it
-  void SetState(void) { state = 1; }
-  void ClrState(void) { state = -1; }
+  void SetState(int State) { state = State; } // 1 = add the PID, -1 = delete the PID, 0 = do nothing
   void Inc(void) { if (++count == 1) state = 1; }
   void Dec(void) { if (--count == 0) state = -1; }
   int Complete(void) { return complete; }
@@ -372,6 +371,21 @@ cPatFilter::cPatFilter(void)
   Set(0x00, 0x00);  // PAT
 }
 
+void cPatFilter::SetStatus(bool On)
+{
+  cMutexLock MutexLock(&mutex);
+  if (On) { // restart all requested PMT Pids
+     for (cPmtPidEntry *pPid = pmtPidList.First(); pPid; pPid = pmtPidList.Next(pPid))
+         pPid->SetState(pPid->Count() > 0);
+     if (activePmt && activePmt->Count() == 0) {
+        activePmt->SetState(1);
+        timer.Set(PMT_SCAN_TIMEOUT);
+        }
+     }
+  DBGLOG("PAT filter set status %d", On);
+  cFilter::SetStatus(On);
+}
+
 bool cPatFilter::TransponderChanged(void)
 {
   if (source != Source() || transponder != Transponder()) {
@@ -389,10 +403,10 @@ void cPatFilter::Trigger(int)
   DBGLOG("PAT filter trigger");
   if (activePmt != pmtPidList.First()) {
      if (activePmt && activePmt->Count() == 0)
-        activePmt->ClrState();
+        activePmt->SetState(-1);
      activePmt = pmtPidList.First();
      if (activePmt && activePmt->Count() == 0) {
-        activePmt->SetState();
+        activePmt->SetState(1);
         timer.Set(PMT_SCAN_TIMEOUT);
         }
      }
@@ -570,7 +584,7 @@ void cPatFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
            if (sectionSyncer.Processed(pat.getSectionNumber(), pat.getLastSectionNumber())) { // all PAT sections done
               for (cPmtPidEntry *pPid = pmtPidList.First(); pPid; pPid = pmtPidList.Next(pPid)) {
                   if (pPid->Count() == 0) {
-                     pPid->SetState();
+                     pPid->SetState(1);
                      activePmt = pPid;
                      timer.Set(PMT_SCAN_TIMEOUT);
                      break;
