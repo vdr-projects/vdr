@@ -9726,3 +9726,6 @@ Video Disk Recorder Revision History
   (with help from Helmut Binder).
 - If an error occurs while recording, the respective entry in the list of recordings is
   now updated immediately (reported by Matthias Senzel).
+- Fixed a possible access to characters after the terminating zero of strings in
+  cDoneRecordings::Contains(), in case there are fuzzy characters at the end of a
+  string.
