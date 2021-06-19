@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.3 2021/05/25 20:14:06 kls Exp $
+ * $Id: recorder.c 5.4 2021/06/19 14:21:16 kls Exp $
  */
 
 #include "recorder.h"
@@ -239,6 +239,8 @@ void cRecorder::HandleErrors(bool Force)
         esyslog("%s: %d error%s", recordingName, d, d > 1 ? "s" : "");
         recordingInfo->SetErrors(oldErrors + errors);
         recordingInfo->Write();
+        LOCK_RECORDINGS_WRITE;
+        Recordings->UpdateByName(recordingName);
         }
      lastErrors = errors;
      lastErrorLog = time(NULL);
