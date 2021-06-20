@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.10 2021/06/19 15:34:38 kls Exp $
+ * $Id: recording.c 5.11 2021/06/20 10:03:28 kls Exp $
  */
 
 #include "recording.h"
@@ -3152,7 +3152,7 @@ bool cDoneRecordings::Contains(const char *Title) const
             t = SkipFuzzyChars(t);
             if (!*s || !*t)
                break;
-            if (*s != *t)
+            if (toupper(uchar(*s)) != toupper(uchar(*t)))
                break;
             s++;
             t++;

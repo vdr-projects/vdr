@@ -9720,7 +9720,7 @@ Video Disk Recorder Revision History
 - Removed unused declaration of cDvbTuner::SetFrontendType() (thanks to Helmut Binder).
 - Fixed handling incomplete multi-packet CAT (thanks to Helmut Binder).
 
-2021-06-19:
+2021-06-20:
 
 - Fixed restarting PMT pids after starting a recording on the currently viewed channel
   (with help from Helmut Binder).
@@ -9729,3 +9729,5 @@ Video Disk Recorder Revision History
 - Fixed a possible access to characters after the terminating zero of strings in
   cDoneRecordings::Contains(), in case there are fuzzy characters at the end of a
   string.
+- When checking whether a recording has already been made, recording names are now
+  compared case insensitive.
