@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 5.1 2021/06/08 15:10:51 kls Exp $
+ * $Id: sections.c 5.2 2021/06/20 10:27:19 kls Exp $
  */
 
 #include "sections.h"
@@ -189,7 +189,7 @@ void cSectionHandler::Action(void)
         int oldStatusCount = statusCount;
         Unlock();
 
-        if (poll(pfd, NumFilters, waitForLock ? 100 : 1000) > 0) {
+        if (poll(pfd, NumFilters, (!on || waitForLock) ? 100 : 1000) > 0) {
            for (int i = 0; i < NumFilters; i++) {
                if (pfd[i].revents & POLLIN) {
                   cFilterHandle *fh = NULL;

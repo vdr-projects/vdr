@@ -9731,3 +9731,4 @@ Video Disk Recorder Revision History
   string.
 - When checking whether a recording has already been made, recording names are now
   compared case insensitive.
+- Improved responsiveness in cSectionHandler::Action() (thanks to Helmut Binder).
