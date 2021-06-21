@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.11 2021/06/20 10:03:28 kls Exp $
+ * $Id: recording.c 5.12 2021/06/21 15:30:16 kls Exp $
  */
 
 #include "recording.h"
@@ -1968,9 +1968,12 @@ bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
 void cRecordingsHandlerEntry::Cleanup(cRecordings *Recordings)
 {
   if ((usage & ruCut)) {          // this was a cut operation...
-     if (cutter) {                // ...which had not yet ended
-        delete cutter;
-        cutter = NULL;
+     if (cutter                   // ...which had not yet ended...
+        || error) {               // ...or finished with error
+        if (cutter) {
+           delete cutter;
+           cutter = NULL;
+           }
         cVideoDirectory::RemoveVideoFile(fileNameDst);
         Recordings->DelByName(fileNameDst);
         }
