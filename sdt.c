@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 5.1 2021/03/16 15:10:54 kls Exp $
+ * $Id: sdt.c 5.2 2021/06/21 20:13:55 kls Exp $
  */
 
 #include "sdt.h"
@@ -90,6 +90,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
      return;
   dbgsdt("SDT: %2d %2d %2d %s %d\n", sdt.getVersionNumber(), sdt.getSectionNumber(), sdt.getLastSectionNumber(), *cSource::ToString(source), Transponder());
   bool ChannelsModified = false;
+  bool TriggerPat = false;
   SI::SDT::Service SiSdtService;
   for (SI::Loop::Iterator it; sdt.serviceLoop.getNext(SiSdtService, it); ) {
       cChannel *Channel = Channels->GetByChannelID(tChannelID(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId()));
@@ -152,7 +153,7 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            Channel = Channels->NewChannel(this->Channel(), pn, ps, pp, sdt.getOriginalNetworkId(), sdt.getTransportStreamId(), SiSdtService.getServiceId());
                            Channel->SetSource(source); // in case this comes from a satellite with a slightly different position
                            ChannelsModified = true;
-                           patFilter->Trigger(SiSdtService.getServiceId());
+                           TriggerPat = true;
                            }
                         }
                    default: ;
@@ -178,8 +179,8 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                      cChannel *link = Channels->GetByChannelID(tChannelID(source, Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId()));
                      if (!link && Setup.UpdateChannels >= 4) {
                         link = Channels->NewChannel(this->Channel(), "NVOD", "", "", Service.getOriginalNetworkId(), Service.getTransportStream(), Service.getServiceId());
-                        patFilter->Trigger(Service.getServiceId());
                         ChannelsModified = true;
+                        TriggerPat = true;
                         }
                      if (link) {
                         if (!LinkChannels)
@@ -201,6 +202,8 @@ void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             delete LinkChannels;
          }
       }
+  if (TriggerPat)
+     patFilter->Trigger();
   if (sectionSyncer.Processed(sdt.getSectionNumber(), sdt.getLastSectionNumber())) {
      if (Setup.UpdateChannels == 1 || Setup.UpdateChannels >= 3) {
         ChannelsModified |= Channels->MarkObsoleteChannels(source, sdt.getOriginalNetworkId(), sdt.getTransportStreamId());

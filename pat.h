@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 5.2 2021/06/11 09:38:38 kls Exp $
+ * $Id: pat.h 5.3 2021/06/21 20:13:55 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -41,7 +41,7 @@ protected:
 public:
   cPatFilter(void);
   virtual void SetStatus(bool On);
-  void Trigger(int); // triggers reading the PMT PIDs that are currently not requested (dummy parameter for backwards compatibility, value is ignored)
+  void Trigger(int = 0); // triggers reading the PMT PIDs that are currently not requested (dummy parameter for backwards compatibility, value is ignored)
   void Request(int Sid); // requests permanent reading of the PMT PID for this SID
   void Release(int Sid); // releases permanent reading of the PMT PID for this SID
   };

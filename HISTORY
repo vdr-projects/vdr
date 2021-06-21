@@ -9733,3 +9733,4 @@ Video Disk Recorder Revision History
   compared case insensitive.
 - Improved responsiveness in cSectionHandler::Action() (thanks to Helmut Binder).
 - Fixed deleting the edited recording in case of an error (reported by Christoph Haubrich).
+- Fixed triggering the PAT filter.

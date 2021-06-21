@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 5.3 2021/06/11 09:38:38 kls Exp $
+ * $Id: pat.c 5.4 2021/06/21 20:13:55 kls Exp $
  */
 
 #include "pat.h"
@@ -401,15 +401,8 @@ void cPatFilter::Trigger(int)
 {
   cMutexLock MutexLock(&mutex);
   DBGLOG("PAT filter trigger");
-  if (activePmt != pmtPidList.First()) {
-     if (activePmt && activePmt->Count() == 0)
-        activePmt->SetState(-1);
-     activePmt = pmtPidList.First();
-     if (activePmt && activePmt->Count() == 0) {
-        activePmt->SetState(1);
-        timer.Set(PMT_SCAN_TIMEOUT);
-        }
-     }
+  patVersion = -1;
+  sectionSyncer.Reset();
 }
 
 void cPatFilter::Request(int Sid)
