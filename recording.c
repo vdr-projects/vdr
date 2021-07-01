@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.12 2021/06/21 15:30:16 kls Exp $
+ * $Id: recording.c 5.13 2021/07/01 15:40:46 kls Exp $
  */
 
 #include "recording.h"
@@ -1083,7 +1083,8 @@ const char *cRecording::FileName(void) const
 
 const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) const
 {
-  char New = NewIndicator && IsNew() ? '*' : ' ';
+  const char *New = NewIndicator && IsNew() ? "*" : "";
+  const char *Err = NewIndicator && (info->Errors() > 0) ? "!" : "";
   free(titleBuffer);
   titleBuffer = NULL;
   if (Level < 0 || Level == HierarchyLevels()) {
@@ -1103,7 +1104,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
                    Minutes % 60
                    );
         }
-     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%s%c%c%s",
+     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%s%s%s%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
                             t->tm_year % 100,
@@ -1112,6 +1113,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
                             t->tm_min,
                             *Length,
                             New,
+                            Err,
                             Delimiter,
                             s));
      // let's not display a trailing FOLDERDELIMCHAR:

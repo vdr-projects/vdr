@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vdr-skincurses 2.4.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
-"POT-Creation-Date: 2015-02-08 11:16+0100\n"
+"POT-Creation-Date: 2021-07-01 17:28+0200\n"
 "PO-Revision-Date: 2008-01-27 20:35+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -18,6 +18,9 @@ msgstr ""
 
 msgid "A text only skin"
 msgstr "Una interfaccia solo testo"
+
+msgid "errors"
+msgstr ""
 
 msgid "Key$Mute"
 msgstr "Muto"

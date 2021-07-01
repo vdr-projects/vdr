@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 4.6 2020/05/11 10:23:15 kls Exp $
+ * $Id: skincurses.c 5.1 2021/07/01 15:40:46 kls Exp $
  */
 
 #include <ncurses.h>
@@ -12,7 +12,7 @@
 #include <vdr/skins.h>
 #include <vdr/videodir.h>
 
-static const char *VERSION        = "2.4.2";
+static const char *VERSION        = "2.4.3";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
@@ -447,9 +447,18 @@ void cSkinCursesDisplayMenu::SetRecording(const cRecording *Recording)
   cString t = cString::sprintf("%s  %s  %s", *DateString(Recording->Start()), *TimeString(Recording->Start()), Info->ChannelName() ? Info->ChannelName() : "");
   ts.Set(osd, 0, y, ScOsdWidth, ScOsdHeight - y - 2, t, &Font, clrYellow, clrBackground);
   y += ts.Height();
+  int xt = ScOsdWidth;
   if (Info->GetEvent()->ParentalRating()) {
      cString buffer = cString::sprintf(" %s ", *Info->GetEvent()->GetParentalRatingString());
-     osd->DrawText(ScOsdWidth - Utf8StrLen(buffer), y, buffer, clrBlack, clrYellow, &Font);
+     int w = Utf8StrLen(buffer);
+     osd->DrawText(xt - w, y, buffer, clrBlack, clrYellow, &Font);
+     xt -= w + 1;
+     }
+  if (Info->Errors() > 0) {
+     cString buffer = cString::sprintf(" %d %s ", Info->Errors(), tr("errors"));
+     int w = Utf8StrLen(buffer);
+     osd->DrawText(xt - w, y, buffer, clrBlack, clrYellow, &Font);
+     xt -= w + 1;
      }
   y += 1;
   const char *Title = Info->Title();

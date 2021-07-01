@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 5.2 2021/04/18 14:56:40 kls Exp $
+ * $Id: skinlcars.c 5.3 2021/07/01 15:40:46 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1693,11 +1693,23 @@ void cSkinLCARSDisplayMenu::SetRecording(const cRecording *Recording)
   cString t = cString::sprintf("%s  %s  %s", *DateString(Recording->Start()), *TimeString(Recording->Start()), Info->ChannelName() ? Info->ChannelName() : "");
   ts.Set(osd, xl, y, xi01 - xl, yi01 - y, t, font, Theme.Color(clrEventTime), Theme.Color(clrBackground));
   y += ts.Height();
+  int xt = xi01;
   if (Info->GetEvent()->ParentalRating()) {
      cString buffer = cString::sprintf(" %s ", *Info->GetEvent()->GetParentalRatingString());
      const cFont *font = cFont::GetFont(fontSml);
      int w = font->Width(buffer);
-     osd->DrawText(xi01 - w, y, buffer, Theme.Color(clrMenuFrameFg), frameColor, font, w);
+     osd->DrawText(xt - w, y, buffer, Theme.Color(clrMenuFrameFg), frameColor, font, w);
+     xt -= w + xi02 - xi01;
+     }
+  if (Info->Errors() > 0) {
+     cString buffer = cString::sprintf(" %d %s ", Info->Errors(), tr("errors"));
+     const cFont *font = cFont::GetFont(fontSml);
+     int w = font->Width(buffer);
+     osd->DrawText(xt - w, y, buffer, Theme.Color(clrMenuFrameFg), frameColor, font, w);
+     xt -= w + xi02 - xi01;
+     }
+  if (xt != xi01) {
+     const cFont *font = cFont::GetFont(fontSml);
      int yb = y + font->Height();
      osd->DrawRectangle(xi02, y, xi02 + lineHeight / 2 - 1, yb - 1, frameColor);
      osd->DrawEllipse  (xi02 + lineHeight / 2, y, xi03 - 1, yb - 1, frameColor, 5);
