@@ -9736,3 +9736,8 @@ Video Disk Recorder Revision History
 - Fixed triggering the PAT filter.
 - The Recordings menu now marks recordings with errors with an exclamation mark ('!'),
   and the number of errors (if any) is displayed in the recording's Info menu.
+
+2021-07-26:
+
+- Replaced all umlauts in the example channels.conf with their ae, oe, ue substitutes
+  to avoid problems on UTF-8 systems.
