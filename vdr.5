@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 5.3 2021/05/25 20:09:29 kls Exp $
+.\" $Id: vdr.5 5.4 2021/10/16 09:27:11 kls Exp $
 .\"
 .TH vdr 5 "15 Apr 2018" "2.4" "Video Disk Recorder Files"
 .SH NAME
@@ -927,7 +927,7 @@ l l.
 <description>  @is the description of the event (any '|' characters will be interpreted as newlines)
 <genre>        @is a two digit hex code, as defined in  ETSI EN 300 468, table 28 (up to 4 genre codes are supported)
 <parental rating>@is the minimum age of the intended audience
-<stream>       @is the stream content (1 = MPEG2 video, 2 = MP2 audio, 3 = subtitles, 4 = AC3 audio, 5 = H.264 video, 6 = HEAAC audio)
+<stream>       @is the stream content (1 = MPEG2 video, 2 = MP2 audio, 3 = subtitles, 4 = AC3 audio, 5 = H.264 video, 6 = HEAAC audio, 0x09=H.265 video, 0x19 = AC4 audio)
 <type>         @is the stream type according to ETSI EN 300 468
 <language>     @is the three letter language code (optionally two codes, separated by '+')
 <descr>        @is the description of this stream component

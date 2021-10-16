@@ -9737,7 +9737,9 @@ Video Disk Recorder Revision History
 - The Recordings menu now marks recordings with errors with an exclamation mark ('!'),
   and the number of errors (if any) is displayed in the recording's Info menu.
 
-2021-07-26:
+2021-10-16:
 
 - Replaced all umlauts in the example channels.conf with their ae, oe, ue substitutes
   to avoid problems on UTF-8 systems.
+- Added missing '0x09=H.265 video, 0x19 = AC4 audio' to vdr.5 (reported by Christoph
+  Haubrich).
