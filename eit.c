@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 5.3 2021/04/28 20:44:56 kls Exp $
+ * $Id: eit.c 5.4 2021/12/11 20:58:51 kls Exp $
  */
 
 // The various ways in which broadcasters handle (or screw up) their EPG:
@@ -432,9 +432,9 @@ cEIT::cEIT(cEitTablesHash &EitTablesHash, int Source, u_char Tid, const u_char *
         EpgHandlers.DropOutdated(pSchedule, SegmentStart, SegmentEnd, Tid, getVersionNumber());
         }
      }
+  EpgHandlers.EndSegmentTransfer(Modified);
   SchedulesStateKey.Remove(Modified);
   ChannelsStateKey.Remove(ChannelsModified);
-  EpgHandlers.EndSegmentTransfer(Modified);
 }
 
 // --- cTDT ------------------------------------------------------------------
