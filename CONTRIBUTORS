@@ -3667,6 +3667,7 @@ Helmut Binder <cco@aon.at>
  for fixing flushing old data from the section handler
  for removing unused declaration of cDvbTuner::SetFrontendType()
  for fixing handling incomplete multi-packet CAT
+ for fixing a memory leak in handling the NIT
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
