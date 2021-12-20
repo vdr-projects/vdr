@@ -3668,6 +3668,7 @@ Helmut Binder <cco@aon.at>
  for removing unused declaration of cDvbTuner::SetFrontendType()
  for fixing handling incomplete multi-packet CAT
  for fixing a memory leak in handling the NIT
+ for reporting a possible memory leak in creating fonts
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
