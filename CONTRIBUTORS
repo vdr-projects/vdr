@@ -3703,3 +3703,7 @@ Bernd Kuhls <bernd.kuhls@t-online.de>
 
 Ulf Grüne <ulf.gruene@t-online.de>
  for reporting the need for more than 15 modulation systems in cDevice::GetDevice()
+
+Timo Weingärtner <timo@tiwe.de>
+ for reporting an integer overflow in calculating the disk use percentage if there's
+ more than 20TB of recordings
