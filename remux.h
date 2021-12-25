@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.1 2021/05/11 20:47:31 kls Exp $
+ * $Id: remux.h 5.2 2021/12/25 14:11:39 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -225,7 +225,6 @@ int64_t PtsDiff(int64_t Pts1, int64_t Pts2);
 
 class cTsPayload {
 private:
-public://XXX
   uchar *data;
   int length;
   int pid;
