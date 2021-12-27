@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2018 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2021 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Michael Rakowski <mrak@gmx.de>, 2002, 2003, 2008
 # Jaroslaw Swierczynski <swiergot@gmail.com>, 2006
@@ -8,7 +8,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.4.0\n"
+"Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2021-07-01 17:10+0200\n"
 "PO-Revision-Date: 2018-02-19 00:42+0100\n"

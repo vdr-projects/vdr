@@ -1,5 +1,5 @@
 # VDR language source file.
-# Copyright (C) 2018 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2021 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
 # Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003, 2005
@@ -11,7 +11,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.4.0\n"
+"Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2021-07-01 17:10+0200\n"
 "PO-Revision-Date: 2015-02-10 19:43+0100\n"

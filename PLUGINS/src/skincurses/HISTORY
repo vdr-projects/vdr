@@ -157,3 +157,7 @@ VDR Plugin 'skincurses' Revision History
 
 - The number of errors (if any) of a recording is now displayed in the recording's
   Info menu.
+
+2021-12-27: Version 2.6.0
+
+- Official release.

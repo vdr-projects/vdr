@@ -1,11 +1,11 @@
 # VDR plugin language source file.
-# Copyright (C) 2018 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2021 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Tomasz Maciej Nowak <tmn505@gmail.com>, 2018
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: vdr-pictures 2.4.0\n"
+"Project-Id-Version: vdr-pictures 2.6.0\n"
 "Report-Msgid-Bugs-To: <see README>\n"
 "POT-Creation-Date: 2018-02-19 00:48+0100\n"
 "PO-Revision-Date: 2018-02-19 00:53+0100\n"

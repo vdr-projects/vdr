@@ -31,14 +31,11 @@ modified {
 <div class="center">
 <h1>The VDR Plugin System</h1>
 
-<b>Version 2.4</b>
+<b>Version 2.6</b>
 <p>
-Copyright &copy; 2018 Klaus Schmidinger<br>
+Copyright &copy; 2021 Klaus Schmidinger<br>
 <a href="mailto:vdr@tvdr.de">vdr@tvdr.de</a><br>
 <a href="http://www.tvdr.de">www.tvdr.de</a>
-</div>
-<div class="center">
-<modified>Important modifications introduced since version 2.2 are marked like this.</modified>
 </div>
 <p>
 VDR provides an easy to use plugin interface that allows additional functionality
@@ -584,7 +581,6 @@ esyslog("pluginname: error #%d has occurred", ErrorNumber);
 Note that the log messages will be given as provided, the plugin's name will not
 automatically be added, so make sure your log messages are obvious enough.
 <p>
-<modified>
 Only use the above logging functions for occasional log messages. Do not use
 them unconditionally for frequent messages that produce long sequences of lines
 in the log file every few seconds. That might make it hard to work on other plugins
@@ -609,7 +605,6 @@ purpose of the plugin to display something on stdout, like for instance the
 <br>
 Please make any log messages in <b>ENGLISH</b>! Logs are usually sent to the developers
 of a program, and they may not be able to read them if they are in an exotic language.
-</modified>
 
 <hr><h2><a name="Main menu entry">Main menu entry</a></h2>
 
@@ -1189,11 +1184,9 @@ The returned string may consist of several lines, separated by the newline chara
 when presenting them to the caller, and the continuation character ('<tt>-</tt>')
 will be set for all but the last one.
 <p>
-<modified>
 <b>The SVDRP functions are called from the separate "SVDRP server handler" thread.
 Therefore the plugin needs to take care of proper locking if it accesses any
 global data.</b>
-</modified>
 
 <hr><h2><a name="Loading plugins into VDR">Loading plugins into VDR</a></h2>
 
