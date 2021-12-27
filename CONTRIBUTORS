@@ -2445,6 +2445,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for implementing anti-aliasing for cPixmap::DrawSlope() and cPixmap::DrawEllipse()
  for reporting an unnecessary double call to Display() in cMenuRecording::RefreshRecording()
  for reporting too much memory being allocated in the cImage constructors
+ for reporting a problem with the call to EpgHandlers.EndSegmentTransfer()
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

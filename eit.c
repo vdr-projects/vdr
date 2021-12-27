@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 4.11 2020/11/28 21:45:05 kls Exp $
+ * $Id: eit.c 4.11.1.1 2021/12/27 11:04:03 kls Exp $
  */
 
 #include "eit.h"
@@ -361,9 +361,9 @@ cEIT::cEIT(cSectionSyncerHash &SectionSyncerHash, int Source, u_char Tid, const 
      EpgHandlers.DropOutdated(pSchedule, SegmentStart, SegmentEnd, Tid, getVersionNumber());
      pSchedule->SetModified();
      }
+  EpgHandlers.EndSegmentTransfer(Modified);
   SchedulesStateKey.Remove(Modified);
   ChannelsStateKey.Remove(ChannelsModified);
-  EpgHandlers.EndSegmentTransfer(Modified);
 }
 
 // --- cTDT ------------------------------------------------------------------
