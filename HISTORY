@@ -9747,6 +9747,18 @@ Video Disk Recorder Revision History
   Haubrich).
 - Fixed a memory leak in handling the NIT (thanks to Helmut Binder).
 
+2021-12-27: Version 2.4.8
+
+- Fixed a possible crash in the Schedule menu, in case Setup.EPGLinger is 0.
+- Fixed cTsPayload::AtPayloadStart() to ignore TS packets from other PIDs.
+- Fixed unlocking vs. call to EpgHandlers.EndSegmentTransfer() (reported by Christoph
+  Haubrich).
+- Fixed a memory leak in handling the NIT (thanks to Helmut Binder).
+- Fixed a possible memory leak in creating fonts (reported by Helmut Binder).
+- Fixed calculating the disk use percentage if there's more than 20TB of recordings
+  (reported by Timo Weingärtner).
+- Official release.
+
 2021-12-24:
 
 - Fixed a possible memory leak in creating fonts (reported by Helmut Binder).
