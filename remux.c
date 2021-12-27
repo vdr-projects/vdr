@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 4.9 2020/06/22 12:15:52 kls Exp $
+ * $Id: remux.c 4.9.1.1 2021/12/27 10:59:22 kls Exp $
  */
 
 #include "remux.h"
@@ -1292,7 +1292,7 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
          tsPayload.Statistics();
          break;
          }
-      if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
+      if (tsPayload.AtPayloadStart() // stop at a new payload start to have the buffer refilled if necessary
          || tsPayload.Eof()) // or if we're out of data
          break;
       }
@@ -1445,7 +1445,7 @@ int cH264Parser::Parse(const uchar *Data, int Length, int Pid)
            default: ;
            }
          }
-      if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
+      if (tsPayload.AtPayloadStart() // stop at a new payload start to have the buffer refilled if necessary
          || tsPayload.Eof()) // or if we're out of data
          break;
       }
@@ -1603,7 +1603,7 @@ int cH265Parser::Parse(const uchar *Data, int Length, int Pid)
             break;
             }
          }
-      if (tsPayload.AtPayloadStart() // stop at any new payload start to have the buffer refilled if necessary
+      if (tsPayload.AtPayloadStart() // stop at a new payload start to have the buffer refilled if necessary
          || tsPayload.Eof()) // or if we're out of data
          break;
       }

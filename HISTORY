@@ -9578,3 +9578,4 @@ Video Disk Recorder Revision History
 2021-12-27:
 
 - Fixed a possible crash in the Schedule menu, in case Setup.EPGLinger is 0.
+- Fixed cTsPayload::AtPayloadStart() to ignore TS packets from other PIDs.
