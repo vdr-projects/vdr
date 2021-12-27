@@ -9574,3 +9574,7 @@ Video Disk Recorder Revision History
 - Fixed initializing the cChannel::schedule pointer after reading EPG data with PUTE
   (reported by Manuel Reimer).
 - Official release.
+
+2021-12-27:
+
+- Fixed a possible crash in the Schedule menu, in case Setup.EPGLinger is 0.

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 4.9.1.1 2021/01/04 14:58:58 kls Exp $
+ * $Id: epg.c 4.9.1.2 2021/12/27 10:52:38 kls Exp $
  */
 
 #include "epg.h"
@@ -1347,6 +1347,8 @@ const cSchedule *cSchedules::GetSchedule(const cChannel *Channel, bool AddIfMiss
 {
   // This is not very beautiful, but it dramatically speeds up the
   // "What's on now/next?" menus.
+  if (!Channel)
+     return NULL;
   static cSchedule DummySchedule(tChannelID::InvalidID);
   if (!Channel->schedule)
      Channel->schedule = GetSchedule(Channel->GetChannelID());
