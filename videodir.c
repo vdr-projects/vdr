@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: videodir.c 4.1 2015/08/11 13:39:59 kls Exp $
+ * $Id: videodir.c 4.1.1.1 2021/12/27 11:18:40 kls Exp $
  */
 
 #include "videodir.h"
@@ -158,7 +158,7 @@ int cVideoDirectory::VideoDiskSpace(int *FreeMB, int *UsedMB)
      *FreeMB = free;
   if (UsedMB)
      *UsedMB = used;
-  return (free + used) ? used * 100 / (free + used) : 0;
+  return (free + used) ? round(double(used) * 100 / (free + used)) : 0;
 }
 
 cString cVideoDirectory::PrefixVideoFileName(const char *FileName, char Prefix)

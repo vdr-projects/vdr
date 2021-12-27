@@ -3674,3 +3674,7 @@ Jens Schleusener <Jens.Schleusener@fossies.org>
 
 Bernd Kuhls <bernd.kuhls@t-online.de>
  for fixing possible compilation errors with libjpeg
+
+Timo Weingärtner <timo@tiwe.de>
+ for reporting an integer overflow in calculating the disk use percentage if there's
+ more than 20TB of recordings
