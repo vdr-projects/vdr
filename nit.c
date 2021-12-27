@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 4.9 2019/05/31 13:25:00 kls Exp $
+ * $Id: nit.c 4.9.1.1 2021/12/27 11:09:16 kls Exp $
  */
 
 #include "nit.h"
@@ -102,8 +102,10 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
       for (SI::Loop::Iterator it2; (d = ts.transportStreamDescriptors.getNext(it2)); ) {
           if (d->getDescriptorTag() == SI::S2SatelliteDeliverySystemDescriptorTag) {
              ForceDVBS2 = true;
+             delete d;
              break;
              }
+          delete d;
           }
 
       for (SI::Loop::Iterator it2; (d = ts.transportStreamDescriptors.getNext(it2)); ) {

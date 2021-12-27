@@ -3649,6 +3649,7 @@ Helmut Binder <cco@aon.at>
  PMT pid were checked any more
  for reporting a problem with PMT handling in case locking the Channels list times out
  for avoiding a lengthy lock on the Channels list when starting a recording
+ for fixing a memory leak in handling the NIT
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
