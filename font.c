@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 4.2 2016/12/22 12:31:23 kls Exp $
+ * $Id: font.c 4.2.1.1 2021/12/27 11:14:05 kls Exp $
  */
 
 #include "font.h"
@@ -429,8 +429,10 @@ cFont *cFont::CreateFont(const char *Name, int CharHeight, int CharWidth)
 {
   cString fn = GetFontFileName(Name);
   cFont *f = *fn ? new cFreetypeFont(fn, CharHeight, CharWidth) : NULL;
-  if (!f || !f->Height())
+  if (!f || !f->Height()) {
+     delete f;
      f = new cDummyFont(CharHeight, CharWidth);
+     }
   return f;
 }
 

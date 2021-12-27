@@ -9582,3 +9582,4 @@ Video Disk Recorder Revision History
 - Fixed unlocking vs. call to EpgHandlers.EndSegmentTransfer() (reported by Christoph
   Haubrich).
 - Fixed a memory leak in handling the NIT (thanks to Helmut Binder).
+- Fixed a possible memory leak in creating fonts (reported by Helmut Binder).
