@@ -9575,7 +9575,7 @@ Video Disk Recorder Revision History
   (reported by Manuel Reimer).
 - Official release.
 
-2021-12-27:
+2021-12-27: Version 2.4.8
 
 - Fixed a possible crash in the Schedule menu, in case Setup.EPGLinger is 0.
 - Fixed cTsPayload::AtPayloadStart() to ignore TS packets from other PIDs.
@@ -9585,3 +9585,4 @@ Video Disk Recorder Revision History
 - Fixed a possible memory leak in creating fonts (reported by Helmut Binder).
 - Fixed calculating the disk use percentage if there's more than 20TB of recordings
   (reported by Timo Weingärtner).
+- Official release.
