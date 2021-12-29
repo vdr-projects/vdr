@@ -90,7 +90,7 @@ Version 2.6
       be treated as part of that number, not as a sort mode toggle. If no numeric
       key has been pressed for more than one second, the number is reset and '0'
       functions as sort mode toggle again.
-  (3) In the "Timers" menu, when on the "Day" item, the '0' key toggles between
+  (3) In the "Edit timer" menu, when on the "Day" item, the '0' key toggles between
       a single shot and a repeating timer. If "Day" indicates a repeating timer,
       the keys '1'...'7' can be used to toggle the individual days ('1' is Monday).
 
