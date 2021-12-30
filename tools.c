@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.4 2021/05/20 10:13:43 kls Exp $
+ * $Id: tools.c 5.5 2021/12/30 14:35:40 kls Exp $
  */
 
 #include "tools.h"
@@ -170,7 +170,7 @@ char *strreplace(char *s, const char *s1, const char *s2)
      char *sof = s + of;
      if (l2 != l1)
         memmove(sof + l2, sof + l1, l - of - l1 + 1);
-     strncpy(sof, s2, l2);
+     memcpy(sof, s2, l2);
      }
   return s;
 }

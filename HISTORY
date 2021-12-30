@@ -9765,3 +9765,8 @@ Video Disk Recorder Revision History
 - Fixed calculating the disk use percentage if there's more than 20TB of recordings
   (reported by Timo Weingärtner).
 - Official release.
+
+2021-12-30:
+
+- Replaced strncpy() with memcpy() in strreplace() to avoid a compiler warning
+  (reported by Marco Mäkelä).
