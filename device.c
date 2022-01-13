@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.3 2021/06/08 14:57:26 kls Exp $
+ * $Id: device.c 5.4 2022/01/13 10:56:01 kls Exp $
  */
 
 #include "device.h"
@@ -1588,7 +1588,6 @@ int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
   return Length;
 }
 
-//TODO detect and report continuity errors?
 int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
 {
   int Played = 0;
