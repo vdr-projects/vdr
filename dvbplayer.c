@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 4.6 2019/05/27 13:54:19 kls Exp $
+ * $Id: dvbplayer.c 5.1 2022/01/13 21:41:41 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -914,7 +914,7 @@ void cDvbPlayer::Goto(int Index, bool Still)
                  ptsIndex.Put(isPesRecording ? PesGetPts(b) : TsGetPts(b, r), Index, true);
                  }
               playMode = pmStill;
-              readIndex = Index;
+              readIndex = Index - 1; // makes sure a later play starts with this I-frame
               }
            }
         else {
