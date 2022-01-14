@@ -9766,8 +9766,9 @@ Video Disk Recorder Revision History
   (reported by Timo Weingärtner).
 - Official release.
 
-2022-01-13:
+2022-01-14:
 
 - Replaced strncpy() with memcpy() in strreplace() to avoid a compiler warning
   (reported by Marco Mäkelä).
 - Fixed starting replay after jumping to an editing mark.
+- Updated the Italian OSD texts (thanks to Diego Pierotto).

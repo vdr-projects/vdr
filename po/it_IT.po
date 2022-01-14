@@ -5,14 +5,14 @@
 # Antonio Ospite <ospite@studenti.unina.it>, 2003, 2006
 # Sean Carlos <seanc@libero.it>, 2005
 # Nino Gerbino <ngerb@interfree.it>, 2006, 2015
-# Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013, 2015, 2018
+# Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013, 2015, 2018, 2020, 2022
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2021-07-01 17:10+0200\n"
-"PO-Revision-Date: 2018-04-06 19:13+0100\n"
+"PO-Revision-Date: 2022-01-03 16:42+0100\n"
 "Last-Translator: Gringo <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -20,7 +20,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-SourceCharset: UTF-8\n"
-"X-Generator: Poedit 1.5.4\n"
+"X-Generator: Poedit 2.0.6\n"
 
 msgid "*** Invalid Channel ***"
 msgstr "*** Canale NON valido ***"
@@ -353,7 +353,7 @@ msgid "LanguageName$original language (qaa)"
 msgstr "lingua originale (qaa)"
 
 msgid "LanguageName$audio description (qad)"
-msgstr ""
+msgstr "descrizione audio (qad)"
 
 msgid "LanguageName$uncoded languages (mis)"
 msgstr "lingue non codificate (mis)"
@@ -697,19 +697,19 @@ msgid "Button$Repeating"
 msgstr "Repliche"
 
 msgid "Button$Regular"
-msgstr ""
+msgstr "Regolare"
 
 msgid "Button$Pattern"
-msgstr ""
+msgstr "Schema"
 
 msgid "First day"
 msgstr "1° giorno"
 
 msgid "Timer is recording!"
-msgstr ""
+msgstr "Il timer sta registrando!"
 
 msgid "Pattern"
-msgstr ""
+msgstr "Schema"
 
 msgid "Error while accessing remote timer"
 msgstr "Errore durante l'accesso al timer remoto"
@@ -796,7 +796,7 @@ msgid "Folder"
 msgstr "Cartella"
 
 msgid "Size"
-msgstr ""
+msgstr "Dimensione"
 
 msgid "This folder is currently in use - no changes are possible!"
 msgstr "La cartella è attualmente in uso - nessuna modifica possibile!"
@@ -1516,7 +1516,7 @@ msgid "Button$Insert"
 msgstr "Inserisci"
 
 msgid "Button$Macro"
-msgstr ""
+msgstr "Macro"
 
 msgid "Plugin"
 msgstr "Plugin"
@@ -1569,7 +1569,7 @@ msgid "restart anyway?"
 msgstr "riavviare comunque?"
 
 msgid "errors"
-msgstr ""
+msgstr "errori"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
