@@ -2787,6 +2787,7 @@ Winfried Köhler <w_koehl@gmx.de>
  for fixing handling $(PKG_CONFIG) in newplugin
  for using __cplusplus instead of DISABLE_TEMPLATES_COLLIDING_WITH_STL, and using
  std::min(), std::max() and std::swap() is available
+ for adding some missing "AUTO" values to vdr.5
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR

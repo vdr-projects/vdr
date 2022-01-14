@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 5.5 2021/12/27 13:31:04 kls Exp $
+.\" $Id: vdr.5 5.6 2022/01/14 10:46:15 kls Exp $
 .\"
 .TH vdr 5 "27 Dec 2021" "2.6" "Video Disk Recorder Files"
 .SH NAME
@@ -92,11 +92,11 @@ meaning (and allowed values) are
 tab (@);
 l l.
 \fBB\fR@Bandwidth (1712, 5, 6, 7, 8, 10)
-\fBC\fR@Code rate high priority (0, 12, 23, 34, 35, 45, 56, 67, 78, 89, 910)
-\fBD\fR@coDe rate low priority (0, 12, 23, 34, 35, 45, 56, 67, 78, 89, 910)
-\fBG\fR@Guard interval (4, 8, 16, 32, 128, 19128, 19256)
+\fBC\fR@Code rate high priority (0, 12, 23, 34, 35, 45, 56, 67, 78, 89, 910, 999)
+\fBD\fR@coDe rate low priority (0, 12, 23, 34, 35, 45, 56, 67, 78, 89, 910, 999)
+\fBG\fR@Guard interval (4, 8, 16, 32, 128, 19128, 19256, 999)
 \fBH\fR@Horizontal polarization
-\fBI\fR@Inversion (0, 1)
+\fBI\fR@Inversion (0, 1, 999)
 \fBL\fR@Left circular polarization
 \fBM\fR@Modulation (2, 5, 6, 7, 10, 11, 12, 16, 32, 64, 128, 256, 999)
 \fBN\fR@pilot mode (0, 1, 999)
@@ -105,10 +105,10 @@ l l.
 \fBQ\fR@t2 system id (0-65535)
 \fBR\fR@Right circular polarization
 \fBS\fR@delivery System (0, 1)
-\fBT\fR@Transmission mode (1, 2, 4, 8, 16, 32)
+\fBT\fR@Transmission mode (1, 2, 4, 8, 16, 32, 999)
 \fBV\fR@Vertical polarization
 \fBX\fR@siso/miso mode (0, 1)
-\fBY\fR@hierarchY (0, 1, 2, 4)
+\fBY\fR@hierarchY (0, 1, 2, 4, 999)
 .TE
 
 \fBBandwidth:\fR The bandwidth of the channel in MHz (1712 in kHz): (DVB-T/DVB-T2 only).

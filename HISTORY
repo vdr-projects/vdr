@@ -9772,3 +9772,4 @@ Video Disk Recorder Revision History
   (reported by Marco Mäkelä).
 - Fixed starting replay after jumping to an editing mark.
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
+- Added some missing "AUTO" values to vdr.5 (thanks to Winfried Köhler).
