@@ -2456,6 +2456,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for reporting that the edited recording is not deleted in case of an error
  for reporting missing '0x09=H.265 video, 0x19 = AC4 audio' in vdr.5
  for reporting a problem with the call to EpgHandlers.EndSegmentTransfer()
+ for fixing handling zero bytes in cH264Parser
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

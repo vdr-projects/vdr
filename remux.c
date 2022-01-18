@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.1 2021/05/11 20:47:31 kls Exp $
+ * $Id: remux.c 5.2 2022/01/18 14:24:33 kls Exp $
  */
 
 #include "remux.h"
@@ -1363,7 +1363,7 @@ uchar cH264Parser::GetByte(bool Raw)
      else {
         if (b == 0x03 && zeroBytes >= 2)
            b = tsPayload.GetByte();
-        zeroBytes = 0;
+        zeroBytes = b ? 0 : 1;
         }
      }
   else
