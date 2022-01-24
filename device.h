@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 5.1 2021/05/21 12:51:16 kls Exp $
+ * $Id: device.h 5.2 2022/01/24 16:53:45 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -465,6 +465,8 @@ public:
 
 private:
   cCamSlot *camSlot;
+  void ReleaseCamSlot(void);
+         ///< Releases the CAM slot if it is currently not used.
 public:
   virtual bool HasCi(void);
          ///< Returns true if this device has a Common Interface.
@@ -852,8 +854,11 @@ public:
        ///< Returns true if we are currently receiving. The parameter has no meaning (for backwards compatibility only).
   bool AttachReceiver(cReceiver *Receiver);
        ///< Attaches the given receiver to this device.
-  void Detach(cReceiver *Receiver);
+  void Detach(cReceiver *Receiver, bool ReleaseCam = true);
        ///< Detaches the given receiver from this device.
+       ///< If ReleaseCam is true, the CAM slot will be released if it
+       ///< is no longer used. Otherwise the caller must call ReleaseCamSlot() after
+       ///< calling this function.
   void DetachAll(int Pid);
        ///< Detaches all receivers from this device for this pid.
   virtual void DetachAllReceivers(void);

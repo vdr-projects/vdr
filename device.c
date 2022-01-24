@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.4 2022/01/13 10:56:01 kls Exp $
+ * $Id: device.c 5.5 2022/01/24 16:53:45 kls Exp $
  */
 
 #include "device.h"
@@ -435,6 +435,12 @@ cDevice *cDevice::GetDeviceForTransponder(const cChannel *Channel, int Priority)
          }
       }
   return Device;
+}
+
+void cDevice::ReleaseCamSlot(void)
+{
+  if (camSlot && !camSlot->IsDecrypting() && !camSlot->IsActivating())
+     camSlot->Assign(NULL);
 }
 
 bool cDevice::HasCi(void)
@@ -1823,7 +1829,7 @@ bool cDevice::AttachReceiver(cReceiver *Receiver)
   return false;
 }
 
-void cDevice::Detach(cReceiver *Receiver)
+void cDevice::Detach(cReceiver *Receiver, bool ReleaseCam)
 {
   if (!Receiver || Receiver->device != this)
      return;
@@ -1845,8 +1851,8 @@ void cDevice::Detach(cReceiver *Receiver)
   if (camSlot) {
      if (Receiver->priority > MINPRIORITY) { // priority check to avoid an infinite loop with the CAM slot's caPidReceiver
         camSlot->StartDecrypting();
-        if (!camSlot->IsDecrypting() && !camSlot->IsActivating())
-           camSlot->Assign(NULL);
+        if (ReleaseCam)
+           ReleaseCamSlot();
         }
      }
   if (!receiversLeft)
@@ -1860,8 +1866,9 @@ void cDevice::DetachAll(int Pid)
      for (int i = 0; i < MAXRECEIVERS; i++) {
          cReceiver *Receiver = receiver[i];
          if (Receiver && Receiver->WantsPid(Pid))
-            Detach(Receiver);
+            Detach(Receiver, false);
          }
+     ReleaseCamSlot();
      }
 }
 
@@ -1869,7 +1876,8 @@ void cDevice::DetachAllReceivers(void)
 {
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++)
-      Detach(receiver[i]);
+      Detach(receiver[i], false);
+  ReleaseCamSlot();
 }
 
 // --- cTSBuffer -------------------------------------------------------------

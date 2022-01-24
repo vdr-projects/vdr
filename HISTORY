@@ -9775,3 +9775,4 @@ Video Disk Recorder Revision History
 - Added some missing "AUTO" values to vdr.5 (thanks to Winfried Köhler).
 - Fixed handling zero bytes in cH264Parser (thanks to Christoph Haubrich).
 - Fixed handling error conditions in the index file (reported by Markus Ehrnsperger).
+- Fixed a possible deadlock in cDevice::DetachAllReceivers() (thanks to Helmut Binder).

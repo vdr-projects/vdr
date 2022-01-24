@@ -3673,6 +3673,7 @@ Helmut Binder <cco@aon.at>
  for fixing handling incomplete multi-packet CAT
  for fixing a memory leak in handling the NIT
  for reporting a possible memory leak in creating fonts
+ for fixing a possible deadlock in cDevice::DetachAllReceivers()
 
 Ulrich Eckhardt <uli@uli-eckhardt.de>
  for reporting a problem with shutdown after user inactivity in case a plugin is
