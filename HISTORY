@@ -9766,7 +9766,7 @@ Video Disk Recorder Revision History
   (reported by Timo Weingärtner).
 - Official release.
 
-2022-01-18:
+2022-01-24:
 
 - Replaced strncpy() with memcpy() in strreplace() to avoid a compiler warning
   (reported by Marco Mäkelä).
@@ -9774,3 +9774,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Added some missing "AUTO" values to vdr.5 (thanks to Winfried Köhler).
 - Fixed handling zero bytes in cH264Parser (thanks to Christoph Haubrich).
+- Fixed handling error conditions in the index file (reported by Markus Ehrnsperger).

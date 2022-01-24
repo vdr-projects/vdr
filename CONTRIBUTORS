@@ -2536,6 +2536,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for reporting a problem with missing 'INCLUDES += -I$(DVBDIR)/include' in an existing
  Make.config
  for reporting a bug in error handling when loading a plugin
+ for reporting a possible crash in cIndexFile::GetClosestIFrame()
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

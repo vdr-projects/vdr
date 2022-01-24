@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.13 2021/07/01 15:40:46 kls Exp $
+ * $Id: recording.c 5.14 2022/01/24 10:44:21 kls Exp $
  */
 
 #include "recording.h"
@@ -2604,6 +2604,8 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
                     if (safe_read(f, index, size_t(buf.st_size)) != buf.st_size) {
                        esyslog("ERROR: can't read from file '%s'", *fileName);
                        free(index);
+                       size = 0;
+                       last = -1;
                        index = NULL;
                        }
                     else if (isPesRecording)
@@ -2617,8 +2619,11 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
                  else
                     LOG_ERROR_STR(*fileName);
                  }
-              else
+              else {
                  esyslog("ERROR: can't allocate %zd bytes for index '%s'", size * sizeof(tIndexTs), *fileName);
+                 size = 0;
+                 last = -1;
+                 }
               }
            }
         else
@@ -2817,7 +2822,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
 
 int cIndexFile::GetClosestIFrame(int Index)
 {
-  if (last > 0) {
+  if (index && last > 0) {
      Index = constrain(Index, 0, last);
      if (index[Index].independent)
         return Index;
