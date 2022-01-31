@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 5.2 2021/06/20 10:27:19 kls Exp $
+ * $Id: sections.c 5.3 2022/01/31 21:21:42 kls Exp $
  */
 
 #include "sections.h"
@@ -155,7 +155,8 @@ void cSectionHandler::SetStatus(bool On)
             if (On)
                fi->SetStatus(true);
             }
-        if (flush = On)
+        flush = On;
+        if (flush)
            flushTimer.Set();
         on = On;
         waitForLock = false;

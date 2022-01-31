@@ -9766,7 +9766,7 @@ Video Disk Recorder Revision History
   (reported by Timo Weingärtner).
 - Official release.
 
-2022-01-24:
+2022-01-31:
 
 - Replaced strncpy() with memcpy() in strreplace() to avoid a compiler warning
   (reported by Marco Mäkelä).
@@ -9776,3 +9776,5 @@ Video Disk Recorder Revision History
 - Fixed handling zero bytes in cH264Parser (thanks to Christoph Haubrich).
 - Fixed handling error conditions in the index file (reported by Markus Ehrnsperger).
 - Fixed a possible deadlock in cDevice::DetachAllReceivers() (thanks to Helmut Binder).
+- Clarified some potentially mistakable code in cSectionHandler::SetStatus() (pointed
+  out by Onur Sentürk).

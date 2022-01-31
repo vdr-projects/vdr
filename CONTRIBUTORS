@@ -3617,6 +3617,7 @@ Onur Sentürk <onur@sentek.org>
  for fixing handling shared CA pids
  for fixing handling the S2SatelliteDeliverySystemDescriptor for transponders broadcasting
  in "backwards compatibility mode" according to ETSI EN 300 468
+ for pointing out some potentially mistakable code in cSectionHandler::SetStatus()
 
 Helmut Binder <cco@aon.at>
  for improving calculating signal strength and quality
