@@ -1,0 +1,119 @@
+This is a summary of the changes in VDR 2.6.0 since the last stable
+version 2.4.0. It only contains things that are of actual importance
+to the user and doesn't mention the many fixes and improvements that
+have been made "behind the scenes".
+
+See the file HISTORY for a detailed list of all changes.
+
+Timers:
+
+- Implemented "Pattern Timers" (see MANUAL, vdr.1 and vdr.5 for details).
+- The margins for timer recordings are now always limited to the duration of the
+  previous and next event.
+- Spawned timers that don't use VPS now automatically adjust their start/stop times
+  to changes in the respective event's times.
+
+EPG:
+
+- Events in the past are no longer marked as having a timer in the Schedules
+  menu.
+- Improved handling EPG data from the EIT tables:
+  + Table 0x4F is now completely ignored.
+  + Once a schedule has seen events from 0x5X, tables 0x6X are ignored for that
+    schedule.
+  + When looking up an event in its schedule, the start time is used for tables 0x6X, and the
+    event id for tables 0x4E and 0x5X.
+  + When hashing events by event id or start time, existing older entries in the hash
+    tables are now deleted before entering the new ones.
+  + The function cSchedule::GetEvent() is now deprecated and may be removed in a future
+    version. Use GetEventById() and GetEventByTime() instead.
+  + On channels that use proper event ids a change of the start time no longer
+    causes a new event to be created, but rather modifies the existing one. This
+    avoids possible interruptions in VPS recordings in case the event's start time
+    is changed while the recording is already going on.
+- Fixed the timer indicator in the Schedule menu in case an event is already over, but the
+  timer is still recording.
+- Fixed unlocking vs. call to EpgHandlers.EndSegmentTransfer().
+
+Devices:
+
+- Increased the number of possible modulation systems in cDevice::GetDevice().
+- Improved cSectionSyncer to make sure that no sections are missed, and to allow
+  handling partially used segments (as in the EIT) and processing sections in random
+  order. Segment syncing is now done with the two member functions Check() and
+  Processed(). The old functions Sync() and Repeat() are deprecated and may be
+  removed in a future version. See the comments in filter.h for a description on
+  how to use these new function.
+- Added a device hook for detecting whether a device provides EIT data.
+
+Recordings:
+
+- Made the functions cRecordingInfo::SetData() and cRecordingInfo::SetAux() public.
+- Fixed setting the 'title' of a recording's info to the recording's name if there
+  is no info file (the change in version 1.7.28 broke the fallback to the old 'summary.vdr').
+- Added some missing user command calls for copying, renaming and moving recordings.
+- Recordings are now checked for errors:
+  + On TS level, the continuity counter, transport error indicator and scramble flags are
+    checked.
+  + On frame level it is checked whether there are no gaps in the PTS.
+  + The number of errors during a recording is stored in the recording's 'info' file, with
+    the new tag 'O'.
+  + Spawned timers that shall avoid recording reruns only store the recording's name in
+    the donerecs,data file if there were no errors during recording, and if the timer has
+    actually finished.
+- The Recordings menu now marks recordings with errors with an exclamation mark ('!'),
+  and the number of errors (if any) is displayed in the recording's Info menu.
+
+Replay:
+
+- Fixed scaling subtitles with anti-aliasing.
+
+Conditional Access:
+
+- Decreased the scrambling timeout for CAMs known to decrypt a certain channel, so
+  that it won't collide with MAXBROKENTIMEOUT in recorder.c.
+
+Skins:
+
+- The new functions cTimer::Start/StopTimeEvent() are now used in the LCARS skin to display
+  the start/stop times of timers in the main menu.
+
+SVDRP:
+
+- The SVDRP command DELC now also accepts a channel id.
+
+Misc:
+
+- Added support for HEVC-video and AC-4-audio.
+- EXPIRELATENCY now only applies to VPS timers.
+- Removed the macros __STL_CONFIG_H, _STL_ALGOBASE_H and _MOVE_H from tools.h. If your
+  plugin insists in using "using namespace std;" you can still define
+  DISABLE_TEMPLATES_COLLIDING_WITH_STL before including any VDR header files.
+- The cFile class has been partially deprecated:
+  + The handling of file handles was not thread-safe.
+  + It was only actually used in svdrp.c.
+  + cFile::Ready() now processes only its own file descriptor by calling FileReady()
+    instead of AnyFileReady().
+- The transponder value of channels is now cached, because cChannel::Transponder(void)
+  is called very often.
+- Added code for the 'qad' audio track.
+- The 'Edit path' dialog now also shows the total size of all recordings in that path.
+- The macro DEPRECATED_VDR_CHARSET_OVERRIDE and the related code has been removed.
+- The default for DEPRECATED_SETCURRENTCHANNEL has been set to 0, which means that
+  the function SetCurrentChannel(const cChannel *Channel) is no longer available.
+  You can add 'DEPRECATED_SETCURRENTCHANNEL=1' when compiling in order to restore this
+  functionality. However, it is recommended to use SetCurrentChannel(int ChannelNumber)
+  instead.
+- The macro DEPRECATED_GETBITMAP and the related code has been removed.
+- The default for DEPRECATED_SKIN_SETITEMEVENT has been set to 0, which means that
+  the function cSkinDisplayMenu::SetItemEvent() without the TimerActive parameter is
+  no longer available. You can add 'DEPRECATED_SKIN_SETITEMEVENT=1' when compiling in
+  order to restore this functionality. However, it is recommended to use the function
+  with the TimerActive parameter instead.
+- Now using __cplusplus instead of DISABLE_TEMPLATES_COLLIDING_WITH_STL, and using
+  std::min(), std::max() and std::swap() if available.
+- No longer permanently looping through PMT PIDs, which caused problems with some
+  SatIP receivers.
+- Replaced all umlauts in the example channels.conf with their ae, oe, ue substitutes
+  to avoid problems on UTF-8 systems.
+- Added missing '0x09=H.265 video, 0x19 = AC4 audio' to vdr.5.

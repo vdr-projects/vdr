@@ -9779,3 +9779,7 @@ Video Disk Recorder Revision History
 - Clarified some potentially mistakable code in cSectionHandler::SetStatus() (pointed
   out by Onur Sentürk).
 - Official release.
+
+2022-02-09:
+
+- Added UPDATE-2.6.0, which was missing in the official 2.6.0 release.
