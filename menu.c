@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.6 2021/05/21 10:41:31 kls Exp $
+ * $Id: menu.c 5.7 2022/03/03 14:44:47 kls Exp $
  */
 
 #include "menu.h"
@@ -5418,9 +5418,9 @@ bool cRecordControl::GetEvent(void)
 void cRecordControl::Stop(bool ExecuteUserCommand)
 {
   if (timer) {
+     bool Finished = timer->HasFlags(tfActive) && !timer->Matches();
      if (recorder) {
         int Errors = recorder->Errors();
-        bool Finished = timer->HasFlags(tfActive) && !timer->Matches();
         isyslog("timer %s %s with %d error%s", *timer->ToDescr(), Finished ? "finished" : "stopped", Errors, Errors != 1 ? "s" : "");
         if (timer->HasFlags(tfAvoid) && Errors == 0 && Finished) {
            const char *p = strgetlast(timer->File(), FOLDERDELIMCHAR);
@@ -5432,7 +5432,7 @@ void cRecordControl::Stop(bool ExecuteUserCommand)
      timer = NULL;
      SetRecordingTimerId(fileName, NULL);
      cStatus::MsgRecording(device, NULL, fileName, false);
-     if (ExecuteUserCommand)
+     if (ExecuteUserCommand && Finished)
         cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
      }
 }
