@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.7 2021/12/27 13:31:04 kls Exp $
+ * $Id: vdr.c 5.8 2022/06/01 14:24:57 kls Exp $
  */
 
 #include <getopt.h>
@@ -525,22 +525,6 @@ int main(int argc, char *argv[])
           }
         }
 
-  // Set user id in case we were started as root:
-
-  if (VdrUser && geteuid() == 0) {
-     StartedAsRoot = true;
-     if (strcmp(VdrUser, "root") && strcmp(VdrUser, "0")) {
-        if (!SetKeepCaps(true))
-           return 2;
-        if (!SetUser(VdrUser, UserDump))
-           return 2;
-        if (!SetKeepCaps(false))
-           return 2;
-        if (!DropCaps())
-           return 2;
-        }
-     }
-
   // Help and version info:
 
   if (DisplayHelp || DisplayVersion) {
@@ -688,6 +672,22 @@ int main(int argc, char *argv[])
      stderr = freopen(Terminal, "w", stderr);
      HasStdin = true;
      tcgetattr(STDIN_FILENO, &savedTm);
+     }
+
+  // Set user id in case we were started as root:
+
+  if (VdrUser && geteuid() == 0) {
+     StartedAsRoot = true;
+     if (strcmp(VdrUser, "root") && strcmp(VdrUser, "0")) {
+        if (!SetKeepCaps(true))
+           return 2;
+        if (!SetUser(VdrUser, UserDump))
+           return 2;
+        if (!SetKeepCaps(false))
+           return 2;
+        if (!DropCaps())
+           return 2;
+        }
      }
 
   isyslog("VDR version %s started", VDRVERSION);
