@@ -3516,6 +3516,8 @@ Claus Muus <email@clausmuus.de>
  ".../Volume linearize"
  for reporting multiple recording entries in case a recording is started during the
  initial reading of the video directory
+ for reporting that getting the lock for removing deleted recordings may fail if the
+ disk is full
 
 Dieter Ferdinand <dieter.ferdinand@gmx.de>
  for reporting a problem with jumping to an absolute position via the Red key in

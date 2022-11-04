@@ -9780,9 +9780,11 @@ Video Disk Recorder Revision History
   out by Onur Sentürk).
 - Official release.
 
-2022-03-03:
+2022-11-04:
 
 - Added UPDATE-2.6.0, which was missing in the official 2.6.0 release.
 - Fixed unexpected calls of the '-r' script when a recording is interrupted and
   the timer has not yet finished.
 - Now dropping capabilities after opening terminal.
+- Now assuming the lock when removing deleted recordings even if the disk is full
+  (reported by Claus Muus).

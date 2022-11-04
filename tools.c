@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.5 2021/12/30 14:35:40 kls Exp $
+ * $Id: tools.c 5.6 2022/11/04 14:30:01 kls Exp $
  */
 
 #include "tools.h"
@@ -2050,6 +2050,10 @@ bool cLockFile::Lock(int WaitSeconds)
               }
            else {
               LOG_ERROR_STR(fileName);
+              if (errno == ENOSPC) {
+                 esyslog("ERROR: can't create lock file '%s' - assuming lock anyway!", fileName);
+                 return true;
+                 }
               break;
               }
            if (WaitSeconds)
