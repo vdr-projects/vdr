@@ -9780,7 +9780,7 @@ Video Disk Recorder Revision History
   out by Onur Sentürk).
 - Official release.
 
-2022-11-04:
+2022-11-06:
 
 - Added UPDATE-2.6.0, which was missing in the official 2.6.0 release.
 - Fixed unexpected calls of the '-r' script when a recording is interrupted and
@@ -9788,3 +9788,7 @@ Video Disk Recorder Revision History
 - Now dropping capabilities after opening terminal.
 - Now assuming the lock when removing deleted recordings even if the disk is full
   (reported by Claus Muus).
+- When checking whether a recording is still active, VDR no longer checks whether the
+  index file is being written, but rather checks for the presence of a '.timer' file.
+  The cutter now writes a dummy '.timer' file with timer ID '0' to make this work
+  for recordings that are currently being edited.

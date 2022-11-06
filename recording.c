@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.14 2022/01/24 10:44:21 kls Exp $
+ * $Id: recording.c 5.15 2022/11/06 11:26:16 kls Exp $
  */
 
 #include "recording.h"
@@ -66,7 +66,6 @@
 #define DISKCHECKDELTA    100 // seconds between checks for free disk space
 #define REMOVELATENCY      10 // seconds to wait until next check after removing a file
 #define MARKSUPDATEDELTA   10 // seconds between checks for updating editing marks
-#define MININDEXAGE      3600 // seconds before an index file is considered no longer to be written
 #define MAXREMOVETIME      10 // seconds after which to return from removing deleted recordings
 
 #define MAX_LINK_LEVEL  6
@@ -1351,6 +1350,11 @@ int cRecording::IsInUse(void) const
   return Use;
 }
 
+static bool StillRecording(const char *Directory)
+{
+  return access(AddDirectory(Directory, TIMERRECFILE), F_OK) == 0;
+}
+
 void cRecording::ResetResume(void) const
 {
   resume = RESUME_NOT_INITIALIZED;
@@ -1360,7 +1364,7 @@ int cRecording::NumFrames(void) const
 {
   if (numFrames < 0) {
      int nf = cIndexFile::GetLength(FileName(), IsPesRecording());
-     if (time(NULL) - LastModifiedTime(cIndexFile::IndexFileName(FileName(), IsPesRecording())) < MININDEXAGE)
+     if (StillRecording(FileName()))
         return nf; // check again later for ongoing recordings
      numFrames = nf;
      }
@@ -1379,7 +1383,7 @@ int cRecording::FileSizeMB(void) const
 {
   if (fileSizeMB < 0) {
      int fs = DirSizeMB(FileName());
-     if (time(NULL) - LastModifiedTime(cIndexFile::IndexFileName(FileName(), IsPesRecording())) < MININDEXAGE)
+     if (StillRecording(FileName()))
         return fs; // check again later for ongoing recordings
      fileSizeMB = fs;
      }
@@ -2610,7 +2614,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
                        }
                     else if (isPesRecording)
                        ConvertFromPes(index, size);
-                    if (!index || time(NULL) - buf.st_mtime >= MININDEXAGE) {
+                    if (!index || !StillRecording(FileName)) {
                        close(f);
                        f = -1;
                        }
