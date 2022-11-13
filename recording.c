@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.15 2022/11/06 11:26:16 kls Exp $
+ * $Id: recording.c 5.16 2022/11/13 14:49:08 kls Exp $
  */
 
 #include "recording.h"
@@ -2413,6 +2413,7 @@ void cIndexFileGenerator::Action(void)
         isyslog("generating index file");
      }
   Skins.QueueMessage(mtInfo, tr("Regenerating index file"));
+  SetRecordingTimerId(recordingName, cString::sprintf("%d@%s", 0, Setup.SVDRPHostName));
   bool Stuffed = false;
   while (Running()) {
         // Rewind input file:
@@ -2506,6 +2507,7 @@ void cIndexFileGenerator::Action(void)
            break;
            }
         }
+  SetRecordingTimerId(recordingName, NULL);
   if (IndexFileComplete) {
      if (IndexFileWritten) {
         cRecordingInfo RecordingInfo(recordingName);
