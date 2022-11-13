@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 4.15 2020/09/16 13:48:33 kls Exp $
+ * $Id: thread.c 5.1 2022/11/13 15:25:52 kls Exp $
  */
 
 #include "thread.h"
@@ -752,6 +752,14 @@ bool cStateLock::Lock(cStateKey &StateKey, bool Write, int TimeoutMs)
   else if (TimeoutMs) {
      dbglocking("%5d %-12s %10p   timeout\n", cThread::ThreadId(), name, &StateKey);
      StateKey.timedOut = true;
+     }
+  else if (threadId == cThread::ThreadId()) {
+     static bool DoubleWriteLockReported = false;
+     if (!DoubleWriteLockReported) {
+        dsyslog("WARNING: attempt to acquire write lock while already holding a write lock in the same thread - this may crash! (backtrace follows)");
+        cBackTrace::BackTrace();
+        DoubleWriteLockReported = true;
+        }
      }
   return false;
 }

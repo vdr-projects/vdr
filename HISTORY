@@ -9794,3 +9794,4 @@ Video Disk Recorder Revision History
   for recordings that are currently being edited.
 - Fixed a possible crash if an editing process is canceled while the edited
   recording is being replayed.
+- Added a warning if an attempt is made to obtain a write lock twice from the same thread.
