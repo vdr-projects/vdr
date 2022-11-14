@@ -2768,7 +2768,7 @@ Benjamin Hess <benjamin.h@gmx.ch>
  for enhancing the SVDRP command CLRE to allow clearing the EPG data of a particular
  channel
 
-Winfried Köhler <w_koehl@gmx.de>
+Winfried Köhler <nvdec@quantentunnel.de>
  for fixing finding new transponders
  for fixing wrong value for TableIdBAT in libsi/si.h
  for reporting a compiler warning in calculations involving FramesPerSecond()
