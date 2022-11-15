@@ -2790,6 +2790,7 @@ Winfried Köhler <nvdec@quantentunnel.de>
  for using __cplusplus instead of DISABLE_TEMPLATES_COLLIDING_WITH_STL, and using
  std::min(), std::max() and std::swap() is available
  for adding some missing "AUTO" values to vdr.5
+ for fixing default values for DVB-T
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
@@ -3715,3 +3716,6 @@ Ulf Grüne <ulf.gruene@t-online.de>
 Timo Weingärtner <timo@tiwe.de>
  for reporting an integer overflow in calculating the disk use percentage if there's
  more than 20TB of recordings
+
+Jose Angel <joseangelpp@gmail.com>
+ for reporting a bug in default values for DVB-T

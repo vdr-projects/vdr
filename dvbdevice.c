@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.1 2021/06/09 09:12:25 kls Exp $
+ * $Id: dvbdevice.c 5.2 2022/11/14 16:31:08 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -22,6 +22,8 @@
 #include "sourceparams.h"
 
 static int DvbApiVersion = 0x0000; // the version of the DVB driver actually in use (will be determined by the first device created)
+
+#define BANDWIDTH_HZ_AUTO 0 // missing in DVB API 5
 
 #define DVBS_TUNE_TIMEOUT  9000 //ms
 #define DVBS_LOCK_TIMEOUT  2000 //ms
@@ -59,6 +61,7 @@ const tDvbParameterMap BandwidthValues[] = {
   {    8,  8000000, "8 MHz" },
   {   10, 10000000, "10 MHz" },
   { 1712,  1712000, "1.712 MHz" },
+  {  999, BANDWIDTH_HZ_AUTO, trNOOP("auto") },
   {  -1, 0, NULL }
   };
 
@@ -255,10 +258,10 @@ bool cDvbTransponderParameters::Parse(const char *s)
 {
   polarization = 0;
   inversion    = INVERSION_AUTO;
-  bandwidth    = 8000000;
+  bandwidth    = BANDWIDTH_HZ_AUTO;
   coderateH    = FEC_AUTO;
   coderateL    = FEC_AUTO;
-  modulation   = QPSK;
+  modulation   = QAM_AUTO;
   system       = DVB_SYSTEM_1;
   transmission = TRANSMISSION_MODE_AUTO;
   guard        = GUARD_INTERVAL_AUTO;
