@@ -9797,3 +9797,5 @@ Video Disk Recorder Revision History
 - Added a warning if an attempt is made to obtain a write lock twice from the same thread.
 - Fixed default values for DVB-T (thanks to Winfried Köhler and Jose Angel).
 - Removed some unnecessary locks from SVDRPClientHandler.
+- Fixed a possible deadlock in case two SVDRP clients send each other POLL commands
+  at the same time.

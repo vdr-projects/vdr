@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.4 2022/11/19 15:47:03 kls Exp $
+ * $Id: svdrp.c 5.5 2022/11/19 15:49:27 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2380,10 +2380,8 @@ void cSVDRPServer::CmdPOLL(const char *Option)
      if (SVDRPClientHandler) {
         if (ListName) {
            if (strcasecmp(ListName, "timers") == 0) {
-               if (SVDRPClientHandler->TriggerFetchingTimers(RemoteName))
-                  Reply(250, "OK");
-               else
-                  Reply(501, "No connection to \"%s\"", RemoteName);
+              Reply(250, "OK"); // must send reply before calling TriggerFetchingTimers() to avoid a deadlock if two clients send each other POLL commands at the same time
+              SVDRPClientHandler->TriggerFetchingTimers(RemoteName);
               }
            else
               Reply(501, "Unknown list name: \"%s\"", ListName);
