@@ -9780,7 +9780,7 @@ Video Disk Recorder Revision History
   out by Onur Sentürk).
 - Official release.
 
-2022-11-19:
+2022-11-20:
 
 - Added UPDATE-2.6.0, which was missing in the official 2.6.0 release.
 - Fixed unexpected calls of the '-r' script when a recording is interrupted and
@@ -9799,3 +9799,4 @@ Video Disk Recorder Revision History
 - Removed some unnecessary locks from SVDRPClientHandler.
 - Fixed a possible deadlock in case two SVDRP clients send each other POLL commands
   at the same time.
+- Added a missing 'const' to cTimers::GetTimerForEvent() (reported by Markus Ehrnsperger).

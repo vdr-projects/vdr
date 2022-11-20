@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.17 2021/05/03 14:06:12 kls Exp $
+ * $Id: timers.c 5.18 2022/11/20 10:57:31 kls Exp $
  */
 
 #include "timers.h"
@@ -1131,7 +1131,7 @@ const cTimer *cTimers::GetMatch(const cEvent *Event, eTimerMatch *Match) const
   return t;
 }
 
-const cTimer *cTimers::GetTimerForEvent(const cEvent *Event, eTimerFlags Flags)
+const cTimer *cTimers::GetTimerForEvent(const cEvent *Event, eTimerFlags Flags) const
 {
   if (Event && Event->HasTimer()) {
      for (const cTimer *ti = First(); ti; ti = Next(ti)) {

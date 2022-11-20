@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.8 2021/04/20 13:22:37 kls Exp $
+ * $Id: timers.h 5.9 2022/11/20 10:57:31 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -194,7 +194,7 @@ public:
   cTimer *GetMatch(time_t t) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(t)); };
   const cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL) const;
   cTimer *GetMatch(const cEvent *Event, eTimerMatch *Match = NULL) { return const_cast<cTimer *>(static_cast<const cTimers *>(this)->GetMatch(Event, Match)); }
-  const cTimer *GetTimerForEvent(const cEvent *Event, eTimerFlags Flags = tfNone);
+  const cTimer *GetTimerForEvent(const cEvent *Event, eTimerFlags Flags = tfNone) const;
   int GetMaxPriority(void) const;
       ///< Returns the maximum priority of all local timers that are currently recording.
       ///< If there is no local timer currently recording, -1 is returned.
