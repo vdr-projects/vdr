@@ -83,6 +83,7 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Internationalization">Internationalization</a>
 <li><a href="#Custom services">Custom services</a>
 <li><a href="#SVDRP commands">SVDRP commands</a>
+<li><a href="#Locking">Locking</a>
 <li><a href="#Loading plugins into VDR">Loading plugins into VDR</a>
 <li><a href="#Building the distribution package">Building the distribution package</a>
 </ul>
@@ -1185,8 +1186,58 @@ when presenting them to the caller, and the continuation character ('<tt>-</tt>'
 will be set for all but the last one.
 <p>
 <b>The SVDRP functions are called from the separate "SVDRP server handler" thread.
-Therefore the plugin needs to take care of proper locking if it accesses any
+Therefore the plugin needs to take care of proper <a href="#Locking">locking</a> if it accesses any
 global data.</b>
+
+<hr><h2><a name="Locking">Locking</a></h2>
+
+<div class="blurb">U can't touch this</div><p>
+
+When accessing global data structures, proper locking is absolutely necessary.
+<p>
+There are several macros that allow for easy locking and unlocking. They all
+follow the naming convention <tt>LOCK_*_READ|WRITE</tt>, where <tt>'*'</tt> is the name
+of the global data structure, which can be one of <tt>TIMERS</tt>, <tt>CHANNELS</tt>,
+<tt>RECORDINGS</tt> or <tt>SCHEDULES</tt>. To implicitly avoid deadlocks in case you
+need to lock more than one structure, always make sure you use these macros in
+this sequence!
+<p>
+Using one of these macros sets a lock on the structure, creates a local pointer to the
+respective structure and makes sure the lock is released at the end of the current
+block:
+
+<p><table><tr><td class="code"><pre>
+if (some condition) {
+   LOCK_TIMERS_READ; // creates local const cTimers *Timers
+   for (const cTimer *Timer = Timers-&gt;First(); Timer; Timer = Timers-&gt;Next(Timer)) {
+       // do something with Timer
+       }
+   }
+</pre></td></tr></table><p>
+
+Note the naming convention: TIMERS -&gt; Timers etc.
+<p>
+The <tt>LOCK_*_READ</tt> macros create pointers that are '<tt>const</tt>', while
+the <tt>LOCK_*_WRITE</tt> macros allow modifications to the data structures.
+Both wait indefinitely to obtain the lock. However, if <tt>LOCK_*_WRITE</tt> is
+used twice in the same block, the second call will not obtain a lock and
+immediately return <tt>NULL</tt>, which may lead to a crash. In such cases a
+warning and backtrace is logged.
+<p>
+You may keep pointers to objects in such lists, even after releasing
+the lock. However, you may only access such objects if you are
+holding a proper lock again. If an object has been deleted from the list
+while you did not hold a lock (for instance by an other thread), the
+object will still be there, but no longer within this list (it is then
+stored in the ListGarbageCollector for a few seconds). That way even if you
+access the object after it has been deleted, you won't cause a segfault.
+You can call the Contains() function to check whether an object you are
+holding a pointer to is still in the list. Note that the garbage collector
+is purged when the usual housekeeping is done.
+<p>
+See tools.h, class <tt>cListBase</tt> for more documentation and information on how
+to use locking with timeouts, and thread.h, classes <tt>cStateLock</tt> and
+<tt>cStateKey</tt> on how to easily react to changes in such lists.
 
 <hr><h2><a name="Loading plugins into VDR">Loading plugins into VDR</a></h2>
 

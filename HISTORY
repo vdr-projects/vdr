@@ -9800,3 +9800,4 @@ Video Disk Recorder Revision History
 - Fixed a possible deadlock in case two SVDRP clients send each other POLL commands
   at the same time.
 - Added a missing 'const' to cTimers::GetTimerForEvent() (reported by Markus Ehrnsperger).
+- Added a chapter about locking to PLUGINS.html (suggested by Markus Ehrnsperger).
