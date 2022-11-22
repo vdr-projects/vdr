@@ -9780,7 +9780,7 @@ Video Disk Recorder Revision History
   out by Onur Sentürk).
 - Official release.
 
-2022-11-20:
+2022-11-22:
 
 - Added UPDATE-2.6.0, which was missing in the official 2.6.0 release.
 - Fixed unexpected calls of the '-r' script when a recording is interrupted and
@@ -9801,3 +9801,5 @@ Video Disk Recorder Revision History
   at the same time.
 - Added a missing 'const' to cTimers::GetTimerForEvent() (reported by Markus Ehrnsperger).
 - Added a chapter about locking to PLUGINS.html (suggested by Markus Ehrnsperger).
+- Implemented parsing frame rate and image size for MPEG2, H.264 and H.265 (thanks
+  to Christoph Haubrich).
