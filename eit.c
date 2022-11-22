@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 5.4 2021/12/11 20:58:51 kls Exp $
+ * $Id: eit.c 5.5 2022/11/22 14:33:48 kls Exp $
  */
 
 // The various ways in which broadcasters handle (or screw up) their EPG:
@@ -469,7 +469,7 @@ cTDT::cTDT(const u_char *Data)
         timespec ts = {};
         ts.tv_sec = dvbtim;
         if (clock_settime(CLOCK_REALTIME, &ts) == 0)
-           isyslog("system time changed from %s (%ld) to %s (%ld)", *TimeToString(loctim), loctim, *TimeToString(dvbtim), dvbtim);
+           isyslog("system time changed from %s (%jd) to %s (%jd)", *TimeToString(loctim), intmax_t(loctim), *TimeToString(dvbtim), intmax_t(dvbtim));
         else
            esyslog("ERROR while setting system time: %m");
         }
@@ -479,7 +479,7 @@ cTDT::cTDT(const u_char *Data)
         delta.tv_sec = diff;
         delta.tv_usec = 0;
         if (adjtime(&delta, NULL) == 0)
-           isyslog("system time adjustment initiated from %s (%ld) to %s (%ld)", *TimeToString(loctim), loctim, *TimeToString(dvbtim), dvbtim);
+           isyslog("system time adjustment initiated from %s (%jd) to %s (%jd)", *TimeToString(loctim), intmax_t(loctim), *TimeToString(dvbtim), intmax_t(dvbtim));
         else
            esyslog("ERROR while adjusting system time: %m");
         }

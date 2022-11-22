@@ -1544,15 +1544,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Йде запис - дійсно виключити?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Через %ld хвилин почнеться запис - дійсно виключити?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Через %jd хвилин почнеться запис - дійсно виключити?"
 
 msgid "shut down anyway?"
 msgstr "дійсно виключити?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Модуль %s включиться через %ld хвилин - продовжити?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Модуль %s включиться через %jd хвилин - продовжити?"
 
 msgid "Editing - restart anyway?"
 msgstr "Процес монтажу - дійсно перезапустити?"

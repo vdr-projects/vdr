@@ -1545,15 +1545,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Снимање во тек - исклучи?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Снимање уште %ld минути - исклучи?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Снимање уште %jd минути - исклучи?"
 
 msgid "shut down anyway?"
 msgstr "сеедно исклучи?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Додатокот %s се подига за %ld мин, продолжи?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Додатокот %s се подига за %jd мин, продолжи?"
 
 msgid "Editing - restart anyway?"
 msgstr "Уредување во тек - рестартирај?"

@@ -1549,15 +1549,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Opname loopt - toch uitschakelen?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Opname in %ld minuten - toch uitschakelen?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Opname in %jd minuten - toch uitschakelen?"
 
 msgid "shut down anyway?"
 msgstr "toch uitschakelen?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin %s wordt binnen %ld min. aktief, doorgaan?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Plugin %s wordt binnen %jd min. aktief, doorgaan?"
 
 msgid "Editing - restart anyway?"
 msgstr "Bewerken aktief - toch herstarten?"

@@ -1546,15 +1546,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Systém nahrává - přesto vypnout?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Nahrávání začne za %ld minut - přesto vypnout?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Nahrávání začne za %jd minut - přesto vypnout?"
 
 msgid "shut down anyway?"
 msgstr "přesto vypnout?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Modul %s startuje za %ld min., pokračovat?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Modul %s startuje za %jd min., pokračovat?"
 
 msgid "Editing - restart anyway?"
 msgstr "Edituji - přesto restartovat?"

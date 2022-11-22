@@ -1545,15 +1545,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Snimanje traje - iskljuèiti unatoè?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Snimanje za %ld minuta - iskljuèiti unatoè?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Snimanje za %jd minuta - iskljuèiti unatoè?"
 
 msgid "shut down anyway?"
 msgstr "svejedno iskljuèiti?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Dodatak %s se budi u %ld min, nastavi?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Dodatak %s se budi u %jd min, nastavi?"
 
 msgid "Editing - restart anyway?"
 msgstr "Ureðivanje u tijeku - ponovno pokreni unatoè?"

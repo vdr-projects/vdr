@@ -1543,15 +1543,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Įrašinėjama - išjungti vistiek?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Įrašas prasidės po %ld minučių, išjungti vistiek?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Įrašas prasidės po %jd minučių, išjungti vistiek?"
 
 msgid "shut down anyway?"
 msgstr "išjungti bet kokiu atveju?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Įskiepas %s aktyvuosis po %ld min, tęsti toliau?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Įskiepas %s aktyvuosis po %jd min, tęsti toliau?"
 
 msgid "Editing - restart anyway?"
 msgstr "Koreguojama - perkrauti vistiek?"

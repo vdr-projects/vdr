@@ -1545,15 +1545,15 @@ msgid "Recording - shut down anyway?"
 msgstr "录像中,是否立即关机?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "录像已有 %ld 分钟，立即关机?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "录像已有 %jd 分钟，立即关机?"
 
 msgid "shut down anyway?"
 msgstr "是否立即关机?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "插件 %s 唤醒在 %ld 分钟，是否继续?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "插件 %s 唤醒在 %jd 分钟，是否继续?"
 
 msgid "Editing - restart anyway?"
 msgstr "编辑中,是否现在重启?"

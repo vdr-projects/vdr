@@ -1544,15 +1544,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Grabación en curso - ¿apagar igualmente?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Grabación dentro de %ld minutos, ¿apagar igualmente?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Grabación dentro de %jd minutos, ¿apagar igualmente?"
 
 msgid "shut down anyway?"
 msgstr "¿apagar igualmente?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin %s inicia en %ld min, ¿continuar?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Plugin %s inicia en %jd min, ¿continuar?"
 
 msgid "Editing - restart anyway?"
 msgstr "Editando - ¿reiniciar igualmente?"

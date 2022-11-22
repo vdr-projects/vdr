@@ -1547,15 +1547,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Tallennus kesken - sammutetaanko?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Tallennus alkaa %ld min kuluttua - sammutetaanko?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Tallennus alkaa %jd min kuluttua - sammutetaanko?"
 
 msgid "shut down anyway?"
 msgstr "sammutetaanko?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Laajennos %s herää %ld minuutin kuluttua - sammutetaanko?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Laajennos %s herää %jd minuutin kuluttua - sammutetaanko?"
 
 msgid "Editing - restart anyway?"
 msgstr "Muokkaus kesken - käynnistetäänkö uudelleen?"

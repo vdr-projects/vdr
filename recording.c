@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.17 2022/11/13 15:20:42 kls Exp $
+ * $Id: recording.c 5.18 2022/11/22 14:33:48 kls Exp $
  */
 
 #include "recording.h"
@@ -485,11 +485,11 @@ bool cRecordingInfo::Read(FILE *f)
                        break;
              case 'E': {
                          unsigned int EventID;
-                         time_t StartTime;
+                         intmax_t StartTime; // actually time_t, but intmax_t for scanning with "%jd"
                          int Duration;
                          unsigned int TableID = 0;
                          unsigned int Version = 0xFF;
-                         int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
+                         int n = sscanf(t, "%u %jd %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
                          if (n >= 3 && n <= 5) {
                             ownEvent->SetEventID(EventID);
                             ownEvent->SetStartTime(StartTime);

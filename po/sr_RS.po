@@ -1544,15 +1544,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Snimanje u toku - svejedno iskljuèi?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Snimanje za %ld minuta - svejedno iskljuèi?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Snimanje za %jd minuta - svejedno iskljuèi?"
 
 msgid "shut down anyway?"
 msgstr "svejedno iskljuèi?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Dodatak %s se budi za %ld min, nastavi?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Dodatak %s se budi za %jd min, nastavi?"
 
 msgid "Editing - restart anyway?"
 msgstr "Ureðivanje u toku - svejedno ponovno pokreni?"

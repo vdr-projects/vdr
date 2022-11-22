@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.5 2022/11/19 15:49:27 kls Exp $
+ * $Id: svdrp.c 5.6 2022/11/22 14:33:48 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2230,9 +2230,9 @@ void cSVDRPServer::CmdNEXT(const char *Option)
      if (!*Option)
         Reply(250, "%d %s", Id, *TimeToString(Start));
      else if (strcasecmp(Option, "ABS") == 0)
-        Reply(250, "%d %ld", Id, Start);
+        Reply(250, "%d %jd", Id, intmax_t(Start));
      else if (strcasecmp(Option, "REL") == 0)
-        Reply(250, "%d %ld", Id, Start - time(NULL));
+        Reply(250, "%d %jd", Id, intmax_t(Start - time(NULL)));
      else
         Reply(501, "Unknown option: \"%s\"", Option);
      }

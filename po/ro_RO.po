@@ -1545,15 +1545,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Tocmai se înregistrează - închid, totuşi?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Înregistrez peste %ld minute - închid, totuşi?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Înregistrez peste %jd minute - închid, totuşi?"
 
 msgid "shut down anyway?"
 msgstr "închid, totuşi?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin-ul %s se va trezi +n %ld min, continui?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Plugin-ul %s se va trezi +n %jd min, continui?"
 
 msgid "Editing - restart anyway?"
 msgstr "Editarea tocmai se efectuează - repornesc, totuşi?"

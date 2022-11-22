@@ -1543,15 +1543,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Kayýt ediliyor - buna raðmen kapat?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Kayýt %ld dakikada baþlýyor - buna raðmen kapat?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Kayýt %jd dakikada baþlýyor - buna raðmen kapat?"
 
 msgid "shut down anyway?"
 msgstr "buna raðmen kapat?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Eklenti %s %ld dakikada açýlýyor, devam et?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Eklenti %s %jd dakikada açýlýyor, devam et?"
 
 msgid "Editing - restart anyway?"
 msgstr "Kesim aktif - buna raðmen yeniden baþlat?"

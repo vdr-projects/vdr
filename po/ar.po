@@ -1547,15 +1547,15 @@ msgid "Recording - shut down anyway?"
 msgstr "اغلق الحاسوب"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "تم تسجيل %ld دقيقة سيتم الاغلاق على اى حال"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "تم تسجيل %jd دقيقة سيتم الاغلاق على اى حال"
 
 msgid "shut down anyway?"
 msgstr "الاغلاق على اى حال"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin %s wakes up in %ld min, continue?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Plugin %s wakes up in %jd min, continue?"
 
 msgid "Editing - restart anyway?"
 msgstr "Editing - restart anyway?"

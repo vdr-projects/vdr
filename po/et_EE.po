@@ -1543,15 +1543,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Salvestamine aktiivne - lülitada välja?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Salvestamine algab %ld minuti pärast - lülitada välja?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Salvestamine algab %jd minuti pärast - lülitada välja?"
 
 msgid "shut down anyway?"
 msgstr "lülitada välja?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin %s ärkab %ld minuti pärast, jätkata?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Plugin %s ärkab %jd minuti pärast, jätkata?"
 
 msgid "Editing - restart anyway?"
 msgstr "Töötlemine aktiivne - taaskäivitada?"

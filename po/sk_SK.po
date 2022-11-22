@@ -1544,15 +1544,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Nahráva - aj tak vypnú»?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Nahrávanie zaène za %ld minút - aj tak vypnú»?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Nahrávanie zaène za %jd minút - aj tak vypnú»?"
 
 msgid "shut down anyway?"
 msgstr "Urèite vypnú»?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Modul %s sa prebudí za %ld min., pokraèova»?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Modul %s sa prebudí za %jd min., pokraèova»?"
 
 msgid "Editing - restart anyway?"
 msgstr "Upravuje sa - aj tak re¹tartova»?"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.6 2022/11/04 14:30:01 kls Exp $
+ * $Id: tools.c 5.7 2022/11/22 14:33:48 kls Exp $
  */
 
 #include "tools.h"
@@ -767,7 +767,7 @@ uint64_t cTimeMs::Now(void)
               esyslog("cTimeMs: clock_gettime(CLOCK_MONOTONIC) failed");
            }
         else
-           dsyslog("cTimeMs: not using monotonic clock - resolution is too bad (%ld s %ld ns)", tp.tv_sec, tp.tv_nsec);
+           dsyslog("cTimeMs: not using monotonic clock - resolution is too bad (%jd s %ld ns)", intmax_t(tp.tv_sec), tp.tv_nsec);
         }
      else
         esyslog("cTimeMs: clock_getres(CLOCK_MONOTONIC) failed");

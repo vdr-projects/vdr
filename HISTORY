@@ -9805,3 +9805,4 @@ Video Disk Recorder Revision History
   to Christoph Haubrich).
 - Using the frame rate parsed from the stream, with fall back to determining it from
   PTS values.
+- Fixed printing/scanning values for systems where %ld doesn't work for time_t.

@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 4.2 2018/03/23 15:39:21 kls Exp $
+ * $Id: shutdown.c 5.1 2022/11/22 14:33:48 kls Exp $
  */
 
 #include "shutdown.h"
@@ -113,7 +113,7 @@ void cShutdownHandler::CheckManualStart(int ManualStart)
      }
   else {
      // Set inactive from now on
-     dsyslog("scheduled wakeup time in %ld minutes, assuming automatic start of VDR", Delta / 60);
+     dsyslog("scheduled wakeup time in %jd minutes, assuming automatic start of VDR", intmax_t(Delta / 60));
      SetUserInactiveTimeout(-3, true);
      }
 }
@@ -127,7 +127,7 @@ void cShutdownHandler::SetShutdownCommand(const char *ShutdownCommand)
 void cShutdownHandler::CallShutdownCommand(time_t WakeupTime, int Channel, const char *File, bool UserShutdown)
 {
   time_t Delta = WakeupTime ? WakeupTime - time(NULL) : 0;
-  cString cmd = cString::sprintf("%s %ld %ld %d \"%s\" %d", shutdownCommand, WakeupTime, Delta, Channel, *strescape(File, "\\\"$"), UserShutdown);
+  cString cmd = cString::sprintf("%s %jd %jd %d \"%s\" %d", shutdownCommand, intmax_t(WakeupTime), intmax_t(Delta), Channel, *strescape(File, "\\\"$"), UserShutdown);
   isyslog("executing '%s'", *cmd);
   int Status = SystemExec(cmd, true);
   if (!WIFEXITED(Status) || WEXITSTATUS(Status))
@@ -183,7 +183,7 @@ bool cShutdownHandler::ConfirmShutdown(bool Interactive)
      // Timer within Min Event Timeout
      if (!Interactive)
         return false;
-     cString buf = cString::sprintf(tr("Recording in %ld minutes, shut down anyway?"), Delta / 60);
+     cString buf = cString::sprintf(tr("Recording in %jd minutes, shut down anyway?"), intmax_t(Delta / 60));
      if (!Interface->Confirm(buf))
         return false;
      }
@@ -198,7 +198,7 @@ bool cShutdownHandler::ConfirmShutdown(bool Interactive)
      // Plugin wakeup within Min Event Timeout
      if (!Interactive)
         return false;
-     cString buf = cString::sprintf(tr("Plugin %s wakes up in %ld min, continue?"), Plugin->Name(), Delta / 60);
+     cString buf = cString::sprintf(tr("Plugin %s wakes up in %jd min, continue?"), Plugin->Name(), intmax_t(Delta / 60));
      if (!Interface->Confirm(buf))
         return false;
      }

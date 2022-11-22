@@ -1544,15 +1544,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Snemanje - zares izklopi?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Snemanje èez %ld minut, zares izklopi?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Snemanje èez %jd minut, zares izklopi?"
 
 msgid "shut down anyway?"
 msgstr "zares izklopi?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Vstavek %s se zbudi v %ld min, nadaljuj?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Vstavek %s se zbudi v %jd min, nadaljuj?"
 
 msgid "Editing - restart anyway?"
 msgstr "Urejanje - zares ponoven zagon?"

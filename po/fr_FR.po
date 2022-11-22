@@ -1554,15 +1554,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Enregistrement en cours - confirmer l'arrêt ?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Enregistrement dans %ld minutes - confirmer l'arrêt ?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Enregistrement dans %jd minutes - confirmer l'arrêt ?"
 
 msgid "shut down anyway?"
 msgstr "confirmer l'arrêt ?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Le plugin %s démarre dans %ld min, continuer ?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Le plugin %s démarre dans %jd min, continuer ?"
 
 msgid "Editing - restart anyway?"
 msgstr "Édition en cours - confirmer redémarrage ?"

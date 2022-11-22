@@ -1543,15 +1543,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Optagelse igang - sluk alligevel?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Optagelse om %ld minutter - sluk alligevel?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Optagelse om %jd minutter - sluk alligevel?"
 
 msgid "shut down anyway?"
 msgstr "sluk alligevel?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin %s vågner om %ld min, fortsæt?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Plugin %s vågner om %jd min, fortsæt?"
 
 msgid "Editing - restart anyway?"
 msgstr "Redigering igang - genstart alligevel?"

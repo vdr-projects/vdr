@@ -1543,14 +1543,14 @@ msgid "Recording - shut down anyway?"
 msgstr "Γίνεται εγγραφή - Τελικά να γίνει τερματισμός?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Αναμένεται εγγραφή σέ %ld λεπτά - Τελικά να τερματιστεί?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Αναμένεται εγγραφή σέ %jd λεπτά - Τελικά να τερματιστεί?"
 
 msgid "shut down anyway?"
 msgstr "Τελικά να γίνει τερματισμός?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
+msgid "Plugin %s wakes up in %jd min, continue?"
 msgstr ""
 
 msgid "Editing - restart anyway?"

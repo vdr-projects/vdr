@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.6 2021/04/29 09:19:58 kls Exp $
+ * $Id: epg.c 5.7 2022/11/22 14:33:48 kls Exp $
  */
 
 #include "epg.h"
@@ -451,7 +451,7 @@ cString cEvent::GetVpsString(void) const
 void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
 {
   if (InfoOnly || startTime + duration + EPG_LINGER_TIME >= time(NULL)) {
-     fprintf(f, "%sE %u %ld %d %X %X\n", Prefix, eventID, startTime, duration, tableID, version);
+     fprintf(f, "%sE %u %jd %d %X %X\n", Prefix, eventID, intmax_t(startTime), duration, tableID, version);
      if (!isempty(title))
         fprintf(f, "%sT %s\n", Prefix, title);
      if (!isempty(shortText))
@@ -476,7 +476,7 @@ void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
             }
         }
      if (vps)
-        fprintf(f, "%sV %ld\n", Prefix, vps);
+        fprintf(f, "%sV %jd\n", Prefix, intmax_t(vps));
      if (!InfoOnly && !isempty(aux)) {
         strreplace(aux, '\n', '|');
         fprintf(f, "%s@ %s\n", Prefix, aux);
@@ -518,7 +518,7 @@ bool cEvent::Parse(char *s)
                  components = new cComponents;
               components->SetComponent(components->NumComponents(), t);
               break;
-    case 'V': SetVps(atoi(t));
+    case 'V': SetVps(atol(t));
               break;
     case '@': strreplace(t, '|', '\n');
               SetAux(t);
@@ -541,11 +541,11 @@ bool cEvent::Read(FILE *f, cSchedule *Schedule, int &Line)
            switch (*s) {
              case 'E': if (!Event) {
                           unsigned int EventID;
-                          time_t StartTime;
+                          intmax_t StartTime; // actually time_t, but intmax_t for scanning with "%jd"
                           int Duration;
                           unsigned int TableID = 0;
                           unsigned int Version = 0xFF; // actual value is ignored
-                          int n = sscanf(t, "%u %ld %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
+                          int n = sscanf(t, "%u %jd %d %X %X", &EventID, &StartTime, &Duration, &TableID, &Version);
                           if (n >= 3 && n <= 5) {
                              Event = (cEvent *)Schedule->GetEventByTime(StartTime);
                              cEvent *newEvent = NULL;

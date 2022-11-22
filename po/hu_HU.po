@@ -1548,15 +1548,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Felvétel folyamatban - mégis leállítani?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Felvétel %ld perc múlva kezdődik - mégis leállítani?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Felvétel %jd perc múlva kezdődik - mégis leállítani?"
 
 msgid "shut down anyway?"
 msgstr "mégis leállítani?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "A(z) %s plugin ébreszt %ld perc múlva, folytatni?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "A(z) %s plugin ébreszt %jd perc múlva, folytatni?"
 
 msgid "Editing - restart anyway?"
 msgstr "Szerkesztés folyamatban - mégis újraindítani?"

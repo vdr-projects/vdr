@@ -1546,15 +1546,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Gravant - Apagar de totes maneres?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Hi ha una gravació en %ld minuts - Apagar de totes maneres?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Hi ha una gravació en %jd minuts - Apagar de totes maneres?"
 
 msgid "shut down anyway?"
 msgstr "Apagar de totes maneres?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "El plugin %s s'activarà en %ld minuts, continuar?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "El plugin %s s'activarà en %jd minuts, continuar?"
 
 msgid "Editing - restart anyway?"
 msgstr "Editant - Reiniciar de totes maneres?"

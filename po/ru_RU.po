@@ -1544,15 +1544,15 @@ msgid "Recording - shut down anyway?"
 msgstr "Идёт запись - действительно выключить?"
 
 #, c-format
-msgid "Recording in %ld minutes, shut down anyway?"
-msgstr "Через %ld минут начнётся запись - действительно выключить?"
+msgid "Recording in %jd minutes, shut down anyway?"
+msgstr "Через %jd минут начнётся запись - действительно выключить?"
 
 msgid "shut down anyway?"
 msgstr "действительно выключить?"
 
 #, c-format
-msgid "Plugin %s wakes up in %ld min, continue?"
-msgstr "Plugin %s проснется через %ld минут - продолжить?"
+msgid "Plugin %s wakes up in %jd min, continue?"
+msgstr "Plugin %s проснется через %jd минут - продолжить?"
 
 msgid "Editing - restart anyway?"
 msgstr "Процесс монтажа - действительно перезапустить?"
