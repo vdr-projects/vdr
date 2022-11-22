@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.7 2022/03/03 14:44:47 kls Exp $
+ * $Id: menu.c 5.8 2022/11/22 15:53:07 kls Exp $
  */
 
 #include "menu.h"
@@ -2097,7 +2097,7 @@ eOSState cMenuSchedule::Switch(void)
   if (item) {
      LOCK_CHANNELS_READ;
      const cChannel *Channel = NULL;
-     if (Channel = Channels->GetByChannelID(item->event->ChannelID(), true)) {
+     if ((Channel = Channels->GetByChannelID(item->event->ChannelID(), true)) != NULL) {
         if (!Channels->SwitchTo(Channel->Number()))
            Channel = NULL;
         }
