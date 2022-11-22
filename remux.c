@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.3 2022/11/22 11:31:39 kls Exp $
+  * $Id: remux.c 5.4 2022/11/22 11:35:37 kls Exp $
  */
 
 #include "remux.h"
@@ -1989,6 +1989,11 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                              scanning = false;
                           }
                        else {
+                          if (parser->FramesPerSecond() > 0.0) {
+                             framesPerSecond = parser->FramesPerSecond();
+                             synced = true;
+                             parser->SetDebug(false);
+                             }
                           framesInPayloadUnit++;
                           if (independentFrame)
                              numIFrames++;

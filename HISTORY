@@ -9803,3 +9803,5 @@ Video Disk Recorder Revision History
 - Added a chapter about locking to PLUGINS.html (suggested by Markus Ehrnsperger).
 - Implemented parsing frame rate and image size for MPEG2, H.264 and H.265 (thanks
   to Christoph Haubrich).
+- Using the frame rate parsed from the stream, with fall back to determining it from
+  PTS values.
