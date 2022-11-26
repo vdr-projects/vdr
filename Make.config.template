@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 4.1 2017/06/02 09:29:54 kls Exp $
+# $Id: Make.config.template 5.1 2022/11/26 13:37:06 kls Exp $
 
 ### The C compiler and options:
 
@@ -74,6 +74,8 @@ endif
 
 ### The remote control:
 LIRC_DEVICE = /var/run/lirc/lircd
+### Use this for kernel based driver:
+#LIRC_DEVICE = /dev/lirc0
 
 ### Define if you always want to use LIRC, independent of the --lirc option:
 #REMOTE=LIRC

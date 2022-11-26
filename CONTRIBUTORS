@@ -2201,6 +2201,7 @@ Marko Mäkelä <marko.makela@iki.fi>
  for reporting some uninitialized item area coordinates in cSkinLCARSDisplayMenu
  for reporting a problem with the video directory not being set correctly with --edit
  for reporting a compiler warning about the use of strncpy() in strreplace()
+ for adding support for kernel based LIRC driver
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week

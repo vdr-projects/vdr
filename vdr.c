@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.8 2022/06/01 14:24:57 kls Exp $
+ * $Id: vdr.c 5.9 2022/11/26 13:37:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -875,7 +875,7 @@ int main(int argc, char *argv[])
 
   // Remote Controls:
   if (LircDevice)
-     new cLircRemote(LircDevice);
+     cLircRemote::NewLircRemote(LircDevice);
   if (!DaemonMode && HasStdin && UseKbd)
      new cKbdRemote;
   Interface->LearnKeys();

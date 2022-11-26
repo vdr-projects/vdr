@@ -6,24 +6,50 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 4.2 2020/09/16 13:48:33 kls Exp $
+ * $Id: lirc.c 5.1 2022/11/26 13:37:06 kls Exp $
  */
 
 #include "lirc.h"
+#include <linux/version.h>
+#define HAVE_KERNEL_LIRC (LINUX_VERSION_CODE >= KERNEL_VERSION(5, 10, 0))
+// cLircUsrRemote
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <sys/un.h>
+// cLircDevRemote
+#if HAVE_KERNEL_LIRC
+#include <linux/lirc.h>
+#include <sys/ioctl.h>
+#endif
 
 #define RECONNECTDELAY 3000 // ms
 
-cLircRemote::cLircRemote(const char *DeviceName)
-:cRemote("LIRC")
+class cLircUsrRemote : public cLircRemote {
+private:
+  enum { LIRC_KEY_BUF = 30, LIRC_BUFFER_SIZE = 128 };
+  struct sockaddr_un addr;
+  bool Connect(void);
+  virtual void Action(void);
+public:
+  cLircUsrRemote(const char *DeviceName);
+  };
+
+#if HAVE_KERNEL_LIRC
+class cLircDevRemote : public cLircRemote {
+private:
+  void Connect(const char *DeviceName);
+  virtual void Action(void);
+public:
+  cLircDevRemote(const char *DeviceName);
+  };
+#endif
+
+// --- cLircRemote -----------------------------------------------------------
+
+cLircRemote::cLircRemote(const char *Name)
+:cRemote(Name)
 ,cThread("LIRC remote control")
 {
-  addr.sun_family = AF_UNIX;
-  strn0cpy(addr.sun_path, DeviceName, sizeof(addr.sun_path));
-  if (!Connect())
-     f = -1;
-  Start();
 }
 
 cLircRemote::~cLircRemote()
@@ -35,7 +61,27 @@ cLircRemote::~cLircRemote()
      close(fh);
 }
 
-bool cLircRemote::Connect(void)
+void cLircRemote::NewLircRemote(const char *Name)
+{
+#if HAVE_KERNEL_LIRC
+  if (startswith(Name, "/dev/"))
+     new cLircDevRemote(Name);
+  else
+#endif
+     new cLircUsrRemote(Name);
+}
+// --- cLircUsrRemote --------------------------------------------------------
+
+cLircUsrRemote::cLircUsrRemote(const char *DeviceName)
+: cLircRemote("LIRC")
+{
+  addr.sun_family = AF_UNIX;
+  strn0cpy(addr.sun_path, DeviceName, sizeof(addr.sun_path));
+  Connect();
+  Start();
+}
+
+bool cLircUsrRemote::Connect(void)
 {
   if ((f = socket(AF_UNIX, SOCK_STREAM, 0)) >= 0) {
      if (connect(f, (struct sockaddr *)&addr, sizeof(addr)) >= 0)
@@ -54,7 +100,7 @@ bool cLircRemote::Ready(void)
   return f >= 0;
 }
 
-void cLircRemote::Action(void)
+void cLircUsrRemote::Action(void)
 {
   cTimeMs FirstTime;
   cTimeMs LastTime;
@@ -129,3 +175,77 @@ void cLircRemote::Action(void)
            }
         }
 }
+
+// --- cLircDevRemote --------------------------------------------------------
+
+#if HAVE_KERNEL_LIRC
+inline void cLircDevRemote::Connect(const char *DeviceName)
+{
+  unsigned mode = LIRC_MODE_SCANCODE;
+  f = open(DeviceName, O_RDONLY, 0);
+  if (f < 0)
+     LOG_ERROR_STR(DeviceName);
+  else if (ioctl(f, LIRC_SET_REC_MODE, &mode)) {
+     LOG_ERROR_STR(DeviceName);
+     close(f);
+     f = -1;
+     }
+}
+
+cLircDevRemote::cLircDevRemote(const char *DeviceName)
+: cLircRemote("DEV_LIRC")
+{
+  Connect(DeviceName);
+  Start();
+}
+
+void cLircDevRemote::Action(void)
+{
+  if (f < 0)
+     return;
+  uint64_t FirstTime = 0, LastTime = 0;
+  uint32_t LastKeyCode = 0;
+  uint16_t LastFlags = false;
+  bool SeenRepeat = false;
+  bool repeat = false;
+
+  while (Running()) {
+        lirc_scancode sc;
+        ssize_t ret = read(f, &sc, sizeof sc);
+
+        if (ret == sizeof sc) {
+           const bool SameKey = sc.keycode == LastKeyCode && !((sc.flags ^ LastFlags) & LIRC_SCANCODE_FLAG_TOGGLE);
+
+           if (sc.flags & LIRC_SCANCODE_FLAG_REPEAT != 0)
+              // Before Linux 6.0, this flag is never set for some devices.
+              SeenRepeat = true;
+
+           if (SameKey && uint((sc.timestamp - FirstTime) / 1000000) < uint(Setup.RcRepeatDelay))
+              continue; // skip keys coming in too fast
+
+           if (!SameKey || (SeenRepeat && !(sc.flags & LIRC_SCANCODE_FLAG_REPEAT))) {
+              // This is a key-press event, not key-repeat.
+              if (repeat)
+                 Put(LastKeyCode, false, true); // generated release for previous key
+              repeat = false;
+              FirstTime = sc.timestamp;
+              LastKeyCode = sc.keycode;
+              LastFlags = sc.flags;
+              }
+           else if (uint((sc.timestamp - LastTime) / 1000000) < uint(Setup.RcRepeatDelta))
+              continue; // filter out too frequent key-repeat events
+           else
+              repeat = true;
+
+           LastTime = sc.timestamp;
+           Put(sc.keycode, repeat);
+           }
+        else {
+           if (repeat) // the last one was a repeat, so let's generate a release
+              Put(LastKeyCode, false, true);
+           repeat = false;
+           LastKeyCode = 0;
+           }
+        }
+}
+#endif

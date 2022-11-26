@@ -9780,7 +9780,7 @@ Video Disk Recorder Revision History
   out by Onur Sentürk).
 - Official release.
 
-2022-11-22:
+2022-11-23:
 
 - Added UPDATE-2.6.0, which was missing in the official 2.6.0 release.
 - Fixed unexpected calls of the '-r' script when a recording is interrupted and
@@ -9806,3 +9806,6 @@ Video Disk Recorder Revision History
 - Using the frame rate parsed from the stream, with fall back to determining it from
   PTS values.
 - Fixed printing/scanning values for systems where %ld doesn't work for time_t.
+- Added support for kernel based LIRC driver (thanks to Marko Mäkelä). Use the
+  command line option '--lirc=/dev/lirc0' to use this. Requires kernel version 5.10
+  or above.
