@@ -22,13 +22,14 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.9 2022/11/26 13:37:06 kls Exp $
+ * $Id: vdr.c 5.10 2022/11/28 10:44:01 kls Exp $
  */
 
 #include <getopt.h>
 #include <grp.h>
 #include <langinfo.h>
 #include <locale.h>
+#include <malloc.h>
 #include <pwd.h>
 #include <signal.h>
 #include <stdlib.h>
@@ -74,6 +75,7 @@
 
 #define MINCHANNELWAIT        10 // seconds to wait between failed channel switchings
 #define ACTIVITYTIMEOUT       60 // seconds before starting housekeeping
+#define MEMCLEANUPDELTA     3600 // seconds between memory cleanups
 #define SHUTDOWNWAIT         300 // seconds to wait in user prompt before automatic shutdown
 #define SHUTDOWNRETRY        360 // seconds before trying again to shut down
 #define SHUTDOWNFORCEPROMPT    5 // seconds to wait in user prompt to allow forcing shutdown
@@ -1578,6 +1580,12 @@ int main(int argc, char *argv[])
               cSchedules::Cleanup();
               // Plugins housekeeping:
               PluginManager.Housekeeping();
+              // Memory cleanup:
+              static time_t LastMemoryCleanup = 0;
+              if ((Now - LastMemoryCleanup) > MEMCLEANUPDELTA) {
+                 malloc_trim(0);
+                 LastMemoryCleanup = Now;
+                 }
               }
            }
 

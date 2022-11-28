@@ -9780,7 +9780,7 @@ Video Disk Recorder Revision History
   out by Onur Sentürk).
 - Official release.
 
-2022-11-23:
+2022-11-28:
 
 - Added UPDATE-2.6.0, which was missing in the official 2.6.0 release.
 - Fixed unexpected calls of the '-r' script when a recording is interrupted and
@@ -9809,3 +9809,5 @@ Video Disk Recorder Revision History
 - Added support for kernel based LIRC driver (thanks to Marko Mäkelä). Use the
   command line option '--lirc=/dev/lirc0' to use this. Requires kernel version 5.10
   or above.
+- Added periodic calls to malloc_trim(0) to reduce memory consumption (thanks to
+  Onur Sentürk).
