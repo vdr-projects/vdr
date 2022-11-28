@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.18 2022/11/22 14:33:48 kls Exp $
+ * $Id: recording.c 5.19 2022/11/28 14:39:23 kls Exp $
  */
 
 #include "recording.h"
@@ -2579,7 +2579,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
               cCondWait::SleepMs(INDEXFILETESTINTERVAL);
         }
      int delta = 0;
-     if (!Record && access(fileName, R_OK) != 0) {
+     if (!Record && (access(fileName, R_OK) != 0 || FileSize(fileName) == 0)) {
         // Index file doesn't exist, so try to regenerate it:
         if (!isPesRecording) { // sorry, can only do this for TS recordings
            resumeFile.Delete(); // just in case

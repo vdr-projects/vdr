@@ -9811,3 +9811,5 @@ Video Disk Recorder Revision History
   or above.
 - Added periodic calls to malloc_trim(0) to reduce memory consumption (thanks to
   Onur Sentürk).
+- Fixed regenerating the index file of a recording in case it is present, but empty
+  (reported by Stefan Herdler).

@@ -3563,6 +3563,8 @@ Stefan Herdler <herdler@gmx.de>
  ".sort" file
  for reporting faulty memory handling in cString::Append()
  for adding failsafe defaults for 'make LCLBLD=1' to the Makefile
+ for reporting the index file of a recording not being regenerated in case it is
+ present, but empty
 
 Tobias Faust <tobias.faust@gmx.de>
  for the original "jumpingseconds" patch
