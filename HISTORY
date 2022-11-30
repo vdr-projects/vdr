@@ -9780,7 +9780,7 @@ Video Disk Recorder Revision History
   out by Onur Sentürk).
 - Official release.
 
-2022-11-30:
+2022-11-30: Version 2.6.2
 
 - Added UPDATE-2.6.0, which was missing in the official 2.6.0 release.
 - Fixed unexpected calls of the '-r' script when a recording is interrupted and
