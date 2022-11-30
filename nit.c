@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 5.2 2021/12/14 21:15:02 kls Exp $
+ * $Id: nit.c 5.3 2022/11/30 12:02:00 kls Exp $
  */
 
 #include "nit.h"
@@ -81,8 +81,8 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
             for (SI::Loop::Iterator it3; fld->frequencies.hasNext(it3); ) {
                 int f = fld->frequencies.getNext(it3);
                 switch (ct) {
-                  case 1: f = BCD2INT(f) / 100; break;
-                  case 2: f = BCD2INT(f) / 10; break;
+                  case 1: f = round(BCD2INT(f) / 100.0); break;
+                  case 2: f = round(BCD2INT(f) / 10.0); break;
                   case 3: f = f * 10;  break;
                   default: ;
                   }
@@ -112,7 +112,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::SatelliteDeliverySystemDescriptor *sd = (SI::SatelliteDeliverySystemDescriptor *)d;
                  cDvbTransponderParameters dtp;
                  int Source = cSource::FromData(cSource::stSat, BCD2INT(sd->getOrbitalPosition()), sd->getWestEastFlag());
-                 int Frequency = Frequencies[0] = BCD2INT(sd->getFrequency()) / 100;
+                 int Frequency = Frequencies[0] = round(BCD2INT(sd->getFrequency()) / 100.0);
                  static char Polarizations[] = { 'H', 'V', 'L', 'R' };
                  dtp.SetPolarization(Polarizations[sd->getPolarization()]);
                  static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_8_9, FEC_3_5, FEC_4_5, FEC_9_10, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
@@ -184,7 +184,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                  SI::CableDeliverySystemDescriptor *sd = (SI::CableDeliverySystemDescriptor *)d;
                  cDvbTransponderParameters dtp;
                  int Source = cSource::FromData(cSource::stCable);
-                 int Frequency = Frequencies[0] = BCD2INT(sd->getFrequency()) / 10;
+                 int Frequency = Frequencies[0] = round(BCD2INT(sd->getFrequency()) / 10.0);
                  //XXX FEC_outer???
                  static int CodeRates[] = { FEC_NONE, FEC_1_2, FEC_2_3, FEC_3_4, FEC_5_6, FEC_7_8, FEC_8_9, FEC_3_5, FEC_4_5, FEC_9_10, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_AUTO, FEC_NONE };
                  dtp.SetCoderateH(CodeRates[sd->getFecInner()]);

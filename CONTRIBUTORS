@@ -2795,6 +2795,7 @@ Winfried Köhler <nvdec@quantentunnel.de>
  std::min(), std::max() and std::swap() is available
  for adding some missing "AUTO" values to vdr.5
  for fixing default values for DVB-T
+ for adding missing rounding when dividing frequencies in processing the NIT
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
