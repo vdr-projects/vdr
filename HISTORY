@@ -9815,3 +9815,7 @@ Video Disk Recorder Revision History
   (reported by Stefan Herdler).
 - Added missing rounding when dividing frequencies in processing the NIT (thanks to
   Winfried Köhler).
+
+2022-11-30:
+
+- Fixed a compiler warning.

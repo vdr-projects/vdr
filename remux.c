@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
-  * $Id: remux.c 5.4 2022/11/22 11:35:37 kls Exp $
+  * $Id: remux.c 5.5 2022/11/30 14:38:46 kls Exp $
  */
 
 #include "remux.h"
@@ -1333,7 +1333,7 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
             seenScanType = true;
             if (debug) {
                cString s = cString::sprintf("MPEG2: %d x %d%c %.2f fps", frameWidth, frameHeight, progressive ? 'p' : 'i', framesPerSecond);
-               dsyslog(s);
+               dsyslog("%s", *s);
                dbgframes("\n%s", *s);
                }
             }
@@ -1607,7 +1607,7 @@ void cH264Parser::ParseSequenceParameterSet(void)
         }
      if (debug) {
         cString s = cString::sprintf("H.264: %d x %d%c %.2f fps %d Bit", frameWidth, frameHeight, progressive ? 'p':'i', framesPerSecond, bitDepth);
-        dsyslog(s);
+        dsyslog("%s", *s);
         dbgframes("\n%s", *s);
         }
      }
@@ -1908,7 +1908,7 @@ void cH265Parser::ParseSequenceParameterSet(void)
      }
   if (debug) {
      cString s = cString::sprintf("H.265: %d x %d%c %.2f fps %d Bit", frameWidth, frameHeight, progressive ? 'p':'i', framesPerSecond, bitDepth);
-     dsyslog(s);
+     dsyslog("%s", *s);
      dbgframes("\n%s", *s);
      }
 }
