@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.8 2022/11/22 15:53:07 kls Exp $
+ * $Id: menu.c 5.9 2022/12/01 13:09:04 kls Exp $
  */
 
 #include "menu.h"
@@ -3250,7 +3250,7 @@ static bool TimerStillRecording(const char *FileName)
         int Id;
         char *RemoteBuf = NULL;
         cString Remote;
-        if (2 == sscanf(TimerId, "%d@%m[^ \n]", &Id, &RemoteBuf)) {
+        if (2 == sscanf(TimerId, "%d@%m[^ \n]", &Id, &RemoteBuf) && Id != 0) {
            Remote = RemoteBuf;
            free(RemoteBuf);
            if (Interface->Confirm(tr("Timer still recording - really delete?"))) {
