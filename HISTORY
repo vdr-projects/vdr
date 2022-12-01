@@ -9821,3 +9821,4 @@ Video Disk Recorder Revision History
 - Fixed a compiler warning.
 - Fixed generating the index file in the cutter (reported by Christoph Haubrich).
 - Fixed a faulty 'Timer still recording' query when canceling an editing job.
+- Added code for the 'qks' audio track (thanks to Johann Friedrichs).

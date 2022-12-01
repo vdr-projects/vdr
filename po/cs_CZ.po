@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2021-07-01 17:10+0200\n"
+"POT-Creation-Date: 2022-12-01 21:45+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Aleš Juřík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -350,6 +350,9 @@ msgid "LanguageName$original language (qaa)"
 msgstr ""
 
 msgid "LanguageName$audio description (qad)"
+msgstr ""
+
+msgid "LanguageName$clear speech (qks)"
 msgstr ""
 
 msgid "LanguageName$uncoded languages (mis)"

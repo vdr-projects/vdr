@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 5.1 2021/05/21 09:50:57 kls Exp $
+ * $Id: i18n.c 5.2 2022/12/01 20:57:12 kls Exp $
  */
 
 /*
@@ -81,6 +81,7 @@ struct tSpecialLc { const char *Code; const char *Name; };
 const struct tSpecialLc SpecialLanguageCodeList[] = {
   { "qaa", trNOOP("LanguageName$original language (qaa)") },
   { "qad", trNOOP("LanguageName$audio description (qad)") },
+  { "qks", trNOOP("LanguageName$clear speech (qks)") },
   { "mis", trNOOP("LanguageName$uncoded languages (mis)") },
   { "mul", trNOOP("LanguageName$multiple languages (mul)") },
   { "nar", trNOOP("LanguageName$narrative (nar)") },

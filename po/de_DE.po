@@ -3,12 +3,13 @@
 # This file is distributed under the same license as the VDR package.
 # Klaus Schmidinger <vdr@tvdr.de>, 2000-2015
 # Albert Danis <a.danis@gmx.de>, 2015
+# Johann Friedrichs <johann.friedrichs@web.de>, 2022
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2021-07-01 17:10+0200\n"
+"POT-Creation-Date: 2022-12-01 14:54+0100\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -349,6 +350,9 @@ msgstr "Originalton (qaa)"
 
 msgid "LanguageName$audio description (qad)"
 msgstr "Audiodeskription (qad)"
+
+msgid "LanguageName$clear speech (qks)"
+msgstr "Klare Sprache"
 
 msgid "LanguageName$uncoded languages (mis)"
 msgstr "einzelne andere Sprachen (mis)"
