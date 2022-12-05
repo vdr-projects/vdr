@@ -116,3 +116,7 @@ VDR Plugin 'pictures' Revision History
 2021-12-27: Version 2.6.0
 
 - Official release.
+
+2022-12-05: Version 2.6.1
+
+Fixed initializing cPictureControl.

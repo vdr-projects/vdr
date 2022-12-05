@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.c 3.1 2014/02/08 12:48:12 kls Exp $
+ * $Id: player.c 5.1 2022/12/05 15:26:23 kls Exp $
  */
 
 #include "player.h"
@@ -96,8 +96,10 @@ int cPictureControl::active = 0;
 cString cPictureControl::lastDisplayed;
 
 cPictureControl::cPictureControl(cPictureEntry *Pictures, const cPictureEntry *PictureEntry, bool SlideShow)
-:cControl(player = new cPicturePlayer)
+:cControl(NULL)
 {
+  player = new cPicturePlayer;
+  SetPlayer(player);
   pictures = Pictures;
   pictureEntry = PictureEntry;
   osd = NULL;
