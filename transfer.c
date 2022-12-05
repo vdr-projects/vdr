@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 4.2 2017/12/07 15:00:33 kls Exp $
+ * $Id: transfer.c 5.1 2022/12/05 14:45:51 kls Exp $
  */
 
 #include "transfer.h"
@@ -68,8 +68,10 @@ void cTransfer::Receive(const uchar *Data, int Length)
 cDevice *cTransferControl::receiverDevice = NULL;
 
 cTransferControl::cTransferControl(cDevice *ReceiverDevice, const cChannel *Channel)
-:cControl(transfer = new cTransfer(Channel), true)
+:cControl(NULL, true)
 {
+  transfer = new cTransfer(Channel);
+  SetPlayer(transfer);
   ReceiverDevice->AttachReceiver(transfer);
   receiverDevice = ReceiverDevice;
 }

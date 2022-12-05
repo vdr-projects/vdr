@@ -2203,6 +2203,7 @@ Marko Mäkelä <marko.makela@iki.fi>
  for reporting a compiler warning about the use of strncpy() in strreplace()
  for adding support for kernel based LIRC driver
  for reporting a possible heap-use-after-free in cDvbTuner::Action()
+ for reporting a flaw in initializing cDvbPlayerControl and cTransferControl
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week

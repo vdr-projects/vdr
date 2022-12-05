@@ -9823,3 +9823,4 @@ Video Disk Recorder Revision History
 - Fixed a faulty 'Timer still recording' query when canceling an editing job.
 - Added code for the 'qks' audio track (thanks to Johann Friedrichs).
 - Fixed a possible heap-use-after-free in cDvbTuner::Action() (reported by Marko Mäkelä).
+- Fixed initializing cDvbPlayerControl and cTransferControl (reported by Marko Mäkelä).

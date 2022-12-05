@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 4.5 2020/05/18 16:47:29 kls Exp $
+ * $Id: player.h 5.1 2022/12/05 14:45:51 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -107,6 +107,7 @@ public:
          ///< Deletion of the marks themselves is handled separately, calling
          ///< this function merely tells the player to no longer display the
          ///< marks, if it has any.
+  void SetPlayer(cPlayer *Player) { player = Player; }
   double FramesPerSecond(void) const { return player ? player->FramesPerSecond() : DEFAULTFRAMESPERSECOND; }
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) const { return player ? player->GetIndex(Current, Total, SnapToIFrame) : false; }
   bool GetFrameNumber(int &Current, int &Total) const { return player ? player->GetFrameNumber(Current, Total) : false; }

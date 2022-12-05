@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.1 2022/01/13 21:41:41 kls Exp $
+ * $Id: dvbplayer.c 5.2 2022/12/05 14:45:51 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -981,8 +981,10 @@ bool cDvbPlayer::GetReplayMode(bool &Play, bool &Forward, int &Speed)
 // --- cDvbPlayerControl -----------------------------------------------------
 
 cDvbPlayerControl::cDvbPlayerControl(const char *FileName, bool PauseLive)
-:cControl(player = new cDvbPlayer(FileName, PauseLive))
+:cControl(NULL, PauseLive)
 {
+  player = new cDvbPlayer(FileName, PauseLive);
+  SetPlayer(player);
 }
 
 cDvbPlayerControl::~cDvbPlayerControl()
