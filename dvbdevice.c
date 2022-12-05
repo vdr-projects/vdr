@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.2 2022/11/14 16:31:08 kls Exp $
+ * $Id: dvbdevice.c 5.3 2022/12/05 14:04:10 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1858,16 +1858,16 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
 
   // We only check the devices that must be present - the others will be checked before accessing them://XXX
 
-  dvbTuner = new cDvbTuner(this, adapter, frontend);
-
   StartSectionHandler();
+
+  dvbTuner = new cDvbTuner(this, adapter, frontend);
 }
 
 cDvbDevice::~cDvbDevice()
 {
-  StopSectionHandler();
   delete dvbTuner;
   delete ciAdapter;
+  StopSectionHandler();
   UnBond();
   // We're not explicitly closing any device files here, since this sometimes
   // caused segfaults. Besides, the program is about to terminate anyway...
