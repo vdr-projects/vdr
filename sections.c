@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.c 5.3 2022/01/31 21:21:42 kls Exp $
+ * $Id: sections.c 5.4 2022/12/06 12:25:08 kls Exp $
  */
 
 #include "sections.h"
@@ -180,6 +180,11 @@ void cSectionHandler::Action(void)
            startFilters = false;
            }
         int NumFilters = filterHandles.Count();
+        if (NumFilters == 0) {
+           Unlock();
+           cCondWait::SleepMs(100);
+           continue;
+           }
         pollfd pfd[NumFilters];
         for (cFilterHandle *fh = filterHandles.First(); fh; fh = filterHandles.Next(fh)) {
             int i = fh->Index();

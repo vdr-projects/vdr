@@ -9816,7 +9816,7 @@ Video Disk Recorder Revision History
 - Added missing rounding when dividing frequencies in processing the NIT (thanks to
   Winfried Köhler).
 
-2022-12-05:
+2022-12-06:
 
 - Fixed a compiler warning.
 - Fixed generating the index file in the cutter (reported by Christoph Haubrich).
@@ -9824,3 +9824,5 @@ Video Disk Recorder Revision History
 - Added code for the 'qks' audio track (thanks to Johann Friedrichs).
 - Fixed a possible heap-use-after-free in cDvbTuner::Action() (reported by Marko Mäkelä).
 - Fixed initializing cDvbPlayerControl and cTransferControl (reported by Marko Mäkelä).
+- Now avoiding calling poll() in cSectionHandler::Action() if there are no filters
+  (reported by Marko Mäkelä).
