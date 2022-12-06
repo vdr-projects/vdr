@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 5.1 2021/03/17 15:24:34 kls Exp $
+ * $Id: dvbsubtitle.c 5.2 2022/12/06 16:57:01 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1770,11 +1770,13 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
      return;
   int NumAreas;
   tArea *Areas = Page->GetAreas(NumAreas);
+  if (!Areas)
+     return;
   tArea AreaCombined = Page->CombineAreas(NumAreas, Areas);
   tArea AreaOsd = Page->ScaleArea(AreaCombined, osdFactorX, osdFactorY);
   int Bpp = 8;
   bool Reduced = false;
-  if (osd && NumAreas > 0) {
+  if (osd) {
      while (osd->CanHandleAreas(&AreaOsd, 1) != oeOk) {
            dbgoutput("CanHandleAreas: %d<br>\n", osd->CanHandleAreas(&AreaOsd, 1));
            int HalfBpp = Bpp / 2;

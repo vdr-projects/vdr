@@ -9828,3 +9828,5 @@ Video Disk Recorder Revision History
   (reported by Marko Mäkelä).
 - Now avoiding the memcpy() call in cGlyph::cGlyph() if the bitmap is empty (thanks
   to Marko Mäkelä).
+- Now avoiding unnecessary processing in cDvbSubtitleConverter::FinishPage() if there
+  are no areas (thanks to Marko Mäkelä).

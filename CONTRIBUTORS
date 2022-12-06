@@ -2207,6 +2207,8 @@ Marko Mäkelä <marko.makela@iki.fi>
  for reporting a possible call to poll() in cSectionHandler::Action() without any
  filters
  for avoiding the memcpy() call in cGlyph::cGlyph() if the bitmap is empty
+ for avoiding unnecessary processing in cDvbSubtitleConverter::FinishPage() if there
+ are no areas
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
