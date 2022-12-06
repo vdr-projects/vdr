@@ -9826,3 +9826,5 @@ Video Disk Recorder Revision History
 - Fixed initializing cDvbPlayerControl and cTransferControl (reported by Marko Mäkelä).
 - Now avoiding calling poll() in cSectionHandler::Action() if there are no filters
   (reported by Marko Mäkelä).
+- Now avoiding the memcpy() call in cGlyph::cGlyph() if the bitmap is empty (thanks
+  to Marko Mäkelä).

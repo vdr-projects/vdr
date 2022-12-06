@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 5.1 2021/12/20 13:19:52 kls Exp $
+ * $Id: font.c 5.2 2022/12/06 12:30:13 kls Exp $
  */
 
 #include "font.h"
@@ -74,7 +74,8 @@ cGlyph::cGlyph(uint CharCode, FT_GlyphSlotRec_ *GlyphData)
   rows = GlyphData->bitmap.rows;
   pitch = GlyphData->bitmap.pitch;
   bitmap = MALLOC(uchar, rows * pitch);
-  memcpy(bitmap, GlyphData->bitmap.buffer, rows * pitch);
+  if (int bytes = rows * pitch)
+     memcpy(bitmap, GlyphData->bitmap.buffer, bytes);
 }
 
 cGlyph::~cGlyph()
