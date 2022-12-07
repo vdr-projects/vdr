@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.5 2022/01/24 16:53:45 kls Exp $
+ * $Id: device.c 5.6 2022/12/07 09:38:05 kls Exp $
  */
 
 #include "device.h"
@@ -249,7 +249,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
 {
   // Collect the current priorities of all CAM slots that can decrypt the channel:
   int NumCamSlots = CamSlots.Count();
-  int SlotPriority[NumCamSlots];
+  int SlotPriority[NumCamSlots + 1]; // +1 to avoid a zero sized array in case there are no CAM slots
   int NumUsableSlots = 0;
   bool InternalCamNeeded = false;
   if (Channel->Ca() >= CA_ENCRYPTED_MIN) {

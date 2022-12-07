@@ -2209,6 +2209,7 @@ Marko Mäkelä <marko.makela@iki.fi>
  for avoiding the memcpy() call in cGlyph::cGlyph() if the bitmap is empty
  for avoiding unnecessary processing in cDvbSubtitleConverter::FinishPage() if there
  are no areas
+ for avoiding a zero sized array in cDevice::GetDevice()
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
