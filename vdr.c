@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.10 2022/11/28 10:44:01 kls Exp $
+ * $Id: vdr.c 5.11 2022/12/12 10:27:38 kls Exp $
  */
 
 #include <getopt.h>
@@ -651,13 +651,6 @@ int main(int argc, char *argv[])
   if (SysLogLevel > 0)
      openlog("vdr", LOG_CONS, SysLogTarget); // LOG_PID doesn't work as expected under NPTL
 
-  // Check the video directory:
-
-  if (!DirectoryOk(VideoDirectory, true)) {
-     fprintf(stderr, "vdr: can't access video directory %s\n", VideoDirectory);
-     return 2;
-     }
-
   // Daemon mode:
 
   if (DaemonMode) {
@@ -690,6 +683,13 @@ int main(int argc, char *argv[])
         if (!DropCaps())
            return 2;
         }
+     }
+
+  // Check the video directory:
+
+  if (!DirectoryOk(VideoDirectory, true)) {
+     fprintf(stderr, "vdr: can't access video directory %s\n", VideoDirectory);
+     return 2;
      }
 
   isyslog("VDR version %s started", VDRVERSION);

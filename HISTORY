@@ -9816,7 +9816,7 @@ Video Disk Recorder Revision History
 - Added missing rounding when dividing frequencies in processing the NIT (thanks to
   Winfried Köhler).
 
-2022-12-07:
+2022-12-12:
 
 - Fixed a compiler warning.
 - Fixed generating the index file in the cutter (reported by Christoph Haubrich).
@@ -9831,3 +9831,4 @@ Video Disk Recorder Revision History
 - Now avoiding unnecessary processing in cDvbSubtitleConverter::FinishPage() if there
   are no areas (thanks to Marko Mäkelä).
 - Avoiding a zero sized array in cDevice::GetDevice() (thanks to Marko Mäkelä).
+- Now checking the video directory after setting the user id.
