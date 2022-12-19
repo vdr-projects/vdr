@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.11 2022/12/12 10:27:38 kls Exp $
+ * $Id: vdr.c 5.12 2022/12/19 15:13:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -917,10 +917,12 @@ int main(int argc, char *argv[])
     LOCK_CHANNELS_READ;
     Channels->SwitchTo(Setup.CurrentChannel);
   }
+
+  // Restore volume:
+
+  cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
   if (MuteAudio)
      cDevice::PrimaryDevice()->ToggleMute();
-  else
-     cDevice::PrimaryDevice()->SetVolume(Setup.CurrentVolume, true);
 
   // Signal handlers:
 

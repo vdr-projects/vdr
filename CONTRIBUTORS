@@ -3381,6 +3381,7 @@ Matthias Senzel <matthias.senzel@t-online.de>
  when Flush() was called
  for reporting that if an error occurs while recording, the respective entry in the list
  of recordings was not updated immediately
+ for fixing restoring the volume at program start
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
