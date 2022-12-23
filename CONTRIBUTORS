@@ -2675,6 +2675,7 @@ Jörg Wendel <vdr-ml@jwendel.de>
  for suggesting to no longer log unaligned marks in cMarks::Align()
  for reporting some warnings from g++ 7.2.0 regarding fixed buffer sizes in
  cMenuEditTimeItem::Set() and cCountdown::Update()
+ for fixing symmetry of Begin/EndSegmentTransfer() calls in cEIT::cEIT()
 
 Peter Pinnau <vdr@unterbrecher.de>
  for reporting that 'uint32_t' requires including stdint.h in font.h on some systems

@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 5.5 2022/11/22 14:33:48 kls Exp $
+ * $Id: eit.c 5.6 2022/12/23 09:47:23 kls Exp $
  */
 
 // The various ways in which broadcasters handle (or screw up) their EPG:
@@ -115,6 +115,14 @@ cEIT::cEIT(cEitTablesHash &EitTablesHash, int Source, u_char Tid, const u_char *
      return;
      }
 
+  cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(Channel, true);
+
+  if (pSchedule->OnActualTp(Tid) && (Tid & 0xF0) == 0x60) {
+     SchedulesStateKey.Remove(false);
+     ChannelsStateKey.Remove(false);
+     return;
+     }
+
   if (!EpgHandlers.BeginSegmentTransfer(Channel)) {
      SchedulesStateKey.Remove(false);
      ChannelsStateKey.Remove(false);
@@ -123,13 +131,6 @@ cEIT::cEIT(cEitTablesHash &EitTablesHash, int Source, u_char Tid, const u_char *
 
   bool ChannelsModified = false;
   bool handledExternally = EpgHandlers.HandledExternally(Channel);
-  cSchedule *pSchedule = (cSchedule *)Schedules->GetSchedule(Channel, true);
-
-  if (pSchedule->OnActualTp(Tid) && (Tid & 0xF0) == 0x60) {
-     SchedulesStateKey.Remove(false);
-     ChannelsStateKey.Remove(false);
-     return;
-     }
 
   bool Empty = true;
   bool Modified = false;
