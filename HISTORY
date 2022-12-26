@@ -9833,10 +9833,12 @@ Video Disk Recorder Revision History
 - Avoiding a zero sized array in cDevice::GetDevice() (thanks to Marko Mäkelä).
 - Now checking the video directory after setting the user id.
 
-2022-12-24:
+2022-12-26:
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed restoring the volume at program start (thanks to Matthias Senzel).
 - Fixed symmetry of Begin/EndSegmentTransfer() calls in cEIT::cEIT() (thanks to
   Jörg Wendel).
 - Added a note to epg.h about not messing with event ids (suggested by Winfried Köhler).
+- Added a note to vdr.5 about event ids possibly changing when an event moves from
+  one table to another.
