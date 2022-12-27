@@ -9842,3 +9842,4 @@ Video Disk Recorder Revision History
 - Added a note to epg.h about not messing with event ids (suggested by Winfried Köhler).
 - Added a note to vdr.5 about event ids possibly changing when an event moves from
   one table to another.
+- Fixed initializing cDvbPlayerControl (was broken in version 2.6.3).
