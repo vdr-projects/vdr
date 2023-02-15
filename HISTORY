@@ -9846,3 +9846,5 @@ Video Disk Recorder Revision History
 - Reverted 'Fixed a possible crash if an editing process is canceled while the edited
   recording is being replayed' (introduced in version 2.6.2), because it caused a
   deadlock when moving recordings between volumes.
+- Fixed a possible crash if an editing process is canceled while the edited recording
+  is being replayed (new solution).

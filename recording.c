@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.21 2023/02/15 14:01:20 kls Exp $
+ * $Id: recording.c 5.22 2023/02/15 14:59:25 kls Exp $
  */
 
 #include "recording.h"
@@ -312,23 +312,31 @@ bool cResumeFile::Save(int Index)
            if (safe_write(f, &Index, sizeof(Index)) < 0)
               LOG_ERROR_STR(fileName);
            close(f);
-           LOCK_RECORDINGS_WRITE;
-           Recordings->ResetResume(fileName);
-           return true;
            }
+        else
+           return false;
         }
      else {
         FILE *f = fopen(fileName, "w");
         if (f) {
            fprintf(f, "I %d\n", Index);
            fclose(f);
-           LOCK_RECORDINGS_WRITE;
-           Recordings->ResetResume(fileName);
            }
-        else
+        else {
            LOG_ERROR_STR(fileName);
-        return true;
+           return false;
+           }
         }
+     // Not using LOCK_RECORDINGS_WRITE here, because we might already hold a lock in cRecordingsHandler::Action()
+     // and end up here if an editing process is canceled while the edited recording is being replayed. The worst
+     // that can happen if we don't get this lock here is that the resume info in the Recordings list is not updated,
+     // but that doesn't matter because the recording is deleted, anyway.
+     cStateKey StateKey;
+     if (cRecordings *Recordings = cRecordings::GetRecordingsWrite(StateKey, 1)) {
+        Recordings->ResetResume(fileName);
+        StateKey.Remove();
+        }
+     return true;
      }
   return false;
 }
