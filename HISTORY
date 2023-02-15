@@ -9833,7 +9833,7 @@ Video Disk Recorder Revision History
 - Avoiding a zero sized array in cDevice::GetDevice() (thanks to Marko Mäkelä).
 - Now checking the video directory after setting the user id.
 
-2022-12-26:
+2023-02-15:
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed restoring the volume at program start (thanks to Matthias Senzel).
@@ -9843,3 +9843,6 @@ Video Disk Recorder Revision History
 - Added a note to vdr.5 about event ids possibly changing when an event moves from
   one table to another.
 - Fixed initializing cDvbPlayerControl (was broken in version 2.6.3).
+- Reverted 'Fixed a possible crash if an editing process is canceled while the edited
+  recording is being replayed' (introduced in version 2.6.2), because it caused a
+  deadlock when moving recordings between volumes.

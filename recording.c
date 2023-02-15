@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.20 2022/12/01 12:47:33 kls Exp $
+ * $Id: recording.c 5.21 2023/02/15 14:01:20 kls Exp $
  */
 
 #include "recording.h"
@@ -1889,8 +1889,8 @@ public:
   void SetCanceled(void) { usage |= ruCanceled; }
   const char *FileNameSrc(void) const { return fileNameSrc; }
   const char *FileNameDst(void) const { return fileNameDst; }
-  bool Active(void);
-  void Cleanup(void);
+  bool Active(cRecordings *Recordings);
+  void Cleanup(cRecordings *Recordings);
   };
 
 cRecordingsHandlerEntry::cRecordingsHandlerEntry(int Usage, const char *FileNameSrc, const char *FileNameDst)
@@ -1921,7 +1921,7 @@ int cRecordingsHandlerEntry::Usage(const char *FileName) const
   return u;
 }
 
-bool cRecordingsHandlerEntry::Active(void)
+bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
 {
   if ((usage & ruCanceled) != 0)
      return false;
@@ -1941,7 +1941,6 @@ bool cRecordingsHandlerEntry::Active(void)
      copier = NULL;
      }
   // Now check if there is something to start:
-  LOCK_RECORDINGS_WRITE;
   if ((Usage() & ruPending) != 0) {
      if ((Usage() & ruCut) != 0) {
         cutter = new cCutter(FileNameSrc());
@@ -1954,6 +1953,7 @@ bool cRecordingsHandlerEntry::Active(void)
         copier->Start();
         }
      ClearPending();
+     Recordings->SetModified(); // to trigger a state change
      return true;
      }
   // We're done:
@@ -1966,11 +1966,12 @@ bool cRecordingsHandlerEntry::Active(void)
         Recordings->DelByName(Recording.FileName());
         }
      }
+  Recordings->SetModified(); // to trigger a state change
   Recordings->TouchUpdate();
   return false;
 }
 
-void cRecordingsHandlerEntry::Cleanup(void)
+void cRecordingsHandlerEntry::Cleanup(cRecordings *Recordings)
 {
   if ((usage & ruCut)) {          // this was a cut operation...
      if (cutter                   // ...which had not yet ended...
@@ -1979,7 +1980,6 @@ void cRecordingsHandlerEntry::Cleanup(void)
            delete cutter;
            cutter = NULL;
            }
-        LOCK_RECORDINGS_WRITE;
         cVideoDirectory::RemoveVideoFile(fileNameDst);
         Recordings->DelByName(fileNameDst);
         }
@@ -1992,7 +1992,6 @@ void cRecordingsHandlerEntry::Cleanup(void)
         delete copier;
         copier = NULL;
         }
-     LOCK_RECORDINGS_WRITE;
      cVideoDirectory::RemoveVideoFile(fileNameDst);
      if ((usage & ruMove) != 0)
         Recordings->AddByName(fileNameSrc);
@@ -2021,11 +2020,13 @@ void cRecordingsHandler::Action(void)
   while (Running()) {
         bool Sleep = false;
         {
+          LOCK_RECORDINGS_WRITE;
+          Recordings->SetExplicitModify();
           cMutexLock MutexLock(&mutex);
           if (cRecordingsHandlerEntry *r = operations.First()) {
-             if (!r->Active()) {
+             if (!r->Active(Recordings)) {
                 error |= r->Error();
-                r->Cleanup();
+                r->Cleanup(Recordings);
                 operations.Del(r);
                 }
              else
