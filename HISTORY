@@ -9850,3 +9850,4 @@ Video Disk Recorder Revision History
   is being replayed (new solution).
 - Fixed unnecessary interruption of ongoing recordings if timers avoided the transfer
   mode receiver device (thanks to Markus Ehrnsperger).
+- Revised support for kernel based LIRC driver (thanks to Marko Mäkelä).

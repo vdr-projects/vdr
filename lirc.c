@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 5.1 2022/11/26 13:37:06 kls Exp $
+ * $Id: lirc.c 5.2 2023/02/16 17:15:06 kls Exp $
  */
 
 #include "lirc.h"
@@ -37,10 +37,10 @@ public:
 #if HAVE_KERNEL_LIRC
 class cLircDevRemote : public cLircRemote {
 private:
-  void Connect(const char *DeviceName);
   virtual void Action(void);
 public:
-  cLircDevRemote(const char *DeviceName);
+  cLircDevRemote(void);
+  bool Connect(const char *DeviceName);
   };
 #endif
 
@@ -64,11 +64,12 @@ cLircRemote::~cLircRemote()
 void cLircRemote::NewLircRemote(const char *Name)
 {
 #if HAVE_KERNEL_LIRC
-  if (startswith(Name, "/dev/"))
-     new cLircDevRemote(Name);
-  else
+  cLircDevRemote *r = new cLircDevRemote();
+  if (r->Connect(Name))
+     return;
+  delete r;
 #endif
-     new cLircUsrRemote(Name);
+  new cLircUsrRemote(Name);
 }
 // --- cLircUsrRemote --------------------------------------------------------
 
@@ -179,24 +180,33 @@ void cLircUsrRemote::Action(void)
 // --- cLircDevRemote --------------------------------------------------------
 
 #if HAVE_KERNEL_LIRC
-inline void cLircDevRemote::Connect(const char *DeviceName)
+bool cLircDevRemote::Connect(const char *DeviceName)
 {
   unsigned mode = LIRC_MODE_SCANCODE;
   f = open(DeviceName, O_RDONLY, 0);
-  if (f < 0)
-     LOG_ERROR_STR(DeviceName);
+  if (f < 0) {
+     switch (errno) {
+       case ENXIO:
+       case ENODEV:
+            // Do not complain about an attempt to open a lircd socket file.
+            break;
+       default:
+            LOG_ERROR_STR(DeviceName);
+       }
+     }
   else if (ioctl(f, LIRC_SET_REC_MODE, &mode)) {
      LOG_ERROR_STR(DeviceName);
      close(f);
      f = -1;
      }
+  if (f >= 0)
+     Start();
+  return f >= 0;
 }
 
-cLircDevRemote::cLircDevRemote(const char *DeviceName)
-: cLircRemote("DEV_LIRC")
+cLircDevRemote::cLircDevRemote(void)
+:cLircRemote("DEV_LIRC")
 {
-  Connect(DeviceName);
-  Start();
 }
 
 void cLircDevRemote::Action(void)
