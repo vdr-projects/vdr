@@ -9848,3 +9848,5 @@ Video Disk Recorder Revision History
   deadlock when moving recordings between volumes.
 - Fixed a possible crash if an editing process is canceled while the edited recording
   is being replayed (new solution).
+- Fixed unnecessary interruption of ongoing recordings if timers avoided the transfer
+  mode receiver device (thanks to Markus Ehrnsperger).

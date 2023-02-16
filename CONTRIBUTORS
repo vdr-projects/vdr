@@ -2550,6 +2550,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for reporting a possible crash in cIndexFile::GetClosestIFrame()
  for reporting a missing 'const' in cTimers::GetTimerForEvent()
  for suggesting to add a chapter about locking to PLUGINS.html
+ for fixing unnecessary interruption of ongoing recordings if timers avoided the
+ transfer mode receiver device
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
