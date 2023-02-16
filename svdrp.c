@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.6 2022/11/22 14:33:48 kls Exp $
+ * $Id: svdrp.c 5.7 2023/02/16 17:20:09 kls Exp $
  */
 
 #include "svdrp.h"
@@ -520,7 +520,6 @@ bool cSVDRPClient::GetRemoteTimers(cStringList &Response)
      }
   return false;
 }
-
 
 // --- cSVDRPServerParams ----------------------------------------------------
 

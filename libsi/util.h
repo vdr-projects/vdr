@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 2.3 2012/02/26 13:58:26 kls Exp $
+ *   $Id: util.h 5.1 2023/02/16 17:20:09 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -120,8 +120,6 @@ private:
    Data* data_;
    int off;
 };
-
-
 
 //abstract base class
 class Parsable {

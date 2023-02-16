@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 4.3 2020/05/15 12:32:51 kls Exp $
+ *   $Id: si.h 5.1 2023/02/16 17:20:09 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -46,7 +46,6 @@ enum TableId { TableIdPAT = 0x00, //program association section
                TableIdAIT = 0x74, //application information section
                TableIdPremiereCIT = 0xA0 //premiere content information section
              };
-
 
 enum DescriptorTag {
   // defined by ISO/IEC 13818-1
