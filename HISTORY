@@ -9833,7 +9833,7 @@ Video Disk Recorder Revision History
 - Avoiding a zero sized array in cDevice::GetDevice() (thanks to Marko Mäkelä).
 - Now checking the video directory after setting the user id.
 
-2023-02-15:
+2023-02-17: Version 2.6.4
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed restoring the volume at program start (thanks to Matthias Senzel).
