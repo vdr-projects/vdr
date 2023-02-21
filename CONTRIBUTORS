@@ -2552,6 +2552,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for suggesting to add a chapter about locking to PLUGINS.html
  for fixing unnecessary interruption of ongoing recordings if timers avoided the
  transfer mode receiver device
+ for reporting broken video data streams on systems without output device when switching
+ live channel to a different transponder while recording
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

@@ -9851,3 +9851,8 @@ Video Disk Recorder Revision History
 - Fixed unnecessary interruption of ongoing recordings if timers avoided the transfer
   mode receiver device (thanks to Markus Ehrnsperger).
 - Revised support for kernel based LIRC driver (thanks to Marko Mäkelä).
+
+2023-02-21:
+
+- Fixed broken video data streams on systems without output device when switching live
+  channel to a different transponder while recording (reported by Markus Ehrnsperger).

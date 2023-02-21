@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.7 2023/02/16 14:53:38 kls Exp $
+ * $Id: device.c 5.8 2023/02/21 09:31:47 kls Exp $
  */
 
 #include "device.h"
@@ -807,6 +807,10 @@ bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
 {
   if (LiveView) {
+     if (!PrimaryDevice()->CanReplay()) {
+        isyslog("can't switch to live channel %d %s (%s)", Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
+        return false;
+        }
      isyslog("switching to channel %d %s (%s)", Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
                            // and, if decrypted, this removes the now superfluous PIDs from the CAM, too
