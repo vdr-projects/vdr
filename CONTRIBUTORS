@@ -2468,6 +2468,8 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for fixing handling zero bytes in cH264Parser
  for implementing parsing frame rate and image size for MPEG2, H.264 and H.265
  for reporting a bug in generating the index file in the cutter
+ for adding the frame width, height, scan type and aspect ratio of a recording to the 'F'
+ tag of the 'info' file
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

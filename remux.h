@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.2 2021/12/25 14:11:39 kls Exp $
+ * $Id: remux.h 5.3 2023/12/27 09:30:42 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -504,6 +504,25 @@ void PesDump(const char *Name, const u_char *Data, int Length);
 
 class cFrameParser;
 
+enum eScanType {
+  stUnknown     = 0,
+  stProgressive = 1,
+  stInterlaced  = 2,
+  stMax
+  };
+
+enum eAspectRatio {
+  arUnknown = 0,
+  ar_1_1    = 1,
+  ar_4_3    = 2,
+  ar_16_9   = 3,
+  ar_2_21_1 = 4,
+  arMax
+  };
+
+extern const char *ScanTypeChars;
+extern const char *AspectRatioTexts[];
+
 class cFrameDetector {
 private:
   enum { MaxPtsValues = 150 };
@@ -517,6 +536,10 @@ private:
   int numIFrames;
   bool isVideo;
   double framesPerSecond;
+  uint16_t frameWidth;
+  uint16_t frameHeight;
+  eScanType scanType;
+  eAspectRatio aspectRatio;
   int framesInPayloadUnit;
   int framesPerPayloadUnit; // Some broadcasters send one frame per payload unit (== 1),
                             // while others put an entire GOP into one payload unit (> 1).
@@ -547,6 +570,14 @@ public:
   double FramesPerSecond(void) { return framesPerSecond; }
       ///< Returns the number of frames per second, or 0 if this information is not
       ///< available.
+  uint16_t FrameWidth(void) { return frameWidth; }
+      ///< Returns the frame width, or 0 if this information is not available.
+  uint16_t FrameHeight(void) { return frameHeight; }
+      ///< Returns the frame height, or 0 if this information is not available.
+  eScanType ScanType(void) { return scanType; }
+      ///< Returns the scan type, or stUnknown if this information is not available.
+  eAspectRatio AspectRatio(void) { return aspectRatio; }
+      ///< Returns the aspect ratio, or arUnknown if this information is not available.
   };
 
 #endif // __REMUX_H

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.4 2021/06/19 14:21:16 kls Exp $
+ * $Id: recorder.c 5.5 2023/12/28 21:22:29 kls Exp $
  */
 
 #include "recorder.h"
@@ -326,8 +326,12 @@ void cRecorder::Action(void)
                  break;
               if (frameDetector->Synced()) {
                  if (!InfoWritten) {
-                    if (frameDetector->FramesPerSecond() > 0 && DoubleEqual(recordingInfo->FramesPerSecond(), DEFAULTFRAMESPERSECOND) && !DoubleEqual(recordingInfo->FramesPerSecond(), frameDetector->FramesPerSecond())) {
+                    if ((frameDetector->FramesPerSecond() > 0 && DoubleEqual(recordingInfo->FramesPerSecond(), DEFAULTFRAMESPERSECOND) && !DoubleEqual(recordingInfo->FramesPerSecond(), frameDetector->FramesPerSecond())) ||
+                        frameDetector->FrameWidth()  != recordingInfo->FrameWidth()  ||
+                        frameDetector->FrameHeight() != recordingInfo->FrameHeight() ||
+                        frameDetector->AspectRatio() != recordingInfo->AspectRatio()) {
                        recordingInfo->SetFramesPerSecond(frameDetector->FramesPerSecond());
+                       recordingInfo->SetFrameParams(frameDetector->FrameWidth(), frameDetector->FrameHeight(), frameDetector->ScanType(), frameDetector->AspectRatio());
                        recordingInfo->Write();
                        LOCK_RECORDINGS_WRITE;
                        Recordings->UpdateByName(recordingName);

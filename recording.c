@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.22 2023/02/15 14:59:25 kls Exp $
+ * $Id: recording.c 5.23 2023/12/28 21:22:42 kls Exp $
  */
 
 #include "recording.h"
@@ -24,7 +24,6 @@
 #include "i18n.h"
 #include "interface.h"
 #include "menu.h"
-#include "remux.h"
 #include "ringbuffer.h"
 #include "skins.h"
 #include "svdrp.h"
@@ -363,6 +362,10 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
   event = ownEvent ? ownEvent : Event;
   aux = NULL;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
+  frameWidth = 0;
+  frameHeight = 0;
+  scanType = stUnknown;
+  aspectRatio = arUnknown;
   priority = MAXPRIORITY;
   lifetime = MAXLIFETIME;
   fileName = NULL;
@@ -424,6 +427,10 @@ cRecordingInfo::cRecordingInfo(const char *FileName)
   aux = NULL;
   errors = -1;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
+  frameWidth = 0;
+  frameHeight = 0;
+  scanType = stUnknown;
+  aspectRatio = arUnknown;
   priority = MAXPRIORITY;
   lifetime = MAXLIFETIME;
   fileName = strdup(cString::sprintf("%s%s", FileName, INFOFILESUFFIX));
@@ -456,6 +463,14 @@ void cRecordingInfo::SetAux(const char *Aux)
 void cRecordingInfo::SetFramesPerSecond(double FramesPerSecond)
 {
   framesPerSecond = FramesPerSecond;
+}
+
+void cRecordingInfo::SetFrameParams(uint16_t FrameWidth, uint16_t FrameHeight, eScanType ScanType, eAspectRatio AspectRatio)
+{
+  frameWidth  = FrameWidth;
+  frameHeight = FrameHeight;
+  scanType = ScanType;
+  aspectRatio = AspectRatio;
 }
 
 void cRecordingInfo::SetFileName(const char *FileName)
@@ -507,7 +522,35 @@ bool cRecordingInfo::Read(FILE *f)
                             }
                        }
                        break;
-             case 'F': framesPerSecond = atod(t);
+             case 'F': {
+                         char *fpsBuf = NULL;
+                         char scanTypeCode;
+                         char *arBuf = NULL;
+                         int n = sscanf(t, "%m[^ ] %hu %hu %c %m[^\n]", &fpsBuf, &frameWidth, &frameHeight, &scanTypeCode, &arBuf);
+                         if (n >= 1) {
+                            framesPerSecond = atod(fpsBuf);
+                            if (n >= 4) {
+                               scanType = stUnknown;
+                               for (int st = stUnknown + 1; st < stMax; st++) {
+                                   if (ScanTypeChars[st] == scanTypeCode) {
+                                      scanType = eScanType(st);
+                                      break;
+                                      }
+                                   }
+                               aspectRatio = arUnknown;
+                               if (n == 5) {
+                                  for (int ar = arUnknown + 1; ar < arMax; ar++) {
+                                      if (strcmp(arBuf, AspectRatioTexts[ar]) == 0) {
+                                         aspectRatio = eAspectRatio(ar);
+                                         break;
+                                         }
+                                      }
+                                  }
+                               }
+                            }
+                         free(fpsBuf);
+                         free(arBuf);
+                       }
                        break;
              case 'L': lifetime = atoi(t);
                        break;
@@ -536,7 +579,10 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
   if (channelID.Valid())
      fprintf(f, "%sC %s%s%s\n", Prefix, *channelID.ToString(), channelName ? " " : "", channelName ? channelName : "");
   event->Dump(f, Prefix, true);
-  fprintf(f, "%sF %s\n", Prefix, *dtoa(framesPerSecond, "%.10g"));
+  if (frameWidth > 0 && frameHeight > 0)
+     fprintf(f, "%sF %s %s %s %c %s\n", Prefix, *dtoa(framesPerSecond, "%.10g"), *itoa(frameWidth), *itoa(frameHeight), ScanTypeChars[scanType], AspectRatioTexts[aspectRatio]);
+  else
+     fprintf(f, "%sF %s\n", Prefix, *dtoa(framesPerSecond, "%.10g"));
   fprintf(f, "%sP %d\n", Prefix, priority);
   fprintf(f, "%sL %d\n", Prefix, lifetime);
   fprintf(f, "%sO %d\n", Prefix, errors);
@@ -2520,8 +2566,12 @@ void cIndexFileGenerator::Action(void)
      if (IndexFileWritten) {
         cRecordingInfo RecordingInfo(recordingName);
         if (RecordingInfo.Read()) {
-           if (FrameDetector.FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), FrameDetector.FramesPerSecond())) {
+           if ((FrameDetector.FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), FrameDetector.FramesPerSecond())) ||
+               FrameDetector.FrameWidth()  != RecordingInfo.FrameWidth()  ||
+               FrameDetector.FrameHeight() != RecordingInfo.FrameHeight() ||
+               FrameDetector.AspectRatio() != RecordingInfo.AspectRatio()) {
               RecordingInfo.SetFramesPerSecond(FrameDetector.FramesPerSecond());
+              RecordingInfo.SetFrameParams(FrameDetector.FrameWidth(), FrameDetector.FrameHeight(), FrameDetector.ScanType(), FrameDetector.AspectRatio());
               RecordingInfo.Write();
               LOCK_RECORDINGS_WRITE;
               Recordings->UpdateByName(recordingName);

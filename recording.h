@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.5 2021/05/23 15:03:17 kls Exp $
+ * $Id: recording.h 5.6 2023/12/27 09:21:29 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -17,6 +17,7 @@
 #include "thread.h"
 #include "timers.h"
 #include "tools.h"
+#include "remux.h"
 
 #define FOLDERDELIMCHAR '~'
 
@@ -69,6 +70,10 @@ private:
   cEvent *ownEvent;
   char *aux;
   double framesPerSecond;
+  uint16_t frameWidth;
+  uint16_t frameHeight;
+  eScanType scanType;
+  eAspectRatio aspectRatio;
   int priority;
   int lifetime;
   char *fileName;
@@ -87,7 +92,14 @@ public:
   const cComponents *Components(void) const { return event->Components(); }
   const char *Aux(void) const { return aux; }
   double FramesPerSecond(void) const { return framesPerSecond; }
+  uint16_t FrameWidth(void) const { return frameWidth; }
+  uint16_t FrameHeight(void) const { return frameHeight; }
+  eScanType ScanType(void) const { return scanType; }
+  char ScanTypeChar(void) const { return ScanTypeChars[scanType]; }
+  eAspectRatio AspectRatio(void) const { return aspectRatio; }
+  const char *AspectRatioText(void) const { return AspectRatioTexts[aspectRatio]; }
   void SetFramesPerSecond(double FramesPerSecond);
+  void SetFrameParams(uint16_t FrameWidth, uint16_t FrameHeight, eScanType ScanType, eAspectRatio AspectRatio);
   void SetFileName(const char *FileName);
   int Errors(void) const { return errors; } // returns -1 if undefined
   void SetErrors(int Errors);

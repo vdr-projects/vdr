@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
-  * $Id: remux.c 5.5 2022/11/30 14:38:46 kls Exp $
+  * $Id: remux.c 5.6 2023/12/28 21:22:47 kls Exp $
  */
 
 #include "remux.h"
@@ -1177,7 +1177,8 @@ protected:
   uint16_t frameWidth;
   uint16_t frameHeight;
   double framesPerSecond;
-  bool progressive;
+  eScanType scanType;
+  eAspectRatio aspectRatio;
 public:
   cFrameParser(void);
   virtual ~cFrameParser() {};
@@ -1195,7 +1196,8 @@ public:
   uint16_t FrameWidth(void) { return frameWidth; }
   uint16_t FrameHeight(void) { return frameHeight; }
   double FramesPerSecond(void) { return framesPerSecond; }
-  bool Progressive(void) { return progressive; }
+  eScanType ScanType(void) { return scanType; }
+  eAspectRatio AspectRatio(void) { return aspectRatio; }
   };
 
 cFrameParser::cFrameParser(void)
@@ -1207,7 +1209,8 @@ cFrameParser::cFrameParser(void)
   frameWidth = 0;
   frameHeight = 0;
   framesPerSecond = 0.0;
-  progressive = false;
+  scanType = stUnknown;
+  aspectRatio = arUnknown;
 }
 
 // --- cAudioParser ----------------------------------------------------------
@@ -1322,17 +1325,24 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
          uchar b = tsPayload.GetByte(); // ignoring two MSB of width and height in sequence extension
          frameWidth |= b >> 4;          // as 12 Bit = max 4095 should be sufficient for all available MPEG2 streams
          frameHeight = (b & 0x0F) << 8 | tsPayload.GetByte();
-         b = tsPayload.GetByte();
+         b = tsPayload.GetByte();  // hi: aspect ratio info, lo: frame rate code
+         switch (b >> 4) {
+           case 1: aspectRatio = ar_1_1;    break;
+           case 2: aspectRatio = ar_4_3;    break;
+           case 3: aspectRatio = ar_16_9;   break;
+           case 4: aspectRatio = ar_2_21_1; break;
+           default: aspectRatio = arUnknown;
+           }
          uchar frame_rate_value = b & 0x0F;
          if (frame_rate_value > 0 && frame_rate_value <= 8)
             framesPerSecond = frame_rate_table[frame_rate_value];
          }
       else if (!seenScanType && scanner == 0x000001B5) { // Extension start code
          if ((tsPayload.GetByte() & 0xF0) == 0x10) {  // Sequence Extension
-            progressive = (tsPayload.GetByte() & 0x40) != 0;
+            scanType = (tsPayload.GetByte() & 0x40) ? stProgressive : stInterlaced;
             seenScanType = true;
             if (debug) {
-               cString s = cString::sprintf("MPEG2: %d x %d%c %.2f fps", frameWidth, frameHeight, progressive ? 'p' : 'i', framesPerSecond);
+               cString s = cString::sprintf("MPEG2: %d x %d%c %.2f fps %s", frameWidth, frameHeight, ScanTypeChars[scanType], framesPerSecond, AspectRatioTexts[aspectRatio]);
                dsyslog("%s", *s);
                dbgframes("\n%s", *s);
                }
@@ -1553,7 +1563,7 @@ void cH264Parser::ParseSequenceParameterSet(void)
   uint16_t frame_Height = 16 * (1 + GetGolombUe()); // pic_height_in_map_units_minus1
   frame_mbs_only_flag = GetBit(); // frame_mbs_only_flag
   if (frameWidth == 0) {
-     progressive = frame_mbs_only_flag;
+     scanType = frame_mbs_only_flag ? stProgressive : stInterlaced;
      if (!frame_mbs_only_flag) {
         GetBit(); // mb_adaptive_frame_field_flag
         frame_Height *= 2;
@@ -1584,8 +1594,11 @@ void cH264Parser::ParseSequenceParameterSet(void)
      if (GetBit()) {     // vui_parameters_present_flag
         if (GetBit()) {  // aspect_ratio_info_present
            int aspect_ratio_idc = GetBits(8);  // aspect_ratio_idc
-           if (aspect_ratio_idc == 255)
-              GetBits(32);
+           if (aspect_ratio_idc == 255)        // EXTENDED_SAR
+              GetBits(32);                     // sar_width, sar_height
+           else if (frameHeight >= 720 && (aspect_ratio_idc == 1 || aspect_ratio_idc == 14 || aspect_ratio_idc == 15 || aspect_ratio_idc == 16))
+              aspectRatio = ar_16_9;
+           // implement decoding of other aspect_ratio_idc values when they are required
            }
         if (GetBit()) // overscan_info_present_flag
            GetBit();  // overscan_approriate_flag
@@ -1606,7 +1619,7 @@ void cH264Parser::ParseSequenceParameterSet(void)
            }
         }
      if (debug) {
-        cString s = cString::sprintf("H.264: %d x %d%c %.2f fps %d Bit", frameWidth, frameHeight, progressive ? 'p':'i', framesPerSecond, bitDepth);
+        cString s = cString::sprintf("H.264: %d x %d%c %.2f fps %d Bit %s", frameWidth, frameHeight, ScanTypeChars[scanType], framesPerSecond, bitDepth, AspectRatioTexts[aspectRatio]);
         dsyslog("%s", *s);
         dbgframes("\n%s", *s);
         }
@@ -1737,7 +1750,7 @@ void cH265Parser::ParseSequenceParameterSet(void)
   GetByte();
   GetByte();
   bool general_progressive_source_flag = GetBit(); // general_progressive_source_flag
-  progressive = general_progressive_source_flag;
+  scanType = general_progressive_source_flag ? stProgressive : stInterlaced;
   GetBit(); // general_interlaced_source_flag
   GetBits(6);
   GetByte();
@@ -1880,6 +1893,9 @@ void cH265Parser::ParseSequenceParameterSet(void)
         int aspect_ratio_idc = GetBits(8); // aspect_ratio_idc
         if (aspect_ratio_idc == 255)       // EXTENDED_SAR
            GetBits(32);                    // sar_width, sar_height
+        else if (aspect_ratio_idc == 1 || aspect_ratio_idc == 14)
+           aspectRatio = ar_16_9;
+        // implement decoding of other aspect_ratio_idc values when they are required
         }
      if (GetBit())      // overscan_info_present_flag
         GetBit();       // overscan_appropriate_flag
@@ -1907,13 +1923,23 @@ void cH265Parser::ParseSequenceParameterSet(void)
         }
      }
   if (debug) {
-     cString s = cString::sprintf("H.265: %d x %d%c %.2f fps %d Bit", frameWidth, frameHeight, progressive ? 'p':'i', framesPerSecond, bitDepth);
+     cString s = cString::sprintf("H.265: %d x %d%c %.2f fps %d Bit %s", frameWidth, frameHeight, ScanTypeChars[scanType], framesPerSecond, bitDepth, AspectRatioTexts[aspectRatio]);
      dsyslog("%s", *s);
      dbgframes("\n%s", *s);
      }
 }
 
 // --- cFrameDetector --------------------------------------------------------
+
+const char *ScanTypeChars = "-pi";  // index is eScanType
+const char *AspectRatioTexts[] = {  // index is eAspectRatio
+  "-",
+  "1:1",
+  "4:3",
+  "16:9",
+  "2.21:1",
+  NULL
+  };
 
 cFrameDetector::cFrameDetector(int Pid, int Type)
 {
@@ -1924,6 +1950,10 @@ cFrameDetector::cFrameDetector(int Pid, int Type)
   numPtsValues = 0;
   numIFrames = 0;
   framesPerSecond = 0;
+  frameWidth = 0;
+  frameHeight = 0;
+  scanType = stUnknown;
+  aspectRatio = arUnknown;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
   scanning = false;
 }
@@ -1991,6 +2021,10 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        else {
                           if (parser->FramesPerSecond() > 0.0) {
                              framesPerSecond = parser->FramesPerSecond();
+                             frameWidth = parser->FrameWidth();
+                             frameHeight = parser->FrameHeight();
+                             scanType = parser->ScanType();
+                             aspectRatio = parser->AspectRatio();
                              synced = true;
                              parser->SetDebug(false);
                              }
