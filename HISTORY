@@ -9852,9 +9852,11 @@ Video Disk Recorder Revision History
   mode receiver device (thanks to Markus Ehrnsperger).
 - Revised support for kernel based LIRC driver (thanks to Marko Mäkelä).
 
-2023-12-28:
+2023-12-29:
 
 - Fixed broken video data streams on systems without output device when switching live
   channel to a different transponder while recording (reported by Markus Ehrnsperger).
 - The frame width, height, scan type and apect ratio of a recording are now stored in
   the 'info' file under the 'F' tag (thanks to Christoph Haubrich).
+- Added the function cRecordingInfo::FrameParams(), which can be used to get a nicely
+  formatted string with all the available frame data.

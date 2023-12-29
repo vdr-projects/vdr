@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.6 2023/12/27 09:21:29 kls Exp $
+ * $Id: recording.h 5.7 2023/12/29 10:48:25 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -98,6 +98,7 @@ public:
   char ScanTypeChar(void) const { return ScanTypeChars[scanType]; }
   eAspectRatio AspectRatio(void) const { return aspectRatio; }
   const char *AspectRatioText(void) const { return AspectRatioTexts[aspectRatio]; }
+  cString FrameParams(void) const;
   void SetFramesPerSecond(double FramesPerSecond);
   void SetFrameParams(uint16_t FrameWidth, uint16_t FrameHeight, eScanType ScanType, eAspectRatio AspectRatio);
   void SetFileName(const char *FileName);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.23 2023/12/28 21:22:42 kls Exp $
+ * $Id: recording.c 5.24 2023/12/29 10:48:25 kls Exp $
  */
 
 #include "recording.h"
@@ -623,6 +623,27 @@ bool cRecordingInfo::Write(void) const
         LOG_ERROR_STR(fileName);
      }
   return Result;
+}
+
+cString cRecordingInfo::FrameParams(void) const
+{
+  cString s;
+  if (frameWidth && frameHeight) {
+     s = cString::sprintf("%dx%d", frameWidth, frameHeight);
+     if (framesPerSecond > 0) {
+        if (*s)
+           s.Append("/");
+        s.Append(dtoa(framesPerSecond, "%.2g"));
+        if (scanType != stUnknown)
+           s.Append(ScanTypeChar());
+        }
+     if (aspectRatio != arUnknown) {
+        if (*s)
+           s.Append(" ");
+        s.Append(AspectRatioText());
+        }
+     }
+  return s;
 }
 
 // --- cRecording ------------------------------------------------------------
