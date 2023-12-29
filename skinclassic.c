@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 5.1 2021/07/01 15:40:46 kls Exp $
+ * $Id: skinclassic.c 5.2 2023/12/29 10:48:40 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -421,7 +421,13 @@ void cSkinClassicDisplayMenu::SetRecording(const cRecording *Recording)
      }
   y += font->Height();
   if (!isempty(Info->Description())) {
-     textScroller.Set(osd, x1, y, x2 - x1, y3 - y, Info->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
+     cString d = Info->Description();
+     cString f = Info->FrameParams();
+     if (*f) {
+        d.Append("\n\n");
+        d.Append(f);
+        }
+     textScroller.Set(osd, x1, y, x2 - x1, y3 - y, d, font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
      SetTextScrollbar();
      }
 }

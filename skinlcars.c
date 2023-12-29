@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 5.3 2021/07/01 15:40:46 kls Exp $
+ * $Id: skinlcars.c 5.4 2023/12/29 10:48:40 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -1729,7 +1729,13 @@ void cSkinLCARSDisplayMenu::SetRecording(const cRecording *Recording)
   if (!isempty(Info->Description())) {
      int yt = y;
      int yb = yi01;
-     textScroller.Set(osd, xl, yt, xi01 - xl, yb - yt, Info->Description(), font, Theme.Color(clrEventDescription), Theme.Color(clrBackground));
+     cString d = Info->Description();
+     cString f = Info->FrameParams();
+     if (*f) {
+        d.Append("\n\n");
+        d.Append(f);
+        }
+     textScroller.Set(osd, xl, yt, xi01 - xl, yb - yt, d, font, Theme.Color(clrEventDescription), Theme.Color(clrBackground));
      DrawTextScrollbar();
      }
 }

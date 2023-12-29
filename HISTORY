@@ -9860,3 +9860,5 @@ Video Disk Recorder Revision History
   the 'info' file under the 'F' tag (thanks to Christoph Haubrich).
 - Added the function cRecordingInfo::FrameParams(), which can be used to get a nicely
   formatted string with all the available frame data.
+- The recording info of the default skins now shows the frame parameters of the
+  recording at the end of the description (if such information is available).

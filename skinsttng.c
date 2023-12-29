@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 5.1 2021/07/01 15:40:46 kls Exp $
+ * $Id: skinsttng.c 5.2 2023/12/29 10:48:40 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures
@@ -745,7 +745,13 @@ void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
   if (!isempty(Info->Description())) {
      int yt = y;
      int yb = y4 - Roundness;
-     textScroller.Set(osd, xl, yt, x4 - xl, yb - yt, Info->Description(), font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
+     cString d = Info->Description();
+     cString f = Info->FrameParams();
+     if (*f) {
+        d.Append("\n\n");
+        d.Append(f);
+        }
+     textScroller.Set(osd, xl, yt, x4 - xl, yb - yt, d, font, Theme.Color(clrMenuEventDescription), Theme.Color(clrBackground));
      yb = yt + textScroller.Height();
      osd->DrawEllipse  (x1, yt - Roundness, x2, yt,             frameColor, -3);
      osd->DrawRectangle(x1, yt,             x2, yb,             frameColor);
