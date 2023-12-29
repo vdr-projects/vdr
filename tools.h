@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.6 2021/05/26 13:37:53 kls Exp $
+ * $Id: tools.h 5.7 2023/12/29 10:21:59 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -189,6 +189,7 @@ public:
   cString &operator=(const cString &String);
   cString &operator=(const char *String);
   cString &Append(const char *String);
+  cString &Append(char c);
   cString &Truncate(int Index); ///< Truncate the string at the given Index (if Index is < 0 it is counted from the end of the string).
   cString &CompactChars(char c); ///< Compact any sequence of characters 'c' to a single character, and strip all of them from the beginning and end of this string.
   static cString sprintf(const char *fmt, ...) __attribute__ ((format (printf, 1, 2)));

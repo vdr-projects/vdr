@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.7 2022/11/22 14:33:48 kls Exp $
+ * $Id: tools.c 5.8 2023/12/29 10:24:29 kls Exp $
  */
 
 #include "tools.h"
@@ -1123,6 +1123,22 @@ cString &cString::Append(const char *String)
      if (char *p = (char *)realloc(s, l1 + l2 + 1)) {
         s = p;
         strcpy(s + l1, String);
+        }
+     else
+        esyslog("ERROR: out of memory");
+     }
+  return *this;
+}
+
+cString &cString::Append(char c)
+{
+  if (c) {
+     int l1 = s ? strlen(s) : 0;
+     int l2 = 1;
+     if (char *p = (char *)realloc(s, l1 + l2 + 1)) {
+        s = p;
+        *(s + l1) = c;
+        *(s + l1 + 1) = 0;
         }
      else
         esyslog("ERROR: out of memory");
