@@ -9852,7 +9852,7 @@ Video Disk Recorder Revision History
   mode receiver device (thanks to Markus Ehrnsperger).
 - Revised support for kernel based LIRC driver (thanks to Marko Mäkelä).
 
-2023-12-29:
+2023-12-30: Version 2.6.5
 
 - Fixed broken video data streams on systems without output device when switching live
   channel to a different transponder while recording (reported by Markus Ehrnsperger).
