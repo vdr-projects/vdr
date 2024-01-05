@@ -9862,3 +9862,7 @@ Video Disk Recorder Revision History
   formatted string with all the available frame data.
 - The recording info of the default skins now shows the frame parameters of the
   recording at the end of the description (if such information is available).
+
+2024-01-05:
+
+- Changed installing config files to handle potentially broken 'cp -n'.

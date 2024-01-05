@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 5.1 2020/12/31 11:11:53 kls Exp $
+# $Id: Makefile 5.2 2024/01/05 14:16:16 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -300,7 +300,12 @@ install-dirs:
 	@mkdir -p $(DESTDIR)$(RESDIR)
 
 install-conf: install-dirs
-	@cp -pn *.conf $(DESTDIR)$(CONFDIR)
+	# 'cp -n' may be broken, so let's do it the hard way
+	@for i in *.conf; do\
+	     if ! [ -e $(DESTDIR)$(CONFDIR)/$$i ] ; then\
+	        cp -p $$i $(DESTDIR)$(CONFDIR);\
+	        fi\
+	     done
 
 # Documentation:
 
