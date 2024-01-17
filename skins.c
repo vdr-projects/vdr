@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 4.2 2019/05/29 16:43:09 kls Exp $
+ * $Id: skins.c 5.1 2024/01/17 21:15:48 kls Exp $
  */
 
 #include "skins.h"
@@ -162,7 +162,7 @@ cSkinDisplayReplay::cProgressBar::cProgressBar(int Width, int Height, int Curren
                const cMark *m2 = Marks->Next(m);
                int p2 = Pos(m2 ? m2->Position() : total);
                int h = Height / 3;
-               DrawRectangle(p1, h, p2, Height - h, ColorSelected);
+               DrawRectangle(p1, h, p2, Height - h - 1, ColorSelected);
                }
             Mark(p1, Start, m->Position() == Current, ColorMark, ColorCurrent);
             Start = !Start;
