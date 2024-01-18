@@ -3750,3 +3750,6 @@ Timo Weingärtner <timo@tiwe.de>
 
 Jose Angel <joseangelpp@gmail.com>
  for reporting a bug in default values for DVB-T
+
+Andreas Baierl <post@andreasbaierl.de>
+ for implementing scaling images

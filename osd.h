@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 5.1 2021/05/21 12:54:08 kls Exp $
+ * $Id: osd.h 5.2 2024/01/18 12:04:57 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -447,6 +447,11 @@ public:
        ///< Clears the image data by setting all pixels to be fully transparent.
   void Fill(tColor Color);
        ///< Fills the image data with the given Color.
+  cImage *Scaled(double FactorX, double FactorY, bool AntiAlias = false) const;
+       ///< Creates a copy of this image, scaled by the given factors.
+       ///< If AntiAlias is true and either of the factors is greater than 1.0,
+       ///< anti-aliasing is applied.
+       ///< The caller must delete the returned image once it is no longer used.
   };
 
 #define MAXPIXMAPLAYERS    8
@@ -602,6 +607,23 @@ public:
        ///< the given Point. ImageHandle must be a value that has previously been
        ///< returned by a call to cOsdProvider::StoreImage(). If ImageHandle
        ///< has an invalid value, nothing happens.
+  virtual void DrawScaledImage(const cPoint &Point, const cImage &Image, double FactorX, double FactorY, bool AntiAlias = false) {};
+       ///< Draws the given Image into this pixmap at the given Point and scales it.
+       ///< If AntiAlias is true and either of the factors is greater than
+       ///< 1.0, anti-aliasing is applied.
+       ///< This function should be 'pure', just like all the others. However, since it was
+       ///< introduced when this class was already in widespread use, the default was made
+       ///< empty, so that existing code will still compile.
+  virtual void DrawScaledImage(const cPoint &Point, int ImageHandle, double FactorX, double FactorY, bool AntiAlias = false) {};
+       ///< Draws the image referenced by the given ImageHandle into this pixmap at
+       ///< the given Point and scales it. ImageHandle must be a value that has
+       ///< previously been returned by a call to cOsdProvider::StoreImage().
+       ///< If ImageHandle has an invalid value, nothing happens.
+       ///< If AntiAlias is true and either of the factors is greater than
+       ///< 1.0, anti-aliasing is applied.
+       ///< This function should be 'pure', just like all the others. However, since it was
+       ///< introduced when this class was already in widespread use, the default was made
+       ///< empty, so that existing code will still compile.
   virtual void DrawPixel(const cPoint &Point, tColor Color) = 0;
        ///< Sets the pixel at the given Point to the given Color, which is
        ///< a full 32 bit ARGB value. If the alpha value of Color is not 0xFF
@@ -700,6 +722,8 @@ public:
   virtual void Fill(tColor Color);
   virtual void DrawImage(const cPoint &Point, const cImage &Image);
   virtual void DrawImage(const cPoint &Point, int ImageHandle);
+  virtual void DrawScaledImage(const cPoint &Point, const cImage &Image, double FactorX, double FactorY, bool AntiAlias = false);
+  virtual void DrawScaledImage(const cPoint &Point, int ImageHandle, double FactorX, double FactorY, bool AntiAlias = false);
   virtual void DrawPixel(const cPoint &Point, tColor Color);
   virtual void DrawBlendedPixel(const cPoint &Point, tColor Color, uint8_t AlphaLayer = ALPHA_OPAQUE);
   virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false);
@@ -856,6 +880,19 @@ public:
        ///< the given Point. ImageHandle must be a value that has previously been
        ///< returned by a call to cOsdProvider::StoreImage(). If ImageHandle
        ///< has an invalid value, nothing happens.
+       ///< If this is not a true color OSD, this function does nothing.
+  virtual void DrawScaledImage(const cPoint &Point, const cImage &Image, double FactorX, double FactorY, bool AntiAlias = false);
+       ///< Draws the given Image on this OSD at the given Point and scales it.
+       ///< If AntiAlias is true and either of the factors is greater than
+       ///< 1.0, anti-aliasing is applied.
+       ///< If this is not a true color OSD, this function does nothing.
+  virtual void DrawScaledImage(const cPoint &Point, int ImageHandle, double FactorX, double FactorY, bool AntiAlias = false);
+       ///< Draws the image referenced by the given ImageHandle on this OSD at
+       ///< the given Point and scales it. ImageHandle must be a value that has
+       ///< previously been returned by a call to cOsdProvider::StoreImage().
+       ///< If ImageHandle has an invalid value, nothing happens.
+       ///< If AntiAlias is true and either of the factors is greater than
+       ///< 1.0, anti-aliasing is applied.
        ///< If this is not a true color OSD, this function does nothing.
   virtual eOsdError CanHandleAreas(const tArea *Areas, int NumAreas);
        ///< Checks whether the OSD can display the given set of sub-areas.

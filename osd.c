@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 5.1 2024/01/18 11:06:45 kls Exp $
+ * $Id: osd.c 5.2 2024/01/18 12:04:57 kls Exp $
  */
 
 #include "osd.h"
@@ -1139,6 +1139,49 @@ void cImage::Fill(tColor Color)
       data[i] = Color;
 }
 
+cImage *cImage::Scaled(double FactorX, double FactorY, bool AntiAlias) const
+{
+  int w = max(1, int(round(Width() * FactorX)));
+  int h = max(1, int(round(Height() * FactorY)));
+  cImage *i = new cImage(cSize(w, h));
+  int RatioX = (Width() << 16) / i->Width();
+  int RatioY = (Height() << 16) / i->Height();
+
+  if (!AntiAlias || FactorX <= 1.0 && FactorY <= 1.0) {
+     // Downscaling - no anti-aliasing:
+     int SourceY = 0;
+     for (int y = 0; y < i->Height(); y++) {
+         int SourceX = 0;
+         for (int x = 0; x < i->Width(); x++) {
+             tColor c1 = GetPixel(cPoint(SourceX >> 16, SourceY >> 16));
+             i->SetPixel(cPoint(x, y), c1);
+             SourceX += RatioX;
+             }
+         SourceY += RatioY;
+         }
+     }
+  else {
+     // Upscaling - anti-aliasing:
+     int SourceY = 0;
+     for (int y = 0; y < i->Height(); y++) {
+         int SourceX = 0;
+         int sy = min(SourceY >> 16, Height() - 2);
+         uint8_t BlendY = 0xFF - ((SourceY >> 8) & 0xFF);
+         for (int x = 0; x < i->Width(); x++) {
+             int sx = min(SourceX >> 16, Width() - 2);
+             uint8_t BlendX = 0xFF - ((SourceX >> 8) & 0xFF);
+             tColor c1 = AlphaBlend(GetPixel(cPoint(sx, sy)),     GetPixel(cPoint(sx + 1, sy)),     BlendX);
+             tColor c2 = AlphaBlend(GetPixel(cPoint(sx, sy + 1)), GetPixel(cPoint(sx + 1, sy + 1)), BlendX);
+             tColor c3 = AlphaBlend(c1, c2, BlendY);
+             i->SetPixel(cPoint(x, y), c3);
+             SourceX += RatioX;
+             }
+         SourceY += RatioY;
+         }
+     }
+  return i;
+}
+
 // --- cPixmapMemory ---------------------------------------------------------
 
 cPixmapMemory::cPixmapMemory(void)
@@ -1256,6 +1299,26 @@ void cPixmapMemory::DrawImage(const cPoint &Point, int ImageHandle)
   Lock();
   if (const cImage *Image = cOsdProvider::GetImageData(ImageHandle))
      DrawImage(Point, *Image);
+  Unlock();
+}
+
+void cPixmapMemory::DrawScaledImage(const cPoint &Point, const cImage &Image, double FactorX, double FactorY, bool AntiAlias)
+{
+  Lock();
+  const cImage *i = &Image;
+  if (!DoubleEqual(FactorX, 1.0) || !DoubleEqual(FactorY, 1.0))
+     i = i->Scaled(FactorX, FactorY, AntiAlias);
+  DrawImage(Point, *i);
+  if (i != &Image)
+     delete i;
+  Unlock();
+}
+
+void cPixmapMemory::DrawScaledImage(const cPoint &Point, int ImageHandle, double FactorX, double FactorY, bool AntiAlias)
+{
+  Lock();
+  if (const cImage *Image = cOsdProvider::GetImageData(ImageHandle))
+     DrawScaledImage(Point, *Image, FactorX, FactorY, AntiAlias);
   Unlock();
 }
 
@@ -2116,6 +2179,18 @@ void cOsd::DrawImage(const cPoint &Point, int ImageHandle)
 {
   if (isTrueColor)
      pixmaps[0]->DrawImage(Point, ImageHandle);
+}
+
+void cOsd::DrawScaledImage(const cPoint &Point, const cImage &Image, double FactorX, double FactorY, bool AntiAlias)
+{
+  if (isTrueColor)
+     pixmaps[0]->DrawScaledImage(Point, Image, FactorX, FactorY, AntiAlias);
+}
+
+void cOsd::DrawScaledImage(const cPoint &Point, int ImageHandle, double FactorX, double FactorY, bool AntiAlias)
+{
+  if (isTrueColor)
+     pixmaps[0]->DrawScaledImage(Point, ImageHandle, FactorX, FactorY, AntiAlias);
 }
 
 void cOsd::DrawPixel(int x, int y, tColor Color)
