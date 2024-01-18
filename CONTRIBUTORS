@@ -2557,6 +2557,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for reporting broken video data streams on systems without output device when switching
  live channel to a different transponder while recording
  for fixing a possible crash in cDevice::StopSectionHandler()
+ for making using a dummy OSD if no OSD provider is available not be considered an error
+ any more
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

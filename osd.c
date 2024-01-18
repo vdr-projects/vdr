@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 4.11 2020/12/18 23:02:47 kls Exp $
+ * $Id: osd.c 5.1 2024/01/18 11:06:45 kls Exp $
  */
 
 #include "osd.h"
@@ -2228,7 +2228,7 @@ cOsd *cOsdProvider::NewOsd(int Left, int Top, uint Level)
      return Osd;
      }
   else
-     esyslog("ERROR: no OSD provider available - using dummy OSD!");
+     isyslog("no OSD provider available - using dummy OSD!");
   return new cOsd(Left, Top, 999); // create a dummy cOsd, so that access won't result in a segfault
 }
 

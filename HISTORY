@@ -9869,3 +9869,5 @@ Video Disk Recorder Revision History
 - Fixed height calculation in progress display (thanks to Matthias Senzel).
 - Fixed a possible crash in cDevice::StopSectionHandler() (thanks to Markus
   Ehrnsperger).
+- Using a dummy OSD if no OSD provider is available is not considered an error any
+  more (thanks to Markus Ehrnsperger).
