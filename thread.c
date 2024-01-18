@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 5.1 2022/11/13 15:25:52 kls Exp $
+ * $Id: thread.c 5.2 2024/01/18 13:01:07 kls Exp $
  */
 
 #include "thread.h"
@@ -949,11 +949,11 @@ bool cPipe::Open(const char *Command, const char *Mode)
   int fd[2];
 
   if (pipe(fd) < 0) {
-     LOG_ERROR;
+     LOG_ERROR_STR(Command);
      return false;
      }
   if ((pid = fork()) < 0) { // fork failed
-     LOG_ERROR;
+     LOG_ERROR_STR(Command);
      close(fd[0]);
      close(fd[1]);
      return false;
@@ -969,7 +969,7 @@ bool cPipe::Open(const char *Command, const char *Mode)
         }
      close(fd[iopipe]);
      if ((f = fdopen(fd[1 - iopipe], mode)) == NULL) {
-        LOG_ERROR;
+        LOG_ERROR_STR(Command);
         close(fd[1 - iopipe]);
         }
      return f != NULL;
@@ -982,7 +982,6 @@ bool cPipe::Open(const char *Command, const char *Mode)
         }
      close(fd[iopipe]);
      if (dup2(fd[1 - iopipe], iofd) == -1) { // now redirect
-        LOG_ERROR;
         close(fd[1 - iopipe]);
         _exit(-1);
         }
@@ -991,7 +990,6 @@ bool cPipe::Open(const char *Command, const char *Mode)
         for (int i = STDERR_FILENO + 1; i < MaxPossibleFileDescriptors; i++)
             close(i); //close all dup'ed filedescriptors
         if (execl("/bin/sh", "sh", "-c", Command, NULL) == -1) {
-           LOG_ERROR_STR(Command);
            close(fd[1 - iopipe]);
            _exit(-1);
            }
@@ -1044,14 +1042,14 @@ int SystemExec(const char *Command, bool Detached)
   pid_t pid;
 
   if ((pid = fork()) < 0) { // fork failed
-     LOG_ERROR;
+     LOG_ERROR_STR(Command);
      return -1;
      }
 
   if (pid > 0) { // parent process
      int status = 0;
      if (waitpid(pid, &status, 0) < 0) {
-        LOG_ERROR;
+        LOG_ERROR_STR(Command);
         return -1;
         }
      return status;
@@ -1064,19 +1062,17 @@ int SystemExec(const char *Command, bool Detached)
         // Start a new session
         pid_t sid = setsid();
         if (sid < 0)
-           LOG_ERROR;
+           _exit(-1);
         // close STDIN and re-open as /dev/null
         int devnull = open("/dev/null", O_RDONLY);
         if (devnull < 0 || dup2(devnull, 0) < 0)
-           LOG_ERROR;
+           _exit(-1);
         }
      int MaxPossibleFileDescriptors = getdtablesize();
      for (int i = STDERR_FILENO + 1; i < MaxPossibleFileDescriptors; i++)
          close(i); //close all dup'ed filedescriptors
-     if (execl("/bin/sh", "sh", "-c", Command, NULL) == -1) {
-        LOG_ERROR_STR(Command);
+     if (execl("/bin/sh", "sh", "-c", Command, NULL) == -1)
         _exit(-1);
-        }
      _exit(0);
      }
 }

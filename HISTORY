@@ -9872,3 +9872,4 @@ Video Disk Recorder Revision History
 - Using a dummy OSD if no OSD provider is available is not considered an error any
   more (thanks to Markus Ehrnsperger).
 - Implemented scaling images (thanks to Andreas Baierl).
+- Removed syslog calls in child process after fork() (thanks to Markus Ehrnsperger).
