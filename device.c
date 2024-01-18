@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.8 2023/02/21 09:31:47 kls Exp $
+ * $Id: device.c 5.9 2024/01/18 10:58:39 kls Exp $
  */
 
 #include "device.h"
@@ -673,11 +673,11 @@ void cDevice::StartSectionHandler(void)
 void cDevice::StopSectionHandler(void)
 {
   if (sectionHandler) {
+     delete sectionHandler; // automatically detaches filters
      delete nitFilter;
      delete sdtFilter;
      delete patFilter;
      delete eitFilter;
-     delete sectionHandler;
      nitFilter = NULL;
      sdtFilter = NULL;
      patFilter = NULL;

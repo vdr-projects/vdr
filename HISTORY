@@ -9863,7 +9863,9 @@ Video Disk Recorder Revision History
 - The recording info of the default skins now shows the frame parameters of the
   recording at the end of the description (if such information is available).
 
-2024-01-17:
+2024-01-18:
 
 - Changed installing config files to handle potentially broken 'cp -n'.
 - Fixed height calculation in progress display (thanks to Matthias Senzel).
+- Fixed a possible crash in cDevice::StopSectionHandler() (thanks to Markus
+  Ehrnsperger).
