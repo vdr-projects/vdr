@@ -9875,3 +9875,5 @@ Video Disk Recorder Revision History
 - Removed syslog calls in child process after fork() (thanks to Markus Ehrnsperger).
 - Fixed an unnecessary double display of the current menu item in page up/down
   (thanks to Matthias Senzel).
+- Fixed an unnecessary double display of menu items in the Recordings menu (thanks to
+  Matthias Senzel).

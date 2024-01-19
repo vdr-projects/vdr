@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.9 2022/12/01 13:09:04 kls Exp $
+ * $Id: menu.c 5.10 2024/01/19 12:17:05 kls Exp $
  */
 
 #include "menu.h"
@@ -3067,7 +3067,6 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus,
            return;
         }
      }
-  Display();
   SetHelpKeys();
 }
 
