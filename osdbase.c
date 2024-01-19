@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 4.5 2018/03/24 11:47:45 kls Exp $
+ * $Id: osdbase.c 5.1 2024/01/19 12:10:47 kls Exp $
  */
 
 #include "osdbase.h"
@@ -447,10 +447,8 @@ void cOsdMenu::PageUp(void)
      else if (current - first >= displayMenuItems)
         first = current - displayMenuItems + 1;
      }
-  if (current != oldCurrent || first != oldFirst) {
+  if (current != oldCurrent || first != oldFirst)
      Display();
-     DisplayCurrent(true);
-     }
   else if (Setup.MenuScrollWrap)
      CursorUp();
 }
@@ -481,10 +479,8 @@ void cOsdMenu::PageDown(void)
      else if (current - first >= displayMenuItems)
         first = current - displayMenuItems + 1;
      }
-  if (current != oldCurrent || first != oldFirst) {
+  if (current != oldCurrent || first != oldFirst)
      Display();
-     DisplayCurrent(true);
-     }
   else if (Setup.MenuScrollWrap)
      CursorDown();
 }

@@ -3395,6 +3395,7 @@ Matthias Senzel <matthias.senzel@t-online.de>
  of recordings was not updated immediately
  for fixing restoring the volume at program start
  for fixing height calculation in progress display
+ for fixing an unnecessary double display of the current menu item in page up/down
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
