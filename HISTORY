@@ -9879,3 +9879,4 @@ Video Disk Recorder Revision History
   Matthias Senzel).
 - Added the move constructor to cString for better performance (thanks to Markus
   Ehrnsperger).
+- Added the total number of errors when logging new recording errors.
