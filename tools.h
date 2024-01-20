@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.7 2023/12/29 10:21:59 kls Exp $
+ * $Id: tools.h 5.8 2024/01/20 13:59:55 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -182,11 +182,13 @@ public:
   cString(const char *S = NULL, bool TakePointer = false);
   cString(const char *S, const char *To); ///< Copies S up to To (exclusive). To must be a valid pointer into S. If To is NULL, everything is copied.
   cString(const cString &String);
+  cString(cString &&String): s(String.s) { String.s = NULL; }
   virtual ~cString();
   operator const void * () const { return s; } // to catch cases where operator*() should be used
   operator const char * () const { return s; } // for use in (const char *) context
   const char * operator*() const { return s; } // for use in (const void *) context (printf() etc.)
   cString &operator=(const cString &String);
+  cString &operator=(cString &&String);
   cString &operator=(const char *String);
   cString &Append(const char *String);
   cString &Append(char c);

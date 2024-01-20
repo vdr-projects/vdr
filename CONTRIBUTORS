@@ -2560,6 +2560,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for making using a dummy OSD if no OSD provider is available not be considered an error
  any more
  for removing syslog calls in child process after fork()
+ for adding the move constructor to cString for better performance
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

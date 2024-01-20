@@ -9863,7 +9863,7 @@ Video Disk Recorder Revision History
 - The recording info of the default skins now shows the frame parameters of the
   recording at the end of the description (if such information is available).
 
-2024-01-19:
+2024-01-20:
 
 - Changed installing config files to handle potentially broken 'cp -n'.
 - Fixed height calculation in progress display (thanks to Matthias Senzel).
@@ -9877,3 +9877,5 @@ Video Disk Recorder Revision History
   (thanks to Matthias Senzel).
 - Fixed an unnecessary double display of menu items in the Recordings menu (thanks to
   Matthias Senzel).
+- Added the move constructor to cString for better performance (thanks to Markus
+  Ehrnsperger).
