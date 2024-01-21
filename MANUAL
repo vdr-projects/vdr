@@ -645,6 +645,7 @@ following the matching pattern. There are three macros that can be used here:
 As of VDR version 2.5.2, the characters ' ' (blank), ':' and '-' are ignored
 when checking whether a particular recording has already been made by a pattern
 timer, making "TITLE - EPISODE" and "TITLE: EPISODE" the same.
+VDR version 2.6.6 added '/' to this list.
 
 * Managing folders
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.24 2023/12/29 10:48:25 kls Exp $
+ * $Id: recording.c 5.25 2024/01/21 10:43:20 kls Exp $
  */
 
 #include "recording.h"
@@ -3228,7 +3228,7 @@ void cDoneRecordings::Append(const char *Title)
      }
 }
 
-static const char *FuzzyChars = " -:";
+static const char *FuzzyChars = " -:/";
 
 static const char *SkipFuzzyChars(const char *s)
 {
