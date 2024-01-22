@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 5.2 2022/01/24 16:53:45 kls Exp $
+ * $Id: device.h 5.3 2024/01/22 12:10:30 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -217,7 +217,7 @@ protected:
          ///< May be dropped in a future version, if a better solution is found.
          ///< Do not use otherwise!
 public:
-  bool IsPrimaryDevice(void) const { return this == primaryDevice && HasDecoder(); }
+  bool IsPrimaryDevice(bool CheckDecoder = true) const { return this == primaryDevice && (!CheckDecoder || HasDecoder()); }
   int CardIndex(void) const { return cardIndex; }
          ///< Returns the card index of this device (0 ... MAXDEVICES - 1).
   int DeviceNumber(void) const;

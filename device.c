@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.9 2024/01/18 10:58:39 kls Exp $
+ * $Id: device.c 5.10 2024/01/22 12:10:30 kls Exp $
  */
 
 #include "device.h"
@@ -807,10 +807,6 @@ bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
 {
   if (LiveView) {
-     if (!PrimaryDevice()->CanReplay()) {
-        isyslog("can't switch to live channel %d %s (%s)", Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
-        return false;
-        }
      isyslog("switching to channel %d %s (%s)", Channel->Number(), *Channel->GetChannelID().ToString(), Channel->Name());
      cControl::Shutdown(); // prevents old channel from being shown too long if GetDevice() takes longer
                            // and, if decrypted, this removes the now superfluous PIDs from the CAM, too
@@ -880,7 +876,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      DELETENULL(dvbSubtitleConverter);
      }
 
-  cDevice *Device = (LiveView && IsPrimaryDevice()) ? GetDevice(Channel, LIVEPRIORITY, true) : this;
+  cDevice *Device = (LiveView && IsPrimaryDevice(false)) ? GetDevice(Channel, LIVEPRIORITY, true) : this;
 
   bool NeedsTransferMode = LiveView && Device != PrimaryDevice();
   // If the CAM slot wants the TS data, we need to switch to Transfer Mode:
@@ -927,7 +923,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      }
 
   if (Result == scrOk) {
-     if (LiveView && IsPrimaryDevice()) {
+     if (LiveView && IsPrimaryDevice(false)) {
         if (patFilter) // this is only for FF DVB cards!
            patFilter->Request(Channel->Sid());
         currentChannel = Channel->Number();
