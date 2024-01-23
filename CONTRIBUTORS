@@ -2470,6 +2470,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for reporting a bug in generating the index file in the cutter
  for adding the frame width, height, scan type and aspect ratio of a recording to the 'F'
  tag of the 'info' file
+ for adding a workaround in detecting frame height for channels with wrong crop parameters
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

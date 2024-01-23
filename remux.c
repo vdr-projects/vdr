@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
-  * $Id: remux.c 5.6 2023/12/28 21:22:47 kls Exp $
+  * $Id: remux.c 5.7 2024/01/23 19:33:45 kls Exp $
  */
 
 #include "remux.h"
@@ -1587,6 +1587,8 @@ void cH264Parser::ParseSequenceParameterSet(void)
            }
         frame_Width -= CropUnitX * (frame_crop_left_offset + frame_crop_right_offset);
         frame_Height -= CropUnitY * (frame_crop_top_offset + frame_crop_bottom_offset);
+        if (frame_Height > 1080 && frame_Height <= 1090) // workaround for channels with wrong crop parameters
+           frame_Height = 1080;
         }
      frameWidth = frame_Width;
      frameHeight = frame_Height;

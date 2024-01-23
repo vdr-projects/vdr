@@ -9863,7 +9863,7 @@ Video Disk Recorder Revision History
 - The recording info of the default skins now shows the frame parameters of the
   recording at the end of the description (if such information is available).
 
-2024-01-22:
+2024-01-23:
 
 - Changed installing config files to handle potentially broken 'cp -n'.
 - Fixed height calculation in progress display (thanks to Matthias Senzel).
@@ -9882,3 +9882,5 @@ Video Disk Recorder Revision History
 - Added the total number of errors when logging new recording errors.
 - Added '/' to the list of fuzzy characters for pattern timers.
 - Fixed handling primary device on headless systems (thanks to Markus Ehrnsperger).
+- Workaround in detecting frame height for channels with wrong crop parameters
+  (thanks to Christoph Haubrich).
