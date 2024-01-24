@@ -2471,6 +2471,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for adding the frame width, height, scan type and aspect ratio of a recording to the 'F'
  tag of the 'info' file
  for adding a workaround in detecting frame height for channels with wrong crop parameters
+ for reporting duplicate component entries in the info of an ongoing recording
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

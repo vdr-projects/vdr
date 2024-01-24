@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.25 2024/01/21 10:43:20 kls Exp $
+ * $Id: recording.c 5.26 2024/01/24 13:24:51 kls Exp $
  */
 
 #include "recording.h"
@@ -519,6 +519,7 @@ bool cRecordingInfo::Read(FILE *f)
                             ownEvent->SetDuration(Duration);
                             ownEvent->SetTableID(uchar(TableID));
                             ownEvent->SetVersion(uchar(Version));
+                            ownEvent->SetComponents(NULL);
                             }
                        }
                        break;
