@@ -3596,6 +3596,7 @@ Stefan Herdler <herdler@gmx.de>
  for adding failsafe defaults for 'make LCLBLD=1' to the Makefile
  for reporting the index file of a recording not being regenerated in case it is
  present, but empty
+ for reporting a missing check for self-assignment in the move assignment operator
 
 Tobias Faust <tobias.faust@gmx.de>
  for the original "jumpingseconds" patch
