@@ -2821,6 +2821,7 @@ Winfried Köhler <nvdec@quantentunnel.de>
  for fixing default values for DVB-T
  for adding missing rounding when dividing frequencies in processing the NIT
  for suggesting to add note about not messing with event ids in EPG handlers
+ for adding a missing initialization of cChannel::nameSourceMode
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR

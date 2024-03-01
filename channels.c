@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 5.1 2021/05/21 09:38:34 kls Exp $
+ * $Id: channels.c 5.2 2024/03/01 14:31:49 kls Exp $
  */
 
 #include "channels.h"
@@ -60,6 +60,7 @@ cChannel::cChannel(void)
   provider = strdup("");
   portalName = strdup("");
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
+  nameSourceMode = 0;
   parameters = "";
   modification = CHANNELMOD_NONE;
   seen         = 0;

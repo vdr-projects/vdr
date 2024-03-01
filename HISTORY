@@ -9887,7 +9887,8 @@ Video Disk Recorder Revision History
 - Fixed possible duplicate component entries in the info of an ongoing recording
   (reported by Christoph Haubrich).
 
-2024-02-15:
+2024-03-01:
 
 - Fixed the move assignment operator to check for self-assignment (suggested by
   Stefan Herdler).
+- Added missing initialization of cChannel::nameSourceMode (thanks to Winfried Köhler).
