@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 5.2 2021/05/21 09:38:34 kls Exp $
+ * $Id: channels.h 5.3 2024/03/02 16:21:16 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -87,6 +87,7 @@ class cChannels;
 class cChannel : public cListObject {
   friend class cSchedules;
   friend class cMenuEditChannel;
+  friend class cMenuSetupMisc;
   friend class cDvbSourceParam;
 private:
   static cString ToText(const cChannel *Channel);
@@ -123,9 +124,8 @@ private:
   int number;    // Sequence number assigned on load
   bool groupSep;
   int __EndData__;
-  mutable cString nameSource;
-  mutable int nameSourceMode;
-  mutable cString shortNameSource;
+  cString nameSource;
+  cString shortNameSource;
   cString parameters;
   mutable int modification;
   time_t seen; // When this channel was last seen in the SDT of its transponder
@@ -133,6 +133,7 @@ private:
   cLinkChannels *linkChannels;
   cChannel *refChannel;
   cString TransponderDataToString(void) const;
+  void UpdateNameSource(void);
 public:
   cChannel(void);
   cChannel(const cChannel &Channel);

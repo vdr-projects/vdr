@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 5.2 2024/03/01 14:31:49 kls Exp $
+ * $Id: channels.c 5.3 2024/03/02 16:21:16 kls Exp $
  */
 
 #include "channels.h"
@@ -60,7 +60,6 @@ cChannel::cChannel(void)
   provider = strdup("");
   portalName = strdup("");
   memset(&__BeginData__, 0, (char *)&__EndData__ - (char *)&__BeginData__);
-  nameSourceMode = 0;
   parameters = "";
   modification = CHANNELMOD_NONE;
   seen         = 0;
@@ -98,23 +97,32 @@ cChannel& cChannel::operator= (const cChannel &Channel)
   provider = strcpyrealloc(provider, Channel.provider);
   portalName = strcpyrealloc(portalName, Channel.portalName);
   memcpy(&__BeginData__, &Channel.__BeginData__, (char *)&Channel.__EndData__ - (char *)&Channel.__BeginData__);
-  nameSource = NULL; // these will be recalculated automatically
-  nameSourceMode = 0;
-  shortNameSource = NULL;
+  UpdateNameSource();
   parameters = Channel.parameters;
   return *this;
+}
+
+void cChannel::UpdateNameSource(void)
+{
+  if (Setup.ShowChannelNamesWithSource == 0) {
+     nameSource = NULL;
+     shortNameSource = NULL;
+     return;
+     }
+
+  if (Setup.ShowChannelNamesWithSource == 1)
+     nameSource = cString::sprintf("%s (%c)", name, cSource::ToChar(source));
+  else
+     nameSource = cString::sprintf("%s (%s)", name, *cSource::ToString(source));
+
+  shortNameSource = cString::sprintf("%s (%c)", shortName, cSource::ToChar(source));
 }
 
 const char *cChannel::Name(void) const
 {
   if (Setup.ShowChannelNamesWithSource && !groupSep) {
-     if (isempty(nameSource) || nameSourceMode != Setup.ShowChannelNamesWithSource) {
-        if (Setup.ShowChannelNamesWithSource == 1)
-           nameSource = cString::sprintf("%s (%c)", name, cSource::ToChar(source));
-        else
-           nameSource = cString::sprintf("%s (%s)", name, *cSource::ToString(source));
-        }
-     return nameSource;
+     if (!isempty(nameSource))
+        return nameSource;
      }
   return name;
 }
@@ -124,9 +132,8 @@ const char *cChannel::ShortName(bool OrName) const
   if (OrName && isempty(shortName))
      return Name();
   if (Setup.ShowChannelNamesWithSource && !groupSep) {
-     if (isempty(shortNameSource))
-        shortNameSource = cString::sprintf("%s (%c)", shortName, cSource::ToChar(source));
-     return shortNameSource;
+     if (!isempty(shortNameSource))
+        return shortNameSource;
      }
   return shortName;
 }
@@ -204,9 +211,7 @@ bool cChannel::SetTransponderData(int Source, int Frequency, int Srate, const ch
      srate = Srate;
      parameters = Parameters;
      schedule = NULL;
-     nameSource = NULL;
-     nameSourceMode = 0;
-     shortNameSource = NULL;
+     UpdateNameSource();
      if (Number() && !Quiet) {
         dsyslog("changing transponder data of channel %d (%s) from %s to %s", Number(), name, *OldTransponderData, *TransponderDataToString());
         modification |= CHANNELMOD_TRANSP;
@@ -271,15 +276,12 @@ bool cChannel::SetName(const char *Name, const char *ShortName, const char *Prov
            dsyslog("changing name of channel %d from '%s,%s;%s' to '%s,%s;%s'", Number(), name, shortName, provider, Name, ShortName, Provider);
            modification |= CHANNELMOD_NAME;
            }
-        if (nn) {
+        if (nn)
            name = strcpyrealloc(name, Name);
-           nameSource = NULL;
-           nameSourceMode = 0;
-           }
-        if (ns) {
+        if (ns)
            shortName = strcpyrealloc(shortName, ShortName);
-           shortNameSource = NULL;
-           }
+        if (nn || ns)
+           UpdateNameSource();
         if (np)
            provider = strcpyrealloc(provider, Provider);
         return true;
@@ -805,9 +807,7 @@ bool cChannel::Parse(const char *s)
         free(tpidbuf);
         free(caidbuf);
         free(namebuf);
-        nameSource = NULL;
-        nameSourceMode = 0;
-        shortNameSource = NULL;
+        UpdateNameSource();
         if (!GetChannelID().Valid()) {
            esyslog("ERROR: channel data results in invalid ID!");
            return false;
