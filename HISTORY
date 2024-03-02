@@ -9894,3 +9894,5 @@ Video Disk Recorder Revision History
 - Added missing initialization of cChannel::nameSourceMode (thanks to Winfried Köhler).
 - Modified handling channel names with source to make it thread safe (thanks to
   Stefan Herdler).
+- Adapted "Setup/Miscellaneous/Show channel names with source" to the new handling
+  in cChannel.

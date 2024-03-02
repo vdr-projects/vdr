@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.10 2024/01/19 12:17:05 kls Exp $
+ * $Id: menu.c 5.11 2024/03/02 21:49:21 kls Exp $
  */
 
 #include "menu.h"
@@ -4285,9 +4285,17 @@ eOSState cMenuSetupMisc::ProcessKey(eKeys Key)
 {
   bool OldSVDRPPeering = data.SVDRPPeering;
   bool ModifiedSVDRPSettings = false;
-  if (Key == kOk)
+  bool ModifiedShowChannelNamesWithSource = false;
+  if (Key == kOk) {
      ModifiedSVDRPSettings = data.SVDRPPeering != Setup.SVDRPPeering || strcmp(data.SVDRPHostName, Setup.SVDRPHostName);
+     ModifiedShowChannelNamesWithSource = data.ShowChannelNamesWithSource != Setup.ShowChannelNamesWithSource;
+     }
   eOSState state = cMenuSetupBase::ProcessKey(Key);
+  if (ModifiedShowChannelNamesWithSource) {
+     LOCK_CHANNELS_WRITE;
+     for (cChannel *Channel = Channels->First(); Channel; Channel = Channels->Next(Channel))
+         Channel->UpdateNameSource();
+     }
   if (data.SVDRPPeering != OldSVDRPPeering)
      Set();
   if (ModifiedSVDRPSettings) {
