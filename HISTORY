@@ -9887,7 +9887,7 @@ Video Disk Recorder Revision History
 - Fixed possible duplicate component entries in the info of an ongoing recording
   (reported by Christoph Haubrich).
 
-2024-03-02:
+2024-03-03:
 
 - Fixed the move assignment operator to check for self-assignment (suggested by
   Stefan Herdler).
@@ -9896,3 +9896,5 @@ Video Disk Recorder Revision History
   Stefan Herdler).
 - Adapted "Setup/Miscellaneous/Show channel names with source" to the new handling
   in cChannel.
+- Added a 15 second grace period before actually stopping a VPS timer (thanks to
+  Markus Ehrnsperger).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.18 2022/11/20 10:57:31 kls Exp $
+ * $Id: timers.c 5.19 2024/03/03 15:47:09 kls Exp $
  */
 
 #include "timers.h"
@@ -20,6 +20,8 @@
 // IMPORTANT NOTE: in the 'sscanf()' calls there is a blank after the '%d'
 // format characters in order to allow any number of blanks after a numeric
 // value!
+
+#define VPSGRACE 15  // seconds we still record after the running status of a VPS event has changed to "not running"
 
 // --- cTimer ----------------------------------------------------------------
 
@@ -47,6 +49,7 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
   weekdays = 0;
   start = now->tm_hour * 100 + now->tm_min;
   stop = 0;
+  vpsNotRunning = 0;
   if (!Setup.InstantRecordTime && channel && (Instant || Pause)) {
      LOCK_SCHEDULES_READ;
      if (const cSchedule *Schedule = Schedules->GetSchedule(channel)) {
@@ -186,6 +189,7 @@ cTimer::cTimer(const cEvent *Event, const char *FileName, const cTimer *PatternT
   aux = NULL;
   remote = NULL;
   event = NULL;
+  vpsNotRunning = 0;
   if (!PatternTimer || PatternTimer->HasFlags(tfVps)) {
      if (Event->Vps() && (PatternTimer || Setup.UseVps))
         SetFlags(tfVps);
@@ -255,6 +259,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
      stop         = Timer.stop;
      priority     = Timer.priority;
      lifetime     = Timer.lifetime;
+     vpsNotRunning = 0;
      strncpy(pattern, Timer.pattern, sizeof(pattern));
      strncpy(file, Timer.file, sizeof(file));
      free(aux);
@@ -611,8 +616,16 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
                  startTime = event->StartTime();
                  stopTime = event->EndTime();
                  if (!Margin) { // this is an actual check
-                    if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) // VPS control can only work with up-to-date events...
-                       return event->IsRunning(true);
+                    if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) { // VPS control can only work with up-to-date events...
+                       bool running = event->IsRunning(true);
+                       if (!running) {
+                          if (Recording() && vpsNotRunning == 0)
+                             vpsNotRunning = time(NULL);
+                          }
+                       else
+                          vpsNotRunning = 0;
+                       return running || time(NULL) < vpsNotRunning + VPSGRACE;
+                       }
                     // ...otherwise we fall back to normal timer handling below (note: Margin == 0!)
                     }
                  }

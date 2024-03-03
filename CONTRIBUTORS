@@ -2564,6 +2564,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for removing syslog calls in child process after fork()
  for adding the move constructor to cString for better performance
  for fixing handling primary device on headless systems
+ for adding a 15 second grace period before actually stopping a VPS timer
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
