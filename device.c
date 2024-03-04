@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.10 2024/01/22 12:10:30 kls Exp $
+ * $Id: device.c 5.11 2024/03/04 12:26:32 kls Exp $
  */
 
 #include "device.h"
@@ -923,23 +923,26 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      }
 
   if (Result == scrOk) {
-     if (LiveView && IsPrimaryDevice(false)) {
-        if (patFilter) // this is only for FF DVB cards!
-           patFilter->Request(Channel->Sid());
-        currentChannel = Channel->Number();
-        // Set the available audio tracks:
-        ClrAvailableTracks();
-        for (int i = 0; i < MAXAPIDS; i++)
-            SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
-        if (Setup.UseDolbyDigital) {
-           for (int i = 0; i < MAXDPIDS; i++)
-               SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
+     if (LiveView) {
+        if (IsPrimaryDevice(false))
+           currentChannel = Channel->Number();
+        if (IsPrimaryDevice()) {
+           if (patFilter) // this is only for FF DVB cards!
+              patFilter->Request(Channel->Sid());
+           // Set the available audio tracks:
+           ClrAvailableTracks();
+           for (int i = 0; i < MAXAPIDS; i++)
+               SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
+           if (Setup.UseDolbyDigital) {
+              for (int i = 0; i < MAXDPIDS; i++)
+                  SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
+              }
+           for (int i = 0; i < MAXSPIDS; i++)
+               SetAvailableTrack(ttSubtitle, i, Channel->Spid(i), Channel->Slang(i));
+           if (!NeedsTransferMode)
+              EnsureAudioTrack(true);
+           EnsureSubtitleTrack();
            }
-        for (int i = 0; i < MAXSPIDS; i++)
-            SetAvailableTrack(ttSubtitle, i, Channel->Spid(i), Channel->Slang(i));
-        if (!NeedsTransferMode)
-           EnsureAudioTrack(true);
-        EnsureSubtitleTrack();
         }
      cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successful
      }

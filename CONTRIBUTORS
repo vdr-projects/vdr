@@ -2565,6 +2565,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for adding the move constructor to cString for better performance
  for fixing handling primary device on headless systems
  for adding a 15 second grace period before actually stopping a VPS timer
+ for making the primary device no longer start unnecessary threads if it doesn't have
+ a decoder
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
