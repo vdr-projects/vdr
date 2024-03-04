@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.26 2024/01/24 13:24:51 kls Exp $
+ * $Id: recording.c 5.27 2024/03/04 14:12:37 kls Exp $
  */
 
 #include "recording.h"
@@ -1543,7 +1543,8 @@ void cVideoDirectoryScannerThread::ScanVideoDir(const char *DirName, int LinkLev
                     dsyslog("activated name checking for initial read of video directory");
                     initial = false;
                     }
-                 if (Recordings == deletedRecordings || initial || !Recordings->GetByName(buffer)) {
+                 cRecording *Recording = NULL;
+                 if (Recordings == deletedRecordings || initial || !(Recording = Recordings->GetByName(buffer))) {
                     cRecording *r = new cRecording(buffer);
                     if (r->Name()) {
                        r->NumFrames(); // initializes the numFrames member
@@ -1557,6 +1558,8 @@ void cVideoDirectoryScannerThread::ScanVideoDir(const char *DirName, int LinkLev
                     else
                        delete r;
                     }
+                 else if (Recording)
+                    Recording->ReadInfo();
                  StateKey.Remove();
                  }
               else

@@ -9900,3 +9900,5 @@ Video Disk Recorder Revision History
   Markus Ehrnsperger).
 - The primary device no longer starts unnecessary threads if it doesn't have a decoder
   (thanks to Markus Ehrnsperger).
+- The info file of a recording is now re-read if an update of the video directory
+  is triggered, to make sure modifications from other VDRs are adopted.
