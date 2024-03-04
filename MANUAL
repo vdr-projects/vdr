@@ -829,6 +829,16 @@ VDR version 2.6.6 added '/' to this list.
                          A value of '0' completely turns off scanning on both single
                          and multiple card systems.
 
+  EPG scan max. channel number = 0
+                         The EPG scan will only tune to transponders of channels with
+                         numbers below this limit. By default all transponders will
+                         be scanned.
+
+  EPG pause after scan = no
+                         After a complete scan of all transponders (optionally limited
+                         by "EPG scan max. channel number") the EPG scan pauses for
+                         "EPG scan timeout" hours if this option is set to "yes".
+
   EPG bugfix level = 3   Some tv stations transmit weirdly formatted EPG data.
                          VDR attempts to fix these bugs up to the given level:
                          0 = no EPG fixing

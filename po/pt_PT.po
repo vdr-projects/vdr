@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2022-12-01 21:45+0100\n"
+"POT-Creation-Date: 2024-03-04 22:03+0100\n"
 "PO-Revision-Date: 2010-03-28 22:49+0100\n"
 "Last-Translator: Cris Silva <hudokkow@gmail.com>\n"
 "Language-Team: Portuguese <vdr@linuxtv.org>\n"
@@ -1024,6 +1024,12 @@ msgstr "Procurar"
 
 msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Procura do EPG termina após (h)"
+
+msgid "Setup.EPG$EPG scan max. channel number (0=all)"
+msgstr ""
+
+msgid "Setup.EPG$EPG pause after scan"
+msgstr ""
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "Nível de correcção do EPG"

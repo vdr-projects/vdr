@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.11 2024/03/02 21:49:21 kls Exp $
+ * $Id: menu.c 5.12 2024/03/04 21:13:58 kls Exp $
  */
 
 #include "menu.h"
@@ -3653,6 +3653,8 @@ void cMenuSetupEPG::Setup(void)
   Clear();
 
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan timeout (h)"),      &data.EPGScanTimeout));
+  Add(new cMenuEditIntItem( tr("Setup.EPG$EPG scan max. channel number (0=all)"), &data.EPGScanMaxChannel));
+  Add(new cMenuEditBoolItem(tr("Setup.EPG$EPG pause after scan"),      &data.EPGPauseAfterScan));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG bugfix level"),          &data.EPGBugfixLevel, 0, MAXEPGBUGFIXLEVEL));
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG linger time (min)"),     &data.EPGLinger, 0));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));

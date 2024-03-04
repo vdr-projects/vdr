@@ -9903,3 +9903,5 @@ Video Disk Recorder Revision History
 - The info file of a recording is now re-read if an update of the video directory
   is triggered, to make sure modifications from other VDRs are adopted.
 - Updated the Hungarian OSD texts (thanks to István Füley).
+- The new setup parameters "EPG scan max. channel number" and "EPG pause after scan"
+  can be used to tune the behavior of the EPG scan (see MANUAL for details).

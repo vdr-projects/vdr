@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 4.8 2018/02/15 14:40:36 kls Exp $
+ * $Id: config.c 5.1 2024/03/04 21:13:58 kls Exp $
  */
 
 #include "config.h"
@@ -409,6 +409,8 @@ cSetup::cSetup(void)
   SubtitleBgTransparency = 0;
   EPGLanguages[0] = -1;
   EPGScanTimeout = 5;
+  EPGScanMaxChannel = 0;
+  EPGPauseAfterScan = 0;
   EPGBugfixLevel = 3;
   EPGLinger = 0;
   SVDRPTimeout = 300;
@@ -637,6 +639,8 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "SubtitleBgTransparency")) SubtitleBgTransparency = atoi(Value);
   else if (!strcasecmp(Name, "EPGLanguages"))        return ParseLanguages(Value, EPGLanguages);
   else if (!strcasecmp(Name, "EPGScanTimeout"))      EPGScanTimeout     = atoi(Value);
+  else if (!strcasecmp(Name, "EPGScanMaxChannel"))   EPGScanMaxChannel  = atoi(Value);
+  else if (!strcasecmp(Name, "EPGPauseAfterScan"))   EPGPauseAfterScan  = atoi(Value);
   else if (!strcasecmp(Name, "EPGBugfixLevel"))      EPGBugfixLevel     = atoi(Value);
   else if (!strcasecmp(Name, "EPGLinger"))           EPGLinger          = atoi(Value);
   else if (!strcasecmp(Name, "SVDRPTimeout"))        SVDRPTimeout       = atoi(Value);
@@ -769,6 +773,8 @@ bool cSetup::Save(void)
   Store("SubtitleBgTransparency", SubtitleBgTransparency);
   StoreLanguages("EPGLanguages", EPGLanguages);
   Store("EPGScanTimeout",     EPGScanTimeout);
+  Store("EPGScanMaxChannel",  EPGScanMaxChannel);
+  Store("EPGPauseAfterScan",  EPGPauseAfterScan);
   Store("EPGBugfixLevel",     EPGBugfixLevel);
   Store("EPGLinger",          EPGLinger);
   Store("SVDRPTimeout",       SVDRPTimeout);

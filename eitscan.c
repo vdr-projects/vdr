@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 4.3 2019/03/12 11:46:05 kls Exp $
+ * $Id: eitscan.c 5.1 2024/03/04 21:13:58 kls Exp $
  */
 
 #include "eitscan.h"
@@ -58,7 +58,7 @@ void cScanList::AddTransponders(const cList<cChannel> *Channels)
 
 void cScanList::AddTransponder(const cChannel *Channel)
 {
-  if (Channel->Source() && Channel->Transponder()) {
+  if (Channel->Source() && Channel->Transponder() && (Setup.EPGScanMaxChannel <= 0 || Channel->Number() < Setup.EPGScanMaxChannel)) {
      for (cScanData *sd = First(); sd; sd = Next(sd)) {
          if (sd->Source() == Channel->Source() && ISTRANSPONDER(sd->Transponder(), Channel->Transponder()))
             return;
@@ -91,7 +91,8 @@ cEITScanner EITScanner;
 
 cEITScanner::cEITScanner(void)
 {
-  lastScan = lastActivity = time(NULL);
+  lastScan = 0;
+  lastActivity = time(NULL);
   currentChannel = 0;
   scanList = NULL;
   transponderList = NULL;
@@ -130,6 +131,8 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout || !lastActivity) { // !lastActivity means a scan was forced
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
+        if (Setup.EPGPauseAfterScan && !scanList && lastActivity && lastScan && now - lastScan < Setup.EPGScanTimeout * 3600)
+           return; // pause for Setup.EPGScanTimeout hours
         cStateKey StateKey;
         if (const cChannels *Channels = cChannels::GetChannelsRead(StateKey, 10)) {
            if (!scanList) {
@@ -140,6 +143,7 @@ void cEITScanner::Process(void)
                  transponderList = NULL;
                  }
               scanList->AddTransponders(Channels);
+              //dsyslog("EIT scan: %d scanList entries", scanList->Count());
               }
            bool AnyDeviceSwitched = false;
            for (int i = 0; i < cDevice::NumDevices(); i++) {
@@ -164,7 +168,7 @@ void cEITScanner::Process(void)
                                            Skins.Message(mtInfo, tr("Starting EPG scan"));
                                            }
                                         }
-                                     //dsyslog("EIT scan: device %d  source  %-8s tp %5d", Device->DeviceNumber() + 1, *cSource::ToString(Channel->Source()), Channel->Transponder());
+                                     //dsyslog("EIT scan: %d device %d  source  %-8s tp %5d", scanList->Count(), Device->DeviceNumber() + 1, *cSource::ToString(Channel->Source()), Channel->Transponder());
                                      Device->SwitchChannel(Channel, false);
                                      scanList->Del(ScanData);
                                      AnyDeviceSwitched = true;

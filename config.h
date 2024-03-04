@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 5.14 2024/01/25 09:44:48 kls Exp $
+ * $Id: config.h 5.15 2024/03/04 21:13:58 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -291,6 +291,8 @@ public:
   int SubtitleOffset;
   int SubtitleFgTransparency, SubtitleBgTransparency;
   int EPGLanguages[I18N_MAX_LANGUAGES + 1];
+  int EPGScanMaxChannel;
+  int EPGPauseAfterScan;
   int EPGScanTimeout;
   int EPGBugfixLevel;
   int EPGLinger;
