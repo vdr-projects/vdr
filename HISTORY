@@ -9902,3 +9902,4 @@ Video Disk Recorder Revision History
   (thanks to Markus Ehrnsperger).
 - The info file of a recording is now re-read if an update of the video directory
   is triggered, to make sure modifications from other VDRs are adopted.
+- Updated the Hungarian OSD texts (thanks to István Füley).
