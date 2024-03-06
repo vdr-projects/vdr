@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.10 2024/03/03 15:47:09 kls Exp $
+ * $Id: timers.h 5.11 2024/03/06 14:37:15 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -38,6 +38,7 @@ private:
   int scheduleStateAdjust;
   mutable time_t deferred; ///< Matches(time_t, ...) will return false if the current time is before this value
   mutable time_t vpsNotRunning; ///< the time when a VPS event's running status changed to "not running"
+  mutable bool vpsActive; ///< true if this is a VPS timer and the event is current
   bool pending, inVpsMargin;
   uint flags;
   const cChannel *channel;

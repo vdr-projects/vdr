@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.19 2024/03/03 15:47:09 kls Exp $
+ * $Id: timers.c 5.20 2024/03/06 14:37:15 kls Exp $
  */
 
 #include "timers.h"
@@ -50,6 +50,7 @@ cTimer::cTimer(bool Instant, bool Pause, const cChannel *Channel)
   start = now->tm_hour * 100 + now->tm_min;
   stop = 0;
   vpsNotRunning = 0;
+  vpsActive = false;
   if (!Setup.InstantRecordTime && channel && (Instant || Pause)) {
      LOCK_SCHEDULES_READ;
      if (const cSchedule *Schedule = Schedules->GetSchedule(channel)) {
@@ -190,6 +191,7 @@ cTimer::cTimer(const cEvent *Event, const char *FileName, const cTimer *PatternT
   remote = NULL;
   event = NULL;
   vpsNotRunning = 0;
+  vpsActive = false;
   if (!PatternTimer || PatternTimer->HasFlags(tfVps)) {
      if (Event->Vps() && (PatternTimer || Setup.UseVps))
         SetFlags(tfVps);
@@ -260,6 +262,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
      priority     = Timer.priority;
      lifetime     = Timer.lifetime;
      vpsNotRunning = 0;
+     vpsActive    = false;
      strncpy(pattern, Timer.pattern, sizeof(pattern));
      strncpy(file, Timer.file, sizeof(file));
      free(aux);
@@ -561,6 +564,7 @@ void cTimer::SetFile(const char *File)
 }
 
 #define EITPRESENTFOLLOWINGRATE 10 // max. seconds between two occurrences of the "EIT present/following table for the actual multiplex" (2s by the standard, using some more for safety)
+#define EITPRESENTFOLLOWINGGRACE 60 // max. seconds before reporting a loss of VPS control of an ongoing recording
 
 bool cTimer::Matches(time_t t, bool Directly, int Margin) const
 {
@@ -617,6 +621,11 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
                  stopTime = event->EndTime();
                  if (!Margin) { // this is an actual check
                     if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) { // VPS control can only work with up-to-date events...
+                       if (!vpsActive) {
+                          vpsActive = true;
+                          if (Recording())
+                             dsyslog("timer %s regained VPS control", *ToDescr());
+                          }
                        bool running = event->IsRunning(true);
                        if (!running) {
                           if (Recording() && vpsNotRunning == 0)
@@ -626,7 +635,17 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
                           vpsNotRunning = 0;
                        return running || time(NULL) < vpsNotRunning + VPSGRACE;
                        }
-                    // ...otherwise we fall back to normal timer handling below (note: Margin == 0!)
+                    if (Recording()) {
+                       if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGGRACE))
+                          return event->IsRunning(true); // give it a chance to recover - worst case: the recording will be 60 seconds too long
+                       if (vpsActive) {
+                          vpsActive = false;
+                          esyslog("ERROR: timer %s lost VPS control", *ToDescr());
+                          }
+                       // ...otherwise we fall back to normal timer handling below (note: Margin == 0!)
+                       }
+                    else
+                       return false; // relying on vdr.c to ensure that a transponder is tuned to this channel
                     }
                  }
               }
