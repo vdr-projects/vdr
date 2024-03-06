@@ -9906,3 +9906,5 @@ Video Disk Recorder Revision History
 - The new setup parameters "EPG scan max. channel number" and "EPG pause after scan"
   can be used to tune the behavior of the EPG scan (see MANUAL for details).
 - Improved handling present/following data for VPS timers (thanks to Markus Ehrnsperger).
+- Logging event status changes now also shows the previous status (thanks to Markus
+  Ehrnsperger).

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.7 2022/11/22 14:33:48 kls Exp $
+ * $Id: epg.c 5.8 2024/03/06 20:16:51 kls Exp $
  */
 
 #include "epg.h"
@@ -177,7 +177,7 @@ void cEvent::SetVersion(uchar Version)
 void cEvent::SetRunningStatus(int RunningStatus, const cChannel *Channel)
 {
   if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined) && schedule && schedule->HasTimer())
-     isyslog("channel %d (%s) event %s status %d", Channel->Number(), Channel->Name(), *ToDescr(), RunningStatus);
+     isyslog("channel %d (%s) event %s status %d->%d", Channel->Number(), Channel->Name(), *ToDescr(), runningStatus, RunningStatus);
   runningStatus = RunningStatus;
 }
 

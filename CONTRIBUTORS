@@ -2568,6 +2568,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for making the primary device no longer start unnecessary threads if it doesn't have
  a decoder
  for improving handling present/following data for VPS timers
+ for making logging event status changes also show the previous status
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
