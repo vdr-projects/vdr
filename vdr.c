@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.12 2022/12/19 15:13:56 kls Exp $
+ * $Id: vdr.c 5.13 2024/03/08 10:50:06 kls Exp $
  */
 
 #include <getopt.h>
@@ -1139,10 +1139,8 @@ int main(int argc, char *argv[])
                  bool NeedsTransponder = false;
                  if (Timer->HasFlags(tfActive) && !Timer->Recording()) {
                     if (Timer->HasFlags(tfVps)) {
-                       if (Timer->Matches(Now, true, Setup.VpsMargin)) {
+                       if (Timer->Matches(Now, true, Setup.VpsMargin))
                           InVpsMargin = true;
-                          Timer->SetInVpsMargin(InVpsMargin);
-                          }
                        else if (Timer->Event()) {
                           InVpsMargin = Timer->Event()->StartTime() <= Now && Now < Timer->Event()->EndTime();
                           NeedsTransponder = Timer->Event()->StartTime() - Now < VPSLOOKAHEADTIME * 3600 && !Timer->Event()->SeenWithin(VPSUPTODATETIME);
@@ -1158,6 +1156,8 @@ int main(int argc, char *argv[])
                     else
                        NeedsTransponder = Timer->Matches(Now, true, TIMERLOOKAHEADTIME);
                     }
+                 if (!Timer->Recording())
+                    Timer->SetInVpsMargin(InVpsMargin);
                  if (NeedsTransponder || InVpsMargin) {
                     // Find a device that provides the required transponder:
                     cDevice *Device = cDevice::GetDeviceForTransponder(Timer->Channel(), MINPRIORITY);
