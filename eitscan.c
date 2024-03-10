@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 5.1 2024/03/04 21:13:58 kls Exp $
+ * $Id: eitscan.c 5.2 2024/03/10 10:38:18 kls Exp $
  */
 
 #include "eitscan.h"
@@ -94,7 +94,7 @@ cEITScanner::cEITScanner(void)
   lastScan = 0;
   lastActivity = time(NULL);
   currentChannel = 0;
-  scanList = NULL;
+  scanList = new cScanList;
   transponderList = NULL;
 }
 
@@ -131,12 +131,11 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout || !lastActivity) { // !lastActivity means a scan was forced
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
-        if (Setup.EPGPauseAfterScan && !scanList && lastActivity && lastScan && now - lastScan < Setup.EPGScanTimeout * 3600)
+        if (Setup.EPGPauseAfterScan && scanList->Count() == 0 && lastActivity && lastScan && now - lastScan < Setup.EPGScanTimeout * 3600)
            return; // pause for Setup.EPGScanTimeout hours
         cStateKey StateKey;
         if (const cChannels *Channels = cChannels::GetChannelsRead(StateKey, 10)) {
-           if (!scanList) {
-              scanList = new cScanList;
+           if (scanList->Count() == 0) {
               if (transponderList) {
                  scanList->AddTransponders(transponderList);
                  delete transponderList;
@@ -145,7 +144,6 @@ void cEITScanner::Process(void)
               scanList->AddTransponders(Channels);
               //dsyslog("EIT scan: %d scanList entries", scanList->Count());
               }
-           bool AnyDeviceSwitched = false;
            for (int i = 0; i < cDevice::NumDevices(); i++) {
                cDevice *Device = cDevice::GetDevice(i);
                if (Device && Device->ProvidesEIT()) {
@@ -171,7 +169,6 @@ void cEITScanner::Process(void)
                                      //dsyslog("EIT scan: %d device %d  source  %-8s tp %5d", scanList->Count(), Device->DeviceNumber() + 1, *cSource::ToString(Channel->Source()), Channel->Transponder());
                                      Device->SwitchChannel(Channel, false);
                                      scanList->Del(ScanData);
-                                     AnyDeviceSwitched = true;
                                      break;
                                      }
                                   }
@@ -181,9 +178,7 @@ void cEITScanner::Process(void)
                       }
                   }
                }
-           if (!AnyDeviceSwitched) {
-              delete scanList;
-              scanList = NULL;
+           if (scanList->Count() == 0) {
               if (lastActivity == 0) // this was a triggered scan
                  Activity();
               }

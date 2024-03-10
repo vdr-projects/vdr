@@ -9887,7 +9887,7 @@ Video Disk Recorder Revision History
 - Fixed possible duplicate component entries in the info of an ongoing recording
   (reported by Christoph Haubrich).
 
-2024-03-08:
+2024-03-10:
 
 - Fixed the move assignment operator to check for self-assignment (suggested by
   Stefan Herdler).
@@ -9909,3 +9909,4 @@ Video Disk Recorder Revision History
 - Logging event status changes now also shows the previous status (thanks to Markus
   Ehrnsperger).
 - Fixed logging when a timer has entered the VPS margin.
+- The EIT scan no longer deletes the scanList if no device was switched in this pass.
