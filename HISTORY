@@ -9910,3 +9910,5 @@ Video Disk Recorder Revision History
   Ehrnsperger).
 - Fixed logging when a timer has entered the VPS margin.
 - The EIT scan no longer deletes the scanList if no device was switched in this pass.
+- The EIT scan now skips scanList entries if a device is already tuned to that
+  transponder.
