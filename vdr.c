@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.13 2024/03/08 10:50:06 kls Exp $
+ * $Id: vdr.c 5.14 2024/03/10 11:26:54 kls Exp $
  */
 
 #include <getopt.h>
@@ -737,7 +737,6 @@ int main(int argc, char *argv[])
   time_t LastChannelChanged = time(NULL);
   time_t LastInteract = 0;
   int MaxLatencyTime = 0;
-  bool InhibitEpgScan = false;
   bool IsInfoMenu = false;
   cSkin *CurrentSkin = NULL;
   int OldPrimaryDVB = 0;
@@ -1131,7 +1130,6 @@ int main(int argc, char *argv[])
           // Make sure timers "see" their channel early enough:
           static time_t LastTimerCheck = 0;
           if (Now - LastTimerCheck > TIMERCHECKDELTA) { // don't do this too often
-             InhibitEpgScan = false;
              for (cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer)) {
                  if (Timer->Remote() || Timer->IsPatternTimer())
                     continue;
@@ -1151,7 +1149,6 @@ int main(int argc, char *argv[])
                           InVpsMargin = !Schedule; // we must make sure we have the schedule
                           NeedsTransponder = Schedule && !Schedule->PresentSeenWithin(VPSUPTODATETIME);
                           }
-                       InhibitEpgScan |= InVpsMargin | NeedsTransponder;
                        }
                     else
                        NeedsTransponder = Timer->Matches(Now, true, TIMERLOOKAHEADTIME);
@@ -1519,8 +1516,7 @@ int main(int argc, char *argv[])
              }
            }
         if (!Menu) {
-           if (!InhibitEpgScan)
-              EITScanner.Process();
+           EITScanner.Process();
            bool Error = false;
            if (RecordingsHandler.Finished(Error)) {
               if (Error)

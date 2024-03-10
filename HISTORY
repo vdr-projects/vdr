@@ -9912,3 +9912,5 @@ Video Disk Recorder Revision History
 - The EIT scan no longer deletes the scanList if no device was switched in this pass.
 - The EIT scan now skips scanList entries if a device is already tuned to that
   transponder.
+- The EIT scan is no longer inhibited if a timer is in VPS margin or needs the
+  transponder.
