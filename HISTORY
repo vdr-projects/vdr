@@ -9887,7 +9887,7 @@ Video Disk Recorder Revision History
 - Fixed possible duplicate component entries in the info of an ongoing recording
   (reported by Christoph Haubrich).
 
-2024-03-10:
+2024-03-28:
 
 - Fixed the move assignment operator to check for self-assignment (suggested by
   Stefan Herdler).
@@ -9914,3 +9914,5 @@ Video Disk Recorder Revision History
   transponder.
 - The EIT scan is no longer inhibited if a timer is in VPS margin or needs the
   transponder.
+- If the current channel is no longer available because of a VPS timer entering the
+  VPS margin, live view now switches to the channel of that timer.

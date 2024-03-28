@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.14 2024/03/10 11:26:54 kls Exp $
+ * $Id: vdr.c 5.15 2024/03/28 13:21:42 kls Exp $
  */
 
 #include <getopt.h>
@@ -1170,8 +1170,10 @@ int main(int argc, char *argv[])
                           if (Device->SwitchChannel(Timer->Channel(), false))
                              Device->SetOccupied(TIMERDEVICETIMEOUT);
                           }
-                       if (cDevice::PrimaryDevice()->HasDecoder() && HadProgramme && !cDevice::PrimaryDevice()->HasProgramme())
+                       if (cDevice::PrimaryDevice()->HasDecoder() && HadProgramme && !cDevice::PrimaryDevice()->HasProgramme()) {
+                          LastTimerChannel = Timer->Channel()->Number();
                           Skins.QueueMessage(mtInfo, tr("Upcoming recording!")); // the previous SwitchChannel() has switched away the current live channel
+                          }
                        }
                     }
                  }
