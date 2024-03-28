@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.11 2024/03/04 12:26:32 kls Exp $
+ * $Id: device.c 5.12 2024/03/28 13:02:42 kls Exp $
  */
 
 #include "device.h"
@@ -284,7 +284,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              continue; // no CAM is able to decrypt this channel and the device uses vdr handled CAMs
           if (NumUsableSlots && !HasInternalCam && !CamSlots.Get(j)->Assign(device[i], true))
              continue; // CAM slot can't be used with this device
-          bool ndr;
+          bool ndr = false;
           if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
              if (NumUsableSlots && !HasInternalCam) {
                 if (cCamSlot *csi = device[i]->CamSlot()) {
