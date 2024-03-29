@@ -9887,7 +9887,7 @@ Video Disk Recorder Revision History
 - Fixed possible duplicate component entries in the info of an ongoing recording
   (reported by Christoph Haubrich).
 
-2024-03-28:
+2024-03-29:
 
 - Fixed the move assignment operator to check for self-assignment (suggested by
   Stefan Herdler).
@@ -9916,3 +9916,5 @@ Video Disk Recorder Revision History
   transponder.
 - If the current channel is no longer available because of a VPS timer entering the
   VPS margin, live view now switches to the channel of that timer.
+- A device is now always kept occupied if a timer is in VPS margin or needs the
+  transponder (thanks to Markus Ehrnsperger).

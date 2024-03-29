@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 5.3 2024/01/22 12:10:30 kls Exp $
+ * $Id: device.h 5.4 2024/03/29 21:46:50 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -178,6 +178,9 @@ public:
          ///< the transponder of the given Channel, without disturbing any receiver
          ///< at priorities higher or equal to Priority.
          ///< If no such device is currently available, NULL will be returned.
+         ///< Devices recording (Device->Priority(true) >= LIVEPRIORITY) will not be returned,
+         ///< even if Priority >= LIVEPRIORITY. Such higher priorities are only used to
+         ///< override occupied.
   static void Shutdown(void);
          ///< Closes down all devices.
          ///< Must be called at the end of the program.
@@ -259,7 +262,9 @@ public:
 
 private:
   mutable cMutex mutexChannel;
+  time_t occupiedFrom;
   time_t occupiedTimeout;
+  int occupiedPriority;
 protected:
   static int currentChannel;
 public:
@@ -369,9 +374,10 @@ public:
          ///< channel number while replaying.
   void ForceTransferMode(void);
          ///< Forces the device into transfermode for the current channel.
-  int Occupied(void) const;
-         ///< Returns the number of seconds this device is still occupied for.
-  void SetOccupied(int Seconds);
+  int Occupied(int Priority = MINPRIORITY) const;
+         ///< Returns the number of seconds this device is still occupied for
+         ///< with a priority >= Priority.
+  void SetOccupied(int Seconds, int Priority = MINPRIORITY, time_t From = 0);
          ///< Sets the occupied timeout for this device to the given number of
          ///< Seconds, This can be used to tune a device to a particular transponder
          ///< and make sure it will stay there for a certain amount of time, for
@@ -379,6 +385,10 @@ public:
          ///< after the device has been successfully tuned to the requested transponder.
          ///< Seconds will be silently limited to MAXOCCUPIEDTIMEOUT. Values less than
          ///< 0 will be silently ignored.
+         ///< The timeout is counted from the given From time (by default the current time).
+         ///< Calling this function several times with the same From time will set the
+         ///< priority to the maximum of the given values.
+         ///< Priority() may return a value >= Priority until the timeout.
   virtual bool HasLock(int TimeoutMs = 0) const;
          ///< Returns true if the device has a lock on the requested transponder.
          ///< Default is true, a specific device implementation may return false
@@ -833,9 +843,10 @@ private:
   mutable cMutex mutexReceiver;
   cReceiver *receiver[MAXRECEIVERS];
 public:
-  int Priority(void) const;
+  int Priority(bool IgnoreOccupied = false) const;
       ///< Returns the priority of the current receiving session (-MAXPRIORITY..MAXPRIORITY),
       ///< or IDLEPRIORITY if no receiver is currently active.
+      ///< If IgnoreOccupied is true, a priority set with SetOccupied() is ignored.
 protected:
   virtual bool OpenDvr(void);
       ///< Opens the DVR of this device and prepares it to deliver a Transport

@@ -22,7 +22,7 @@
  *
  * The project's page is at http://www.tvdr.de
  *
- * $Id: vdr.c 5.15 2024/03/28 13:21:42 kls Exp $
+ * $Id: vdr.c 5.16 2024/03/29 21:46:50 kls Exp $
  */
 
 #include <getopt.h>
@@ -85,7 +85,7 @@
 #define CHANNELSAVEDELTA     600 // seconds before saving channels.conf after automatic modifications
 #define DEVICEREADYTIMEOUT    30 // seconds to wait until all devices are ready
 #define MENUTIMEOUT          120 // seconds of user inactivity after which an OSD display is closed
-#define TIMERCHECKDELTA       10 // seconds between checks for timers that need to see their channel
+#define TIMERCHECKDELTA        5 // seconds between checks for timers that need to see their channel
 #define TIMERDEVICETIMEOUT     8 // seconds before a device used for timer check may be reused
 #define TIMERLOOKAHEADTIME    60 // seconds before a non-VPS timer starts and the channel is switched if possible
 #define VPSLOOKAHEADTIME      24 // hours within which VPS timers will make sure their events are up to date
@@ -1158,8 +1158,12 @@ int main(int argc, char *argv[])
                  if (NeedsTransponder || InVpsMargin) {
                     // Find a device that provides the required transponder:
                     cDevice *Device = cDevice::GetDeviceForTransponder(Timer->Channel(), MINPRIORITY);
-                    if (!Device && InVpsMargin)
-                       Device = cDevice::GetDeviceForTransponder(Timer->Channel(), LIVEPRIORITY);
+                    if (InVpsMargin) {
+                       if (!Device)
+                          Device = cDevice::GetDeviceForTransponder(Timer->Channel(), Timer->Priority() );
+                       if (!Device)
+                          Device = cDevice::GetDevice(Timer->Channel(), Timer->Priority(), false, false);
+                       }
                     // Switch the device to the transponder:
                     if (Device) {
                        bool HadProgramme = cDevice::PrimaryDevice()->HasProgramme();
@@ -1167,9 +1171,9 @@ int main(int argc, char *argv[])
                           if (Device == cDevice::ActualDevice() && !Device->IsPrimaryDevice())
                              cDevice::PrimaryDevice()->StopReplay(); // stop transfer mode
                           dsyslog("switching device %d to channel %d %s (%s)", Device->DeviceNumber() + 1, Timer->Channel()->Number(), *Timer->Channel()->GetChannelID().ToString(), Timer->Channel()->Name());
-                          if (Device->SwitchChannel(Timer->Channel(), false))
-                             Device->SetOccupied(TIMERDEVICETIMEOUT);
+                          Device->SwitchChannel(Timer->Channel(), false);
                           }
+                       Device->SetOccupied(TIMERDEVICETIMEOUT, InVpsMargin ? Timer->Priority() : MINPRIORITY, Now);
                        if (cDevice::PrimaryDevice()->HasDecoder() && HadProgramme && !cDevice::PrimaryDevice()->HasProgramme()) {
                           LastTimerChannel = Timer->Channel()->Number();
                           Skins.QueueMessage(mtInfo, tr("Upcoming recording!")); // the previous SwitchChannel() has switched away the current live channel

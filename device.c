@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.12 2024/03/28 13:02:42 kls Exp $
+ * $Id: device.c 5.13 2024/03/29 21:46:50 kls Exp $
  */
 
 #include "device.h"
@@ -95,7 +95,9 @@ cDevice::cDevice(void)
 
   camSlot = NULL;
 
+  occupiedFrom = 0;
   occupiedTimeout = 0;
+  occupiedPriority = MINPRIORITY;
 
   player = NULL;
   isPlayingVideo = false;
@@ -285,7 +287,11 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
           if (NumUsableSlots && !HasInternalCam && !CamSlots.Get(j)->Assign(device[i], true))
              continue; // CAM slot can't be used with this device
           bool ndr = false;
-          if (device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
+          bool TunedToTransponder = device[i]->IsTunedToTransponder(Channel);
+          if (TunedToTransponder || device[i]->ProvidesChannel(Channel, Priority, &ndr)) { // this device is basically able to do the job
+             bool OccupiedOtherTransponder = !TunedToTransponder && device[i]->Occupied();
+             if (OccupiedOtherTransponder)
+                ndr = true;
              if (NumUsableSlots && !HasInternalCam) {
                 if (cCamSlot *csi = device[i]->CamSlot()) {
                    cCamSlot *csj = CamSlots.Get(j);
@@ -303,7 +309,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
              imp <<= 1; imp |= (LiveView && NumUsableSlots && !HasInternalCam) ? !ChannelCamRelations.CamDecrypt(Channel->GetChannelID(), CamSlots.Get(j)->MasterSlotNumber()) || ndr : 0; // prefer CAMs that are known to decrypt this channel for live viewing, if we don't need to detach existing receivers
              imp <<= 1; imp |= LiveView ? !device[i]->IsPrimaryDevice() || ndr : 0;                                  // prefer the primary device for live viewing if we don't need to detach existing receivers
              imp <<= 1; imp |= !device[i]->Receiving() && (device[i] != cTransferControl::ReceiverDevice() || device[i]->IsPrimaryDevice()) || ndr; // use receiving devices if we don't need to detach existing receivers, but avoid primary device in local transfer mode
-             imp <<= 1; imp |= device[i]->Receiving();                                                               // avoid devices that are receiving
+             imp <<= 1; imp |= device[i]->Receiving() || OccupiedOtherTransponder;                                   // avoid devices that are receiving
              imp <<= 5; imp |= GetClippedNumProvidedSystems(5, device[i]) - 1;                                       // avoid cards which support multiple delivery systems
              imp <<= 8; imp |= device[i]->Priority() - IDLEPRIORITY;                                                 // use the device with the lowest priority (- IDLEPRIORITY to assure that values -100..99 can be used)
              imp <<= 1; imp |= device[i] == cTransferControl::ReceiverDevice();                                      // avoid the Transfer Mode receiver device
@@ -321,6 +327,7 @@ cDevice *cDevice::GetDevice(const cChannel *Channel, int Priority, bool LiveView
                 if (NumUsableSlots && !HasInternalCam)
                    s = CamSlots.Get(j);
                 }
+             //dsyslog("device %d provides channel %d prio %d ndr %d imp %.8X", device[i]->DeviceNumber() + 1, Channel->Number(), Priority, ndr, imp);
              }
           }
       if (!NumUsableSlots)
@@ -427,7 +434,8 @@ cDevice *cDevice::GetDeviceForTransponder(const cChannel *Channel, int Priority)
          if (d->ProvidesTransponder(Channel)) {
             if (d->MaySwitchTransponder(Channel))
                return d; // this device may switch to the transponder without disturbing any receiver or live view
-            else if (!d->Occupied() && !d->IsBonded()) { // MaySwitchTransponder() implicitly calls Occupied()
+            else if (!d->Occupied(Priority) && !d->IsBonded() && d->Priority(true) < LIVEPRIORITY) { // MaySwitchTransponder() implicitly calls Occupied()
+               // we select only devices with priority < LIVEPRIORITY, so device can be switched without impact on recordings or live viewing
                if (d->Priority() < Priority && (!Device || d->Priority() < Device->Priority()))
                   Device = d; // use this one only if no other with less impact can be found
                }
@@ -801,7 +809,7 @@ bool cDevice::IsTunedToTransponder(const cChannel *Channel) const
 
 bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
 {
-  return time(NULL) > occupiedTimeout && !Receiving() && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
+  return !Occupied() && !Receiving() && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
 }
 
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
@@ -959,16 +967,27 @@ void cDevice::ForceTransferMode(void)
      }
 }
 
-int cDevice::Occupied(void) const
+int cDevice::Occupied(int Priority) const
 {
+  if (Priority > occupiedPriority)
+     return 0;
   int Seconds = occupiedTimeout - time(NULL);
   return Seconds > 0 ? Seconds : 0;
 }
 
-void cDevice::SetOccupied(int Seconds)
+void cDevice::SetOccupied(int Seconds, int Priority, time_t From)
 {
-  if (Seconds >= 0)
-     occupiedTimeout = time(NULL) + min(Seconds, MAXOCCUPIEDTIMEOUT);
+  if (Seconds < 0)
+     return;
+  if (From == 0)
+     From = time(NULL);
+  if (From == occupiedFrom)
+     occupiedPriority = max(Priority, occupiedPriority);
+  else {
+     occupiedPriority = Priority;
+     occupiedFrom = From;
+     }
+  occupiedTimeout = From + min(Seconds, MAXOCCUPIEDTIMEOUT);
 }
 
 bool cDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
@@ -1660,11 +1679,13 @@ int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)
   return Played;
 }
 
-int cDevice::Priority(void) const
+int cDevice::Priority(bool IgnoreOccupied) const
 {
   int priority = IDLEPRIORITY;
   if (IsPrimaryDevice() && !Replaying() && HasProgramme())
      priority = TRANSFERPRIORITY; // we use the same value here, no matter whether it's actual Transfer Mode or real live viewing
+  if (!IgnoreOccupied && time(NULL) <= occupiedTimeout && occupiedPriority > priority)
+     priority = occupiedPriority - 1; // so timers with occupiedPriority can start
   cMutexLock MutexLock(&mutexReceiver);
   for (int i = 0; i < MAXRECEIVERS; i++) {
       if (receiver[i])
