@@ -5,15 +5,15 @@
 # Antonio Ospite <ospite@studenti.unina.it>, 2003, 2006
 # Sean Carlos <seanc@libero.it>, 2005
 # Nino Gerbino <ngerb@interfree.it>, 2006, 2015
-# Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013, 2015, 2018, 2020, 2022
+# Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013, 2015, 2018, 2020, 2022, 2024
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2024-03-04 22:03+0100\n"
-"PO-Revision-Date: 2022-12-15 20:22+0100\n"
-"Last-Translator: Gringo <openpli@tiscali.it>\n"
+"PO-Revision-Date: 2024-04-02 23:20+0200\n"
+"Last-Translator: Gringo <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -1031,10 +1031,10 @@ msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Scadenza aggiorn. EPG (ore)"
 
 msgid "Setup.EPG$EPG scan max. channel number (0=all)"
-msgstr ""
+msgstr "Numero massimo canali scansione EPG (0=tutti)"
 
 msgid "Setup.EPG$EPG pause after scan"
-msgstr ""
+msgstr "Pausa EPG dopo scansione"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "Livello correzione EPG"
