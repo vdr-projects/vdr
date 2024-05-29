@@ -3606,6 +3606,7 @@ Stefan Herdler <herdler@gmx.de>
  present, but empty
  for reporting a missing check for self-assignment in the move assignment operator
  for modifying handling channel names with source to make it thread safe
+ for fixing setting T2 system ID from NIT
 
 Tobias Faust <tobias.faust@gmx.de>
  for the original "jumpingseconds" patch

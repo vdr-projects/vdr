@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.c 5.3 2022/11/30 12:02:00 kls Exp $
+ * $Id: nit.c 5.4 2024/05/29 11:13:34 kls Exp $
  */
 
 #include "nit.h"
@@ -257,7 +257,7 @@ void cNitFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length
                            cDvbTransponderParameters dtpc(Channel->Parameters());
                            dtp.SetSystem(dtpc.System());
                            dtp.SetStreamId(dtpc.StreamId());
-                           dtp.SetT2SystemId(dtp.T2SystemId());
+                           dtp.SetT2SystemId(dtpc.T2SystemId());
                            dtp.SetSisoMiso(dtpc.SisoMiso());
                            dtp.SetBandwidth(dtpc.Bandwidth());
                            dtp.SetGuard(dtpc.Guard());
