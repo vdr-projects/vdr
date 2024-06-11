@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 5.1 2021/05/21 13:03:42 kls Exp $
+ * $Id: skins.h 5.2 2024/06/11 12:43:25 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -351,13 +351,13 @@ public:
        ///< used to display a progress indicator.
   virtual void SetCurrent(const char *Current) = 0;
        ///< Sets the current position within the recording, as a user readable
-       ///< string if the form "h:mm:ss.ff". The ".ff" part, indicating the
+       ///< string in the form "h:mm:ss.ff". The ".ff" part, indicating the
        ///< frame number, is optional and the actual implementation needs to
        ///< take care that it is erased from the display when a Current string
        ///< _with_ ".ff" is followed by one without it.
   virtual void SetTotal(const char *Total) = 0;
        ///< Sets the total length of the recording, as a user readable
-       ///< string if the form "h:mm:ss".
+       ///< string in the form "h:mm:ss".
   virtual void SetJump(const char *Jump) = 0;
        ///< Sets the prompt that allows the user to enter a jump point.
        ///< Jump is a string of the form "Jump: mm:ss". The actual implementation
