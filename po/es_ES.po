@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-03-04 22:03+0100\n"
+"POT-Creation-Date: 2024-06-13 11:21+0200\n"
 "PO-Revision-Date: 2015-02-19 23:00+0100\n"
 "Last-Translator: Gabriel Bonich <gbonich@gmail.com>\n"
 "Language-Team: Spanish <vdr@linuxtv.org>\n"
@@ -841,6 +841,9 @@ msgstr "Grabación desaparecida"
 
 msgid "Edited version already exists - overwrite?"
 msgstr "Se está editando una versión - sobreescribir?"
+
+msgid "Not enough free disk space to start editing process!"
+msgstr ""
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Error mientras la grabación está en cola!"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-03-04 22:03+0100\n"
+"POT-Creation-Date: 2024-06-13 11:21+0200\n"
 "PO-Revision-Date: 2015-02-11 14:02+0200\n"
 "Last-Translator: Valdemaras Pipiras <varas@ambernet.lt>\n"
 "Language-Team: Lithuanian <vdr@linuxtv.org>\n"
@@ -840,6 +840,9 @@ msgstr "Įrašai išvalyti!"
 
 msgid "Edited version already exists - overwrite?"
 msgstr "Tokia koreguota versija jau yra, vistiek perašyti?"
+
+msgid "Not enough free disk space to start editing process!"
+msgstr ""
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Klaida sustatant įrašus į karpymo eilę!"

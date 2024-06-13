@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-03-04 22:03+0100\n"
+"POT-Creation-Date: 2024-06-13 11:21+0200\n"
 "PO-Revision-Date: 2018-03-18 20:00+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -841,6 +841,9 @@ msgstr "Запис зник!"
 
 msgid "Edited version already exists - overwrite?"
 msgstr "Вже існує редагована версія - перезаписати?"
+
+msgid "Not enough free disk space to start editing process!"
+msgstr ""
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Помилка перешуковування запису для обрізання!"

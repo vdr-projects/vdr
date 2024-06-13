@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-03-04 22:03+0100\n"
+"POT-Creation-Date: 2024-06-13 11:21+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -844,6 +844,9 @@ msgstr "Tallenne katosi!"
 
 msgid "Edited version already exists - overwrite?"
 msgstr "Muokattava versio on jo olemassa - ylikirjoitetaanko?"
+
+msgid "Not enough free disk space to start editing process!"
+msgstr ""
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Tallenteen lisääminen leikkausjonoon epäonnistui!"

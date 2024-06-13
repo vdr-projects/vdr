@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-03-04 22:03+0100\n"
+"POT-Creation-Date: 2024-06-13 11:21+0200\n"
 "PO-Revision-Date: 2018-03-31 21:47+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <kde-i18n-doc@kde.org>\n"
@@ -842,6 +842,9 @@ msgstr "Снимката исчезна!"
 
 msgid "Edited version already exists - overwrite?"
 msgstr "Уредена верзија веќе постои - пребриши?"
+
+msgid "Not enough free disk space to start editing process!"
+msgstr ""
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Грешка при редење на снимка за сечење!"

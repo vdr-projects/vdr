@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.7 2023/02/16 17:20:09 kls Exp $
+ * $Id: svdrp.c 5.8 2024/06/13 09:31:11 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1505,7 +1505,9 @@ void cSVDRPServer::CmdEDIT(const char *Option)
         if (const cRecording *Recording = Recordings->GetById(strtol(Option, NULL, 10))) {
            cMarks Marks;
            if (Marks.Load(Recording->FileName(), Recording->FramesPerSecond(), Recording->IsPesRecording()) && Marks.Count()) {
-              if (RecordingsHandler.Add(ruCut, Recording->FileName()))
+              if (!EnoughFreeDiskSpaceForEdit(Recording->FileName()))
+                 Reply(550, "Not enough free disk space to start editing process");
+              else if (RecordingsHandler.Add(ruCut, Recording->FileName()))
                  Reply(250, "Editing recording \"%s\" [%s]", Option, Recording->Title());
               else
                  Reply(554, "Can't start editing process");

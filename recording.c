@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.27 2024/03/04 14:12:37 kls Exp $
+ * $Id: recording.c 5.28 2024/06/13 09:31:11 kls Exp $
  */
 
 #include "recording.h"
@@ -1447,9 +1447,28 @@ int cRecording::NumFrames(void) const
   return numFrames;
 }
 
+int cRecording::NumFramesAfterEdit(void) const
+{
+  int IndexLength = cIndexFile::GetLength(fileName, isPesRecording);
+  if (IndexLength > 0) {
+     cMarks Marks;
+     if (Marks.Load(fileName, framesPerSecond, isPesRecording))
+        return Marks.GetFrameAfterEdit(IndexLength - 1, IndexLength - 1);
+     }
+  return -1;
+}
+
 int cRecording::LengthInSeconds(void) const
 {
   int nf = NumFrames();
+  if (nf >= 0)
+     return int(nf / FramesPerSecond());
+  return -1;
+}
+
+int cRecording::LengthInSecondsAfterEdit(void) const
+{
+  int nf = NumFramesAfterEdit();
   if (nf >= 0)
      return int(nf / FramesPerSecond());
   return -1;
@@ -2185,6 +2204,24 @@ int cRecordingsHandler::GetUsage(const char *FileName)
   return ruNone;
 }
 
+int cRecordingsHandler::GetRequiredDiskSpaceMB(const char *FileName)
+{
+  int RequiredDiskSpaceMB = 0;
+  for (cRecordingsHandlerEntry *r = operations.First(); r; r = operations.Next(r)) {
+      if ((r->Usage() & ruCanceled) != 0)
+         continue;
+      if ((r->Usage() & ruCut) != 0) {
+         if (!FileName || EntriesOnSameFileSystem(FileName, r->FileNameDst()))
+            RequiredDiskSpaceMB += FileSizeMBafterEdit(r->FileNameSrc());
+         }
+      else if ((r->Usage() & (ruMove | ruCopy)) != 0) {
+         if (!FileName || EntriesOnSameFileSystem(FileName, r->FileNameDst()))
+            RequiredDiskSpaceMB += DirSizeMB(r->FileNameSrc());
+         }
+      }
+  return RequiredDiskSpaceMB;
+}
+
 bool cRecordingsHandler::Finished(bool &Error)
 {
   cMutexLock MutexLock(&mutex);
@@ -2413,6 +2450,38 @@ int cMarks::GetNumSequences(void) const
         }
      }
   return NumSequences;
+}
+
+int cMarks::GetFrameAfterEdit(int Frame, int LastFrame) const
+{
+  if (Count() == 0 || LastFrame < 0 || Frame < 0 || Frame > LastFrame)
+     return -1;
+  int EditedFrame = 0;
+  int PrevPos = -1;
+  bool InEdit = false;
+  for (const cMark *mi = First(); mi; mi = Next(mi)) {
+      int p = mi->Position();
+      if (InEdit) {
+         EditedFrame += p - PrevPos;
+         InEdit = false;
+         if (Frame <= p) {
+            EditedFrame -= p - Frame;
+            return EditedFrame;
+            }
+         }
+      else {
+         if (Frame <= p)
+            return EditedFrame;
+         PrevPos = p;
+         InEdit = true;
+         }
+      }
+  if (InEdit) {
+     EditedFrame += LastFrame - PrevPos; // the last sequence had no actual "end" mark
+     if (Frame < LastFrame)
+        EditedFrame -= LastFrame - Frame;
+     }
+  return EditedFrame;
 }
 
 // --- cRecordingUserCommand -------------------------------------------------
@@ -3382,4 +3451,40 @@ cString GetRecordingTimerId(const char *Directory)
      fclose(f);
      }
   return Id;
+}
+
+// --- Disk space calculation for editing ------------------------------------
+
+int FileSizeMBafterEdit(const char *FileName)
+{
+  int FileSizeMB = DirSizeMB(FileName);
+  if (FileSizeMB > 0) {
+     cRecording r(FileName);
+     int NumFramesOrg = r.NumFrames();
+     if (NumFramesOrg > 0) {
+        int NumFramesEdit = r.NumFramesAfterEdit();
+        if (NumFramesEdit > 0)
+           return max(1, int(FileSizeMB * (double(NumFramesEdit) / NumFramesOrg)));
+        }
+     }
+  return -1;
+}
+
+bool EnoughFreeDiskSpaceForEdit(const char *FileName)
+{
+  int FileSizeMB = FileSizeMBafterEdit(FileName);
+  if (FileSizeMB > 0) {
+     int FreeDiskMB;
+     cVideoDirectory::VideoDiskSpace(&FreeDiskMB);
+     cString EditedFileName = cCutter::EditedFileName(FileName);
+     if (access(EditedFileName, F_OK)) {
+        int ExistingEditedSizeMB = DirSizeMB(EditedFileName);
+        if (ExistingEditedSizeMB > 0)
+           FreeDiskMB += ExistingEditedSizeMB;
+        }
+     FreeDiskMB -= RecordingsHandler.GetRequiredDiskSpaceMB(FileName);
+     FreeDiskMB -= MINDISKSPACE;
+     return FileSizeMB < FreeDiskMB;
+     }
+  return false;
 }

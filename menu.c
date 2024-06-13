@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.12 2024/03/04 21:13:58 kls Exp $
+ * $Id: menu.c 5.13 2024/06/13 09:31:11 kls Exp $
  */
 
 #include "menu.h"
@@ -2777,7 +2777,9 @@ eOSState cMenuRecordingEdit::Action(void)
      RecordingsHandler.Del(recording->FileName());
   else if (doCut) {
      if (access(cCutter::EditedFileName(recording->FileName()), F_OK) != 0 || Interface->Confirm(tr("Edited version already exists - overwrite?"))) {
-        if (!RecordingsHandler.Add(ruCut, recording->FileName()))
+        if (!EnoughFreeDiskSpaceForEdit(recording->FileName()))
+           Skins.Message(mtError, tr("Not enough free disk space to start editing process!"));
+        else if (!RecordingsHandler.Add(ruCut, recording->FileName()))
            Skins.Message(mtError, tr("Error while queueing recording for cutting!"));
         }
      }
@@ -6102,6 +6104,8 @@ void cReplayControl::EditCut(void)
            Skins.Message(mtError, tr("No editing sequences defined!"));
         else if (access(cCutter::EditedFileName(fileName), F_OK) == 0 && !Interface->Confirm(tr("Edited version already exists - overwrite?")))
            ;
+        else if (!EnoughFreeDiskSpaceForEdit(fileName))
+           Skins.Message(mtError, tr("Not enough free disk space to start editing process!"));
         else if (!RecordingsHandler.Add(ruCut, fileName))
            Skins.Message(mtError, tr("Can't start editing process!"));
         else

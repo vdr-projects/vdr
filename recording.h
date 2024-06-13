@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.7 2023/12/29 10:48:25 kls Exp $
+ * $Id: recording.h 5.8 2024/06/13 09:31:11 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -174,8 +174,15 @@ public:
   int NumFrames(void) const;
        ///< Returns the number of frames in this recording.
        ///< If the number of frames is unknown, -1 will be returned.
+  int NumFramesAfterEdit(void) const;
+       ///< Returns the number of frames in the edited version of this recording.
+       ///< If there are no editing marks, 0 will be returned.
+       ///< If the number of frames is unknown, -1 will be returned.
   int LengthInSeconds(void) const;
        ///< Returns the length (in seconds) of this recording, or -1 in case of error.
+  int LengthInSecondsAfterEdit(void) const;
+       ///< Returns the length (in seconds) of the edited version of this recording, or -1 in case of error.
+       ///< If there are no editing marks, 0 will be returned.
   int FileSizeMB(void) const;
        ///< Returns the total file size of this recording (in MB), or -1 if the file
        ///< size is unknown.
@@ -353,6 +360,10 @@ public:
        ///< Deletes/terminates all operations.
   int GetUsage(const char *FileName);
        ///< Returns the usage type for the given FileName.
+  int GetRequiredDiskSpaceMB(const char *FileName = NULL);
+       ///< Returns the total disk space required to process all actions.
+       ///< If FileName is given, only the drive that contains that file is taken
+       ///< into account.
   bool Finished(bool &Error);
        ///< Returns true if all operations in the list have been finished.
        ///< If there have been any errors, Errors will be set to true.
@@ -424,6 +435,10 @@ public:
        ///< 0 (the beginning of the recording), and there is no "end" mark, the
        ///< return value is 0, which means that the result is the same as the original
        ///< recording.
+  int GetFrameAfterEdit(int Frame, int LastFrame) const;
+       ///< Returns the number of the given Frame within the region covered by begin/end sequences.
+       ///< LastFrame must be given by the caller.
+       ///< If there are no editing marks or in case of an error -1 is returned.
   cMark *Get(int Position) { return const_cast<cMark *>(static_cast<const cMarks *>(this)->Get(Position)); }
   cMark *GetPrev(int Position) { return const_cast<cMark *>(static_cast<const cMarks *>(this)->GetPrev(Position)); }
   cMark *GetNext(int Position) { return const_cast<cMark *>(static_cast<const cMarks *>(this)->GetNext(Position)); }
@@ -569,5 +584,8 @@ void IncRecordingsSortMode(const char *Directory);
 
 void SetRecordingTimerId(const char *Directory, const char *TimerId);
 cString GetRecordingTimerId(const char *Directory);
+
+int FileSizeMBafterEdit(const char *FileName);
+bool EnoughFreeDiskSpaceForEdit(const char *FileName);
 
 #endif //__RECORDING_H

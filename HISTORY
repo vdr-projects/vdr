@@ -9919,8 +9919,10 @@ Video Disk Recorder Revision History
 - A device is now always kept occupied if a timer is in VPS margin or needs the
   transponder (thanks to Markus Ehrnsperger).
 
-2024-05-29:
+2024-06-13:
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed a possible access of a deleted object in the EIT scanner.
 - Fixed setting T2 system ID from NIT (thanks to Stefan Herdler).
+- When starting an editing process, VDR now first checks whether there is enough
+  free disk space to take up the edited version of the recording.
