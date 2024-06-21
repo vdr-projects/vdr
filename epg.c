@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.8 2024/03/06 20:16:51 kls Exp $
+ * $Id: epg.c 5.9 2024/06/21 06:27:20 kls Exp $
  */
 
 #include "epg.h"
@@ -884,6 +884,23 @@ void cEvent::FixEpgBugs(void)
      }
 
 Final:
+
+  // And then there are the specially gifted people who put a literal "\n" string where there should be
+  // a '\n' character:
+  if (shortText) {
+     if (char *p = strstr(shortText, "\\n")) {
+        *p = 0;
+        p += 2;
+        char *s = strdup(shortText);
+        char *d = strdup(cString::sprintf("%s\n\n%s", p, description));
+        free(shortText);
+        free(description);
+        shortText = s;
+        description = d;
+        EpgBugFixStat(12, ChannelID());
+        }
+     }
+  description = strreplace(description, "\\n", " \n");
 
   // VDR can't usefully handle newline characters in the title, shortText or component description of EPG
   // data, so let's always convert them to blanks (independent of the setting of EPGBugfixLevel):

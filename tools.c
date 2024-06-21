@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.10 2024/02/15 14:57:56 kls Exp $
+ * $Id: tools.c 5.11 2024/06/21 06:27:20 kls Exp $
  */
 
 #include "tools.h"
@@ -151,26 +151,29 @@ char *strreplace(char *s, char c1, char c2)
 
 char *strreplace(char *s, const char *s1, const char *s2)
 {
-  if (!s || !s1 || !s2)
+  if (!s || !s1 || !s2 || strcmp(s1, s2) == 0)
      return s;
-  char *p = strstr(s, s1);
-  if (p) {
-     int of = p - s;
+  char *q = s;
+  if (char *p = strstr(s, s1)) {
      int l  = strlen(s);
      int l1 = strlen(s1);
      int l2 = strlen(s2);
-     if (l2 > l1) {
-        if (char *NewBuffer = (char *)realloc(s, l + l2 - l1 + 1))
-           s = NewBuffer;
-        else {
-           esyslog("ERROR: out of memory");
-           return s;
+     do {
+        int of = p - s;
+        if (l2 > l1) {
+           if (char *NewBuffer = (char *)realloc(s, l + l2 - l1 + 1))
+              s = NewBuffer;
+           else {
+              esyslog("ERROR: out of memory");
+              return s;
+              }
            }
-        }
-     char *sof = s + of;
-     if (l2 != l1)
-        memmove(sof + l2, sof + l1, l - of - l1 + 1);
-     memcpy(sof, s2, l2);
+        char *sof = s + of;
+        if (l2 != l1)
+           memmove(sof + l2, sof + l1, l - of - l1 + 1);
+        memcpy(sof, s2, l2);
+        q = sof + l2;
+        } while (p = strstr(q, s1));
      }
   return s;
 }
