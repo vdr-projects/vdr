@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.13 2024/06/13 09:31:11 kls Exp $
+ * $Id: menu.c 5.14 2024/06/25 19:00:06 kls Exp $
  */
 
 #include "menu.h"
@@ -3159,11 +3159,6 @@ void cMenuRecordings::Set(bool Refresh)
      if (Refresh)
         Display();
      }
-}
-
-void cMenuRecordings::SetPath(const char *Path)
-{
-  path = Path;
 }
 
 void cMenuRecordings::SetRecording(const char *FileName)

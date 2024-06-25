@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.1 2020/12/26 15:49:01 kls Exp $
+ * $Id: menu.h 5.2 2024/06/25 19:00:06 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -231,7 +231,6 @@ public:
   cMenuRecordings(const char *Base = NULL, int Level = 0, bool OpenSubMenus = false, const cRecordingFilter *Filter = NULL);
   ~cMenuRecordings();
   virtual eOSState ProcessKey(eKeys Key);
-  static void SetPath(const char *Path);
   static void SetRecording(const char *FileName);
   };
 
