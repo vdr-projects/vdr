@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 5.4 2024/05/19 14:55:57 kls Exp $
+ * $Id: eitscan.c 5.5 2024/06/27 10:49:34 kls Exp $
  */
 
 #include "eitscan.h"
@@ -44,10 +44,22 @@ int cScanData::Compare(const cListObject &ListObject) const
 // --- cScanList -------------------------------------------------------------
 
 class cScanList : public cList<cScanData> {
+private:
+  bool HasDeviceForChannelEIT(const cChannel *Channel) const;
 public:
   void AddTransponders(const cList<cChannel> *Channels);
   void AddTransponder(const cChannel *Channel);
   };
+
+bool cScanList::HasDeviceForChannelEIT(const cChannel *Channel) const
+{
+  for (int i = 0; i < cDevice::NumDevices(); i++) {
+      cDevice *Device = cDevice::GetDevice(i);
+      if (Device && Device->ProvidesEIT() && Device->ProvidesTransponder(Channel))
+         return true;
+      }
+  return false;
+}
 
 void cScanList::AddTransponders(const cList<cChannel> *Channels)
 {
@@ -59,6 +71,8 @@ void cScanList::AddTransponders(const cList<cChannel> *Channels)
 void cScanList::AddTransponder(const cChannel *Channel)
 {
   if (Channel->Source() && Channel->Transponder() && (Setup.EPGScanMaxChannel <= 0 || Channel->Number() < Setup.EPGScanMaxChannel)) {
+     if (!HasDeviceForChannelEIT(Channel))
+        return;
      for (cScanData *sd = First(); sd; sd = Next(sd)) {
          if (sd->Source() == Channel->Source() && ISTRANSPONDER(sd->Transponder(), Channel->Transponder()))
             return;
