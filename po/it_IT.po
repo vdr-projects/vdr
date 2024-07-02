@@ -848,7 +848,7 @@ msgid "Edited version already exists - overwrite?"
 msgstr "Versione modificata già esistente. Sovrascrivere?"
 
 msgid "Not enough free disk space to start editing process!"
-msgstr ""
+msgstr "Spazio libero su disco insufficiente per avviare il processo di modifica!"
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Errore durante l'accodamento della registrazione per il taglio!"
