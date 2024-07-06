@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.h 2.1 2012/03/07 14:16:57 kls Exp $
+ * $Id: eitscan.h 5.1 2024/07/06 11:19:21 kls Exp $
  */
 
 #ifndef __EITSCAN_H
@@ -23,6 +23,7 @@ private:
   enum { ActivityTimeout = 60,
          ScanTimeout = 20
        };
+  bool paused;
   time_t lastScan, lastActivity;
   int currentChannel;
   cScanList *scanList;

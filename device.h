@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 5.4 2024/03/29 21:46:50 kls Exp $
+ * $Id: device.h 5.5 2024/07/06 11:19:21 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -346,6 +346,14 @@ public:
          ///< device, without disturbing any other activities. If an occupied timeout
          ///< has been set for this device, and that timeout has not yet expired,
          ///< this function returns false.
+  virtual void SetPowerSaveMode(bool On);
+         ///< Puts the device into power save mode, if applicable.
+         ///< If On is true, power save mode shall be activated, if it is false,
+         ///< normal operating mode shall be restored.
+         ///< The default implementation does nothing.
+  void SetPowerSaveIfUnused(void);
+         ///< Sets this device into a power save mode if it is not currently used and
+         ///< has implemented SetPowerSaveMode().
   bool SwitchChannel(const cChannel *Channel, bool LiveView);
          ///< Switches the device to the given Channel, initiating transfer mode
          ///< if necessary.

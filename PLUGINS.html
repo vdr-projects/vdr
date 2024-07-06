@@ -2117,6 +2117,17 @@ new cMyDeviceHook;
 </pre></td></tr></table><p>
 
 and shall not delete this object. It will be automatically deleted when the program ends.
+<p>
+<b>Power management</b>
+<p>
+A device that can be put into a power save mode can implement the function
+
+<p><table><tr><td class="code"><pre>
+virtual void SetPowerSaveMode(bool On);
+</pre></td></tr></table><p>
+
+If On is true, power save mode shall be activated, if it is false,
+normal operating mode shall be restored.
 
 <hr><h2><a name="Positioners">Positioners</a></h2>
 

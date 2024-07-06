@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.13 2024/03/29 21:46:50 kls Exp $
+ * $Id: device.c 5.14 2024/07/06 11:19:21 kls Exp $
  */
 
 #include "device.h"
@@ -812,6 +812,16 @@ bool cDevice::MaySwitchTransponder(const cChannel *Channel) const
   return !Occupied() && !Receiving() && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid);
 }
 
+void cDevice::SetPowerSaveMode(bool On)
+{
+}
+
+void cDevice::SetPowerSaveIfUnused(void)
+{
+  if (!Occupied() && !Receiving() && !(pidHandles[ptAudio].pid || pidHandles[ptVideo].pid || pidHandles[ptDolby].pid))
+     SetPowerSaveMode(true);
+}
+
 bool cDevice::SwitchChannel(const cChannel *Channel, bool LiveView)
 {
   if (LiveView) {
@@ -916,6 +926,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      // channel to it, for possible later decryption:
      if (camSlot)
         camSlot->AddChannel(Channel);
+     SetPowerSaveMode(false);
      if (SetChannelDevice(Channel, LiveView)) {
         // Start section handling:
         if (sectionHandler) {
@@ -962,8 +973,10 @@ void cDevice::ForceTransferMode(void)
 {
   if (!cTransferControl::ReceiverDevice()) {
      LOCK_CHANNELS_READ;
-     if (const cChannel *Channel = Channels->GetByNumber(CurrentChannel()))
+     if (const cChannel *Channel = Channels->GetByNumber(CurrentChannel())) {
+        SetPowerSaveMode(false);
         SetChannelDevice(Channel, false); // this implicitly starts Transfer Mode
+        }
      }
 }
 

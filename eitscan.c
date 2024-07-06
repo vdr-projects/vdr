@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 5.5 2024/06/27 10:49:34 kls Exp $
+ * $Id: eitscan.c 5.6 2024/07/06 11:19:21 kls Exp $
  */
 
 #include "eitscan.h"
@@ -105,6 +105,7 @@ cEITScanner EITScanner;
 
 cEITScanner::cEITScanner(void)
 {
+  paused = false;
   lastScan = 0;
   lastActivity = time(NULL);
   currentChannel = 0;
@@ -145,8 +146,23 @@ void cEITScanner::Process(void)
   if (Setup.EPGScanTimeout || !lastActivity) { // !lastActivity means a scan was forced
      time_t now = time(NULL);
      if (now - lastScan > ScanTimeout && now - lastActivity > ActivityTimeout) {
-        if (Setup.EPGPauseAfterScan && scanList->Count() == 0 && lastActivity && lastScan && now - lastScan < Setup.EPGScanTimeout * 3600)
+        if (Setup.EPGPauseAfterScan && scanList->Count() == 0 && lastActivity && lastScan && now - lastScan < Setup.EPGScanTimeout * 3600) {
+           if (!paused) {
+              dsyslog("pause EPG scan");
+              paused = true;
+              }
+           // Allow unused devices to go into power save mode:
+           for (int i = 0; i < cDevice::NumDevices(); i++) {
+               if (cDevice *Device = cDevice::GetDevice(i))
+                  Device->SetPowerSaveIfUnused();
+               }
+           lastScan = time(NULL); // let's not do this too often
            return; // pause for Setup.EPGScanTimeout hours
+           }
+        else if (paused) {
+           dsyslog("start EPG scan");
+           paused = false;
+           }
         cStateKey StateKey;
         if (const cChannels *Channels = cChannels::GetChannelsRead(StateKey, 10)) {
            if (scanList->Count() == 0) {
