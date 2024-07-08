@@ -9919,7 +9919,7 @@ Video Disk Recorder Revision History
 - A device is now always kept occupied if a timer is in VPS margin or needs the
   transponder (thanks to Markus Ehrnsperger).
 
-2024-07-06:
+2024-07-08:
 
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Fixed a possible access of a deleted object in the EIT scanner.
@@ -9935,3 +9935,5 @@ Video Disk Recorder Revision History
 - Unused devices can now be put into a power save mode (suggested by Markus
   Ehrnsperger). Device plugins need to implement the new function
   cDevice::SetPowerSaveMode() to make this work.
+- Implemented power save mode for cDvbDevice (based on a patch from Markus
+  Ehrnsperger).

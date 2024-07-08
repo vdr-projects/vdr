@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 4.7 2020/06/27 10:24:46 kls Exp $
+ * $Id: dvbdevice.h 5.1 2024/07/08 09:34:33 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -244,6 +244,7 @@ public:
   virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
   virtual bool IsTunedToTransponder(const cChannel *Channel) const;
   virtual bool MaySwitchTransponder(const cChannel *Channel) const;
+  virtual void SetPowerSaveMode(bool On);
 protected:
   virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
 public:

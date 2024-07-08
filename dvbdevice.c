@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.3 2022/12/05 14:04:10 kls Exp $
+ * $Id: dvbdevice.c 5.4 2024/07/08 09:34:33 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -593,6 +593,7 @@ public:
   bool GetSignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL, int *Status = NULL) const;
   int GetSignalStrength(void) const;
   int GetSignalQuality(void) const;
+  void SetPowerSaveMode(bool On);
   };
 
 cMutex cDvbTuner::bondMutex;
@@ -859,6 +860,8 @@ void cDvbTuner::ClearEventQueue(void) const
 
 bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
 {
+  if (fd_frontend == -1)
+     return false;
   ClearEventQueue();
   Status = (fe_status_t)0; // initialize here to fix buggy drivers
   while (1) {
@@ -876,6 +879,8 @@ bool cDvbTuner::GetFrontendStatus(fe_status_t &Status) const
 
 bool cDvbTuner::GetSignalStats(int &Valid, double *Strength, double *Cnr, double *BerPre, double *BerPost, double *Per, int *Status) const
 {
+  if (fd_frontend == -1)
+     return false;
   ClearEventQueue();
   fe_status_t FeStatus = (fe_status_t)0; // initialize here to fix buggy drivers
   dtv_property Props[MAXFRONTENDCMDS];
@@ -1226,6 +1231,8 @@ int SignalToSQI(const cChannel *Channel, int Signal, int Ber, int FeModulation, 
 
 int cDvbTuner::GetSignalStrength(void) const
 {
+  if (fd_frontend == -1)
+     return 0;
   ClearEventQueue();
   // Try DVB API 5:
   for (int i = 0; i < 1; i++) { // just a trick to break out with 'continue' ;-)
@@ -1291,6 +1298,8 @@ int cDvbTuner::GetSignalStrength(void) const
 
 int cDvbTuner::GetSignalQuality(void) const
 {
+  if (fd_frontend == -1)
+     return 0;
   // Try DVB API 5:
   for (int i = 0; i < 1; i++) { // just a trick to break out with 'continue' ;-)
       dtv_property Props[MAXFRONTENDCMDS];
@@ -1536,6 +1545,8 @@ void cDvbTuner::ExecuteDiseqc(const cDiseqc *Diseqc, int *Frequency)
 
 void cDvbTuner::ResetToneAndVoltage(void)
 {
+  if (fd_frontend == -1)
+     return;
   CHECK(ioctl(fd_frontend, FE_SET_VOLTAGE, bondedTuner ? SEC_VOLTAGE_OFF : SEC_VOLTAGE_13));
   CHECK(ioctl(fd_frontend, FE_SET_TONE, SEC_TONE_OFF));
 }
@@ -1766,6 +1777,30 @@ void cDvbTuner::Action(void)
           }
         newSet.TimedWait(mutex, WaitTime);
         }
+}
+
+void cDvbTuner::SetPowerSaveMode(bool On)
+{
+  cMutexLock MutexLock(&mutex);
+  if (On) {
+     if (fd_frontend != -1) {
+        dsyslog("closing frontend %d/%d", adapter, frontend);
+        tunerStatus = tsIdle;
+        dvbFrontend->Close();
+        fd_frontend = -1;
+        channel = cChannel();
+        }
+     }
+  else {
+     if (fd_frontend == -1) {
+        dsyslog("opening frontend %d/%d", adapter, frontend);
+        fd_frontend = dvbFrontend->Open();
+        lastUncValue = 0;
+        lastUncDelta = 0;
+        lastUncChange = 0;
+        lnbPowerTurnedOn = false;
+        }
+     }
 }
 
 // --- cDvbSourceParam -------------------------------------------------------
@@ -2298,6 +2333,11 @@ bool cDvbDevice::IsTunedToTransponder(const cChannel *Channel) const
 bool cDvbDevice::MaySwitchTransponder(const cChannel *Channel) const
 {
   return BondingOk(Channel, true) && cDevice::MaySwitchTransponder(Channel);
+}
+
+void cDvbDevice::SetPowerSaveMode(bool On)
+{
+  dvbTuner->SetPowerSaveMode(On);
 }
 
 bool cDvbDevice::SetChannelDevice(const cChannel *Channel, bool LiveView)
