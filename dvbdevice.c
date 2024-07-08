@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.4 2024/07/08 09:34:33 kls Exp $
+ * $Id: dvbdevice.c 5.5 2024/07/08 18:39:18 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -554,7 +554,7 @@ private:
   int lastSource;
   cPositioner *positioner;
   const cScr *scr;
-  bool lnbPowerTurnedOn;
+  mutable bool lnbPowerTurnedOn;
   eTunerStatus tunerStatus;
   mutable cMutex mutex;
   cCondVar locked;
@@ -700,6 +700,7 @@ bool cDvbTuner::ProvidesFrontend(const cChannel *Channel, bool Activate) const
             lastUncValue = 0;
             lastUncDelta = 0;
             lastUncChange = 0;
+            lnbPowerTurnedOn = false;
             }
          return true;
          }

@@ -9937,3 +9937,5 @@ Video Disk Recorder Revision History
   cDevice::SetPowerSaveMode() to make this work.
 - Implemented power save mode for cDvbDevice (based on a patch from Markus
   Ehrnsperger).
+- Added 'lnbPowerTurnedOn = false' to cDvbTuner::ProvidesFrontend() (suggested by
+  Markus Ehrnsperger).
