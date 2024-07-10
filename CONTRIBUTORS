@@ -2574,6 +2574,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for suggesting to enable unused devices to be put into a power save mode
  for a patch that was used to implement power save mode for cDvbDevice
  for suggesting to add 'lnbPowerTurnedOn = false' to cDvbTuner::ProvidesFrontend()
+ for reporting a crash in strreplace() for multiple replacements with strings of
+ different lengths
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

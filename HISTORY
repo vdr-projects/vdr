@@ -9939,3 +9939,8 @@ Video Disk Recorder Revision History
   Ehrnsperger).
 - Added 'lnbPowerTurnedOn = false' to cDvbTuner::ProvidesFrontend() (suggested by
   Markus Ehrnsperger).
+
+2024-07-10:
+
+- Fixed a crash in strreplace() for multiple replacements with strings of different
+  lengths (reported by Markus Ehrnsperger).
