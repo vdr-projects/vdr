@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 5.1 2024/01/17 21:15:48 kls Exp $
+ * $Id: skins.c 5.2 2024/07/13 09:12:18 kls Exp $
  */
 
 #include "skins.h"
@@ -139,9 +139,9 @@ int cSkinDisplayMenu::GetTextAreaWidth(void) const
   return 0;
 }
 
-const cFont *cSkinDisplayMenu::GetTextAreaFont(bool) const
+const cFont *cSkinDisplayMenu::GetTextAreaFont(bool  FixedFont) const
 {
-  return NULL;
+  return cFont::GetFont(FixedFont ? fontFix : fontOsd);
 }
 
 // --- cSkinDisplayReplay::cProgressBar --------------------------------------

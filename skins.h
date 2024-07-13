@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 5.2 2024/06/11 12:43:25 kls Exp $
+ * $Id: skins.h 5.3 2024/07/13 09:12:18 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -310,8 +310,7 @@ public:
   virtual const cFont *GetTextAreaFont(bool FixedFont) const;
        ///< Returns a pointer to the font which is used to display text with SetText().
        ///< The parameter FixedFont has the same meaning as in SetText(). The default
-       ///< implementation returns NULL. Therefore a caller of this method must be
-       ///< prepared to receive NULL if the plugin doesn't implement this method.
+       ///< implementation returns the font defined in the setup.
        ///< The returned pointer is valid a long as the instance of cSkinDisplayMenu
        ///< exists.
   };
