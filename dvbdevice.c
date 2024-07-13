@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.5 2024/07/08 18:39:18 kls Exp $
+ * $Id: dvbdevice.c 5.6 2024/07/13 12:34:42 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1796,6 +1796,8 @@ void cDvbTuner::SetPowerSaveMode(bool On)
      if (fd_frontend == -1) {
         dsyslog("opening frontend %d/%d", adapter, frontend);
         fd_frontend = dvbFrontend->Open();
+        lastDiseqc = NULL;
+        lastSource = 0;
         lastUncValue = 0;
         lastUncDelta = 0;
         lastUncChange = 0;

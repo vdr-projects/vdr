@@ -9945,3 +9945,4 @@ Video Disk Recorder Revision History
 - Fixed a crash in strreplace() for multiple replacements with strings of different
   lengths (reported by Markus Ehrnsperger).
 - Fixed handling of cSkinDisplayMenu::GetTextAreaFont() (reported by Matthias Senzel).
+- Fixed a timeout in cDvbDevice while tuning after the frontend has been reopened.
