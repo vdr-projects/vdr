@@ -3415,6 +3415,7 @@ Matthias Senzel <matthias.senzel@t-online.de>
  for fixing an unnecessary double display of the current menu item in page up/down
  for fixing an unnecessary double display of menu items in the Recordings menu
  for reporting a bug in handling cSkinDisplayMenu::GetTextAreaFont()
+ for reporting characters being cut off while editing in the LCARS skin
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language
