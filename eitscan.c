@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 5.6 2024/07/06 11:19:21 kls Exp $
+ * $Id: eitscan.c 5.7 2024/07/13 20:12:24 kls Exp $
  */
 
 #include "eitscan.h"
@@ -152,11 +152,12 @@ void cEITScanner::Process(void)
               paused = true;
               }
            // Allow unused devices to go into power save mode:
-           for (int i = 0; i < cDevice::NumDevices(); i++) {
-               if (cDevice *Device = cDevice::GetDevice(i))
-                  Device->SetPowerSaveIfUnused();
+           if ((now - lastScan) % 10 == 0) { // let's not do this too often
+              for (int i = 0; i < cDevice::NumDevices(); i++) {
+                  if (cDevice *Device = cDevice::GetDevice(i))
+                     Device->SetPowerSaveIfUnused();
+                  }
                }
-           lastScan = time(NULL); // let's not do this too often
            return; // pause for Setup.EPGScanTimeout hours
            }
         else if (paused) {

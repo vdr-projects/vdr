@@ -9947,3 +9947,5 @@ Video Disk Recorder Revision History
 - Fixed handling of cSkinDisplayMenu::GetTextAreaFont() (reported by Matthias Senzel).
 - Fixed a timeout in cDvbDevice while tuning after the frontend has been reopened.
 - Fixed setting the editable width in the LCARS skin (reported by Matthias Senzel).
+- Fixed restarting the EPG scan and keeping the frequency of calls to
+  Device->SetPowerSaveIfUnused() low.
