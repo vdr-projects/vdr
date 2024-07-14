@@ -9940,7 +9940,7 @@ Video Disk Recorder Revision History
 - Added 'lnbPowerTurnedOn = false' to cDvbTuner::ProvidesFrontend() (suggested by
   Markus Ehrnsperger).
 
-2024-07-13:
+2024-07-14:
 
 - Fixed a crash in strreplace() for multiple replacements with strings of different
   lengths (reported by Markus Ehrnsperger).
@@ -9949,3 +9949,5 @@ Video Disk Recorder Revision History
 - Fixed setting the editable width in the LCARS skin (reported by Matthias Senzel).
 - Fixed restarting the EPG scan and keeping the frequency of calls to
   Device->SetPowerSaveIfUnused() low.
+- Added the lines from 'Fixed a timeout in cDvbDevice while tuning after the frontend
+  has been reopened' to cDvbTuner::ProvidesFrontend() (suggested by Markus Ehrnsperger).
