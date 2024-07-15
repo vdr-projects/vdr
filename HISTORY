@@ -9951,3 +9951,24 @@ Video Disk Recorder Revision History
   Device->SetPowerSaveIfUnused() low.
 - Added the lines from 'Fixed a timeout in cDvbDevice while tuning after the frontend
   has been reopened' to cDvbTuner::ProvidesFrontend() (suggested by Markus Ehrnsperger).
+
+2024-07-15:
+
+- Removed deprecated function cDevice::SetCurrentChannel(const cChannel *Channel).
+- Removed deprecated function cSkinDisplayMenu::SetItemEvent(const cEvent *Event, int Index,
+  bool Current, bool Selectable, const cChannel *Channel, bool WithDate, eTimerMatch TimerMatch).
+- Removed deprecated functions from cFile.
+- The default for DEPRECATED_SCHEDULE_GET_EVENT has been set to 0, which means that
+  the function GetEvent(tEventID EventID, time_t StartTime = 0) is no longer available.
+  You can add 'DEPRECATED_SCHEDULE_GET_EVENT=1' when compiling in order to restore this
+  functionality. However, it is recommended to use GetEventById() and GetEventByTime()
+  instead.
+- The default for DEPRECATED_SECTIONSYNCER_SYNC_REPEAT has been set to 0, which means that
+  the functions Repeat() and Sync() are no longer available.
+  You can add 'DEPRECATED_SECTIONSYNCER_SYNC_REPEAT=1' when compiling in order to restore this
+  functionality. However, it is recommended to use Check() and Processed() instead.
+- The default for DEPRECATED_CCONTROL has been set to 0, which means that
+  the function Control(bool Hidden) is no longer available.
+  You can add 'DEPRECATED_CCONTROL=1' when compiling in order to restore this
+  functionality. However, it is recommended to use Control(cMutexLock &MutexLock, bool Hidden)
+  instead.

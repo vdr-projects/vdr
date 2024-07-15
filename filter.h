@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.h 5.1 2021/03/16 15:10:54 kls Exp $
+ * $Id: filter.h 5.2 2024/07/15 14:42:22 kls Exp $
  */
 
 #ifndef __FILTER_H
@@ -13,7 +13,9 @@
 #include <sys/types.h>
 #include "tools.h"
 
-#define DEPRECATED_SECTIONSYNCER_SYNC_REPEAT 1
+#ifndef DEPRECATED_SECTIONSYNCER_SYNC_REPEAT
+#define DEPRECATED_SECTIONSYNCER_SYNC_REPEAT 0
+#endif
 
 class cSectionSyncer {
 private:

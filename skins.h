@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 5.3 2024/07/13 09:12:18 kls Exp $
+ * $Id: skins.h 5.4 2024/07/15 14:42:22 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -244,15 +244,6 @@ public:
        ///< If the skin displays the Event item in its own way, it shall return true.
        ///< The default implementation does nothing and returns false, which results in
        ///< a call to SetItem() with a proper text.
-#ifndef DEPRECATED_SKIN_SETITEMEVENT
-#define DEPRECATED_SKIN_SETITEMEVENT 0
-#endif
-#if DEPRECATED_SKIN_SETITEMEVENT
-  virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, eTimerMatch TimerMatch) { return SetItemEvent(Event, Index, Current, Selectable, Channel, WithDate, TimerMatch, true); }
-       ///< This function is here for comaptibility with older plugins and may be removed
-       ///< in a future version. Use the above version of SetItemEvent() with the TimerActive
-       ///< parameter instead.
-#endif
   virtual bool SetItemTimer(const cTimer *Timer, int Index, bool Current, bool Selectable) { return false; }
        ///< Sets the item at the given Index to Timer. See SetItem() for more information.
        ///< If a derived skin class implements this function, it can display a Timer item

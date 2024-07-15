@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.12 2024/07/10 14:50:07 kls Exp $
+ * $Id: tools.c 5.13 2024/07/15 14:42:22 kls Exp $
  */
 
 #include "tools.h"
@@ -1664,11 +1664,6 @@ bool cFileNameList::Load(const char *Directory, bool DirsOnly)
 
 // --- cFile -----------------------------------------------------------------
 
-#if DEPRECATED_CFILE
-bool cFile::files[FD_SETSIZE] = { false };
-int cFile::maxFiles = 0;
-#endif
-
 cFile::cFile(void)
 {
   f = -1;
@@ -1690,24 +1685,8 @@ bool cFile::Open(const char *FileName, int Flags, mode_t Mode)
 bool cFile::Open(int FileDes)
 {
   if (FileDes >= 0) {
-     if (!IsOpen()) {
+     if (!IsOpen())
         f = FileDes;
-#if DEPRECATED_CFILE
-        if (f >= 0) {
-           if (f < FD_SETSIZE) {
-              if (f >= maxFiles)
-                 maxFiles = f + 1;
-              if (!files[f])
-                 files[f] = true;
-              else
-                 esyslog("ERROR: file descriptor %d already in files[]", f);
-              return true;
-              }
-           else
-              esyslog("ERROR: file descriptor %d is larger than FD_SETSIZE (%d)", f, FD_SETSIZE);
-           }
-#endif
-        }
      else
         esyslog("ERROR: attempt to re-open file descriptor %d", FileDes);
      }
@@ -1718,9 +1697,6 @@ void cFile::Close(void)
 {
   if (f >= 0) {
      close(f);
-#if DEPRECATED_CFILE
-     files[f] = false;
-#endif
      f = -1;
      }
 }
@@ -1729,26 +1705,6 @@ bool cFile::Ready(bool Wait)
 {
   return f >= 0 && FileReady(f, Wait ? 1000 : 0);
 }
-
-#if DEPRECATED_CFILE
-bool cFile::AnyFileReady(int FileDes, int TimeoutMs)
-{
-  fd_set set;
-  FD_ZERO(&set);
-  for (int i = 0; i < maxFiles; i++) {
-      if (files[i])
-         FD_SET(i, &set);
-      }
-  if (0 <= FileDes && FileDes < FD_SETSIZE && !files[FileDes])
-     FD_SET(FileDes, &set); // in case we come in with an arbitrary descriptor
-  if (TimeoutMs == 0)
-     TimeoutMs = 10; // load gets too heavy with 0
-  struct timeval timeout;
-  timeout.tv_sec  = TimeoutMs / 1000;
-  timeout.tv_usec = (TimeoutMs % 1000) * 1000;
-  return select(FD_SETSIZE, &set, NULL, NULL, &timeout) > 0 && (FileDes < 0 || FD_ISSET(FileDes, &set));
-}
-#endif
 
 bool cFile::FileReady(int FileDes, int TimeoutMs)
 {
@@ -1764,21 +1720,6 @@ bool cFile::FileReady(int FileDes, int TimeoutMs)
      }
   return select(FD_SETSIZE, &set, NULL, NULL, (TimeoutMs >= 0) ? &timeout : NULL) > 0 && FD_ISSET(FileDes, &set);
 }
-
-#if DEPRECATED_CFILE
-bool cFile::FileReadyForWriting(int FileDes, int TimeoutMs)
-{
-  fd_set set;
-  struct timeval timeout;
-  FD_ZERO(&set);
-  FD_SET(FileDes, &set);
-  if (TimeoutMs < 100)
-     TimeoutMs = 100;
-  timeout.tv_sec  = 0;
-  timeout.tv_usec = TimeoutMs * 1000;
-  return select(FD_SETSIZE, NULL, &set, NULL, &timeout) > 0 && FD_ISSET(FileDes, &set);
-}
-#endif
 
 // --- cSafeFile -------------------------------------------------------------
 
