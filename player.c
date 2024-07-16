@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 4.1 2020/05/18 16:47:29 kls Exp $
+ * $Id: player.c 5.1 2024/07/16 12:33:27 kls Exp $
  */
 
 #include "player.h"
@@ -99,7 +99,7 @@ void cControl::Attach(void)
      if (cDevice::PrimaryDevice()->AttachPlayer(control->player))
         control->attached = true;
      else {
-        Skins.Message(mtError, tr("Channel locked (recording)!"));
+        Skins.Message(mtError, tr("Primary device has no MPEG decoder, can't attach player!"));
         Shutdown();
         }
      }
