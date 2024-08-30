@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.2 2024/06/25 19:00:06 kls Exp $
+ * $Id: menu.h 5.3 2024/08/30 09:55:15 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -333,5 +333,7 @@ public:
   static const char *LastReplayed(void);
   static void ClearLastReplayed(const char *FileName);
   };
+
+void SetTrackDescriptions(int LiveChannel);
 
 #endif //__MENU_H

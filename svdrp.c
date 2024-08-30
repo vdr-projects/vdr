@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.8 2024/06/13 09:31:11 kls Exp $
+ * $Id: svdrp.c 5.9 2024/08/30 09:55:15 kls Exp $
  */
 
 #include "svdrp.h"
@@ -823,6 +823,14 @@ bool cPUTEhandler::Process(const char *s)
                           // adjust the help for CLRE accordingly if changing this!
 
 const char *HelpPages[] = {
+  "AUDI [ <number> ]\n"
+  "    Lists the currently available audio tracks in the format 'number language description'.\n"
+  "    The number indicates the track type (1..32 = MP2, 33..48 = Dolby).\n"
+  "    The currently selected track has its description prefixed with '*'.\n"
+  "    If a number is given (which must be one of the track numbers listed)\n"
+  "    audio is switched to that track.\n"
+  "    Note that the list may not be fully available or current immediately after\n"
+  "    switching the channel or starting a replay.",
   "CHAN [ + | - | <number> | <name> | <id> ]\n"
   "    Switch channel up, down or to the given channel number, name or id.\n"
   "    Without option (or after successfully switching to the channel)\n"
@@ -1071,6 +1079,7 @@ private:
   bool Send(const char *s);
   void Reply(int Code, const char *fmt, ...) __attribute__ ((format (printf, 3, 4)));
   void PrintHelpTopics(const char **hp);
+  void CmdAUDI(const char *Option);
   void CmdCHAN(const char *Option);
   void CmdCLRE(const char *Option);
   void CmdCONN(const char *Option);
@@ -1226,6 +1235,45 @@ void cSVDRPServer::PrintHelpTopics(const char **hp)
       x = 0;
       Reply(-214, "%s", buffer);
       }
+}
+
+void cSVDRPServer::CmdAUDI(const char *Option)
+{
+  if (*Option) {
+     if (isnumber(Option)) {
+        int o = strtol(Option, NULL, 10);
+        if (o >= ttAudioFirst && o <= ttDolbyLast) {
+           const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(o));
+           if (TrackId && TrackId->id) {
+              cDevice::PrimaryDevice()->SetCurrentAudioTrack(eTrackType(o));
+              Reply(250, cString::sprintf("%d %s %s", eTrackType(o), *TrackId->language ? TrackId->language : "---", *TrackId->description ? TrackId->description : "-"));
+              }
+           else
+              Reply(501, "Audio track \"%s\" not available", Option);
+           }
+        else
+           Reply(501, "Invalid audio track \"%s\"", Option);
+        }
+     else
+        Reply(501, "Error in audio track \"%s\"", Option);
+     }
+  else {
+     SetTrackDescriptions(!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring() ? cDevice::CurrentChannel() : 0);
+     eTrackType CurrentAudioTrack = cDevice::PrimaryDevice()->GetCurrentAudioTrack();
+     cString s;
+     for (int i = ttAudioFirst; i <= ttDolbyLast; i++) {
+         const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(i));
+         if (TrackId && TrackId->id) {
+            if (*s)
+               Reply(-250, s);
+            s = cString::sprintf("%d %s %s%s", eTrackType(i), *TrackId->language ? TrackId->language : "---", i == CurrentAudioTrack ? "*" : "", *TrackId->description ? TrackId->description : "-");
+            }
+         }
+     if (*s)
+        Reply(250, s);
+     else
+        Reply(550, "No audio tracks available");
+     }
 }
 
 void cSVDRPServer::CmdCHAN(const char *Option)
@@ -2571,7 +2619,8 @@ void cSVDRPServer::Execute(char *Cmd)
   if (*s)
      *s++ = 0;
   s = skipspace(s);
-  if      (CMD("CHAN"))  CmdCHAN(s);
+  if      (CMD("AUDI"))  CmdAUDI(s);
+  else if (CMD("CHAN"))  CmdCHAN(s);
   else if (CMD("CLRE"))  CmdCLRE(s);
   else if (CMD("CONN"))  CmdCONN(s);
   else if (CMD("DELC"))  CmdDELC(s);

@@ -9952,7 +9952,7 @@ Video Disk Recorder Revision History
 - Added the lines from 'Fixed a timeout in cDvbDevice while tuning after the frontend
   has been reopened' to cDvbTuner::ProvidesFrontend() (suggested by Markus Ehrnsperger).
 
-2024-07-16:
+2024-08-30:
 
 - Removed deprecated function cDevice::SetCurrentChannel(const cChannel *Channel).
 - Removed deprecated function cSkinDisplayMenu::SetItemEvent(const cEvent *Event, int Index,
@@ -9974,3 +9974,5 @@ Video Disk Recorder Revision History
   instead.
 - Changed the error message when trying to attach a player to a primary device without
   an MPEG decoder.
+- The new SVDRP command 'AUDI' can be used to list the currently available audio tracks
+  and select one of them.

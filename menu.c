@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.14 2024/06/25 19:00:06 kls Exp $
+ * $Id: menu.c 5.15 2024/08/30 09:55:15 kls Exp $
  */
 
 #include "menu.h"
@@ -4677,7 +4677,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 
 // --- SetTrackDescriptions --------------------------------------------------
 
-static void SetTrackDescriptions(int LiveChannel)
+void SetTrackDescriptions(int LiveChannel)
 {
   cDevice::PrimaryDevice()->ClrAvailableTracks(true);
   const cComponents *Components = NULL;
