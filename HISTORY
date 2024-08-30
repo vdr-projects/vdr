@@ -9976,3 +9976,5 @@ Video Disk Recorder Revision History
   an MPEG decoder.
 - The new SVDRP command 'AUDI' can be used to list the currently available audio tracks
   and select one of them.
+- Fixed a crash when deleting a recording that is currently being edited, and then
+  immediately deleting the edited version, too (reported by Marko Mäkelä).

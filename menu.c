@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.15 2024/08/30 09:55:15 kls Exp $
+ * $Id: menu.c 5.16 2024/08/30 20:43:26 kls Exp $
  */
 
 #include "menu.h"
@@ -3290,8 +3290,11 @@ eOSState cMenuRecordings::Delete(void)
              if (RecordingsHandler.GetUsage(FileName)) {
                 if (!Interface->Confirm(tr("Recording is being edited - really delete?")))
                    return osContinue;
+                SetNeedsFastResponse(true); // makes sure the edited version is removed from the menu ASAP
                 }
              }
+          else
+             return osContinue; // recording has already been deleted
         }
         RecordingsHandler.Del(FileName); // must do this w/o holding a lock, because the cleanup section in cDirCopier::Action() might request one!
         if (cReplayControl::NowReplaying() && strcmp(cReplayControl::NowReplaying(), FileName) == 0)
