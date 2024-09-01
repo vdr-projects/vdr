@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.29 2024/08/30 20:43:26 kls Exp $
+ * $Id: recording.c 5.30 2024/09/01 20:43:40 kls Exp $
  */
 
 #include "recording.h"
@@ -1631,7 +1631,7 @@ const char *cRecordings::UpdateFileName(void)
 void cRecordings::TouchUpdate(void)
 {
   bool needsUpdate = NeedsUpdate();
-  TouchFile(UpdateFileName());
+  TouchFile(UpdateFileName(), true);
   if (!needsUpdate)
      lastUpdate = time(NULL); // make sure we don't trigger ourselves
 }

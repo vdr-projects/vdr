@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.9 2024/07/15 14:42:22 kls Exp $
+ * $Id: tools.h 5.10 2024/09/01 20:43:40 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -319,7 +319,7 @@ bool RemoveEmptyDirectories(const char *DirName, bool RemoveThis = false, const 
 int DirSizeMB(const char *DirName); ///< returns the total size of the files in the given directory, or -1 in case of an error
 char *ReadLink(const char *FileName); ///< returns a new string allocated on the heap, which the caller must delete (or NULL in case of an error)
 bool SpinUpDisk(const char *FileName);
-void TouchFile(const char *FileName);
+void TouchFile(const char *FileName, bool Create = false);
 time_t LastModifiedTime(const char *FileName);
 off_t FileSize(const char *FileName); ///< returns the size of the given file, or -1 in case of an error (e.g. if the file doesn't exist)
 cString WeekDayName(int WeekDay);

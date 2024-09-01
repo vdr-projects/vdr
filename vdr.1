@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 5.2 2021/12/27 13:31:04 kls Exp $
+.\" $Id: vdr.1 5.3 2024/09/01 20:43:40 kls Exp $
 .\"
 .TH vdr 1 "27 Dec 2021" "2.6" "Video Disk Recorder"
 .SH NAME
@@ -311,8 +311,11 @@ as the first character of the pattern. File names are appended to this file afte
 a recording has finished, and the entire file is read upon startup of VDR.
 .TP
 .I .update
-If this file is present in the video directory, its last modification time will
-be used to trigger an update of the list of recordings in the "Recordings" menu.
+This file (in the video directory) will be touched whenever VDR makes changes
+to the content of the directory. Its last modification time will
+be used to trigger an update of the list of recordings in any VDRs that use
+the same video directory.
+The file will be created if it doesn't already exist.
 .SH SEE ALSO
 .BR vdr (5), svdrpsend (1)
 .SH AUTHOR

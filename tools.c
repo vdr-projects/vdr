@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.13 2024/07/15 14:42:22 kls Exp $
+ * $Id: tools.c 5.14 2024/09/01 20:43:40 kls Exp $
  */
 
 #include "tools.h"
@@ -719,9 +719,17 @@ bool SpinUpDisk(const char *FileName)
   return false;
 }
 
-void TouchFile(const char *FileName)
+void TouchFile(const char *FileName, bool Create)
 {
-  if (utime(FileName, NULL) == -1 && errno != ENOENT)
+   if (Create && access(FileName, F_OK) != 0) { // the file does not exist
+      isyslog("creating file '%s'", FileName);
+      int f = open(FileName, O_WRONLY | O_CREAT, DEFFILEMODE);
+      if (f >= 0)
+         close(f);
+      else
+         LOG_ERROR_STR(FileName);
+      }
+   if (utime(FileName, NULL) == -1 && errno != ENOENT)
      LOG_ERROR_STR(FileName);
 }
 

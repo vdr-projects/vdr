@@ -9952,7 +9952,7 @@ Video Disk Recorder Revision History
 - Added the lines from 'Fixed a timeout in cDvbDevice while tuning after the frontend
   has been reopened' to cDvbTuner::ProvidesFrontend() (suggested by Markus Ehrnsperger).
 
-2024-08-30:
+2024-09-01:
 
 - Removed deprecated function cDevice::SetCurrentChannel(const cChannel *Channel).
 - Removed deprecated function cSkinDisplayMenu::SetItemEvent(const cEvent *Event, int Index,
@@ -9978,3 +9978,4 @@ Video Disk Recorder Revision History
   and select one of them.
 - Fixed a crash when deleting a recording that is currently being edited, and then
   immediately deleting the edited version, too (reported by Marko Mäkelä).
+- The '.update' file in the video directory is now created if it doesn't already exist.
