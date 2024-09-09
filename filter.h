@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.h 5.2 2024/07/15 14:42:22 kls Exp $
+ * $Id: filter.h 5.3 2024/09/09 22:15:59 kls Exp $
  */
 
 #ifndef __FILTER_H
@@ -52,7 +52,9 @@ public:
   bool Complete(void) { return complete; }
        ///< Returns true if all sections have been processed.
 #if DEPRECATED_SECTIONSYNCER_SYNC_REPEAT
+  [[deprecated("see HISTORY, version 2.5.2")]]
   void Repeat(void);
+  [[deprecated("see HISTORY, version 2.5.2")]]
   bool Sync(uchar Version, int Number, int LastNumber);
 #endif
   };

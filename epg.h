@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 5.4 2024/07/15 14:42:22 kls Exp $
+ * $Id: epg.h 5.5 2024/09/09 22:15:59 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -191,6 +191,7 @@ public:
 #define DEPRECATED_SCHEDULE_GET_EVENT 0
 #endif
 #if DEPRECATED_SCHEDULE_GET_EVENT
+  [[deprecated("see HISTORY, version 2.5.2")]]
   const cEvent *GetEvent(tEventID EventID, time_t StartTime = 0) const;
 #endif
   const cEvent *GetEventById(tEventID EventID) const;
