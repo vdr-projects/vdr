@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.9 2024/08/30 09:55:15 kls Exp $
+ * $Id: svdrp.c 5.10 2024/09/09 13:39:05 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1246,7 +1246,7 @@ void cSVDRPServer::CmdAUDI(const char *Option)
            const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(o));
            if (TrackId && TrackId->id) {
               cDevice::PrimaryDevice()->SetCurrentAudioTrack(eTrackType(o));
-              Reply(250, cString::sprintf("%d %s %s", eTrackType(o), *TrackId->language ? TrackId->language : "---", *TrackId->description ? TrackId->description : "-"));
+              Reply(250, "%d %s %s", eTrackType(o), *TrackId->language ? TrackId->language : "---", *TrackId->description ? TrackId->description : "-");
               }
            else
               Reply(501, "Audio track \"%s\" not available", Option);
@@ -1265,12 +1265,12 @@ void cSVDRPServer::CmdAUDI(const char *Option)
          const tTrackId *TrackId = cDevice::PrimaryDevice()->GetTrack(eTrackType(i));
          if (TrackId && TrackId->id) {
             if (*s)
-               Reply(-250, s);
+               Reply(-250, "%s", *s);
             s = cString::sprintf("%d %s %s%s", eTrackType(i), *TrackId->language ? TrackId->language : "---", i == CurrentAudioTrack ? "*" : "", *TrackId->description ? TrackId->description : "-");
             }
          }
      if (*s)
-        Reply(250, s);
+        Reply(250, "%s", *s);
      else
         Reply(550, "No audio tracks available");
      }

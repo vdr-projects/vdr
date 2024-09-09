@@ -9983,3 +9983,7 @@ Video Disk Recorder Revision History
 - There will be no more distinction between "developer" and "stable" versions regarding
   version numbering. Version numbers are simply counted upwards, with each of the three
   parts ("version", "major", "minor") always being a single digit, and '0' being skipped.
+
+2024-09-09:
+
+- Fix for compilers that don't like non-constant format strings (thanks to Stefan Hofmann).
