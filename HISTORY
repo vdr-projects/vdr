@@ -9952,7 +9952,7 @@ Video Disk Recorder Revision History
 - Added the lines from 'Fixed a timeout in cDvbDevice while tuning after the frontend
   has been reopened' to cDvbTuner::ProvidesFrontend() (suggested by Markus Ehrnsperger).
 
-2024-09-09:
+2024-09-09: Version 2.7.1
 
 - Removed deprecated function cDevice::SetCurrentChannel(const cChannel *Channel).
 - Removed deprecated function cSkinDisplayMenu::SetItemEvent(const cEvent *Event, int Index,
@@ -9980,3 +9980,6 @@ Video Disk Recorder Revision History
   immediately deleting the edited version, too (reported by Marko Mäkelä).
 - The '.update' file in the video directory is now created if it doesn't already exist.
 - Improved the error message when closing a frontend (thanks to Markus Ehrnsperger).
+- There will be no more distinction between "developer" and "stable" versions regarding
+  version numbering. Version numbers are simply counted upwards, with each of the three
+  parts ("version", "major", "minor") always being a single digit, and '0' being skipped.
