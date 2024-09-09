@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.7 2024/07/14 15:41:01 kls Exp $
+ * $Id: dvbdevice.c 5.8 2024/09/09 08:53:57 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -394,7 +394,7 @@ void cDvbFrontend::Close(void)
 {
   if (fd_frontend >= 0) {
      if (close(fd_frontend) != 0)
-        esyslog("ERROR: frontend %d/%d", adapter, frontend);
+        esyslog("ERROR: frontend %d/%d: %m (%s:%d)", adapter, frontend, __FILE__, __LINE__);
      fd_frontend = -1;
      }
 }
