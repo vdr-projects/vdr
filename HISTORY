@@ -9984,8 +9984,12 @@ Video Disk Recorder Revision History
   version numbering. Version numbers are simply counted upwards, with each of the three
   parts ("version", "major", "minor") always being a single digit, and '0' being skipped.
 
-2024-09-10:
+2024-09-12:
 
 - Fix for compilers that don't like non-constant format strings (thanks to Stefan Hofmann).
 - Deprecated code is now marked with [[deprecated]] to issue a compile time warning when
   used.
+- Made APIVERSION independent from VDRVERSION to avoid irritation in case only
+  VDRVERSION is incremented (originally suggested by Winfried Köhler, with contributions
+  from Lars Hanisch and Manuel Reimer).
+  APIVERSNUM is now 30003.

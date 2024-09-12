@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 5.19 2024/09/09 10:58:55 kls Exp $
+ * $Id: config.h 5.20 2024/09/12 12:48:40 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -27,14 +27,16 @@
 
 // The plugin API's version number:
 
-#define APIVERSION  "2.6.9"
-#define APIVERSNUM   20609  // Version * 10000 + Major * 100 + Minor
+#define APIVERSION      "3"
+#define APIVERSNUM   30003
 
-// When loading plugins, VDR searches them by their APIVERSION, which
-// may be smaller than VDRVERSION in case there have been no changes to
-// VDR header files since the last APIVERSION. This allows compiled
+// When loading plugins, VDR searches files by their APIVERSION, which
+// is different from VDRVERSION. APIVERSION is a plain number, incremented
+// only when there are changes to the plugin API. This allows compiled
 // plugins to work with newer versions of the core VDR as long as no
-// VDR header files have changed.
+// interfaces have changed. APIVERSNUM begins with "300.." for backwards
+// compatibility and can be used in #if preprocessor statements to handle
+// version dependent code.
 
 #define MAXPRIORITY       99
 #define MINPRIORITY       (-MAXPRIORITY)

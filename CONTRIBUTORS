@@ -2839,6 +2839,7 @@ Winfried Köhler <nvdec@quantentunnel.de>
  for adding missing rounding when dividing frequencies in processing the NIT
  for suggesting to add note about not messing with event ids in EPG handlers
  for adding a missing initialization of cChannel::nameSourceMode
+ for suggesting to make APIVERSION a simple number, independent from VDRVERSION
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
@@ -3009,6 +3010,7 @@ Manuel Reimer <Manuel.Reimer@gmx.de>
  number is given
  for reporting that LSTE doesn't work after PUTE in case a channel didn't already
  have EPG data
+ for suggesting to make APIVERSION a simple number, independent from VDRVERSION
 
 Rene van den Braken <rene@vandenbraken.name>
  for reporting a bug in writing the PCR pid into the PMT in
@@ -3062,6 +3064,7 @@ Lars Hanisch <dvb@flensrocker.de>
  for fixing a typo in the description of cTimers::GetTimersRead()
  for suggesting to use dynamic buffering in handling CA descriptors to avoid a
  possible buffer overflow
+ for suggesting to make APIVERSION a simple number, independent from VDRVERSION
 
 Alex Lasnier <alex@fepg.org>
  for adding tuning support for ATSC devices
