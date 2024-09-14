@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 5.5 2024/09/09 22:15:59 kls Exp $
+ * $Id: epg.h 5.6 2024/09/14 14:17:12 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -157,7 +157,6 @@ private:
   cHash<cEvent> eventsHashID;
   cHash<cEvent> eventsHashStartTime;
   mutable u_int16_t numTimers;// The number of timers that use this schedule
-  bool hasRunning;
   bool onActualTp;
   int modified;
   time_t presentSeen;

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.9 2024/06/21 06:27:20 kls Exp $
+ * $Id: epg.c 5.10 2024/09/14 14:17:12 kls Exp $
  */
 
 #include "epg.h"
@@ -928,7 +928,6 @@ cSchedule::cSchedule(tChannelID ChannelID)
   channelID = ChannelID;
   events.SetUseGarbageCollector();
   numTimers = 0;
-  hasRunning = false;
   modified = 0;
   onActualTp = false;
   presentSeen = 0;
@@ -1068,7 +1067,6 @@ const cEvent *cSchedule::GetEventAround(time_t Time) const
 
 void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, const cChannel *Channel)
 {
-  hasRunning = false;
   for (cEvent *p = events.First(); p; p = events.Next(p)) {
       if (p == Event) {
          if (p->RunningStatus() > SI::RunningStatusNotRunning || RunningStatus > SI::RunningStatusNotRunning) {
@@ -1078,24 +1076,19 @@ void cSchedule::SetRunningStatus(cEvent *Event, int RunningStatus, const cChanne
          }
       else if (RunningStatus >= SI::RunningStatusPausing && p->StartTime() < Event->StartTime())
          p->SetRunningStatus(SI::RunningStatusNotRunning, Channel);
-      if (p->RunningStatus() >= SI::RunningStatusPausing)
-         hasRunning = true;
       }
   SetPresentSeen();
 }
 
 void cSchedule::ClrRunningStatus(cChannel *Channel)
 {
-  if (hasRunning) {
-     for (cEvent *p = events.First(); p; p = events.Next(p)) {
-         if (p->RunningStatus() >= SI::RunningStatusPausing) {
-            p->SetRunningStatus(SI::RunningStatusNotRunning, Channel);
-            hasRunning = false;
-            SetModified();
-            break;
-            }
+  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+      if (p->RunningStatus() >= SI::RunningStatusPausing) {
+         p->SetRunningStatus(SI::RunningStatusNotRunning, Channel);
+         SetModified();
+         break;
          }
-     }
+      }
 }
 
 void cSchedule::ResetVersions(void)
@@ -1108,13 +1101,13 @@ void cSchedule::Sort(void)
 {
   events.Sort();
   // Make sure there are no RunningStatusUndefined before the currently running event:
-  if (hasRunning) {
-     for (cEvent *p = events.First(); p; p = events.Next(p)) {
-         if (p->RunningStatus() >= SI::RunningStatusPausing)
-            break;
-         p->SetRunningStatus(SI::RunningStatusNotRunning);
+  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+      if (p->RunningStatus() >= SI::RunningStatusPausing) {
+         for (p = events.Prev(p); p; p = events.Prev(p))
+             p->SetRunningStatus(SI::RunningStatusNotRunning);
+         break;
          }
-     }
+      }
   SetModified();
 }
 

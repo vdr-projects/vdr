@@ -2581,6 +2581,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for suggesting to add the lines from 'Fixed a timeout in cDvbDevice while tuning after
  the frontend has been reopened' to cDvbTuner::ProvidesFrontend()
  for improving the error message when closing a frontend
+ for reporting a problem in cSchedule::Sort(), in case hasRunning was true, but there
+ was no event with RunningStatus() >= SI::RunningStatusPausing
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
