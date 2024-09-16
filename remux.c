@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
-  * $Id: remux.c 5.7 2024/01/23 19:33:45 kls Exp $
+  * $Id: remux.c 5.8 2024/09/16 09:07:12 kls Exp $
  */
 
 #include "remux.h"
@@ -1743,7 +1743,7 @@ void cH265Parser::ParseSequenceParameterSet(void)
   uint8_t sub_layer_profile_present_flag[8];
   uint8_t sub_layer_level_present_flag[8];
   GetBits(4);                                 // sps_video_parameter_set_id
-  int sps_max_sub_layers_minus1 = GetBits(3); // sps_max_sub_layers_minus1
+  int sps_max_sub_layers_minus1 = GetBits(3) & 7; // sps_max_sub_layers_minus1 ("& 7" to silence a compiler warning with gcc 14.1.0)
   GetBit();                                   // sps_temporal_id_nesting_flag
   // begin profile_tier_level(1, sps_max_sub_layers_minus1)
   GetByte();

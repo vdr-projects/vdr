@@ -2842,6 +2842,7 @@ Winfried Köhler <nvdec@quantentunnel.de>
  for suggesting to add note about not messing with event ids in EPG handlers
  for adding a missing initialization of cChannel::nameSourceMode
  for suggesting to make APIVERSION a simple number, independent from VDRVERSION
+ for reporting a compiler warning with gcc 14.1.0
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR

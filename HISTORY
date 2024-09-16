@@ -9984,7 +9984,7 @@ Video Disk Recorder Revision History
   version numbering. Version numbers are simply counted upwards, with each of the three
   parts ("version", "major", "minor") always being a single digit, and '0' being skipped.
 
-2024-09-14:
+2024-09-16:
 
 - Fix for compilers that don't like non-constant format strings (thanks to Stefan Hofmann).
 - Deprecated code is now marked with [[deprecated]] to issue a compile time warning when
@@ -9995,3 +9995,4 @@ Video Disk Recorder Revision History
   APIVERSNUM is now 30003.
 - Fixed a problem in cSchedule::Sort(), in case hasRunning was true, but there was no event
   with RunningStatus() >= SI::RunningStatusPausing (reported by Markus Ehrnsperger).
+- Silenced a compiler warning with gcc 14.1.0 (reported by Winfried Köhler).
