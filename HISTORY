@@ -9996,3 +9996,4 @@ Video Disk Recorder Revision History
 - Fixed a problem in cSchedule::Sort(), in case hasRunning was true, but there was no event
   with RunningStatus() >= SI::RunningStatusPausing (reported by Markus Ehrnsperger).
 - Silenced a compiler warning with gcc 14.1.0 (reported by Winfried Köhler).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
