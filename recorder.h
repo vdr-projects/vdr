@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 5.2 2024/09/16 19:56:37 kls Exp $
+ * $Id: recorder.h 5.3 2024/09/17 09:39:50 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -51,6 +51,7 @@ public:
   virtual ~cRecorder();
   int Errors(void) { return oldErrors + errors; };
        ///< Returns the number of errors that were detected during recording.
+       ///< Each frame that is missing or contains (any number of) errors counts as one error.
        ///< If this is a resumed recording, this includes errors that occurred
        ///< in the previous parts.
   };

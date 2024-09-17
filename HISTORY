@@ -9998,3 +9998,4 @@ Video Disk Recorder Revision History
 - Silenced a compiler warning with gcc 14.1.0 (reported by Winfried Köhler).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Moved error checking from recorder.c to remux.c.
+- The number of errors in a recording now represents the number of broken frames.

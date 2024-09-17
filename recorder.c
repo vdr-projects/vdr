@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.7 2024/09/17 09:28:03 kls Exp $
+ * $Id: recorder.c 5.8 2024/09/17 09:39:50 kls Exp $
  */
 
 #include "recorder.h"
@@ -198,7 +198,8 @@ void cRecorder::Action(void)
                     if (frameDetector->NewFrame(&PreviousErrors)) {
                        if (index)
                           index->Write(frameDetector->IndependentFrame(), fileName->Number(), fileSize);
-                       errors += PreviousErrors;
+                       if (PreviousErrors)
+                          errors++;
                        }
                     if (frameDetector->IndependentFrame()) {
                        recordFile->Write(patPmtGenerator.GetPat(), TS_SIZE);
