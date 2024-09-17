@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.9 2024/09/16 19:56:37 kls Exp $
+ * $Id: remux.c 5.10 2024/09/17 11:30:28 kls Exp $
  */
 
 #include "remux.h"
@@ -2007,6 +2007,7 @@ private:
   int lastFwdRef;
   int errors;
   int previousErrors;
+  int missingFrames;
   void Report(const char *Message, int NumErrors = 1);
 public:
   cFrameChecker(void);
@@ -2014,6 +2015,7 @@ public:
   void CheckTs(const uchar *Data, int Length);
   void CheckFrame(const uchar *Data, int Length);
   int PreviousErrors(void) { return previousErrors; }
+  int MissingFrames(void) { return missingFrames; }
   };
 
 cFrameChecker::cFrameChecker(void)
@@ -2024,6 +2026,7 @@ cFrameChecker::cFrameChecker(void)
   lastFwdRef = 0;
   errors = 0;
   previousErrors = 0;
+  missingFrames = 0;
 }
 
 void cFrameChecker::Report(const char *Message, int NumErrors)
@@ -2040,7 +2043,8 @@ void cFrameChecker::CheckTs(const uchar *Data, int Length)
 
 void cFrameChecker::CheckFrame(const uchar *Data, int Length)
 {
-  previousErrors = tsChecker.Errors() + errors;
+  previousErrors = tsChecker.Errors();
+  missingFrames = errors;
   errors = 0;
   tsChecker.Clear();
   int64_t Pts = TsGetPts(Data, Length);
@@ -2143,11 +2147,13 @@ void cFrameDetector::SetPid(int Pid, int Type)
      esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
 }
 
-bool cFrameDetector::NewFrame(int *PreviousErrors)
+bool cFrameDetector::NewFrame(int *PreviousErrors, int * MissingFrames)
 {
   if (newFrame) {
      if (PreviousErrors)
         *PreviousErrors = frameChecker->PreviousErrors();
+     if (MissingFrames)
+        *MissingFrames = frameChecker->MissingFrames();
      }
   return newFrame;
 }

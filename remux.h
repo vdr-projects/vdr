@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.4 2024/09/16 19:56:37 kls Exp $
+ * $Id: remux.h 5.5 2024/09/17 11:30:28 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -565,11 +565,13 @@ public:
       ///< Analyze() needs to be called again with more actual data.
   bool Synced(void) { return synced; }
       ///< Returns true if the frame detector has synced on the data stream.
-  bool NewFrame(int *PreviousErrors = NULL);
+  bool NewFrame(int *PreviousErrors = NULL, int * MissingFrames = NULL);
       ///< Returns true if the data given to the last call to Analyze() started a
       ///< new frame. If PreviousErrors is given, it will be set to the number of errors in
-      ///< the previous frame.
-      ///< The result returned in PreviousErrors is only valid if the function returns true.
+      ///< the previous frame. If MissingFrames is given, it will be set to the number of
+      ///< missing frames between the previous frame and this one.
+      ///< The results returned in PreviousErrors and MissingFrames are only valid if the
+      ///< function returns true.
   bool IndependentFrame(void) { return independentFrame; }
       ///< Returns true if a new frame was detected and this is an independent frame
       ///< (i.e. one that can be displayed by itself, without using data from any

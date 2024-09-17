@@ -9999,3 +9999,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Moved error checking from recorder.c to remux.c.
 - The number of errors in a recording now represents the number of broken frames.
+- Now distinguishing between frames with errors and completely missing frames.

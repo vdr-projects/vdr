@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.8 2024/09/17 09:39:50 kls Exp $
+ * $Id: recorder.c 5.9 2024/09/17 11:30:28 kls Exp $
  */
 
 #include "recorder.h"
@@ -195,10 +195,13 @@ void cRecorder::Action(void)
                     if (!NextFile())
                        break;
                     int PreviousErrors = 0;
-                    if (frameDetector->NewFrame(&PreviousErrors)) {
+                    int MissingFrames = 0;
+                    if (frameDetector->NewFrame(&PreviousErrors, &MissingFrames)) {
                        if (index)
                           index->Write(frameDetector->IndependentFrame(), fileName->Number(), fileSize);
                        if (PreviousErrors)
+                          errors++;
+                       if (MissingFrames)
                           errors++;
                        }
                     if (frameDetector->IndependentFrame()) {
