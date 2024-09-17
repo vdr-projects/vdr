@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.3 2023/12/27 09:30:42 kls Exp $
+ * $Id: remux.h 5.4 2024/09/16 19:56:37 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -523,6 +523,8 @@ enum eAspectRatio {
 extern const char *ScanTypeChars;
 extern const char *AspectRatioTexts[];
 
+class cFrameChecker;
+
 class cFrameDetector {
 private:
   enum { MaxPtsValues = 150 };
@@ -544,12 +546,15 @@ private:
   int framesPerPayloadUnit; // Some broadcasters send one frame per payload unit (== 1),
                             // while others put an entire GOP into one payload unit (> 1).
   bool scanning;
+  bool firstIframeSeen;
   cFrameParser *parser;
 public:
+  cFrameChecker *frameChecker;
   cFrameDetector(int Pid = 0, int Type = 0);
       ///< Sets up a frame detector for the given Pid and stream Type.
       ///< If no Pid and Type is given, they need to be set by a separate
       ///< call to SetPid().
+  ~cFrameDetector();
   void SetPid(int Pid, int Type);
       ///< Sets the Pid and stream Type to detect frames for.
   int Analyze(const uchar *Data, int Length);
@@ -560,9 +565,11 @@ public:
       ///< Analyze() needs to be called again with more actual data.
   bool Synced(void) { return synced; }
       ///< Returns true if the frame detector has synced on the data stream.
-  bool NewFrame(void) { return newFrame; }
+  bool NewFrame(int *PreviousErrors = NULL);
       ///< Returns true if the data given to the last call to Analyze() started a
-      ///< new frame.
+      ///< new frame. If PreviousErrors is given, it will be set to the number of errors in
+      ///< the previous frame.
+      ///< The result returned in PreviousErrors is only valid if the function returns true.
   bool IndependentFrame(void) { return independentFrame; }
       ///< Returns true if a new frame was detected and this is an independent frame
       ///< (i.e. one that can be displayed by itself, without using data from any

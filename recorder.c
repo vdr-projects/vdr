@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.6 2024/01/20 20:04:03 kls Exp $
+ * $Id: recorder.c 5.7 2024/09/17 09:28:03 kls Exp $
  */
 
 #include "recorder.h"
@@ -19,160 +19,18 @@
 #define MINFREEDISKSPACE    (512) // MB
 #define DISKCHECKINTERVAL   100 // seconds
 
-static bool DebugChecks = false;
-
-// cTsChecker and cFrameChecker are used to detect errors in the recorded data stream.
-// While cTsChecker checks the continuity counter of the incoming TS packets, cFrameChecker
-// works on entire frames, checking their PTS (Presentation Time Stamps) to see whether
-// all expected frames arrive. The resulting number of errors is not a precise value.
-// If it is zero, the recording can be safely considered error free. The higher the value,
-// the more damaged the recording is.
-
-// --- cTsChecker ------------------------------------------------------------
-
-#define TS_CC_UNKNOWN    0xFF
-
-class cTsChecker {
-private:
-  uchar counter[MAXPID];
-  int errors;
-  void Report(int Pid, const char *Message);
-public:
-  cTsChecker(void);
-  void CheckTs(const uchar *Data, int Length);
-  int Errors(void) { return errors; }
-  };
-
-cTsChecker::cTsChecker(void)
-{
-  memset(counter, TS_CC_UNKNOWN, sizeof(counter));
-  errors = 0;
-}
-
-void cTsChecker::Report(int Pid, const char *Message)
-{
-  errors++;
-  if (DebugChecks)
-     fprintf(stderr, "%s: TS error #%d on PID %d (%s)\n", *TimeToString(time(NULL)), errors, Pid, Message);
-}
-
-void cTsChecker::CheckTs(const uchar *Data, int Length)
-{
-  int Pid = TsPid(Data);
-  uchar Cc = TsContinuityCounter(Data);
-  if (TsHasPayload(Data)) {
-     if (TsError(Data))
-        Report(Pid, "tei");
-     else if (TsIsScrambled(Data))
-        Report(Pid, "scrambled");
-     else {
-        uchar OldCc = counter[Pid];
-        if (OldCc != TS_CC_UNKNOWN) {
-           uchar NewCc = (OldCc + 1) & TS_CONT_CNT_MASK;
-           if (Cc != NewCc)
-              Report(Pid, "continuity");
-           }
-        }
-     }
-  counter[Pid] = Cc;
-}
-
-// --- cFrameChecker ---------------------------------------------------------
-
-#define MAX_BACK_REFS  32
-
-class cFrameChecker {
-private:
-  int frameDelta;
-  int64_t lastPts;
-  uint32_t backRefs;
-  int lastFwdRef;
-  int errors;
-  void Report(const char *Message, int NumErrors = 1);
-public:
-  cFrameChecker(void);
-  void SetFrameDelta(int FrameDelta) { frameDelta = FrameDelta; }
-  void CheckFrame(const uchar *Data, int Length);
-  void ReportBroken(void);
-  int Errors(void) { return errors; }
-  };
-
-cFrameChecker::cFrameChecker(void)
-{
-  frameDelta = PTSTICKS / DEFAULTFRAMESPERSECOND;
-  lastPts = -1;
-  backRefs = 0;
-  lastFwdRef = 0;
-  errors = 0;
-}
-
-void cFrameChecker::Report(const char *Message, int NumErrors)
-{
-  errors += NumErrors;
-  if (DebugChecks)
-     fprintf(stderr, "%s: frame error #%d (%s)\n", *TimeToString(time(NULL)), errors, Message);
-}
-
-void cFrameChecker::CheckFrame(const uchar *Data, int Length)
-{
-  int64_t Pts = TsGetPts(Data, Length);
-  if (Pts >= 0) {
-     if (lastPts >= 0) {
-        int Diff = int(round((PtsDiff(lastPts, Pts) / double(frameDelta))));
-        if (Diff > 0) {
-           if (Diff <= MAX_BACK_REFS) {
-              if (lastFwdRef > 1) {
-                 if (backRefs != uint32_t((1 << (lastFwdRef - 1)) - 1))
-                    Report("missing backref");
-                 }
-              }
-           else
-              Report("missed", Diff);
-           backRefs = 0;
-           lastFwdRef = Diff;
-           lastPts = Pts;
-           }
-        else if (Diff < 0) {
-           Diff = -Diff;
-           if (Diff <= MAX_BACK_REFS) {
-              int b = 1 << (Diff - 1);
-              if ((backRefs & b) != 0)
-                 Report("duplicate backref");
-              backRefs |= b;
-              }
-           else
-              Report("rev diff too big");
-           }
-        else
-           Report("zero diff");
-        }
-     else
-        lastPts = Pts;
-     }
-  else
-     Report("no PTS");
-}
-
-void cFrameChecker::ReportBroken(void)
-{
-  int MissedFrames = MAXBROKENTIMEOUT / 1000 * PTSTICKS / frameDelta;
-  Report("missed", MissedFrames);
-}
-
 // --- cRecorder -------------------------------------------------------------
 
 cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority)
 :cReceiver(Channel, Priority)
 ,cThread("recording")
 {
-  tsChecker = new cTsChecker;
-  frameChecker = new cFrameChecker;
   recordingName = strdup(FileName);
   recordingInfo = new cRecordingInfo(recordingName);
   recordingInfo->Read();
   oldErrors = max(0, recordingInfo->Errors()); // in case this is a re-started recording
-  errors = oldErrors;
-  lastErrors = errors;
+  errors = 0;
+  lastErrors = 0;
   firstIframeSeen = false;
 
   // Make sure the disk is up and running:
@@ -220,8 +78,6 @@ cRecorder::~cRecorder()
   delete fileName;
   delete frameDetector;
   delete ringBuffer;
-  delete frameChecker;
-  delete tsChecker;
   free(recordingName);
 }
 
@@ -231,18 +87,15 @@ void cRecorder::HandleErrors(bool Force)
 {
   // We don't log every single error separately, to avoid spamming the log file:
   if (Force || time(NULL) - lastErrorLog >= ERROR_LOG_DELTA) {
-     errors = tsChecker->Errors() + frameChecker->Errors();
      if (errors > lastErrors) {
         int d = errors - lastErrors;
-        if (DebugChecks)
-           fprintf(stderr, "%s: %s: %d new error%s (total %d)\n", *TimeToString(time(NULL)), recordingName, d, d > 1 ? "s" : "", errors);
-        esyslog("%s: %d new error%s (total %d)", recordingName, d, d > 1 ? "s" : "", errors);
+        esyslog("%s: %d new error%s (total %d)", recordingName, d, d > 1 ? "s" : "", oldErrors + errors);
         recordingInfo->SetErrors(oldErrors + errors);
         recordingInfo->Write();
         LOCK_RECORDINGS_WRITE;
         Recordings->UpdateByName(recordingName);
+        lastErrors = errors;
         }
-     lastErrors = errors;
      lastErrorLog = time(NULL);
      }
 }
@@ -307,8 +160,6 @@ void cRecorder::Receive(const uchar *Data, int Length)
      int p = ringBuffer->Put(Data, Length);
      if (p != Length && Running())
         ringBuffer->ReportOverflow(Length - p);
-     else if (firstIframeSeen) // we ignore any garbage before the first I-frame
-        tsChecker->CheckTs(Data, Length);
      }
 }
 
@@ -338,17 +189,16 @@ void cRecorder::Action(void)
                        }
                     InfoWritten = true;
                     cRecordingUserCommand::InvokeCommand(RUC_STARTRECORDING, recordingName);
-                    frameChecker->SetFrameDelta(PTSTICKS / frameDetector->FramesPerSecond());
                     }
                  if (firstIframeSeen || frameDetector->IndependentFrame()) {
                     firstIframeSeen = true; // start recording with the first I-frame
                     if (!NextFile())
                        break;
-                    if (frameDetector->NewFrame()) {
+                    int PreviousErrors = 0;
+                    if (frameDetector->NewFrame(&PreviousErrors)) {
                        if (index)
                           index->Write(frameDetector->IndependentFrame(), fileName->Number(), fileSize);
-                       if (frameChecker)
-                          frameChecker->CheckFrame(b, Count);
+                       errors += PreviousErrors;
                        }
                     if (frameDetector->IndependentFrame()) {
                        recordFile->Write(patPmtGenerator.GetPat(), TS_SIZE);
@@ -372,7 +222,7 @@ void cRecorder::Action(void)
               }
            }
         if (t.TimedOut()) {
-           frameChecker->ReportBroken();
+           errors += MAXBROKENTIMEOUT / 1000 * frameDetector->FramesPerSecond();
            HandleErrors(true);
            esyslog("ERROR: video data stream broken");
            ShutdownHandler.RequestEmergencyExit();

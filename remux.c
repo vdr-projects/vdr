@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
-  * $Id: remux.c 5.8 2024/09/16 09:07:12 kls Exp $
+ * $Id: remux.c 5.9 2024/09/16 19:56:37 kls Exp $
  */
 
 #include "remux.h"
@@ -1931,6 +1931,156 @@ void cH265Parser::ParseSequenceParameterSet(void)
      }
 }
 
+static bool DebugChecks = false;
+
+// cTsChecker and cFrameChecker are used to detect errors in the recorded data stream.
+// While cTsChecker checks the continuity counter of the incoming TS packets, cFrameChecker
+// works on entire frames, checking their PTS (Presentation Time Stamps) to see whether
+// all expected frames arrive. The resulting number of errors is not a precise value.
+// If it is zero, the recording can be safely considered error free. The higher the value,
+// the more damaged the recording is.
+
+// --- cTsChecker ------------------------------------------------------------
+
+#define TS_CC_UNKNOWN    0xFF
+
+class cTsChecker {
+private:
+  uchar counter[MAXPID];
+  int errors;
+  void Report(int Pid, const char *Message);
+public:
+  cTsChecker(void);
+  void CheckTs(const uchar *Data, int Length);
+  int Errors(void) { return errors; }
+  void Clear(void) { errors = 0; }
+  };
+
+cTsChecker::cTsChecker(void)
+{
+  memset(counter, TS_CC_UNKNOWN, sizeof(counter));
+  errors = 0;
+}
+
+void cTsChecker::Report(int Pid, const char *Message)
+{
+  errors++;
+  if (DebugChecks)
+     fprintf(stderr, "%s: TS error #%d on PID %d (%s)\n", *TimeToString(time(NULL)), errors, Pid, Message);
+}
+
+void cTsChecker::CheckTs(const uchar *Data, int Length)
+{
+  while (Length >= TS_SIZE) {
+        int Pid = TsPid(Data);
+        uchar Cc = TsContinuityCounter(Data);
+        if (TsHasPayload(Data)) {
+           if (TsError(Data))
+              Report(Pid, "tei");
+           else if (TsIsScrambled(Data))
+              Report(Pid, "scrambled");
+           else {
+              uchar OldCc = counter[Pid];
+              if (OldCc != TS_CC_UNKNOWN) {
+                 uchar NewCc = (OldCc + 1) & TS_CONT_CNT_MASK;
+                 if (Cc != NewCc)
+                    Report(Pid, "continuity");
+                 }
+              }
+           }
+        counter[Pid] = Cc;
+        Data += TS_SIZE;
+        Length -= TS_SIZE;
+        }
+}
+
+// --- cFrameChecker ---------------------------------------------------------
+
+#define MAX_BACK_REFS  32
+
+class cFrameChecker {
+private:
+  cTsChecker tsChecker;
+  int frameDelta;
+  int64_t lastPts;
+  uint32_t backRefs;
+  int lastFwdRef;
+  int errors;
+  int previousErrors;
+  void Report(const char *Message, int NumErrors = 1);
+public:
+  cFrameChecker(void);
+  void SetFrameDelta(int FrameDelta) { frameDelta = FrameDelta; }
+  void CheckTs(const uchar *Data, int Length);
+  void CheckFrame(const uchar *Data, int Length);
+  int PreviousErrors(void) { return previousErrors; }
+  };
+
+cFrameChecker::cFrameChecker(void)
+{
+  frameDelta = PTSTICKS / DEFAULTFRAMESPERSECOND;
+  lastPts = -1;
+  backRefs = 0;
+  lastFwdRef = 0;
+  errors = 0;
+  previousErrors = 0;
+}
+
+void cFrameChecker::Report(const char *Message, int NumErrors)
+{
+  errors += NumErrors;
+  if (DebugChecks)
+     fprintf(stderr, "%s: frame error #%d (%s)\n", *TimeToString(time(NULL)), errors, Message);
+}
+
+void cFrameChecker::CheckTs(const uchar *Data, int Length)
+{
+  tsChecker.CheckTs(Data, Length);
+}
+
+void cFrameChecker::CheckFrame(const uchar *Data, int Length)
+{
+  previousErrors = tsChecker.Errors() + errors;
+  errors = 0;
+  tsChecker.Clear();
+  int64_t Pts = TsGetPts(Data, Length);
+  if (Pts >= 0) {
+     if (lastPts >= 0) {
+        int Diff = int(round((PtsDiff(lastPts, Pts) / double(frameDelta))));
+        if (Diff > 0) {
+           if (Diff <= MAX_BACK_REFS) {
+              if (lastFwdRef > 1) {
+                 if (backRefs != uint32_t((1 << (lastFwdRef - 1)) - 1))
+                    Report("missing backref");
+                 }
+              }
+           else
+              Report("missed", Diff);
+           backRefs = 0;
+           lastFwdRef = Diff;
+           lastPts = Pts;
+           }
+        else if (Diff < 0) {
+           Diff = -Diff;
+           if (Diff <= MAX_BACK_REFS) {
+              int b = 1 << (Diff - 1);
+              if ((backRefs & b) != 0)
+                 Report("duplicate backref");
+              backRefs |= b;
+              }
+           else
+              Report("rev diff too big");
+           }
+        else
+           Report("zero diff");
+        }
+     else
+        lastPts = Pts;
+     }
+  else
+     Report("no PTS");
+}
+
 // --- cFrameDetector --------------------------------------------------------
 
 const char *ScanTypeChars = "-pi";  // index is eScanType
@@ -1958,6 +2108,13 @@ cFrameDetector::cFrameDetector(int Pid, int Type)
   aspectRatio = arUnknown;
   framesInPayloadUnit = framesPerPayloadUnit = 0;
   scanning = false;
+  firstIframeSeen = false;
+  frameChecker = new cFrameChecker;
+}
+
+cFrameDetector::~cFrameDetector()
+{
+  delete frameChecker;
 }
 
 static int CmpUint32(const void *p1, const void *p2)
@@ -1984,6 +2141,15 @@ void cFrameDetector::SetPid(int Pid, int Type)
      parser = new cAudioParser;
   else if (type != 0)
      esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
+}
+
+bool cFrameDetector::NewFrame(int *PreviousErrors)
+{
+  if (newFrame) {
+     if (PreviousErrors)
+        *PreviousErrors = frameChecker->PreviousErrors();
+     }
+  return newFrame;
 }
 
 int cFrameDetector::Analyze(const uchar *Data, int Length)
@@ -2016,7 +2182,10 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                     if (parser->NewFrame()) {
                        newFrame = true;
                        independentFrame = parser->IndependentFrame();
+                       firstIframeSeen |= independentFrame;
                        if (synced) {
+                          if (firstIframeSeen)
+                             frameChecker->CheckFrame(Data, n);
                           if (framesPerPayloadUnit <= 1)
                              scanning = false;
                           }
@@ -2027,6 +2196,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                              frameHeight = parser->FrameHeight();
                              scanType = parser->ScanType();
                              aspectRatio = parser->AspectRatio();
+                             frameChecker->SetFrameDelta(PTSTICKS / framesPerSecond);
                              synced = true;
                              parser->SetDebug(false);
                              }
@@ -2043,7 +2213,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                  if (framesPerSecond <= 0.0) {
                     // frame rate unknown, so collect a sequence of PTS values:
                     if (numPtsValues < 2 || numPtsValues < MaxPtsValues && numIFrames < 2) { // collect a sequence containing at least two I-frames
-                       if (newFrame) { // only take PTS values at the beginning of a frame (in case if fields!)
+                       if (newFrame) { // only take PTS values at the beginning of a frame (in case of fields!)
                           const uchar *Pes = Data + TsPayloadOffset(Data);
                           if (numIFrames && PesHasPts(Pes)) {
                              ptsValues[numPtsValues] = PesGetPts(Pes);
@@ -2100,6 +2270,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
            else if (Pid == PATPID && synced && Processed)
               return Processed; // allow the caller to see any PAT packets
            }
+        if (firstIframeSeen)
+           frameChecker->CheckTs(Data, Handled);
         Data += Handled;
         Length -= Handled;
         Processed += Handled;

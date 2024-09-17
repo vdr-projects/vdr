@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 5.1 2021/05/19 11:22:20 kls Exp $
+ * $Id: recorder.h 5.2 2024/09/16 19:56:37 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -16,13 +16,8 @@
 #include "ringbuffer.h"
 #include "thread.h"
 
-class cTsChecker;
-class cFrameChecker;
-
 class cRecorder : public cReceiver, cThread {
 private:
-  cTsChecker *tsChecker;
-  cFrameChecker *frameChecker;
   cRingBufferLinear *ringBuffer;
   cFrameDetector *frameDetector;
   cPatPmtGenerator patPmtGenerator;
@@ -56,6 +51,8 @@ public:
   virtual ~cRecorder();
   int Errors(void) { return oldErrors + errors; };
        ///< Returns the number of errors that were detected during recording.
+       ///< If this is a resumed recording, this includes errors that occurred
+       ///< in the previous parts.
   };
 
 #endif //__RECORDER_H
