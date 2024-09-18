@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.8 2024/06/13 09:31:11 kls Exp $
+ * $Id: recording.h 5.9 2024/09/18 09:23:07 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -498,7 +498,7 @@ public:
   cIndexFile(const char *FileName, bool Record, bool IsPesRecording = false, bool PauseLive = false, bool Update = false);
   ~cIndexFile();
   bool Ok(void) { return index != NULL; }
-  bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset);
+  bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset, bool Errors = false, bool Missing = false);
   bool Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent = NULL, int *Length = NULL);
   int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL);
   int GetClosestIFrame(int Index);

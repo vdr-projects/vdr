@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.30 2024/09/01 20:43:40 kls Exp $
+ * $Id: recording.c 5.31 2024/09/18 09:23:07 kls Exp $
  */
 
 #include "recording.h"
@@ -2702,13 +2702,17 @@ struct __attribute__((packed)) tIndexPes {
 
 struct __attribute__((packed)) tIndexTs {
   uint64_t offset:40; // up to 1TB per file (not using off_t here - must definitely be exactly 64 bit!)
-  int reserved:7;     // reserved for future use
+  int reserved:5;     // reserved for future use
+  int errors:1;       // 1=this frame contains errors
+  int missing:1;      // 1=there are frames missing after this one
   int independent:1;  // marks frames that can be displayed by themselves (for trick modes)
   uint16_t number:16; // up to 64K files per recording
-  tIndexTs(off_t Offset, bool Independent, uint16_t Number)
+  tIndexTs(off_t Offset, bool Independent, uint16_t Number, bool Errors, bool Missing)
   {
     offset = Offset;
     reserved = 0;
+    errors = Errors;
+    missing = Missing;
     independent = Independent;
     number = Number;
   }
@@ -2901,10 +2905,10 @@ bool cIndexFile::CatchUp(int Index)
   return index != NULL;
 }
 
-bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset)
+bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset, bool Errors, bool Missing)
 {
   if (f >= 0) {
-     tIndexTs i(FileOffset, Independent, FileNumber);
+     tIndexTs i(FileOffset, Independent, FileNumber, Errors, Missing);
      if (isPesRecording)
         ConvertToPes(&i, 1);
      if (safe_write(f, &i, sizeof(i)) < 0) {

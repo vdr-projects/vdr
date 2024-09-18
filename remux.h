@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.5 2024/09/17 11:30:28 kls Exp $
+ * $Id: remux.h 5.6 2024/09/18 09:23:07 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -557,6 +557,8 @@ public:
   ~cFrameDetector();
   void SetPid(int Pid, int Type);
       ///< Sets the Pid and stream Type to detect frames for.
+  void SetMissing(void);
+      ///< Call if this is a resumed recording, which has missing frames.
   int Analyze(const uchar *Data, int Length);
       ///< Analyzes the TS packets pointed to by Data. Length is the number of
       ///< bytes Data points to, and must be a multiple of TS_SIZE.

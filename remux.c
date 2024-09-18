@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.10 2024/09/17 11:30:28 kls Exp $
+ * $Id: remux.c 5.11 2024/09/18 09:23:07 kls Exp $
  */
 
 #include "remux.h"
@@ -2011,6 +2011,7 @@ private:
   void Report(const char *Message, int NumErrors = 1);
 public:
   cFrameChecker(void);
+  void SetMissing(void) { missingFrames++; }
   void SetFrameDelta(int FrameDelta) { frameDelta = FrameDelta; }
   void CheckTs(const uchar *Data, int Length);
   void CheckFrame(const uchar *Data, int Length);
@@ -2145,6 +2146,11 @@ void cFrameDetector::SetPid(int Pid, int Type)
      parser = new cAudioParser;
   else if (type != 0)
      esyslog("ERROR: unknown stream type %d (PID %d) in frame detector", type, pid);
+}
+
+void cFrameDetector::SetMissing(void)
+{
+  frameChecker->SetMissing();
 }
 
 bool cFrameDetector::NewFrame(int *PreviousErrors, int * MissingFrames)
