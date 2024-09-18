@@ -9984,7 +9984,7 @@ Video Disk Recorder Revision History
   version numbering. Version numbers are simply counted upwards, with each of the three
   parts ("version", "major", "minor") always being a single digit, and '0' being skipped.
 
-2024-09-17:
+2024-09-18:
 
 - Fix for compilers that don't like non-constant format strings (thanks to Stefan Hofmann).
 - Deprecated code is now marked with [[deprecated]] to issue a compile time warning when
@@ -10001,3 +10001,4 @@ Video Disk Recorder Revision History
 - The number of errors in a recording now represents the number of broken frames.
 - Now distinguishing between frames with errors and completely missing frames.
 - Recording errors are now marked in the index file.
+- Fixed description of cSkinDisplayReplay::SetRecording().

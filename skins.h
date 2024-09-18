@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 5.4 2024/07/15 14:42:22 kls Exp $
+ * $Id: skins.h 5.5 2024/09/18 11:06:39 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -326,8 +326,8 @@ public:
        ///< progress bar through a cProgressBar object.
   virtual void SetRecording(const cRecording *Recording);
        ///< Sets the recording that is currently being played.
-       ///< The default implementation calls SetTitle() with the title and short
-       ///< text of the Recording. A derived class can use any information provided
+       ///< The default implementation calls SetTitle() with the title
+       ///< of the Recording. A derived class can use any information provided
        ///< by the given Recording and display it.
   virtual void SetTitle(const char *Title) = 0;
        ///< Sets the title of the recording.
