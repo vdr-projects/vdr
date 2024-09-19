@@ -4,12 +4,11 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.1 2022/11/06 11:25:13 kls Exp $
+ * $Id: cutter.c 5.2 2024/09/19 20:21:58 kls Exp $
  */
 
 #include "cutter.h"
 #include "menu.h"
-#include "recording.h"
 #include "remux.h"
 #include "videodir.h"
 
@@ -232,6 +231,10 @@ private:
   int numSequences;
   off_t maxVideoFileSize;
   off_t fileSize;
+  int frameErrors;
+  time_t lastErrorHandling;
+  cString editedRecordingName;
+  cRecordingInfo *recordingInfo;
   bool suspensionLogged;
   int sequence;          // cutting sequence
   int delta;             // time between two frames (PTS ticks)
@@ -246,7 +249,7 @@ private:
   cPatPmtParser patPmtParser;
   bool Throttled(void);
   bool SwitchFile(bool Force = false);
-  bool LoadFrame(int Index, uchar *Buffer, bool &Independent, int &Length);
+  bool LoadFrame(int Index, uchar *Buffer, bool &Independent, int &Length, bool *Errors = NULL, bool *Missing = NULL);
   bool FramesAreEqual(int Index1, int Index2);
   void GetPendingPackets(uchar *Buffer, int &Length, int Index);
        // Gather all non-video TS packets from Index upward that either belong to
@@ -254,15 +257,16 @@ private:
        // and add them to the end of the given Data.
   bool FixFrame(uchar *Data, int &Length, bool Independent, int Index, bool CutIn, bool CutOut);
   bool ProcessSequence(int LastEndIndex, int BeginIndex, int EndIndex, int NextBeginIndex);
+  void HandleErrors(bool Force = false);
 protected:
   virtual void Action(void);
 public:
-  cCuttingThread(const char *FromFileName, const char *ToFileName);
+  cCuttingThread(const char *FromFileName, const char *ToFileName, cRecordingInfo *RecordingInfo);
   virtual ~cCuttingThread();
   const char *Error(void) { return error; }
   };
 
-cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
+cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName, cRecordingInfo *RecordingInfo)
 :cThread("video cutting", true)
 {
   error = NULL;
@@ -274,6 +278,10 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName)
   framesPerSecond = Recording.FramesPerSecond();
   suspensionLogged = false;
   fileSize = 0;
+  frameErrors = 0;
+  lastErrorHandling = 0;
+  editedRecordingName = ToFileName;
+  recordingInfo = RecordingInfo;
   sequence = 0;
   delta = int(round(PTSTICKS / framesPerSecond));
   lastVidPts = -1;
@@ -328,11 +336,11 @@ bool cCuttingThread::Throttled(void)
   return false;
 }
 
-bool cCuttingThread::LoadFrame(int Index, uchar *Buffer, bool &Independent, int &Length)
+bool cCuttingThread::LoadFrame(int Index, uchar *Buffer, bool &Independent, int &Length, bool *Errors, bool *Missing)
 {
   uint16_t FileNumber;
   off_t FileOffset;
-  if (fromIndex->Get(Index, &FileNumber, &FileOffset, &Independent, &Length)) {
+  if (fromIndex->Get(Index, &FileNumber, &FileOffset, &Independent, &Length, Errors, Missing)) {
      fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
      if (fromFile) {
         fromFile->SetReadAhead(MEGABYTE(20));
@@ -555,7 +563,9 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
   for (int Index = BeginIndex; Running() && Index < EndIndex; Index++) {
       bool Independent;
       int Length;
-      if (LoadFrame(Index, Buffer, Independent, Length)) {
+      bool Errors;
+      bool Missing;
+      if (LoadFrame(Index, Buffer, Independent, Length, &Errors, &Missing)) {
          // Make sure there is enough disk space:
          AssertFreeDiskSpace(-1);
          bool CutIn = !SeamlessBegin && Index == BeginIndex;
@@ -572,10 +582,12 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
                return false;
             }
          // Write index:
-         if (!DeletedFrame && !toIndex->Write(Independent, toFileName->Number(), fileSize)) {
+         if (!DeletedFrame && !toIndex->Write(Independent, toFileName->Number(), fileSize, Errors, Missing)) {
             error = "toIndex";
             return false;
             }
+         frameErrors += Errors + Missing;
+         HandleErrors();
          // Write data:
          if (toFile->Write(Buffer, Length) < 0) {
             error = "safe_write";
@@ -594,6 +606,21 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
          return false;
       }
   return true;
+}
+
+#define ERROR_HANDLING_DELTA 1 // seconds between handling errors
+
+void cCuttingThread::HandleErrors(bool Force)
+{
+  if (Force || time(NULL) - lastErrorHandling >= ERROR_HANDLING_DELTA) {
+     if (frameErrors > recordingInfo->Errors()) {
+        recordingInfo->SetErrors(frameErrors);
+        recordingInfo->Write();
+        LOCK_RECORDINGS_WRITE;
+        Recordings->UpdateByName(editedRecordingName);
+        }
+     lastErrorHandling = time(NULL);
+     }
 }
 
 void cCuttingThread::Action(void)
@@ -634,6 +661,7 @@ void cCuttingThread::Action(void)
                  }
               }
            }
+     HandleErrors(true);
      }
   else
      esyslog("no editing marks found!");
@@ -642,6 +670,7 @@ void cCuttingThread::Action(void)
 // --- cCutter ---------------------------------------------------------------
 
 cCutter::cCutter(const char *FileName)
+:recordingInfo(FileName)
 {
   cuttingThread = NULL;
   error = false;
@@ -676,9 +705,11 @@ bool cCutter::Start(void)
            if (strcmp(originalVersionName, editedVersionName) != 0) { // names must be different!
               cRecordingUserCommand::InvokeCommand(RUC_EDITINGRECORDING, editedVersionName, originalVersionName);
               if (cVideoDirectory::RemoveVideoFile(editedVersionName) && MakeDirs(editedVersionName, true)) {
-                 Recording.WriteInfo(editedVersionName);
+                 recordingInfo.Read();
+                 recordingInfo.SetErrors(0);
+                 recordingInfo.SetFileName(editedVersionName);
                  SetRecordingTimerId(editedVersionName, cString::sprintf("%d@%s", 0, Setup.SVDRPHostName));
-                 cuttingThread = new cCuttingThread(originalVersionName, editedVersionName);
+                 cuttingThread = new cCuttingThread(originalVersionName, editedVersionName, &recordingInfo);
                  return true;
                  }
               }

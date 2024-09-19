@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.10 2024/09/19 09:49:02 kls Exp $
+ * $Id: recording.h 5.11 2024/09/19 20:21:58 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -504,7 +504,7 @@ public:
   ~cIndexFile();
   bool Ok(void) { return index != NULL; }
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset, bool Errors = false, bool Missing = false);
-  bool Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent = NULL, int *Length = NULL);
+  bool Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent = NULL, int *Length = NULL, bool *Errors = NULL, bool *Missing = NULL);
   const cErrors *GetErrors(void);
        ///< Returns the frame indexes of errors in the recording (if any).
   int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL);

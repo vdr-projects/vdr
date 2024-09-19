@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.33 2024/09/19 12:06:55 kls Exp $
+ * $Id: recording.c 5.34 2024/09/19 20:21:58 kls Exp $
  */
 
 #include "recording.h"
@@ -2946,7 +2946,7 @@ bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset, 
   return f >= 0;
 }
 
-bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent, int *Length)
+bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent, int *Length, bool *Errors, bool *Missing)
 {
   if (CatchUp(Index)) {
      if (Index >= 0 && Index <= last) {
@@ -2966,6 +2966,10 @@ bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *I
            else
               *Length = -1;
            }
+        if (Errors)
+           *Errors = index[Index].errors;
+        if (Missing)
+           *Missing = index[Index].missing;
         return true;
         }
      }
