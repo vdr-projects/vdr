@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.31 2024/09/18 09:23:07 kls Exp $
+ * $Id: recording.c 5.32 2024/09/19 09:49:02 kls Exp $
  */
 
 #include "recording.h"
@@ -2728,6 +2728,7 @@ cIndexFile::cIndexFile(const char *FileName, bool Record, bool IsPesRecording, b
   f = -1;
   size = 0;
   last = -1;
+  lastErrorIndex = last;
   index = NULL;
   isPesRecording = IsPesRecording;
   indexFileGenerator = NULL;
@@ -2946,6 +2947,17 @@ bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *I
         }
      }
   return false;
+}
+
+const cErrors *cIndexFile::GetErrors(void)
+{
+  for (int Index = lastErrorIndex + 1; Index <= last; Index++) {
+      tIndexTs *p = &index[Index];
+      if (p->errors || p->missing)
+         errors.Append(Index);
+      }
+  lastErrorIndex = last;
+  return &errors;
 }
 
 int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off_t *FileOffset, int *Length)

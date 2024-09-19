@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.9 2024/09/18 09:23:07 kls Exp $
+ * $Id: recording.h 5.10 2024/09/19 09:49:02 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -446,6 +446,9 @@ public:
   cMark *GetNextEnd(const cMark *BeginMark) { return const_cast<cMark *>(static_cast<const cMarks *>(this)->GetNextEnd(BeginMark)); }
   };
 
+class cErrors : public cVector<int> {
+  };
+
 #define RUC_BEFORERECORDING  "before"
 #define RUC_STARTRECORDING   "started"
 #define RUC_AFTERRECORDING   "after"
@@ -486,9 +489,11 @@ private:
   int f;
   cString fileName;
   int size, last;
+  int lastErrorIndex;
   tIndexTs *index;
   bool isPesRecording;
   cResumeFile resumeFile;
+  cErrors errors;
   cIndexFileGenerator *indexFileGenerator;
   cMutex mutex;
   void ConvertFromPes(tIndexTs *IndexTs, int Count);
@@ -500,6 +505,8 @@ public:
   bool Ok(void) { return index != NULL; }
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset, bool Errors = false, bool Missing = false);
   bool Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent = NULL, int *Length = NULL);
+  const cErrors *GetErrors(void);
+       ///< Returns the frame indexes of errors in the recording (if any).
   int GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber = NULL, off_t *FileOffset = NULL, int *Length = NULL);
   int GetClosestIFrame(int Index);
        ///< Returns the index of the I-frame that is closest to the given Index (or Index itself,

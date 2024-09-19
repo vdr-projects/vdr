@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.16 2024/08/30 20:43:26 kls Exp $
+ * $Id: menu.c 5.17 2024/09/19 09:49:02 kls Exp $
  */
 
 #include "menu.h"
@@ -5709,6 +5709,7 @@ cReplayControl::cReplayControl(bool PauseLive)
   displayReplay = NULL;
   marksModified = false;
   visible = modeOnly = shown = displayFrames = false;
+  lastErrors = 0;
   lastCurrent = lastTotal = -1;
   lastPlay = lastForward = false;
   lastSpeed = -2; // an invalid value
@@ -5882,6 +5883,7 @@ bool cReplayControl::ShowProgress(bool Initial)
      if (!visible) {
         displayReplay = Skins.Current()->DisplayReplay(modeOnly);
         displayReplay->SetMarks(&marks);
+        displayReplay->SetErrors(GetErrors());
         SetNeedsFastResponse(true);
         visible = true;
         }
@@ -5893,7 +5895,9 @@ bool cReplayControl::ShowProgress(bool Initial)
            }
         lastCurrent = lastTotal = -1;
         }
-     if (Current != lastCurrent || Total != lastTotal) {
+     const cErrors *Errors = GetErrors();
+     int NumErrors = Errors ? Errors->Size() : 0;
+     if (Current != lastCurrent || Total != lastTotal || NumErrors != lastErrors) {
         if (Setup.ShowRemainingTime || Total != lastTotal) {
            int Index = Total;
            if (Setup.ShowRemainingTime)
@@ -5902,10 +5906,12 @@ bool cReplayControl::ShowProgress(bool Initial)
            }
         displayReplay->SetProgress(Current, Total);
         displayReplay->SetCurrent(IndexToHMSF(Current, displayFrames, FramesPerSecond()));
+        displayReplay->SetErrors(Errors);
         displayReplay->Flush();
         lastCurrent = Current;
+        lastTotal = Total;
+        lastErrors = NumErrors;
         }
-     lastTotal = Total;
      ShowMode();
      updateTimer.Set(PROGRESSTIMEOUT);
      return true;

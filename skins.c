@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 5.2 2024/07/13 09:12:18 kls Exp $
+ * $Id: skins.c 5.3 2024/09/19 09:49:02 kls Exp $
  */
 
 #include "skins.h"
@@ -147,6 +147,11 @@ const cFont *cSkinDisplayMenu::GetTextAreaFont(bool  FixedFont) const
 // --- cSkinDisplayReplay::cProgressBar --------------------------------------
 
 cSkinDisplayReplay::cProgressBar::cProgressBar(int Width, int Height, int Current, int Total, const cMarks *Marks, tColor ColorSeen, tColor ColorRest, tColor ColorSelected, tColor ColorMark, tColor ColorCurrent)
+:cSkinDisplayReplay::cProgressBar::cProgressBar(Width, Height, Current, Total, Marks, NULL, ColorSeen, ColorRest, ColorSelected, ColorMark, ColorCurrent, clrBlack)
+{
+}
+
+cSkinDisplayReplay::cProgressBar::cProgressBar(int Width, int Height, int Current, int Total, const cMarks *Marks, const cErrors *Errors, tColor ColorSeen, tColor ColorRest, tColor ColorSelected, tColor ColorMark, tColor ColorCurrent, tColor ColorError)
 :cBitmap(Width, Height, 2)
 {
   total = Total;
@@ -168,6 +173,16 @@ cSkinDisplayReplay::cProgressBar::cProgressBar(int Width, int Height, int Curren
             Start = !Start;
             }
         }
+     if (Errors) {
+        int LastPos = -1;
+        for (int i = 0; i < Errors->Size(); i++) {
+            int p1 = Errors->At(i);
+            if (p1 != LastPos) {
+               Error(Pos(Errors->At(i)), ColorError);
+               LastPos = p1;
+               }
+            }
+        }
      }
 }
 
@@ -181,11 +196,25 @@ void cSkinDisplayReplay::cProgressBar::Mark(int x, bool Start, bool Current, tCo
       }
 }
 
+void cSkinDisplayReplay::cProgressBar::Error(int x, tColor ColorError)
+{
+  const int d = (Height() / 9) & ~0x01; // must be even
+  const int h = Height() / 2;
+  const int e = Height() / 4;
+  DrawRectangle(x, e, x, Height() -e - 1, ColorError);
+  DrawRectangle(x - d, h, x + d, h, ColorError);
+  for (int i = 1; i <= d; i++) {
+      DrawRectangle(x - d + i, h - i, x + d - i, h - i, ColorError);
+      DrawRectangle(x - d + i, h + i, x + d - i, h + i, ColorError);
+      }
+}
+
 // --- cSkinDisplayReplay ----------------------------------------------------
 
 cSkinDisplayReplay::cSkinDisplayReplay(void)
 {
   marks = NULL;
+  errors = NULL;
 }
 
 void cSkinDisplayReplay::SetRecording(const cRecording *Recording)
@@ -196,6 +225,11 @@ void cSkinDisplayReplay::SetRecording(const cRecording *Recording)
 void cSkinDisplayReplay::SetMarks(const cMarks *Marks)
 {
   marks = Marks;
+}
+
+void cSkinDisplayReplay::SetErrors(const cErrors *Errors)
+{
+  errors = Errors;
 }
 
 // --- cSkin -----------------------------------------------------------------

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.9 2024/09/17 11:30:28 kls Exp $
+ * $Id: recorder.c 5.10 2024/09/19 09:49:02 kls Exp $
  */
 
 #include "recorder.h"
@@ -167,6 +167,15 @@ void cRecorder::Action(void)
 {
   cTimeMs t(MAXBROKENTIMEOUT);
   bool InfoWritten = false;
+  bool pendIndependentFrame = false;
+  uint16_t pendNumber = 0;
+  off_t pendFileSize = 0;
+  bool pendErrors = false;
+  bool pendMissing = false;
+  // Check if this is a resumed recording, in which case we definitely missed frames:
+  NextFile();
+  if (fileName->Number() > 1 || oldErrors)
+     frameDetector->SetMissing();
   while (Running()) {
         int r;
         uchar *b = ringBuffer->Get(r);
@@ -197,8 +206,15 @@ void cRecorder::Action(void)
                     int PreviousErrors = 0;
                     int MissingFrames = 0;
                     if (frameDetector->NewFrame(&PreviousErrors, &MissingFrames)) {
-                       if (index)
-                          index->Write(frameDetector->IndependentFrame(), fileName->Number(), fileSize);
+                       if (index) {
+                          if (pendNumber > 0)
+                             index->Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
+                          pendIndependentFrame = frameDetector->IndependentFrame();
+                          pendNumber = fileName->Number();
+                          pendFileSize = fileSize;
+                          pendErrors = PreviousErrors;
+                          pendMissing = MissingFrames;
+                          }
                        if (PreviousErrors)
                           errors++;
                        if (MissingFrames)
@@ -226,6 +242,9 @@ void cRecorder::Action(void)
               }
            }
         if (t.TimedOut()) {
+           if (pendNumber > 0)
+              index->Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
+           frameDetector->SetMissing();
            errors += MAXBROKENTIMEOUT / 1000 * frameDetector->FramesPerSecond();
            HandleErrors(true);
            esyslog("ERROR: video data stream broken");
@@ -233,5 +252,7 @@ void cRecorder::Action(void)
            t.Set(MAXBROKENTIMEOUT);
            }
         }
+  if (pendNumber > 0)
+     index->Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
   HandleErrors(true);
 }

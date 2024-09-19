@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 5.2 2023/12/29 10:48:40 kls Exp $
+ * $Id: skinclassic.c 5.3 2024/09/19 09:49:02 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -71,6 +71,7 @@ THEME_CLR(Theme, clrReplayProgressRest,     clrWhite);
 THEME_CLR(Theme, clrReplayProgressSelected, clrRed);
 THEME_CLR(Theme, clrReplayProgressMark,     clrBlack);
 THEME_CLR(Theme, clrReplayProgressCurrent,  clrRed);
+THEME_CLR(Theme, clrReplayProgressError,    clrBlack);
 
 // --- cSkinClassicDisplayChannel --------------------------------------------
 
@@ -534,7 +535,7 @@ void cSkinClassicDisplayReplay::SetMode(bool Play, bool Forward, int Speed)
 
 void cSkinClassicDisplayReplay::SetProgress(int Current, int Total)
 {
-  cProgressBar pb(x1 - x0, y2 - y1, Current, Total, marks, Theme.Color(clrReplayProgressSeen), Theme.Color(clrReplayProgressRest), Theme.Color(clrReplayProgressSelected), Theme.Color(clrReplayProgressMark), Theme.Color(clrReplayProgressCurrent));
+  cProgressBar pb(x1 - x0, y2 - y1, Current, Total, marks, errors, Theme.Color(clrReplayProgressSeen), Theme.Color(clrReplayProgressRest), Theme.Color(clrReplayProgressSelected), Theme.Color(clrReplayProgressMark), Theme.Color(clrReplayProgressCurrent), Theme.Color(clrReplayProgressError));
   osd->DrawBitmap(x0, y1, pb);
 }
 

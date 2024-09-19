@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 5.3 2024/09/09 22:15:59 kls Exp $
+ * $Id: player.h 5.4 2024/09/19 09:49:02 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -54,6 +54,8 @@ public:
   bool IsAttached(void) { return device != NULL; }
   virtual double FramesPerSecond(void) { return DEFAULTFRAMESPERSECOND; }
        // Returns the number of frames per second of the currently played material.
+  virtual const cErrors *GetErrors(void) { return NULL; }
+       // Returns the frame indexes of errors in the recording (if any).
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) { return false; }
        // Returns the current and total frame index, optionally snapped to the
        // nearest I-frame.

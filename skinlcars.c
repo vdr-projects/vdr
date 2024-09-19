@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinlcars.c 5.5 2024/07/13 15:25:22 kls Exp $
+ * $Id: skinlcars.c 5.6 2024/09/19 09:49:02 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures,
@@ -188,6 +188,7 @@ THEME_CLR(Theme, clrReplayProgressRest,     RgbShade(CLR_WHITE, -0.2));
 THEME_CLR(Theme, clrReplayProgressSelected, CLR_EXPOSED);
 THEME_CLR(Theme, clrReplayProgressMark,     CLR_BLACK);
 THEME_CLR(Theme, clrReplayProgressCurrent,  CLR_EXPOSED);
+THEME_CLR(Theme, clrReplayProgressError,    CLR_BLACK);
 
 // Track display:
 
@@ -1928,7 +1929,7 @@ void cSkinLCARSDisplayReplay::SetMode(bool Play, bool Forward, int Speed)
 
 void cSkinLCARSDisplayReplay::SetProgress(int Current, int Total)
 {
-  cProgressBar pb(xp13 - xp03, lineHeight, Current, Total, marks, Theme.Color(clrReplayProgressSeen), Theme.Color(clrReplayProgressRest), Theme.Color(clrReplayProgressSelected), Theme.Color(clrReplayProgressMark), Theme.Color(clrReplayProgressCurrent));
+  cProgressBar pb(xp13 - xp03, lineHeight, Current, Total, marks, errors, Theme.Color(clrReplayProgressSeen), Theme.Color(clrReplayProgressRest), Theme.Color(clrReplayProgressSelected), Theme.Color(clrReplayProgressMark), Theme.Color(clrReplayProgressCurrent), Theme.Color(clrReplayProgressError));
   osd->DrawBitmap(xp03, yp02, pb);
 }
 

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.3 2022/12/27 15:57:20 kls Exp $
+ * $Id: dvbplayer.c 5.4 2024/09/19 09:49:02 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -283,6 +283,7 @@ public:
   void Goto(int Position, bool Still = false);
   virtual double FramesPerSecond(void) { return framesPerSecond; }
   virtual void SetAudioTrack(eTrackType Type, const tTrackId *TrackId);
+  virtual const cErrors *GetErrors(void);
   virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
   virtual bool GetFrameNumber(int &Current, int &Total);
   virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
@@ -940,6 +941,13 @@ void cDvbPlayer::SetAudioTrack(eTrackType Type, const tTrackId *TrackId)
      resyncAfterPause = true;
 }
 
+const cErrors *cDvbPlayer::GetErrors(void)
+{
+  if (index)
+     return index->GetErrors();
+  return NULL;
+}
+
 bool cDvbPlayer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
@@ -1045,6 +1053,13 @@ int cDvbPlayerControl::SkipFrames(int Frames)
   if (player)
      return player->SkipFrames(Frames);
   return -1;
+}
+
+const cErrors *cDvbPlayerControl::GetErrors(void)
+{
+  if (player)
+     return player->GetErrors();
+  return NULL;
 }
 
 bool cDvbPlayerControl::GetIndex(int &Current, int &Total, bool SnapToIFrame)

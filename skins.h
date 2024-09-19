@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 5.5 2024/09/18 11:06:39 kls Exp $
+ * $Id: skins.h 5.6 2024/09/19 09:49:02 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -311,18 +311,24 @@ class cSkinDisplayReplay : public cSkinDisplay {
        ///< a recording.
 protected:
   const cMarks *marks;
+  const cErrors *errors;
   class cProgressBar : public cBitmap {
   protected:
     int total;
     int Pos(int p) { return int(int64_t(p) * Width() / total); }
     void Mark(int x, bool Start, bool Current, tColor ColorMark, tColor ColorCurrent);
+    void Error(int x, tColor ColorError);
   public:
-    cProgressBar(int Width, int Height, int Current, int Total, const cMarks *Marks, tColor ColorSeen, tColor ColorRest, tColor ColorSelected, tColor ColorMark, tColor ColorCurrent);
+    cProgressBar(int Width, int Height, int Current, int Total, const cMarks *Marks, tColor ColorSeen, tColor ColorRest, tColor ColorSelected, tColor ColorMark, tColor ColorCurrent); // for backwards compatibility
+    cProgressBar(int Width, int Height, int Current, int Total, const cMarks *Marks, const cErrors *Errors, tColor ColorSeen, tColor ColorRest, tColor ColorSelected, tColor ColorMark, tColor ColorCurrent, tColor ColorError);
     };
 public:
   cSkinDisplayReplay(void);
   virtual void SetMarks(const cMarks *Marks);
        ///< Sets the editing marks to Marks, which shall be used to display the
+       ///< progress bar through a cProgressBar object.
+  virtual void SetErrors(const cErrors *Errors);
+       ///< Sets the errors found in the recording to Errors, which shall be used to display the
        ///< progress bar through a cProgressBar object.
   virtual void SetRecording(const cRecording *Recording);
        ///< Sets the recording that is currently being played.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.3 2024/08/30 09:55:15 kls Exp $
+ * $Id: menu.h 5.4 2024/09/19 09:49:02 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -297,6 +297,7 @@ private:
   cMarks marks;
   bool marksModified;
   bool visible, modeOnly, shown, displayFrames;
+  int lastErrors;
   int lastCurrent, lastTotal;
   bool lastPlay, lastForward;
   int lastSpeed;

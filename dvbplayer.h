@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.h 4.2 2016/12/22 10:36:50 kls Exp $
+ * $Id: dvbplayer.h 5.1 2024/09/19 09:49:02 kls Exp $
  */
 
 #ifndef __DVBPLAYER_H
@@ -47,6 +47,8 @@ public:
        // The sign of 'Seconds' determines the direction in which to skip.
        // Use a very large negative value to go all the way back to the
        // beginning of the recording.
+  const cErrors *GetErrors(void);
+       // Returns the frame indexes of errors in the recording (if any).
   bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
        // Returns the current and total frame index, optionally snapped to the
        // nearest I-frame.

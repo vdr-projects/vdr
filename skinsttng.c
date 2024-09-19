@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 5.2 2023/12/29 10:48:40 kls Exp $
+ * $Id: skinsttng.c 5.3 2024/09/19 09:49:02 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures
@@ -122,6 +122,7 @@ THEME_CLR(Theme, clrReplayProgressRest,     clrWhite);
 THEME_CLR(Theme, clrReplayProgressSelected, clrRed);
 THEME_CLR(Theme, clrReplayProgressMark,     clrBlack);
 THEME_CLR(Theme, clrReplayProgressCurrent,  clrRed);
+THEME_CLR(Theme, clrReplayProgressError,    clrBlack);
 
 // --- cSkinSTTNGDisplayChannel ----------------------------------------------
 
@@ -904,7 +905,7 @@ void cSkinSTTNGDisplayReplay::SetMode(bool Play, bool Forward, int Speed)
 
 void cSkinSTTNGDisplayReplay::SetProgress(int Current, int Total)
 {
-  cProgressBar pb(x4 - x3, y4 - y3, Current, Total, marks, Theme.Color(clrReplayProgressSeen), Theme.Color(clrReplayProgressRest), Theme.Color(clrReplayProgressSelected), Theme.Color(clrReplayProgressMark), Theme.Color(clrReplayProgressCurrent));
+  cProgressBar pb(x4 - x3, y4 - y3, Current, Total, marks, errors, Theme.Color(clrReplayProgressSeen), Theme.Color(clrReplayProgressRest), Theme.Color(clrReplayProgressSelected), Theme.Color(clrReplayProgressMark), Theme.Color(clrReplayProgressCurrent), Theme.Color(clrReplayProgressError));
   osd->DrawBitmap(x3, y3, pb);
 }
 
