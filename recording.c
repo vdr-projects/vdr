@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.32 2024/09/19 09:49:02 kls Exp $
+ * $Id: recording.c 5.33 2024/09/19 12:06:55 kls Exp $
  */
 
 #include "recording.h"
@@ -2550,6 +2550,12 @@ void cIndexFileGenerator::Action(void)
   uint16_t FileNumber = 1;
   off_t FileOffset = 0;
   int Last = -1;
+  bool pendIndependentFrame = false;
+  uint16_t pendNumber = 0;
+  off_t pendFileSize = 0;
+  bool pendErrors = false;
+  bool pendMissing = false;
+  int Errors = 0;
   if (update) {
      // Look for current index and position to end of it if present:
      bool Independent;
@@ -2585,11 +2591,24 @@ void cIndexFileGenerator::Action(void)
                  FrameOffset = FileSize; // the PAT/PMT is at the beginning of an I-frame
               int Processed = FrameDetector.Analyze(Data, Length);
               if (Processed > 0) {
-                 if (FrameDetector.NewFrame()) {
-                    if (IndexFileWritten || Last < 0) // check for first frame and do not write if in update mode
-                       IndexFile.Write(FrameDetector.IndependentFrame(), FileName.Number(), FrameOffset >= 0 ? FrameOffset : FileSize);
+                 int PreviousErrors = 0;
+                 int MissingFrames = 0;
+                 if (FrameDetector.NewFrame(&PreviousErrors, &MissingFrames)) {
+                    if (IndexFileWritten || Last < 0) { // check for first frame and do not write if in update mode
+                       if (pendNumber > 0)
+                          IndexFile.Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
+                       pendIndependentFrame = FrameDetector.IndependentFrame();
+                       pendNumber = FileName.Number();
+                       pendFileSize = FrameOffset >= 0 ? FrameOffset : FileSize;
+                       pendErrors = PreviousErrors;
+                       pendMissing = MissingFrames;
+                       }
                     FrameOffset = -1;
                     IndexFileWritten = true;
+                    if (PreviousErrors)
+                       Errors++;
+                    if (MissingFrames)
+                       Errors++;
                     }
                  FileSize += Processed;
                  Buffer.Del(Processed);
@@ -2655,6 +2674,8 @@ void cIndexFileGenerator::Action(void)
            }
         // Recording has been processed:
         else {
+           if (pendNumber > 0)
+              IndexFile.Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
            IndexFileComplete = true;
            break;
            }
@@ -2667,9 +2688,11 @@ void cIndexFileGenerator::Action(void)
            if ((FrameDetector.FramesPerSecond() > 0 && !DoubleEqual(RecordingInfo.FramesPerSecond(), FrameDetector.FramesPerSecond())) ||
                FrameDetector.FrameWidth()  != RecordingInfo.FrameWidth()  ||
                FrameDetector.FrameHeight() != RecordingInfo.FrameHeight() ||
-               FrameDetector.AspectRatio() != RecordingInfo.AspectRatio()) {
+               FrameDetector.AspectRatio() != RecordingInfo.AspectRatio() ||
+               Errors != RecordingInfo.Errors()) {
               RecordingInfo.SetFramesPerSecond(FrameDetector.FramesPerSecond());
               RecordingInfo.SetFrameParams(FrameDetector.FrameWidth(), FrameDetector.FrameHeight(), FrameDetector.ScanType(), FrameDetector.AspectRatio());
+              RecordingInfo.SetErrors(Errors);
               RecordingInfo.Write();
               LOCK_RECORDINGS_WRITE;
               Recordings->UpdateByName(recordingName);

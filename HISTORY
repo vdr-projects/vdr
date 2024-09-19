@@ -10007,3 +10007,5 @@ Video Disk Recorder Revision History
   benefit from this feature. Of course this only works with recordings that have error
   information stored in their index file.
   APIVERSNUM is now 30004.
+- When the index file of a recording is regenerated, errors in the recording are now
+  stored in the index file.
