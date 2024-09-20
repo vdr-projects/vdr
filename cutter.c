@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.2 2024/09/19 20:21:58 kls Exp $
+ * $Id: cutter.c 5.3 2024/09/20 21:34:18 kls Exp $
  */
 
 #include "cutter.h"
@@ -302,6 +302,10 @@ cCuttingThread::cCuttingThread(const char *FromFileName, const char *ToFileName,
         maxVideoFileSize = MEGABYTE(Setup.MaxVideoFileSize);
         if (isPesRecording && maxVideoFileSize > MEGABYTE(MAXVIDEOFILESIZEPES))
            maxVideoFileSize = MEGABYTE(MAXVIDEOFILESIZEPES);
+        if (fromIndex->GetErrors()->Size() > 0) {
+           recordingInfo->SetErrors(0); // the fromIndex has error indicators, so we reset the error count
+           recordingInfo->Write();
+           }
         Start();
         }
      else
@@ -616,6 +620,9 @@ void cCuttingThread::HandleErrors(bool Force)
      if (frameErrors > recordingInfo->Errors()) {
         recordingInfo->SetErrors(frameErrors);
         recordingInfo->Write();
+        Force = true;
+        }
+     if (Force) {
         LOCK_RECORDINGS_WRITE;
         Recordings->UpdateByName(editedRecordingName);
         }
@@ -631,6 +638,7 @@ void cCuttingThread::Action(void)
      if (!fromFile || !toFile)
         return;
      int LastEndIndex = -1;
+     HandleErrors(true); // to make sure an initially reset error count is displayed correctly
      while (BeginMark && Running()) {
            // Suspend cutting if we have severe throughput problems:
            if (Throttled()) {
@@ -706,8 +714,8 @@ bool cCutter::Start(void)
               cRecordingUserCommand::InvokeCommand(RUC_EDITINGRECORDING, editedVersionName, originalVersionName);
               if (cVideoDirectory::RemoveVideoFile(editedVersionName) && MakeDirs(editedVersionName, true)) {
                  recordingInfo.Read();
-                 recordingInfo.SetErrors(0);
                  recordingInfo.SetFileName(editedVersionName);
+                 recordingInfo.Write();
                  SetRecordingTimerId(editedVersionName, cString::sprintf("%d@%s", 0, Setup.SVDRPHostName));
                  cuttingThread = new cCuttingThread(originalVersionName, editedVersionName, &recordingInfo);
                  return true;

@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 5.11 2024/09/19 20:21:58 kls Exp $
+.\" $Id: vdr.5 5.12 2024/09/20 21:34:18 kls Exp $
 .\"
 .TH vdr 5 "27 Dec 2021" "2.7" "Video Disk Recorder Files"
 .SH NAME
@@ -825,7 +825,9 @@ The 'O' tag contains the number of errors that occurred during recording.
 If it is zero, the recording can be safely considered error free. The higher the value,
 the more damaged the recording is.
 If this is an edited recording, the number of errors is that of the edited
-recording.
+recording, if the index of the original recording contains error indicators
+(i.e. the original recording's index was created with VDR version 2.7.2 or
+later). Otherwise it's the number of errors in the original recording.
 .SS RESUME
 The file \fIresume\fR (if present in a recording directory) contains
 the position within the recording where the last replay session left off.
