@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.11 2024/09/18 09:23:07 kls Exp $
+ * $Id: remux.c 5.12 2024/09/20 14:21:39 kls Exp $
  */
 
 #include "remux.h"
@@ -2014,7 +2014,7 @@ public:
   void SetMissing(void) { missingFrames++; }
   void SetFrameDelta(int FrameDelta) { frameDelta = FrameDelta; }
   void CheckTs(const uchar *Data, int Length);
-  void CheckFrame(const uchar *Data, int Length);
+  void CheckFrame(const uchar *Data, int Length, bool IndependentFrame);
   int PreviousErrors(void) { return previousErrors; }
   int MissingFrames(void) { return missingFrames; }
   };
@@ -2042,7 +2042,7 @@ void cFrameChecker::CheckTs(const uchar *Data, int Length)
   tsChecker.CheckTs(Data, Length);
 }
 
-void cFrameChecker::CheckFrame(const uchar *Data, int Length)
+void cFrameChecker::CheckFrame(const uchar *Data, int Length, bool IndependentFrame)
 {
   previousErrors = tsChecker.Errors();
   missingFrames = errors;
@@ -2079,7 +2079,7 @@ void cFrameChecker::CheckFrame(const uchar *Data, int Length)
         else
            Report("zero diff");
         }
-     else
+     else if (IndependentFrame)
         lastPts = Pts;
      }
   else
@@ -2196,8 +2196,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        independentFrame = parser->IndependentFrame();
                        firstIframeSeen |= independentFrame;
                        if (synced) {
-                          if (firstIframeSeen)
-                             frameChecker->CheckFrame(Data, n);
+                          frameChecker->CheckFrame(Data, n, independentFrame);
                           if (framesPerPayloadUnit <= 1)
                              scanning = false;
                           }
