@@ -10015,3 +10015,4 @@ Video Disk Recorder Revision History
   its number of errors set to that of the original recording.
   APIVERSNUM is now 30005.
 - Fixed singular when displaying number of errors in the recording info.
+- Increased the bpp of cProgressBar to 4 to handle all different colors.

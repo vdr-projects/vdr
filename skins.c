@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 5.3 2024/09/19 09:49:02 kls Exp $
+ * $Id: skins.c 5.4 2024/09/21 16:21:08 kls Exp $
  */
 
 #include "skins.h"
@@ -152,7 +152,7 @@ cSkinDisplayReplay::cProgressBar::cProgressBar(int Width, int Height, int Curren
 }
 
 cSkinDisplayReplay::cProgressBar::cProgressBar(int Width, int Height, int Current, int Total, const cMarks *Marks, const cErrors *Errors, tColor ColorSeen, tColor ColorRest, tColor ColorSelected, tColor ColorMark, tColor ColorCurrent, tColor ColorError)
-:cBitmap(Width, Height, 2)
+:cBitmap(Width, Height, 4)
 {
   total = Total;
   if (total > 0) {
