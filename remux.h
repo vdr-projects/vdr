@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.6 2024/09/18 09:23:07 kls Exp $
+ * $Id: remux.h 5.7 2024/09/21 19:18:18 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -559,12 +559,15 @@ public:
       ///< Sets the Pid and stream Type to detect frames for.
   void SetMissing(void);
       ///< Call if this is a resumed recording, which has missing frames.
-  int Analyze(const uchar *Data, int Length);
+  int Analyze(const uchar *Data, int Length, bool ErrorCheck = true);
       ///< Analyzes the TS packets pointed to by Data. Length is the number of
       ///< bytes Data points to, and must be a multiple of TS_SIZE.
       ///< Returns the number of bytes that have been analyzed.
       ///< If the return value is 0, the data was not sufficient for analyzing and
       ///< Analyze() needs to be called again with more actual data.
+      ///< Error checks can be turned off by setting ErrorCheck to false. This is
+      ///< used when regenerating the index file, where the first chunk of data
+      ///< is scanned for the PAT/PMT and then a rewind is done on the file.
   bool Synced(void) { return synced; }
       ///< Returns true if the frame detector has synced on the data stream.
   bool NewFrame(int *PreviousErrors = NULL, int * MissingFrames = NULL);

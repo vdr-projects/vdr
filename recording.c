@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.34 2024/09/19 20:21:58 kls Exp $
+ * $Id: recording.c 5.35 2024/09/21 19:18:18 kls Exp $
  */
 
 #include "recording.h"
@@ -2616,7 +2616,7 @@ void cIndexFileGenerator::Action(void)
               }
            else if (PatPmtParser.Completed()) {
               // Step 2 - sync FrameDetector:
-              int Processed = FrameDetector.Analyze(Data, Length);
+              int Processed = FrameDetector.Analyze(Data, Length, false);
               if (Processed > 0) {
                  if (FrameDetector.Synced()) {
                     // Synced FrameDetector, so rewind for actual processing:

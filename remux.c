@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.12 2024/09/20 14:21:39 kls Exp $
+ * $Id: remux.c 5.13 2024/09/21 19:18:18 kls Exp $
  */
 
 #include "remux.h"
@@ -2164,7 +2164,7 @@ bool cFrameDetector::NewFrame(int *PreviousErrors, int * MissingFrames)
   return newFrame;
 }
 
-int cFrameDetector::Analyze(const uchar *Data, int Length)
+int cFrameDetector::Analyze(const uchar *Data, int Length, bool ErrorCheck)
 {
   if (!parser)
      return 0;
@@ -2196,7 +2196,8 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
                        independentFrame = parser->IndependentFrame();
                        firstIframeSeen |= independentFrame;
                        if (synced) {
-                          frameChecker->CheckFrame(Data, n, independentFrame);
+                          if (ErrorCheck)
+                             frameChecker->CheckFrame(Data, n, independentFrame);
                           if (framesPerPayloadUnit <= 1)
                              scanning = false;
                           }
@@ -2281,7 +2282,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length)
            else if (Pid == PATPID && synced && Processed)
               return Processed; // allow the caller to see any PAT packets
            }
-        if (firstIframeSeen)
+        if (firstIframeSeen && ErrorCheck)
            frameChecker->CheckTs(Data, Handled);
         Data += Handled;
         Length -= Handled;
