@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 5.3 2024/09/19 09:49:02 kls Exp $
+ * $Id: skinsttng.c 5.4 2024/09/21 10:53:07 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures
@@ -719,7 +719,8 @@ void cSkinSTTNGDisplayMenu::SetRecording(const cRecording *Recording)
      xt -= w + x5 - x4;
      }
   if (Info->Errors() > 0) {
-     cString buffer = cString::sprintf(" %d %s ", Info->Errors(), tr("errors"));
+     // TRANSLATORS: note the plural/singular!
+     cString buffer = cString::sprintf(" %d %s ", Info->Errors(), Info->Errors() > 1 ? tr("errors") : tr("error"));
      const cFont *font = cFont::GetFont(fontSml);
      int w = font->Width(buffer);
      osd->DrawText(xt - w, y, buffer, Theme.Color(clrMenuEventVps), frameColor, font, w);

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-07-16 14:13+0200\n"
+"POT-Creation-Date: 2024-09-21 12:45+0200\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -1576,7 +1576,11 @@ msgstr "录像中,是否现在重启?"
 msgid "restart anyway?"
 msgstr "现在重启?"
 
+#. TRANSLATORS: note the plural/singular!
 msgid "errors"
+msgstr ""
+
+msgid "error"
 msgstr ""
 
 #. TRANSLATORS: note the trailing blank!

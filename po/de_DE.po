@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-07-16 14:13+0200\n"
+"POT-Creation-Date: 2024-09-21 12:45+0200\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -1576,7 +1576,11 @@ msgstr "Aufnahme läuft - trotzdem neu starten?"
 msgid "restart anyway?"
 msgstr "trotzdem neu starten?"
 
+#. TRANSLATORS: note the plural/singular!
 msgid "errors"
+msgstr "Fehler"
+
+msgid "error"
 msgstr "Fehler"
 
 #. TRANSLATORS: note the trailing blank!

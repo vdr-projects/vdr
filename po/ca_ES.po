@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-07-16 14:13+0200\n"
+"POT-Creation-Date: 2024-09-21 12:45+0200\n"
 "PO-Revision-Date: 2008-03-02 19:02+0100\n"
 "Last-Translator: Luca Olivetti <luca@ventoso.org>\n"
 "Language-Team: Catalan <vdr@linuxtv.org>\n"
@@ -1577,7 +1577,11 @@ msgstr "Gravant - Reiniciar de totes maneres?"
 msgid "restart anyway?"
 msgstr "Reiniciar de totes maneres?"
 
+#. TRANSLATORS: note the plural/singular!
 msgid "errors"
+msgstr ""
+
+msgid "error"
 msgstr ""
 
 #. TRANSLATORS: note the trailing blank!

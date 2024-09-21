@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-07-16 14:13+0200\n"
+"POT-Creation-Date: 2024-09-21 12:45+0200\n"
 "PO-Revision-Date: 2024-09-14 13:05+0200\n"
 "Last-Translator: Gringo <openpli@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -1580,8 +1580,12 @@ msgstr "Registrazione in corso - riavviare comunque?"
 msgid "restart anyway?"
 msgstr "riavviare comunque?"
 
+#. TRANSLATORS: note the plural/singular!
 msgid "errors"
 msgstr "errori"
+
+msgid "error"
+msgstr ""
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "

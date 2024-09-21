@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-07-16 14:13+0200\n"
+"POT-Creation-Date: 2024-09-21 12:45+0200\n"
 "PO-Revision-Date: 2015-02-12 21:58+0100\n"
 "Last-Translator: Magnus Sirviö <sirwio@hotmail.com>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -1579,7 +1579,11 @@ msgstr "Inspelning pågår, vill du starta om ändå?"
 msgid "restart anyway?"
 msgstr "vill du starta om ändå?"
 
+#. TRANSLATORS: note the plural/singular!
 msgid "errors"
+msgstr ""
+
+msgid "error"
 msgstr ""
 
 #. TRANSLATORS: note the trailing blank!

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-07-16 14:13+0200\n"
+"POT-Creation-Date: 2024-09-21 12:45+0200\n"
 "PO-Revision-Date: 2013-03-04 12:46+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: Slovenian <vdr@linuxtv.org>\n"
@@ -1575,7 +1575,11 @@ msgstr "Snemanje - zares ponoven zagon?"
 msgid "restart anyway?"
 msgstr "zares ponoven zagon?"
 
+#. TRANSLATORS: note the plural/singular!
 msgid "errors"
+msgstr ""
+
+msgid "error"
 msgstr ""
 
 #. TRANSLATORS: note the trailing blank!

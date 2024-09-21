@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.6\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-07-16 14:13+0200\n"
+"POT-Creation-Date: 2024-09-21 12:45+0200\n"
 "PO-Revision-Date: 2024-02-09 06:29+0000\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian\n"
@@ -1582,8 +1582,12 @@ msgstr "Felvétel folyamatban - mégis újraindítani?"
 msgid "restart anyway?"
 msgstr "mégis újraindítani?"
 
+#. TRANSLATORS: note the plural/singular!
 msgid "errors"
 msgstr "hiba"
+
+msgid "error"
+msgstr ""
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "

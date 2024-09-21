@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-07-16 14:13+0200\n"
+"POT-Creation-Date: 2024-09-21 12:45+0200\n"
 "PO-Revision-Date: 2008-02-28 00:33+0100\n"
 "Last-Translator: Oktay Yolgeçen <oktay_73@yahoo.de>\n"
 "Language-Team: Turkish <vdr@linuxtv.org>\n"
@@ -1574,7 +1574,11 @@ msgstr "Kayýt ediliyor - buna raðmen yeniden baþlat?"
 msgid "restart anyway?"
 msgstr "buna raðmen yeniden baþlat?"
 
+#. TRANSLATORS: note the plural/singular!
 msgid "errors"
+msgstr ""
+
+msgid "error"
 msgstr ""
 
 #. TRANSLATORS: note the trailing blank!
