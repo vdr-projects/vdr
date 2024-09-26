@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.10 2024/09/14 14:17:12 kls Exp $
+ * $Id: epg.c 5.11 2024/09/26 19:25:41 kls Exp $
  */
 
 #include "epg.h"
@@ -145,7 +145,10 @@ cEvent::~cEvent()
 int cEvent::Compare(const cListObject &ListObject) const
 {
   cEvent *e = (cEvent *)&ListObject;
-  return startTime - e->startTime;
+  int d = startTime - e->startTime;
+  if (d == 0)
+     d = int(tableID) - int(e->tableID);
+  return d;
 }
 
 tChannelID cEvent::ChannelID(void) const
@@ -1100,14 +1103,6 @@ void cSchedule::ResetVersions(void)
 void cSchedule::Sort(void)
 {
   events.Sort();
-  // Make sure there are no RunningStatusUndefined before the currently running event:
-  for (cEvent *p = events.First(); p; p = events.Next(p)) {
-      if (p->RunningStatus() >= SI::RunningStatusPausing) {
-         for (p = events.Prev(p); p; p = events.Prev(p))
-             p->SetRunningStatus(SI::RunningStatusNotRunning);
-         break;
-         }
-      }
   SetModified();
 }
 
@@ -1134,6 +1129,20 @@ void cSchedule::DropOutdated(time_t SegmentStart, time_t SegmentEnd, uchar Table
            p = n;
            }
      }
+  // Make sure there are no two events with the same start time:
+  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+      cEvent *n = events.Next(p);
+      if (n && n->StartTime() == p->StartTime())
+         DelEvent(n);
+      }
+  // Make sure there are no RunningStatusUndefined before the currently running event:
+  for (cEvent *p = events.First(); p; p = events.Next(p)) {
+      if (p->RunningStatus() >= SI::RunningStatusPausing) {
+         for (p = events.Prev(p); p; p = events.Prev(p))
+             p->SetRunningStatus(SI::RunningStatusNotRunning);
+         break;
+         }
+      }
 }
 
 void cSchedule::Cleanup(void)

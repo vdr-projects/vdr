@@ -2583,6 +2583,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for improving the error message when closing a frontend
  for reporting a problem in cSchedule::Sort(), in case hasRunning was true, but there
  was no event with RunningStatus() >= SI::RunningStatusPausing
+ for reporting problem with duplicate events if they are moved to a lower table ID and
+ at the same time get a new event ID
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

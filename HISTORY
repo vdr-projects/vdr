@@ -9984,7 +9984,7 @@ Video Disk Recorder Revision History
   version numbering. Version numbers are simply counted upwards, with each of the three
   parts ("version", "major", "minor") always being a single digit, and '0' being skipped.
 
-2024-09-21:
+2024-09-26:
 
 - Fix for compilers that don't like non-constant format strings (thanks to Stefan Hofmann).
 - Deprecated code is now marked with [[deprecated]] to issue a compile time warning when
@@ -10016,3 +10016,5 @@ Video Disk Recorder Revision History
   APIVERSNUM is now 30005.
 - Fixed singular when displaying number of errors in the recording info.
 - Increased the bpp of cProgressBar to 4 to handle all different colors.
+- Fixed a problem with duplicate events if they are moved to a lower table ID and at the
+  same time get a new event ID (reported by Markus Ehrnsperger).
