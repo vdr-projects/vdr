@@ -9984,7 +9984,7 @@ Video Disk Recorder Revision History
   version numbering. Version numbers are simply counted upwards, with each of the three
   parts ("version", "major", "minor") always being a single digit, and '0' being skipped.
 
-2024-09-26:
+2024-09-27:
 
 - Fix for compilers that don't like non-constant format strings (thanks to Stefan Hofmann).
 - Deprecated code is now marked with [[deprecated]] to issue a compile time warning when
@@ -10005,7 +10005,9 @@ Video Disk Recorder Revision History
 - Errors are now shown as diamond shaped markers in the replay progress display of the
   default skins. Plugin authors can switch to the new constructor of cProgressBar to
   benefit from this feature. Of course this only works with recordings that have error
-  information stored in their index file.
+  information stored in their index file. If you have existing recordings with errors
+  and want them to be displayed in the progress bar, you can re-generate their index
+  file, either by deleting the old index, or by running vdr with the --genindex option.
   APIVERSNUM is now 30004.
 - When the index file of a recording is regenerated, errors in the recording are now
   stored in the index file.
