@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 5.4 2024/09/19 09:49:02 kls Exp $
+ * $Id: player.h 5.5 2024/10/08 08:09:48 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -117,9 +117,6 @@ public:
   static void Launch(cControl *Control);
   static void Attach(void);
   static void Shutdown(void);
-#ifndef DEPRECATED_CCONTROL
-#define DEPRECATED_CCONTROL 0
-#endif
 #if DEPRECATED_CCONTROL
   [[deprecated("see HISTORY, version 2.4.2")]]
   static cControl *Control(bool Hidden = false);
