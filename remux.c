@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.13 2024/09/21 19:18:18 kls Exp $
+ * $Id: remux.c 5.14 2024/10/08 08:46:38 kls Exp $
  */
 
 #include "remux.h"
@@ -2073,8 +2073,10 @@ void cFrameChecker::CheckFrame(const uchar *Data, int Length, bool IndependentFr
                  Report("duplicate backref");
               backRefs |= b;
               }
-           else
+           else {
               Report("rev diff too big");
+              lastPts = Pts;
+              }
            }
         else
            Report("zero diff");

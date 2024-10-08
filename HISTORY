@@ -10025,3 +10025,4 @@ Video Disk Recorder Revision History
 
 - Removed defining DEPRECATED_* macros with value 0, because this is the preprocessor's
   default (suggested by Winfried Köhler).
+- Fixed error checking in case of large PTS discontinuities (reported by Matthias Senzel).
