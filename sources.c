@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sources.c 3.6 2014/03/09 12:05:42 kls Exp $
+ * $Id: sources.c 5.1 2024/10/09 10:36:16 kls Exp $
  */
 
 #include "sources.h"
@@ -46,10 +46,7 @@ bool cSource::Matches(int Code1, int Code2)
 
 int cSource::Position(int Code)
 {
-  int n = (Code & st_Pos);
-  if (n > 0x00007FFF)
-     n |= 0xFFFF0000;
-  return n;
+  return int16_t(Code & st_Pos);
 }
 
 cString cSource::ToString(int Code)

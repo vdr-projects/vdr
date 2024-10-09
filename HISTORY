@@ -10021,8 +10021,10 @@ Video Disk Recorder Revision History
 - Fixed a problem with duplicate events if they are moved to a lower table ID and at the
   same time get a new event ID (reported by Markus Ehrnsperger).
 
-2024-10-08:
+2024-10-09:
 
 - Removed defining DEPRECATED_* macros with value 0, because this is the preprocessor's
   default (suggested by Winfried Köhler).
 - Fixed error checking in case of large PTS discontinuities (reported by Matthias Senzel).
+- Fixed handling negative values in cSource::Position() on systems where 'int' is 64 bit
+  (reported by Markus Ehrnsperger, fix suggested by Winfried Köhler).

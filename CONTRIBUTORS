@@ -2585,6 +2585,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  was no event with RunningStatus() >= SI::RunningStatusPausing
  for reporting problem with duplicate events if they are moved to a lower table ID and
  at the same time get a new event ID
+ for reporting a bug in handling negative values in cSource::Position() on
+ systems where 'int' is 64 bit
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
@@ -2847,6 +2849,8 @@ Winfried Köhler <nvdec@quantentunnel.de>
  for reporting a compiler warning with gcc 14.1.0
  for suggesting to remove defining DEPRECATED_* macros with value 0, because this
  is the preprocessor's default
+ for suggesting a fix for handling negative values in cSource::Position() on
+ systems where 'int' is 64 bit
 
 Hans-Werner Hilse <hilse@web.de>
  for adding the command line option --userdump to enable core dumps in case VDR
