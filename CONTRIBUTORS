@@ -2587,6 +2587,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  at the same time get a new event ID
  for reporting a bug in handling negative values in cSource::Position() on
  systems where 'int' is 64 bit
+ for suggesting a fix for expiring of one-time VPS timers in case there is more than
+ one event with the same VPS time
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

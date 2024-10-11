@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.20 2024/03/06 14:37:15 kls Exp $
+ * $Id: timers.c 5.21 2024/10/11 13:58:11 kls Exp $
  */
 
 #include "timers.h"
@@ -726,10 +726,39 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
 bool cTimer::Expired(void) const
 {
   if (IsSingleEvent() && !Recording()) {
+     time_t Now = time(NULL);
      time_t ExpireTime = StopTimeEvent();
-     if (HasFlags(tfVps))
+     if (HasFlags(tfVps)) {
         ExpireTime += EXPIRELATENCY;
-     return ExpireTime <= time(NULL);
+        if (ExpireTime <= Now) {
+           LOCK_SCHEDULES_READ;
+           const cSchedule *Schedule = event ? event->Schedule() : NULL;
+           const cEvent *FirstEvent = event;
+           if (Schedule)
+              FirstEvent = Schedule->Events()->Next(FirstEvent);
+           else if ((Schedule = Schedules->GetSchedule(Channel())) != NULL) {
+              FirstEvent = Schedule->Events()->First();
+              if (FirstEvent)
+                 dsyslog("timer %s had no event, got %s from channel/schedule", *ToDescr(), *FirstEvent->ToDescr());
+              }
+           if (FirstEvent) {
+              if (Schedule) {
+                 for (const cEvent *e = FirstEvent; e; e = Schedule->Events()->Next(e)) {
+                     if (e->Vps() == startTime) {
+                        ExpireTime = e->EndTime() + EXPIRELATENCY;
+                        dsyslog("timer %s is waiting for next VPS event %s", *ToDescr(), *e->ToDescr());
+                        // no break here - let's play it safe and look at *all* events
+                        }
+                     }
+                 }
+              }
+           else {
+              dsyslog("timer %s has no event, setting expiration to +24h", *ToDescr());
+              ExpireTime += 3600 * 24;
+              }
+           }
+        }
+     return ExpireTime <= Now;
      }
   return false;
 }
