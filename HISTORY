@@ -10032,3 +10032,4 @@ Video Disk Recorder Revision History
   same VPS time (suggested by Markus Ehrnsperger).
 - The Channel+/- keys can now be used to jump between errors while replaying a recording
   (suggested by Stefan Hofmann).
+- Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).

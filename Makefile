@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 5.2 2024/01/05 14:16:16 kls Exp $
+# $Id: Makefile 5.3 2024/10/11 14:21:04 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -46,13 +46,14 @@ ARGSDIR   ?= /etc/vdr/conf.d
 CACHEDIR  ?= /var/cache/vdr
 
 PREFIX    ?= /usr/local
-BINDIR    ?= $(PREFIX)/bin
-INCDIR    ?= $(PREFIX)/include
-LIBDIR    ?= $(PREFIX)/lib/vdr
-LOCDIR    ?= $(PREFIX)/share/locale
-MANDIR    ?= $(PREFIX)/share/man
-PCDIR     ?= $(PREFIX)/lib/pkgconfig
-RESDIR    ?= $(PREFIX)/share/vdr
+VDRROOT   ?= $(PREFIX)
+BINDIR    ?= $(VDRROOT)/bin
+INCDIR    ?= $(VDRROOT)/include
+LIBDIR    ?= $(VDRROOT)/lib/vdr
+LOCDIR    ?= $(VDRROOT)/share/locale
+MANDIR    ?= $(VDRROOT)/share/man
+PCDIR     ?= $(VDRROOT)/lib/pkgconfig
+RESDIR    ?= $(VDRROOT)/share/vdr
 
 # Source documentation
 
@@ -169,7 +170,9 @@ make-libsi: # empty rule makes sure the sub-make for libsi is always called
 
 .PHONY: vdr.pc
 vdr.pc:
-	@echo "bindir=$(BINDIR)" > $@
+	@echo "vdrrootdir=$(VDRROOT)" > $@
+	@echo "bindir=$(BINDIR)" >> $@
+	@echo "incdir=$(INCDIR)" >> $@
 	@echo "mandir=$(MANDIR)" >> $@
 	@echo "videodir=$(VIDEODIR)" >> $@
 	@echo "configdir=$(CONFDIR)" >> $@
@@ -320,6 +323,7 @@ install-doc:
 
 install-plugins: plugins
 	@-for i in `ls $(PLUGINDIR)/src | grep -v '[^a-z0-9]'`; do\
+	      echo; echo "*** Plugin $$i:";\
 	      $(MAKE) --no-print-directory -C "$(PLUGINDIR)/src/$$i" VDRDIR=$(CWD) DESTDIR=$(DESTDIR) install;\
 	      done
 	@if [ -d $(PLUGINDIR)/lib ] ; then\
@@ -356,7 +360,7 @@ srcdoc:
 clean:
 	@$(MAKE) --no-print-directory -C $(LSIDIR) clean
 	@-rm -f $(OBJS) $(DEPFILE) vdr vdr.pc core* *~
-	@-rm -rf $(LOCALEDIR) $(PODIR)/*.mo $(PODIR)/*.pot
+	@-rm -rf $(LOCALEDIR) $(PODIR)/*~ $(PODIR)/*.mo $(PODIR)/*.pot
 	@-rm -rf include
 	@-rm -rf srcdoc
 CLEAN: clean

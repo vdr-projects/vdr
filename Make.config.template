@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 5.1 2022/11/26 13:37:06 kls Exp $
+# $Id: Make.config.template 5.2 2024/10/11 14:21:04 kls Exp $
 
 ### The C compiler and options:
 
@@ -33,14 +33,15 @@ endif
 # Default directories (adjust as necessary or desired):
 
 #PREFIX    = /usr/local
-#BINDIR    = $(PREFIX)/bin
-#INCDIR    = $(PREFIX)/include
-#LIBDIR    = $(PREFIX)/lib/vdr
-#LOCDIR    = $(PREFIX)/share/locale
-#MANDIR    = $(PREFIX)/share/man
-#PCDIR     = $(PREFIX)/lib/pkgconfig
-#RESDIR    = $(PREFIX)/share/vdr
-#DVBDIR    = /usr/src/v4l-dvb/linux/include/uapi
+#VDRROOT   = $(PREFIX)
+#BINDIR    = $(VDRROOT)/bin
+#INCDIR    = $(VDRROOT)/include
+#LIBDIR    = $(VDRROOT)/lib
+#LOCDIR    = $(VDRROOT)/locale
+#MANDIR    = $(VDRROOT)/man
+#PCDIR     = $(VDRROOT)/pkgconfig
+#RESDIR    = $(VDRROOT)/share
+#DVBDIR    = /usr/include
 
 #VIDEODIR  = /srv/vdr/video
 #CONFDIR   = /var/lib/vdr
