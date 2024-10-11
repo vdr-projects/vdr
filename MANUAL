@@ -50,8 +50,8 @@ Version 2.7
   Next        Next/previous channel group (in live tv mode)
   Prev        or next/previous editing mark (in replay mode)
 
-  Channel+    channel up
-  Channel-    channel down
+  Channel+    channel up (live view), next error (replay)
+  Channel-    channel down (live view), previous error (replay)
   PrevChannel previous channel
 
   Power       shutdown

@@ -10030,3 +10030,5 @@ Video Disk Recorder Revision History
   (reported by Markus Ehrnsperger, fix suggested by Winfried Köhler).
 - Fixed expiring of one-time VPS timers in case there is more than one event with the
   same VPS time (suggested by Markus Ehrnsperger).
+- The Channel+/- keys can now be used to jump between errors while replaying a recording
+  (suggested by Stefan Hofmann).

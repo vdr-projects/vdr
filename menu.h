@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.4 2024/09/19 09:49:02 kls Exp $
+ * $Id: menu.h 5.5 2024/10/11 14:10:50 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -316,6 +316,7 @@ private:
   void MarkToggle(void);
   void MarkJump(bool Forward);
   void MarkMove(int Frames, bool MarkRequired);
+  void ErrorJump(bool Forward);
   void EditCut(void);
   void EditTest(void);
 public:

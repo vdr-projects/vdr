@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.17 2024/09/19 09:49:02 kls Exp $
+ * $Id: menu.c 5.18 2024/10/11 14:10:50 kls Exp $
  */
 
 #include "menu.h"
@@ -6097,6 +6097,47 @@ void cReplayControl::MarkMove(int Frames, bool MarkRequired)
      }
 }
 
+void cReplayControl::ErrorJump(bool Forward)
+{
+  const cErrors *Errors = GetErrors();
+  int NumErrors = Errors ? Errors->Size() : 0;
+  if (NumErrors > 0) {
+     int Current, Total;
+     if (GetIndex(Current, Total)) {
+        if (Forward) {
+           int Offset = 0;
+           for (int i = 0; i < NumErrors; i++) {
+               int Position = Errors->At(i);
+               if (Position > Current + Offset) {
+                  int NextIFrame = SkipFrames(Position - Current) + Offset; // this takes us to the I-frame at or right after Position
+                  if (NextIFrame > Position) {
+                     if (SkipFrames(Offset + 1) == NextIFrame) { // means Current is the I-frame right before Position
+                        Offset = NextIFrame - Current;
+                        continue;
+                        }
+                     }
+                  Goto(Position, true); // this takes us to the I-frame at or right before Position
+                  return;
+                  }
+               }
+           if (Current < Total)
+              Goto(Total, true);
+           }
+        else {
+           for (int i = NumErrors - 1; i >= 0; i--) {
+               if (Errors->At(i) < Current) {
+                  int Position = Errors->At(i);
+                  Goto(Position, true); // this takes us to the I-frame at or right before Position
+                  return;
+                  }
+               }
+           if (Current > 0)
+              Goto(0, true);
+           }
+        }
+     }
+}
+
 void cReplayControl::EditCut(void)
 {
   if (*fileName) {
@@ -6241,6 +6282,10 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
         case kMarkSkipBack:    MarkMove(-adaptiveSkipper.GetValue(RAWKEY(Key)), false); break;
         case kMarkSkipForward|k_Repeat:
         case kMarkSkipForward: MarkMove(+adaptiveSkipper.GetValue(RAWKEY(Key)), false); break;
+        case kChanUp|k_Repeat:
+        case kChanUp:          ErrorJump(true); break;
+        case kChanDn|k_Repeat:
+        case kChanDn:          ErrorJump(false); break;
         case kEditCut:         EditCut(); break;
         case kEditTest:        EditTest(); break;
         default: {
