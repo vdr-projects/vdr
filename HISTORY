@@ -10021,7 +10021,7 @@ Video Disk Recorder Revision History
 - Fixed a problem with duplicate events if they are moved to a lower table ID and at the
   same time get a new event ID (reported by Markus Ehrnsperger).
 
-2024-10-11:
+2024-10-12: Version 2.7.3
 
 - Removed defining DEPRECATED_* macros with value 0, because this is the preprocessor's
   default (suggested by Winfried Köhler).
