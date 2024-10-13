@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 5.5 2024/10/08 08:09:48 kls Exp $
+ * $Id: player.h 5.6 2024/10/13 09:47:18 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -117,15 +117,6 @@ public:
   static void Launch(cControl *Control);
   static void Attach(void);
   static void Shutdown(void);
-#if DEPRECATED_CCONTROL
-  [[deprecated("see HISTORY, version 2.4.2")]]
-  static cControl *Control(bool Hidden = false);
-         ///< Old version of this function, for backwards compatibility with plugins.
-         ///< Plugins should be changed to use the new version below, which does
-         ///< proper locking.
-         ///< Use of this function may result in program crashes in case replay is
-         ///< stopped immediately after starting it.
-#endif
   static cControl *Control(cMutexLock &MutexLock, bool Hidden = false);
          ///< Returns the current replay control (if any) in case it is currently
          ///< visible. If Hidden is true, the control will be returned even if it is

@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 5.7 2024/10/08 08:09:48 kls Exp $
+ * $Id: epg.h 5.8 2024/10/13 09:47:18 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -186,10 +186,6 @@ public:
   const cList<cEvent> *Events(void) const { return &events; }
   const cEvent *GetPresentEvent(void) const;
   const cEvent *GetFollowingEvent(void) const;
-#if DEPRECATED_SCHEDULE_GET_EVENT
-  [[deprecated("see HISTORY, version 2.5.2")]]
-  const cEvent *GetEvent(tEventID EventID, time_t StartTime = 0) const;
-#endif
   const cEvent *GetEventById(tEventID EventID) const;
   const cEvent *GetEventByTime(time_t StartTime) const;
   const cEvent *GetEventAround(time_t Time) const;

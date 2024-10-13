@@ -10033,3 +10033,7 @@ Video Disk Recorder Revision History
 - The Channel+/- keys can now be used to jump between errors while replaying a recording
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
+
+2024-10-13:
+
+- Removed all DEPRECATED_* code.
