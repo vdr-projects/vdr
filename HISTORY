@@ -10037,3 +10037,4 @@ Video Disk Recorder Revision History
 2024-10-13:
 
 - Removed all DEPRECATED_* code.
+- Fixed error checking in case the fps value can't be determined by the frame parser.

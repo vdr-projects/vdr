@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.14 2024/10/08 08:46:38 kls Exp $
+ * $Id: remux.c 5.15 2024/10/13 13:34:32 kls Exp $
  */
 
 #include "remux.h"
@@ -2274,6 +2274,7 @@ int cFrameDetector::Analyze(const uchar *Data, int Length, bool ErrorCheck)
                           }
                        else // audio
                           framesPerSecond = double(PTSTICKS) / Delta; // PTS of audio frames is always increasing
+                       frameChecker->SetFrameDelta(Delta);
                        dbgframes("\nDelta = %d  FPS = %5.2f  FPPU = %d NF = %d TRO = %d\n", Delta, framesPerSecond, framesPerPayloadUnit, numPtsValues + 1, parser->IFrameTemporalReferenceOffset());
                        synced = true;
                        parser->SetDebug(false);
