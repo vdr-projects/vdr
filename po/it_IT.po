@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2024-09-21 12:45+0200\n"
-"PO-Revision-Date: 2024-09-14 13:05+0200\n"
+"PO-Revision-Date: 2024-10-15 00:35+0200\n"
 "Last-Translator: Gringo <openpli@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
@@ -1585,7 +1585,7 @@ msgid "errors"
 msgstr "errori"
 
 msgid "error"
-msgstr ""
+msgstr "errore"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
