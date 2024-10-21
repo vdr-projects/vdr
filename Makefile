@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 5.3 2024/10/11 14:21:04 kls Exp $
+# $Id: Makefile 5.4 2024/10/21 19:01:16 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -188,7 +188,7 @@ vdr.pc:
 	@echo "" >> $@
 	@echo "Name: VDR" >> $@
 	@echo "Description: Video Disk Recorder" >> $@
-	@echo "URL: http://www.tvdr.de/" >> $@
+	@echo "URL: https://www.tvdr.de/" >> $@
 	@echo "Version: $(VDRVERSION)" >> $@
 	@echo "Cflags: \$${cflags}" >> $@
 

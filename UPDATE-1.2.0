@@ -10,7 +10,7 @@ Plugins:
 - Implemented a universal plugin interface. See the file PLUGINS.html
   for a detailed description. The man page vdr(1) describes the new options '-L'
   and '-P' used to load plugins.
-  See http://www.tvdr.de/plugins.htm for a list of available plugins.
+  See https://www.tvdr.de/plugins.htm for a list of available plugins.
 - Rearranged the remote control key handling to allow plugins to implement
   additional types of remote controls (see PLUGINS.html, section "Remote Control").
   The previously used files 'keys.conf' and 'keys-pc.conf' have been replaced

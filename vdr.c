@@ -20,9 +20,9 @@
  *
  * The author can be reached at vdr@tvdr.de
  *
- * The project's page is at http://www.tvdr.de
+ * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.16 2024/03/29 21:46:50 kls Exp $
+ * $Id: vdr.c 5.17 2024/10/21 19:03:09 kls Exp $
  */
 
 #include <getopt.h>

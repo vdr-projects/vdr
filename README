@@ -4,7 +4,7 @@ Video Disk Recorder ('VDR')
 These files contain the source code of the "Video Disk Recorder",
 which is based on the DVB driver of the LinuxTV project (http://linuxtv.org).
 For details about the "Video Disk Recorder" project please
-refer to http://www.tvdr.de.
+refer to https://www.tvdr.de.
 
 Please see the INSTALL file for details on how to install
 this program on your computer.
@@ -33,7 +33,7 @@ the ones in this system, but here we have the full source code
 and can modify the menus in whatever way desired.
 
 If you actually use VDR, please add yourself to the "VDR User Counter"
-at http://www.tvdr.de/counter.htm. You can also like VDR on facebook
+at https://www.tvdr.de/counter.htm. You can also like VDR on facebook
 at https://www.facebook.com/VideoDiskRecorder.
 
 
