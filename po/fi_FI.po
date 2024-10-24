@@ -797,7 +797,7 @@ msgid "Folder"
 msgstr "Kansio"
 
 msgid "Size"
-msgstr ""
+msgstr "Koko"
 
 msgid "This folder is currently in use - no changes are possible!"
 msgstr "Kansio on käytössä - muokkaukset eivät mahdollisia!"
@@ -846,7 +846,7 @@ msgid "Edited version already exists - overwrite?"
 msgstr "Muokattava versio on jo olemassa - ylikirjoitetaanko?"
 
 msgid "Not enough free disk space to start editing process!"
-msgstr ""
+msgstr "Tallennustila ei riitä muokkaamiseen!"
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Tallenteen lisääminen leikkausjonoon epäonnistui!"
@@ -1526,7 +1526,7 @@ msgid "Button$Insert"
 msgstr "Lisää"
 
 msgid "Button$Macro"
-msgstr ""
+msgstr "Makro"
 
 msgid "Plugin"
 msgstr "Laajennos"
@@ -1535,7 +1535,7 @@ msgid "Up/Dn for new location - OK to move"
 msgstr "'Ylös/Alas' uusi paikka - 'OK' hyväksy"
 
 msgid "Primary device has no MPEG decoder, can't attach player!"
-msgstr ""
+msgstr "Ensisijaissa laitteessa ei ole MPEG-toistinta!"
 
 msgid "Low disk space!"
 msgstr "Tallennustila loppumassa!"
@@ -1580,10 +1580,10 @@ msgstr "käynnistetäänkö uudelleen?"
 
 #. TRANSLATORS: note the plural/singular!
 msgid "errors"
-msgstr ""
+msgstr "virhettä"
 
 msgid "error"
-msgstr ""
+msgstr "virhe"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
