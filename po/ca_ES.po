@@ -133,7 +133,7 @@ msgstr "Revista de notícies"
 msgid "Content$Documentary"
 msgstr "Documental"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Discussió/Entrevista/Debat"
 
 msgid "Content$Show/Game Show"
@@ -211,7 +211,7 @@ msgstr "Rock/Pop"
 msgid "Content$Serious/Classical Music"
 msgstr "Música clàssica/seriosa"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Música folklòrica/tradicional"
 
 msgid "Content$Jazz"

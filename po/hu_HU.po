@@ -138,7 +138,7 @@ msgstr "Hírmagazin"
 msgid "Content$Documentary"
 msgstr "Dokumentumfilm"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Beszélgetés/Interjú/Vita"
 
 msgid "Content$Show/Game Show"
@@ -216,7 +216,7 @@ msgstr "Rock/Pop"
 msgid "Content$Serious/Classical Music"
 msgstr "Komolyzene/Klasszikus zene"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Népzene/Hagyományos zene"
 
 msgid "Content$Jazz"

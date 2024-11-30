@@ -132,7 +132,7 @@ msgstr "Magazin de ştiri"
 msgid "Content$Documentary"
 msgstr "Documentar"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Discuţie/Interviu/Dezbatere"
 
 msgid "Content$Show/Game Show"
@@ -210,7 +210,7 @@ msgstr "Rock/Pop"
 msgid "Content$Serious/Classical Music"
 msgstr "Muzică clasică/serioasă"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Muzică folk/tradiţională"
 
 msgid "Content$Jazz"

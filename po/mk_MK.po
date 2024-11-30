@@ -132,7 +132,7 @@ msgstr "Магазин"
 msgid "Content$Documentary"
 msgstr "Документарен"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Дискусија/Интервју/Дебата"
 
 msgid "Content$Show/Game Show"
@@ -210,7 +210,7 @@ msgstr "Рок/Поп"
 msgid "Content$Serious/Classical Music"
 msgstr "Сериозна/Класична музика"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Фолк/Народна музика"
 
 msgid "Content$Jazz"

@@ -136,7 +136,7 @@ msgstr "Nieuwsbulletin"
 msgid "Content$Documentary"
 msgstr "Documentaire"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Discussie/Interview/Debat"
 
 msgid "Content$Show/Game Show"
@@ -214,7 +214,7 @@ msgstr "Rock/Pop"
 msgid "Content$Serious/Classical Music"
 msgstr "Serieuze muziek/Klassieke muziek"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Folk/Traditionele muziek"
 
 msgid "Content$Jazz"

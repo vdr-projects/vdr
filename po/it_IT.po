@@ -136,7 +136,7 @@ msgstr "Settimanale di attualità"
 msgid "Content$Documentary"
 msgstr "Documentario"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Discussione/Intervista/Dibattito"
 
 msgid "Content$Show/Game Show"
@@ -214,7 +214,7 @@ msgstr "Rock/Pop"
 msgid "Content$Serious/Classical Music"
 msgstr "Musica Classica/Seria"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Musica Tradizionale/Folclore"
 
 msgid "Content$Jazz"

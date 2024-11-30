@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.12 2024/10/13 09:47:18 kls Exp $
+ * $Id: epg.c 5.13 2024/11/30 14:30:46 kls Exp $
  */
 
 #include "epg.h"
@@ -303,7 +303,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x01: return tr("Content$News/Weather Report");
            case 0x02: return tr("Content$News Magazine");
            case 0x03: return tr("Content$Documentary");
-           case 0x04: return tr("Content$Discussion/Inverview/Debate");
+           case 0x04: return tr("Content$Discussion/Interview/Debate");
            }
          break;
     case ecgShow:
@@ -349,7 +349,7 @@ const char *cEvent::ContentToString(uchar Content)
            case 0x00: return tr("Content$Music/Ballet/Dance");
            case 0x01: return tr("Content$Rock/Pop");
            case 0x02: return tr("Content$Serious/Classical Music");
-           case 0x03: return tr("Content$Folk/Tradional Music");
+           case 0x03: return tr("Content$Folk/Traditional Music");
            case 0x04: return tr("Content$Jazz");
            case 0x05: return tr("Content$Musical/Opera");
            case 0x06: return tr("Content$Ballet");

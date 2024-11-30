@@ -130,7 +130,7 @@ msgstr "Uudisteajakiri"
 msgid "Content$Documentary"
 msgstr "Dokumentaal"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Diskussioon/intervjuu/debatt"
 
 msgid "Content$Show/Game Show"
@@ -208,7 +208,7 @@ msgstr "Rock/pop"
 msgid "Content$Serious/Classical Music"
 msgstr "Klassikaline muusika"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Folk/rahvamuusika"
 
 msgid "Content$Jazz"

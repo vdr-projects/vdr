@@ -131,7 +131,7 @@ msgstr "Журнал новин"
 msgid "Content$Documentary"
 msgstr "Документальне"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Дискусія/Інтерв’ю/Дебати"
 
 msgid "Content$Show/Game Show"
@@ -209,7 +209,7 @@ msgstr "Рок/Поп"
 msgid "Content$Serious/Classical Music"
 msgstr "Серйозна/Класична музика"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Фльк/Традиційна музика"
 
 msgid "Content$Jazz"

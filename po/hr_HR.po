@@ -132,7 +132,7 @@ msgstr ""
 msgid "Content$Documentary"
 msgstr ""
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr ""
 
 msgid "Content$Show/Game Show"
@@ -210,7 +210,7 @@ msgstr ""
 msgid "Content$Serious/Classical Music"
 msgstr ""
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr ""
 
 msgid "Content$Jazz"

@@ -3370,6 +3370,7 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for a fix for compilers that don't like non-constant format strings
  for suggesting to implement jumping between errors while replaying a recording
  for adding vdrrootdir and incdir to vdr.pc
+ for fixing some typos in the translation files
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a

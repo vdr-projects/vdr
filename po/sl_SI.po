@@ -131,7 +131,7 @@ msgstr "Poroèila"
 msgid "Content$Documentary"
 msgstr "Dokumentarec"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "Diskudija/Interviju/Debata"
 
 msgid "Content$Show/Game Show"
@@ -209,7 +209,7 @@ msgstr "Rok/Pop"
 msgid "Content$Serious/Classical Music"
 msgstr "Resna/Klasièna Glasba"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "Narodna/Tradicionalna glasba"
 
 msgid "Content$Jazz"

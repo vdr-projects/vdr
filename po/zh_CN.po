@@ -132,8 +132,8 @@ msgstr "新闻杂志"
 msgid "Content$Documentary"
 msgstr "记录片"
 
-msgid "Content$Discussion/Inverview/Debate"
-msgstr "讨论/ Inverview/辩论"
+msgid "Content$Discussion/Interview/Debate"
+msgstr "讨论/ Interview/辩论"
 
 msgid "Content$Show/Game Show"
 msgstr "显示/游戏展"
@@ -210,7 +210,7 @@ msgstr "摇滚/流行"
 msgid "Content$Serious/Classical Music"
 msgstr "严重/古典音乐"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "民谣/传统体育专业课程设置的音乐"
 
 msgid "Content$Jazz"

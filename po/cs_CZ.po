@@ -133,7 +133,7 @@ msgstr "zprávy"
 msgid "Content$Documentary"
 msgstr "dokumentární"
 
-msgid "Content$Discussion/Inverview/Debate"
+msgid "Content$Discussion/Interview/Debate"
 msgstr "diskuze/rozhovor/debata"
 
 msgid "Content$Show/Game Show"
@@ -211,7 +211,7 @@ msgstr "rock/pop"
 msgid "Content$Serious/Classical Music"
 msgstr "vážná/klasická hudba"
 
-msgid "Content$Folk/Tradional Music"
+msgid "Content$Folk/Traditional Music"
 msgstr "folk/country"
 
 msgid "Content$Jazz"
