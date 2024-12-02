@@ -10034,7 +10034,7 @@ Video Disk Recorder Revision History
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
 
-2024-11-30:
+2024-12-02:
 
 - Removed all DEPRECATED_* code.
 - Fixed error checking in case the fps value can't be determined by the frame parser.
@@ -10042,3 +10042,4 @@ Video Disk Recorder Revision History
 - The VDR homepage is now accessible via HTTPS.
 - Updated the Finnish OSD texts (thanks to Rolf Ahrenberg).
 - Fixed some typos in the translation files (thanks to Stefan Hofmann).
+- Added some missing locking.

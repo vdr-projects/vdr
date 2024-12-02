@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.18 2024/10/11 14:10:50 kls Exp $
+ * $Id: menu.c 5.19 2024/12/02 12:40:56 kls Exp $
  */
 
 #include "menu.h"
@@ -1263,6 +1263,7 @@ void cMenuTimerItem::Set(void)
      }
   const char *File = timer->Pattern();
   if (!*File) {
+     LOCK_SCHEDULES_READ;
      if (timer->HasFlags(tfSpawned) && timer->Event() && timer->Event()->Title())
         File = timer->Event()->Title();
      else {
@@ -1334,12 +1335,15 @@ void cMenuTimers::Set(void)
      const cTimer *CurrentTimer = GetTimer();
      cMenuTimerItem *CurrentItem = NULL;
      Clear();
-     for (const cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer)) {
-         cMenuTimerItem *Item = new cMenuTimerItem(Timer);
-         Add(Item);
-         if (CurrentTimer && Timer->Id() == CurrentTimer->Id() && (!Timer->Remote() && !CurrentTimer->Remote() || Timer->Remote() && CurrentTimer->Remote() && strcmp(Timer->Remote(), CurrentTimer->Remote()) == 0))
-            CurrentItem = Item;
-         }
+     {
+       LOCK_SCHEDULES_READ;
+       for (const cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer)) {
+           cMenuTimerItem *Item = new cMenuTimerItem(Timer);
+           Add(Item);
+           if (CurrentTimer && Timer->Id() == CurrentTimer->Id() && (!Timer->Remote() && !CurrentTimer->Remote() || Timer->Remote() && CurrentTimer->Remote() && strcmp(Timer->Remote(), CurrentTimer->Remote()) == 0))
+              CurrentItem = Item;
+           }
+     }
      Sort();
      SetCurrent(CurrentItem ? CurrentItem : First());
      SetHelpKeys();
@@ -1454,6 +1458,7 @@ eOSState cMenuTimers::Info(void)
      return osContinue;
   LOCK_TIMERS_READ;
   LOCK_CHANNELS_READ;
+  LOCK_SCHEDULES_READ;
   cTimer *Timer = GetTimer();
   if (Timer && Timer->Event())
      return AddSubMenu(new cMenuEvent(Timers, Channels, Timer->Event()));
@@ -1599,6 +1604,7 @@ static const char *TimerMatchChars = " tT iI";
 
 bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
 {
+  LOCK_SCHEDULES_READ;
   eTimerMatch OldTimerMatch = timerMatch;
   bool OldTimerActive = timerActive;
   const cTimer *Timer = Timers->GetMatch(event, &timerMatch);

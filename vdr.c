@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.17 2024/10/21 19:03:09 kls Exp $
+ * $Id: vdr.c 5.18 2024/12/02 12:40:56 kls Exp $
  */
 
 #include <getopt.h>
@@ -1140,6 +1140,7 @@ int main(int argc, char *argv[])
                        if (Timer->Matches(Now, true, Setup.VpsMargin))
                           InVpsMargin = true;
                        else if (Timer->Event()) {
+                          LOCK_SCHEDULES_READ;
                           InVpsMargin = Timer->Event()->StartTime() <= Now && Now < Timer->Event()->EndTime();
                           NeedsTransponder = Timer->Event()->StartTime() - Now < VPSLOOKAHEADTIME * 3600 && !Timer->Event()->SeenWithin(VPSUPTODATETIME);
                           }
