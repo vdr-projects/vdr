@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.15 2024/10/13 13:34:32 kls Exp $
+ * $Id: remux.c 5.16 2024/12/04 14:33:10 kls Exp $
  */
 
 #include "remux.h"
@@ -2155,7 +2155,7 @@ void cFrameDetector::SetMissing(void)
   frameChecker->SetMissing();
 }
 
-bool cFrameDetector::NewFrame(int *PreviousErrors, int * MissingFrames)
+bool cFrameDetector::NewFrame(int *PreviousErrors, int *MissingFrames)
 {
   if (newFrame) {
      if (PreviousErrors)

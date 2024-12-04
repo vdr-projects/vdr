@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.7 2024/09/21 19:18:18 kls Exp $
+ * $Id: remux.h 5.8 2024/12/04 14:33:22 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -570,7 +570,7 @@ public:
       ///< is scanned for the PAT/PMT and then a rewind is done on the file.
   bool Synced(void) { return synced; }
       ///< Returns true if the frame detector has synced on the data stream.
-  bool NewFrame(int *PreviousErrors = NULL, int * MissingFrames = NULL);
+  bool NewFrame(int *PreviousErrors = NULL, int *MissingFrames = NULL);
       ///< Returns true if the data given to the last call to Analyze() started a
       ///< new frame. If PreviousErrors is given, it will be set to the number of errors in
       ///< the previous frame. If MissingFrames is given, it will be set to the number of
