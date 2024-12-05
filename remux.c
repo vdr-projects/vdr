@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.16 2024/12/04 14:33:10 kls Exp $
+ * $Id: remux.c 5.17 2024/12/05 10:33:31 kls Exp $
  */
 
 #include "remux.h"
@@ -287,6 +287,8 @@ uchar cTsPayload::GetByte(void)
                if (TsPid(p) == pid) { // only handle TS packets for the initial PID
                   if (++numPacketsPid > MAX_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION)
                      return SetEof();
+                  if (TsError(p))
+                     return SetEof(); // don't parse TS packets with errors
                   if (TsHasPayload(p)) {
                      if (index > 0 && TsPayloadStart(p)) // checking index to not skip the very first TS packet
                         return SetEof();
