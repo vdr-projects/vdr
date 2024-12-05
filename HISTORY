@@ -10044,3 +10044,4 @@ Video Disk Recorder Revision History
 - Fixed some typos in the translation files (thanks to Stefan Hofmann).
 - Added some missing locking.
 - TS packets with errors are now skipped when parsing for frames.
+- Fixed handling the fps value if it can't be determined from the video data.
