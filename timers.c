@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.21 2024/10/11 13:58:11 kls Exp $
+ * $Id: timers.c 5.22 2025/01/07 10:46:22 kls Exp $
  */
 
 #include "timers.h"
@@ -620,7 +620,8 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
                  startTime = event->StartTime();
                  stopTime = event->EndTime();
                  if (!Margin) { // this is an actual check
-                    if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) { // VPS control can only work with up-to-date events...
+                    const cSchedule *Schedule = event->Schedule();
+                    if (Schedule && Schedule->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) { // VPS control can only work with up-to-date events...
                        if (!vpsActive) {
                           vpsActive = true;
                           if (Recording())
@@ -636,7 +637,7 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
                        return running || time(NULL) < vpsNotRunning + VPSGRACE;
                        }
                     if (Recording()) {
-                       if (event->Schedule()->PresentSeenWithin(EITPRESENTFOLLOWINGGRACE))
+                       if (Schedule && Schedule->PresentSeenWithin(EITPRESENTFOLLOWINGGRACE))
                           return event->IsRunning(true); // give it a chance to recover - worst case: the recording will be 60 seconds too long
                        if (vpsActive) {
                           vpsActive = false;
