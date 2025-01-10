@@ -10034,7 +10034,7 @@ Video Disk Recorder Revision History
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
 
-2025-01-07:
+2025-01-10:
 
 - Removed all DEPRECATED_* code.
 - Fixed error checking in case the fps value can't be determined by the frame parser.
@@ -10047,3 +10047,4 @@ Video Disk Recorder Revision History
 - Fixed handling the fps value if it can't be determined from the video data.
 - Fixed accessing a timer's event schedule in case the event has been removed from the
   schedule.
+- Fixed a possible deadlock when canceling an editing process.

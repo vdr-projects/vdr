@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.3 2024/09/20 21:34:18 kls Exp $
+ * $Id: cutter.c 5.4 2025/01/10 13:12:04 kls Exp $
  */
 
 #include "cutter.h"
@@ -623,8 +623,11 @@ void cCuttingThread::HandleErrors(bool Force)
         Force = true;
         }
      if (Force) {
-        LOCK_RECORDINGS_WRITE;
-        Recordings->UpdateByName(editedRecordingName);
+        cStateKey StateKey;
+        if (cRecordings *Recordings = cRecordings::GetRecordingsWrite(StateKey, 1)) {
+           Recordings->UpdateByName(editedRecordingName);
+           StateKey.Remove();
+           }
         }
      lastErrorHandling = time(NULL);
      }
