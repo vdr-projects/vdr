@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.22 2025/01/07 10:46:22 kls Exp $
+ * $Id: timers.c 5.23 2025/01/10 16:11:02 kls Exp $
  */
 
 #include "timers.h"
@@ -1158,6 +1158,7 @@ const cTimer *cTimers::GetMatch(time_t t) const
 {
   static int LastPending = -1;
   const cTimer *t0 = NULL;
+  LOCK_SCHEDULES_READ;
   for (const cTimer *ti = First(); ti; ti = Next(ti)) {
       if (!ti->Remote() && !ti->Recording() && ti->Matches(t)) {
          if (ti->Pending()) {
