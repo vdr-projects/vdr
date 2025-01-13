@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.10 2024/09/01 20:43:40 kls Exp $
+ * $Id: tools.h 5.11 2025/01/13 13:18:42 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -140,7 +140,7 @@ int Utf8FromArray(const uint *a, char *s, int Size, int Max = -1);
 // When allocating buffer space, make sure we reserve enough space to hold
 // a string in UTF-8 representation:
 
-#define Utf8BufSize(s) ((s) * 4)
+#define Utf8BufSize(s) ((s) * 4 + 1)
 
 // The following macros automatically use the correct versions of the character
 // class functions:

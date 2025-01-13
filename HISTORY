@@ -10049,3 +10049,4 @@ Video Disk Recorder Revision History
   schedule.
 - Fixed a possible deadlock when canceling an editing process.
 - Checking for VPS control is now limited to local timers.
+- Added 1 to Utf8BufSize() for worst case (thanks to Stefan Hofmann).
