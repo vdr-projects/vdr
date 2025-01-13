@@ -10050,3 +10050,5 @@ Video Disk Recorder Revision History
 - Fixed a possible deadlock when canceling an editing process.
 - Checking for VPS control is now limited to local timers.
 - Added 1 to Utf8BufSize() for worst case (thanks to Stefan Hofmann).
+- Fixed handling margins for timers that are not VPS controlled and not spawned (thanks
+  to Markus Ehrnsperger).

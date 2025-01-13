@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.24 2025/01/13 12:34:18 kls Exp $
+ * $Id: timers.c 5.25 2025/01/13 14:44:18 kls Exp $
  */
 
 #include "timers.h"
@@ -185,6 +185,8 @@ cTimer::cTimer(const cEvent *Event, const char *FileName, const cTimer *PatternT
   deferred = 0;
   pending = inVpsMargin = false;
   flags = tfActive;
+  if (PatternTimer)
+     SetFlags(tfSpawned);
   *pattern = 0;
   *file = 0;
   aux = NULL;
@@ -284,10 +286,12 @@ void cTimer::CalcMargins(int &MarginStart, int &MarginStop, const cEvent *Event)
   MarginStop  = Setup.MarginStop * 60;
   // To make sure the timer gets assigned to the correct event, we must
   // make sure that this is the only event that overlaps 100%:
-  if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Prev()))
-     MarginStart = max(0, min(MarginStart, e->Duration() - 60));
-  if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Next()))
-     MarginStop = max(0, min(MarginStop, e->Duration() - 60));
+  if (HasFlags(tfSpawned)) {
+     if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Prev()))
+        MarginStart = max(0, min(MarginStart, e->Duration() - 60));
+     if (const cEvent *e = dynamic_cast<const cEvent *>(Event->Next()))
+        MarginStop = max(0, min(MarginStop, e->Duration() - 60));
+     }
 }
 
 int cTimer::Compare(const cListObject &ListObject) const
@@ -813,7 +817,6 @@ cTimer *cTimer::SpawnPatternTimer(const cEvent *Event, cTimers *Timers)
   cString FileName = MakePatternFileName(Pattern(), Event->Title(), Event->ShortText(), File());
   isyslog("spawning timer %s for event %s", *ToDescr(), *Event->ToDescr());
   cTimer *t = new cTimer(Event, FileName, this);
-  t->SetFlags(tfSpawned);
   if (startswith(Pattern(), TIMERPATTERN_AVOID))
      t->SetFlags(tfAvoid);
   Timers->Add(t);

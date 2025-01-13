@@ -2589,6 +2589,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  systems where 'int' is 64 bit
  for suggesting a fix for expiring of one-time VPS timers in case there is more than
  one event with the same VPS time
+ for fixing handling margins for timers that are not VPS controlled and not spawned
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
