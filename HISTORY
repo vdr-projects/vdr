@@ -10054,3 +10054,5 @@ Video Disk Recorder Revision History
   to Markus Ehrnsperger).
 - Added a header to the backtrace (thanks to Stefan Hofmann).
 - Added parameter checks to strn0cpy() (thanks to Stefan Hofmann). Same for Utf8Strn0Cpy().
+- The info files of recordings are now only re-read if they have been modified (thanks
+  to Stefan Hofmann).

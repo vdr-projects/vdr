@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.35 2024/09/21 19:18:18 kls Exp $
+ * $Id: recording.c 5.36 2025/01/15 10:50:29 kls Exp $
  */
 
 #include "recording.h"
@@ -356,6 +356,7 @@ void cResumeFile::Delete(void)
 
 cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
 {
+  modified = 0;
   channelID = Channel ? Channel->GetChannelID() : tChannelID::InvalidID;
   channelName = Channel ? strdup(Channel->Name()) : NULL;
   ownEvent = Event ? NULL : new cEvent(0);
@@ -420,6 +421,7 @@ cRecordingInfo::cRecordingInfo(const cChannel *Channel, const cEvent *Event)
 
 cRecordingInfo::cRecordingInfo(const char *FileName)
 {
+  modified = 0;
   channelID = tChannelID::InvalidID;
   channelName = NULL;
   ownEvent = new cEvent(0);
@@ -488,6 +490,12 @@ void cRecordingInfo::SetErrors(int Errors)
 bool cRecordingInfo::Read(FILE *f)
 {
   if (ownEvent) {
+     struct stat st;
+     if (fstat(fileno(f), &st))
+        return false;
+     if (modified == st.st_mtime)
+        return true;
+     modified = st.st_mtime;
      cReadLine ReadLine;
      char *s;
      int line = 0;

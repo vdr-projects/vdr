@@ -3375,6 +3375,7 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for adding 1 to Utf8BufSize() for worst case
  for adding a header to the backtrace
  for adding parameter checks to strn0cpy()
+ for making the info files of recordings only be re-read if they have been modified
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a
