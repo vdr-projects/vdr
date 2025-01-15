@@ -10053,3 +10053,4 @@ Video Disk Recorder Revision History
 - Fixed handling margins for timers that are not VPS controlled and not spawned (thanks
   to Markus Ehrnsperger).
 - Added a header to the backtrace (thanks to Stefan Hofmann).
+- Added parameter checks to strn0cpy() (thanks to Stefan Hofmann). Same for Utf8Strn0Cpy().

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.14 2024/09/01 20:43:40 kls Exp $
+ * $Id: tools.c 5.15 2025/01/15 08:57:45 kls Exp $
  */
 
 #include "tools.h"
@@ -131,8 +131,11 @@ char *strcpyrealloc(char *dest, const char *src)
 char *strn0cpy(char *dest, const char *src, size_t n)
 {
   char *s = dest;
-  for ( ; --n && (*dest = *src) != 0; dest++, src++) ;
-  *dest = 0;
+  if (dest && n) {
+     if (src)
+        for ( ; --n && (*dest = *src) != 0; dest++, src++) ;
+     *dest = 0;
+     }
   return s;
 }
 
@@ -914,17 +917,21 @@ char *Utf8Strn0Cpy(char *Dest, const char *Src, int n)
   if (cCharSetConv::SystemCharacterTable())
      return strn0cpy(Dest, Src, n);
   char *d = Dest;
-  while (*Src) {
-        int sl = Utf8CharLen(Src);
-        n -= sl;
-        if (n > 0) {
-           while (sl--)
-                 *d++ = *Src++;
-           }
-        else
-           break;
+  if (Dest && n > 0) {
+     if (Src) {
+        while (*Src) {
+              int sl = Utf8CharLen(Src);
+              n -= sl;
+              if (n > 0) {
+                 while (sl--)
+                       *d++ = *Src++;
+                 }
+              else
+                 break;
+              }
         }
-  *d = 0;
+     *d = 0;
+     }
   return Dest;
 }
 
