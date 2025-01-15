@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 5.2 2024/01/18 13:01:07 kls Exp $
+ * $Id: thread.c 5.3 2025/01/15 08:43:12 kls Exp $
  */
 
 #include "thread.h"
@@ -597,6 +597,7 @@ cStateLockLog::cStateLockLog(void)
 void cStateLockLog::Dump(const char *Name, tThreadId ThreadId)
 {
   dsyslog("--- begin invalid lock sequence report");
+  dsyslog("TID    T  C  R  DR S                 ST");
   int LastFlags = 0;
   for (int i = 0; i < SLL_SIZE; i++) {
       if (tThreadId tid = logThreadIds[logIndex]) {
