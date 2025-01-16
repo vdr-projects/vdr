@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 4.1 2018/04/10 13:01:03 kls Exp $
+ * $Id: status.c 5.1 2025/01/16 10:23:12 kls Exp $
  */
 
 #include <vdr/plugin.h>
 #include <vdr/status.h>
 
-static const char *VERSION        = "2.4.0";
+static const char *VERSION        = "2.6.1";
 static const char *DESCRIPTION    = "Status monitor test";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -29,7 +29,7 @@ protected:
   virtual void OsdTitle(const char *Title);
   virtual void OsdStatusMessage(const char *Message);
   virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
-  virtual void OsdItem(const char *Text, int Index);
+  virtual void OsdItem2(const char *Text, int Index, bool Selectable);
   virtual void OsdCurrentItem(const char *Text);
   virtual void OsdTextItem(const char *Text, bool Scroll);
   virtual void OsdChannel(const char *Text);
@@ -96,9 +96,9 @@ void cStatusTest::OsdHelpKeys(const char *Red, const char *Green, const char *Ye
   dsyslog("status: cStatusTest::OsdHelpKeys %s - %s - %s - %s", Red, Green, Yellow, Blue);
 }
 
-void cStatusTest::OsdItem(const char *Text, int Index)
+void cStatusTest::OsdItem2(const char *Text, int Index, bool Selected)
 {
-  //dsyslog("status: cStatusTest::OsdItem  %s %d", Text, Index);
+  //dsyslog("status: cStatusTest::OsdItem2  %s %d %d", Text, Index, Selected);
 }
 
 void cStatusTest::OsdCurrentItem(const char *Text)
