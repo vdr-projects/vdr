@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 4.4 2018/01/29 13:42:17 kls Exp $
+ * $Id: status.h 5.1 2025/01/16 09:42:11 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -87,6 +87,9 @@ protected:
                // The help keys have been set to the given values (may be NULL).
   virtual void OsdItem(const char *Text, int Index) {}
                // The OSD displays the given single line Text as menu item at Index.
+  virtual void OsdItem2(const char *Text, int Index, bool Selectable) { OsdItem(Text, Index); }
+               // The OSD displays the given single line Text as menu item at Index.
+               // Selectable is true if this item can be selected.
   virtual void OsdCurrentItem(const char *Text) {}
                // The OSD displays the given single line Text as the current menu item.
   virtual void OsdTextItem(const char *Text, bool Scroll) {}
@@ -117,7 +120,7 @@ public:
   static void MsgOsdTitle(const char *Title);
   static void MsgOsdStatusMessage(const char *Message);
   static void MsgOsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
-  static void MsgOsdItem(const char *Text, int Index);
+  static void MsgOsdItem(const char *Text, int Index, bool Selectable = true);
   static void MsgOsdCurrentItem(const char *Text);
   static void MsgOsdTextItem(const char *Text,  bool Scroll = false);
   static void MsgOsdChannel(const char *Text);

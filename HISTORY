@@ -10034,7 +10034,7 @@ Video Disk Recorder Revision History
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
 
-2025-01-15:
+2025-01-16:
 
 - Removed all DEPRECATED_* code.
 - Fixed error checking in case the fps value can't be determined by the frame parser.
@@ -10056,3 +10056,8 @@ Video Disk Recorder Revision History
 - Added parameter checks to strn0cpy() (thanks to Stefan Hofmann). Same for Utf8Strn0Cpy().
 - The info files of recordings are now only re-read if they have been modified (thanks
   to Stefan Hofmann).
+- The new virtual function cStatus::OsdItem2() can be used to get the information whether
+  a menu item is selectable (thanks to Markus Ehrnsperger). Plugins that implemented
+  cStatus::OsdItem() will still work as before, because the default implementation of
+  cStatus::OsdItem2() calls cStatus::OsdItem().
+  APIVERSNUM is now 30006.
