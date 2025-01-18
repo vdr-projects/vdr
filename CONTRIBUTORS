@@ -3377,6 +3377,7 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for adding a header to the backtrace
  for adding parameter checks to strn0cpy()
  for making the info files of recordings only be re-read if they have been modified
+ for reporting missing setting the file name of the info file after renaming a recording
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.36 2025/01/15 10:50:29 kls Exp $
+ * $Id: recording.c 5.37 2025/01/18 20:57:06 kls Exp $
  */
 
 #include "recording.h"
@@ -1354,6 +1354,7 @@ bool cRecording::ChangeName(const char *NewName)
         fileName = strdup(OldFileName);
         return false;
         }
+     info->SetFileName(NewFileName);
      isOnVideoDirectoryFileSystem = -1; // it might have been moved to a different file system
      ClearSortName();
      }
