@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 5.1 2025/01/16 10:23:12 kls Exp $
+ * $Id: status.c 5.2 2025/01/28 10:41:03 kls Exp $
  */
 
 #include <vdr/plugin.h>
@@ -98,7 +98,7 @@ void cStatusTest::OsdHelpKeys(const char *Red, const char *Green, const char *Ye
 
 void cStatusTest::OsdItem2(const char *Text, int Index, bool Selected)
 {
-  //dsyslog("status: cStatusTest::OsdItem2  %s %d %d", Text, Index, Selected);
+  dsyslog("status: cStatusTest::OsdItem2  %s %d %d", Text, Index, Selected);
 }
 
 void cStatusTest::OsdCurrentItem(const char *Text)
