@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 5.2 2025/01/28 10:41:03 kls Exp $
+ * $Id: status.c 5.3 2025/01/29 11:15:26 kls Exp $
  */
 
 #include <vdr/plugin.h>
@@ -30,7 +30,7 @@ protected:
   virtual void OsdStatusMessage(const char *Message);
   virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
   virtual void OsdItem2(const char *Text, int Index, bool Selectable);
-  virtual void OsdCurrentItem(const char *Text);
+  virtual void OsdCurrentItem2(const char *Text, int Index);
   virtual void OsdTextItem(const char *Text, bool Scroll);
   virtual void OsdChannel(const char *Text);
   virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle);
@@ -101,9 +101,9 @@ void cStatusTest::OsdItem2(const char *Text, int Index, bool Selected)
   dsyslog("status: cStatusTest::OsdItem2  %s %d %d", Text, Index, Selected);
 }
 
-void cStatusTest::OsdCurrentItem(const char *Text)
+void cStatusTest::OsdCurrentItem2(const char *Text, int Index)
 {
-  dsyslog("status: cStatusTest::OsdCurrentItem %s", Text);
+  dsyslog("status: cStatusTest::OsdCurrentItem %s %d", Text, Index);
 }
 
 void cStatusTest::OsdTextItem(const char *Text, bool Scroll)

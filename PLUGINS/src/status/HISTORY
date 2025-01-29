@@ -77,7 +77,8 @@ VDR Plugin 'status' Revision History
 
 - Official release.
 
-2025-01-28: Version 2.6.1
+2025-01-29: Version 2.6.1
 
 - Added cStatus::OsdItem2().
 - Activated logging of OsdItem2().
+- Added cStatus::OsdCurrentItem2().
