@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 5.2 2024/07/13 09:12:18 kls Exp $
+ * $Id: menuitems.c 5.3 2025/01/29 10:20:17 kls Exp $
  */
 
 #include "menuitems.h"
@@ -38,7 +38,6 @@ void cMenuEditItem::SetValue(const char *Value)
 {
   cString buffer = cString::sprintf("%s:\t%s", name, Value);
   SetText(buffer);
-  cStatus::MsgOsdCurrentItem(buffer);
 }
 
 void cMenuEditItem::SetHelp(const char *Red, const char *Green, const char *Yellow, const char *Blue)

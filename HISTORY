@@ -10034,7 +10034,7 @@ Video Disk Recorder Revision History
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
 
-2025-01-18:
+2025-01-29:
 
 - Removed all DEPRECATED_* code.
 - Fixed error checking in case the fps value can't be determined by the frame parser.
@@ -10063,3 +10063,5 @@ Video Disk Recorder Revision History
   APIVERSNUM is now 30006.
 - Fixed setting the file name of the info file after renaming a recording (reported by
   Stefan Hofmann).
+- Fixed an improper call of cStatus::OsdCurrentItem() before cStatus::OsdItem2() (reported
+  by Markus Ehrnsperger).
