@@ -10065,3 +10065,4 @@ Video Disk Recorder Revision History
   Stefan Hofmann).
 - Fixed an improper call of cStatus::OsdCurrentItem() before cStatus::OsdItem2() (reported
   by Markus Ehrnsperger).
+- Fixed an unnecessary redisplay of the menu when pressing a hotkey.
