@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 5.3 2025/01/29 10:25:55 kls Exp $
+ * $Id: osdbase.c 5.4 2025/01/29 10:35:25 kls Exp $
  */
 
 #include "osdbase.h"
@@ -541,7 +541,8 @@ eOSState cOsdMenu::ProcessKey(eKeys Key)
   if (marked < 0 && item) {
      eOSState state = item->ProcessKey(Key);
      if (state != osUnknown) {
-        DisplayCurrent(true);
+        if (Key != kNone)
+           DisplayCurrent(true);
         return state;
         }
      }
