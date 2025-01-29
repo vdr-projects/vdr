@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 5.4 2025/01/29 10:35:25 kls Exp $
+ * $Id: osdbase.c 5.5 2025/01/29 11:15:26 kls Exp $
  */
 
 #include "osdbase.h"
@@ -268,7 +268,7 @@ void cOsdMenu::Display(void)
          bool CurrentSelectable = (i == current) && item->Selectable();
          item->SetMenuItem(displayMenu, i - first, CurrentSelectable, item->Selectable());
          if (CurrentSelectable)
-            cStatus::MsgOsdCurrentItem(item->Text());
+            cStatus::MsgOsdCurrentItem(item->Text(), i);
          if (++n == displayMenuItems)
             break;
          i++;
@@ -300,7 +300,7 @@ void cOsdMenu::DisplayCurrent(bool Current)
   if (item) {
      item->SetMenuItem(displayMenu, current - first, Current && item->Selectable(), item->Selectable());
      if (Current && item->Selectable())
-        cStatus::MsgOsdCurrentItem(item->Text());
+        cStatus::MsgOsdCurrentItem(item->Text(), current);
      if (!Current)
         item->SetFresh(true); // leaving the current item resets 'fresh'
      if (cMenuEditItem *MenuEditItem = dynamic_cast<cMenuEditItem *>(item)) {
@@ -321,7 +321,7 @@ void cOsdMenu::DisplayItem(cOsdItem *Item)
         bool Current = Index == current;
         Item->SetMenuItem(displayMenu, Offset, Current && Item->Selectable(), Item->Selectable());
         if (Current && Item->Selectable())
-           cStatus::MsgOsdCurrentItem(Item->Text());
+           cStatus::MsgOsdCurrentItem(Item->Text(), Index);
         }
      }
 }

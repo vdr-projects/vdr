@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 5.1 2025/01/16 09:42:11 kls Exp $
+ * $Id: status.h 5.2 2025/01/29 11:15:26 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -92,6 +92,9 @@ protected:
                // Selectable is true if this item can be selected.
   virtual void OsdCurrentItem(const char *Text) {}
                // The OSD displays the given single line Text as the current menu item.
+  virtual void OsdCurrentItem2(const char *Text, int Index) { OsdCurrentItem(Text); }
+               // The OSD displays the given single line Text as the current menu item.
+               // Index is the one that was given in OsdItem[2]() for this item.
   virtual void OsdTextItem(const char *Text, bool Scroll) {}
                // The OSD displays the given multi line text. If Text points to an
                // actual string, that text shall be displayed and Scroll has no
@@ -121,7 +124,7 @@ public:
   static void MsgOsdStatusMessage(const char *Message);
   static void MsgOsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
   static void MsgOsdItem(const char *Text, int Index, bool Selectable = true);
-  static void MsgOsdCurrentItem(const char *Text);
+  static void MsgOsdCurrentItem(const char *Text, int Index = -1);
   static void MsgOsdTextItem(const char *Text,  bool Scroll = false);
   static void MsgOsdChannel(const char *Text);
   static void MsgOsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle);

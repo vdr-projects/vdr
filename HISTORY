@@ -10068,3 +10068,7 @@ Video Disk Recorder Revision History
 - Fixed an unnecessary redisplay of the menu when pressing a hotkey.
 - Fixed unnecessary calls to DisplayCurrent() for editable menu items (thanks to Markus
   Ehrnsperger).
+- The new virtual function cStatus::OsdCurrentItem2() can be used to get the index of the
+  current menu item (thanks to Markus Ehrnsperger). Plugins that implemented
+  cStatus::OsdCurrentItem() will still work as before, because the default implementation
+  of cStatus::OsdCurrentItem2() calls cStatus::OsdCurrentItem().
