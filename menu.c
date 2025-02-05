@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.19 2024/12/02 12:40:56 kls Exp $
+ * $Id: menu.c 5.20 2025/02/05 22:12:32 kls Exp $
  */
 
 #include "menu.h"
@@ -443,8 +443,9 @@ eOSState cMenuChannels::Number(eKeys Key)
      number = number * 10 + Key - k0;
      for (cMenuChannelItem *ci = (cMenuChannelItem *)First(); ci; ci = (cMenuChannelItem *)ci->Next()) {
          if (!ci->Channel()->GroupSep() && ci->Channel()->Number() == number) {
+            DisplayCurrent(false);
             SetCurrent(ci);
-            Display();
+            DisplayCurrent(true);
             break;
             }
          }

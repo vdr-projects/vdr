@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 4.5 2018/01/25 15:09:23 kls Exp $
+ * $Id: osdbase.h 5.1 2025/02/05 22:12:32 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -92,6 +92,7 @@ private:
   int cols[cSkinDisplayMenu::MaxTabs];
   int first, current, marked;
   int lastOffset;
+  bool conveyStatus;
   eMenuCategory menuCategory;
   eMenuSortMode menuSortMode;
   eMenuOrientation menuOrientation;
@@ -102,6 +103,7 @@ private:
   int digit;
   bool hasHotkeys;
   void DisplayHelp(bool Force = false);
+  void DisplayNoStatus(void);
 protected:
   void SetDisplayMenu(void);
   cSkinDisplayMenu *DisplayMenu(void) { return displayMenu; }

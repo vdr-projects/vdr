@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 5.5 2025/01/29 11:15:26 kls Exp $
+ * $Id: osdbase.c 5.6 2025/02/05 22:12:32 kls Exp $
  */
 
 #include "osdbase.h"
@@ -93,6 +93,7 @@ cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
   SetCols(c0, c1, c2, c3, c4);
   first = 0;
   lastOffset = -1;
+  conveyStatus = true;
   current = marked = -1;
   subMenu = NULL;
   helpRed = helpGreen = helpYellow = helpBlue = NULL;
@@ -181,7 +182,8 @@ void cOsdMenu::DisplayHelp(bool Force)
 {
   if (!helpDisplayed || Force) {
      displayMenu->SetButtons(helpRed, helpGreen, helpYellow, helpBlue);
-     cStatus::MsgOsdHelpKeys(helpRed, helpGreen, helpYellow, helpBlue);
+     if (conveyStatus)
+        cStatus::MsgOsdHelpKeys(helpRed, helpGreen, helpYellow, helpBlue);
      helpDisplayed = true;
      }
 }
@@ -224,6 +226,13 @@ void cOsdMenu::Ins(cOsdItem *Item, bool Current, cOsdItem *Before)
      current = Item->Index();
 }
 
+void cOsdMenu::DisplayNoStatus(void)
+{
+  conveyStatus = false;
+  Display();
+  conveyStatus = true;
+}
+
 void cOsdMenu::Display(void)
 {
   if (subMenu) {
@@ -234,7 +243,8 @@ void cOsdMenu::Display(void)
      SetDisplayMenu();
   displayMenu->SetMessage(mtStatus, NULL);
   displayMenu->Clear();
-  cStatus::MsgOsdClear();
+  if (conveyStatus)
+     cStatus::MsgOsdClear();
   if (menuCategory != displayMenu->MenuCategory())
      displayMenu->SetMenuCategory(menuCategory);
   displayMenu->SetMenuSortMode(menuSortMode);
@@ -242,13 +252,15 @@ void cOsdMenu::Display(void)
   displayMenuItems = displayMenu->MaxItems();
   displayMenu->SetTabs(cols[0], cols[1], cols[2], cols[3], cols[4]);//XXX
   displayMenu->SetTitle(title);
-  cStatus::MsgOsdTitle(title);
+  if (conveyStatus)
+     cStatus::MsgOsdTitle(title);
   DisplayHelp(true);
   int count = Count();
   if (count > 0) {
      int ni = 0;
      for (cOsdItem *item = First(); item; item = Next(item)) {
-         cStatus::MsgOsdItem(item->Text(), ni++, item->Selectable());
+         if (conveyStatus)
+            cStatus::MsgOsdItem(item->Text(), ni++, item->Selectable());
          if (current < 0 && item->Selectable())
             current = item->Index();
          }
@@ -267,7 +279,7 @@ void cOsdMenu::Display(void)
      for (cOsdItem *item = Get(first); item; item = Next(item)) {
          bool CurrentSelectable = (i == current) && item->Selectable();
          item->SetMenuItem(displayMenu, i - first, CurrentSelectable, item->Selectable());
-         if (CurrentSelectable)
+         if (CurrentSelectable) // not checking conveyStatus here!
             cStatus::MsgOsdCurrentItem(item->Text(), i);
          if (++n == displayMenuItems)
             break;
@@ -299,9 +311,13 @@ void cOsdMenu::DisplayCurrent(bool Current)
   cOsdItem *item = Get(current);
   if (item) {
      item->SetMenuItem(displayMenu, current - first, Current && item->Selectable(), item->Selectable());
-     if (Current && item->Selectable())
-        cStatus::MsgOsdCurrentItem(item->Text(), current);
-     if (!Current)
+     if (Current) {
+        if (current - first >= displayMenuItems || current < first)
+           DisplayNoStatus();
+        else if (item->Selectable())
+           cStatus::MsgOsdCurrentItem(item->Text(), current);
+        }
+     else
         item->SetFresh(true); // leaving the current item resets 'fresh'
      if (cMenuEditItem *MenuEditItem = dynamic_cast<cMenuEditItem *>(item)) {
         if (!MenuEditItem->DisplayHelp(Current))
@@ -355,7 +371,7 @@ void cOsdMenu::CursorUp(void)
            if (first > 0) {
               // make non-selectable items at the beginning visible:
               first = 0;
-              Display();
+              DisplayNoStatus();
               return;
               }
            if (Setup.MenuScrollWrap)
@@ -371,11 +387,11 @@ void cOsdMenu::CursorUp(void)
   current = tmpCurrent;
   if (current < first) {
      first = Setup.MenuScrollPage ? max(0, current - displayMenuItems + 1) : current;
-     Display();
+     DisplayNoStatus();
      }
   else if (current > lastOnScreen) {
      first = max(0, current - displayMenuItems + 1);
-     Display();
+     DisplayNoStatus();
      }
   else
      DisplayCurrent(true);
@@ -393,7 +409,7 @@ void cOsdMenu::CursorDown(void)
            if (first < last - displayMenuItems) {
               // make non-selectable items at the end visible:
               first = last - displayMenuItems + 1;
-              Display();
+              DisplayNoStatus();
               return;
               }
            if (Setup.MenuScrollWrap)
@@ -411,11 +427,11 @@ void cOsdMenu::CursorDown(void)
      first = Setup.MenuScrollPage ? current : max(0, current - displayMenuItems + 1);
      if (first + displayMenuItems > last)
         first = max(0, last - displayMenuItems + 1);
-     Display();
+     DisplayNoStatus();
      }
   else if (current < first) {
      first = current;
-     Display();
+     DisplayNoStatus();
      }
   else
      DisplayCurrent(true);
@@ -448,7 +464,7 @@ void cOsdMenu::PageUp(void)
         first = current - displayMenuItems + 1;
      }
   if (current != oldCurrent || first != oldFirst)
-     Display();
+     DisplayNoStatus();
   else if (Setup.MenuScrollWrap)
      CursorUp();
 }
@@ -480,7 +496,7 @@ void cOsdMenu::PageDown(void)
         first = current - displayMenuItems + 1;
      }
   if (current != oldCurrent || first != oldFirst)
-     Display();
+     DisplayNoStatus();
   else if (Setup.MenuScrollWrap)
      CursorDown();
 }
