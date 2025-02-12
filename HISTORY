@@ -10078,3 +10078,4 @@ Video Disk Recorder Revision History
   to Markus Ehrnsperger). Plugins that implemented cStatus::OsdStatusMessage() will still
   work as before, because the default implementation of cStatus::OsdStatusMessage2() calls
   cStatus::OsdStatusMessage().
+- Adjusted PLUGINS.html to the new API version numbering introduced in version 2.7.2.

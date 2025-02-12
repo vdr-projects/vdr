@@ -166,7 +166,7 @@ is used:
 VDR/PLUGINS/src
 VDR/PLUGINS/src/hello
 VDR/PLUGINS/lib
-VDR/PLUGINS/lib/libvdr-hello.so.1.1.0
+VDR/PLUGINS/lib/libvdr-hello.so.1
 </pre></td></tr></table><p>
 
 The <tt>src</tt> directory contains one subdirectory for each plugin, which carries
@@ -185,7 +185,7 @@ The <tt>lib</tt> directory contains the dynamically loadable libraries of all
 available plugins. Note that the names of these files are created by concatenating
 <p>
 <table border=2>
-<tr><td align=center><b><tt>libvdr-</tt></b></td><td align=center><b><tt>hello</tt></b></td><td align=center><b><tt>.so.</tt></b></td><td align=center><b><tt>1.1.0</tt></b></td></tr>
+<tr><td align=center><b><tt>libvdr-</tt></b></td><td align=center><b><tt>hello</tt></b></td><td align=center><b><tt>.so.</tt></b></td><td align=center><b><tt>1</tt></b></td></tr>
 <tr><td align=center><small>VDR plugin<br>library prefix</small></td><td align=center><small>name of<br>the plugin</small></td><td align=center><small>shared object<br>indicator</small></td><td align=center><small>API version number<br>this plugin was<br>compiled for</small></td></tr>
 </table>
 <p>
@@ -195,6 +195,11 @@ of VDR as long as their plugin API version number is still the same as that of
 the current VDR version. That way minor fixes to VDR, that don't require changes
 to the VDR header files, can be made without requiring all plugins to be
 recompiled.
+<p>
+While in earlier versions of VDR the API version number was closely related to the
+VDR version number, starting with VDR version 2.7.2 the API version number was changed
+from a dot separated, three part number to a single integer, completely unrelated to
+the VDR version. This was done to avoid confusion.
 <p>
 The plugin library files can be stored in any directory. If the default organization
 is not used, the path to the plugin directory has be be given to VDR through the
@@ -391,13 +396,7 @@ just like shown in the above example. This is a convention that allows the <tt>M
 to extract the version number when generating the file name for the distribution archive.
 <p>
 A new plugin project should start with version number <tt>0.0.1</tt> and should reach
-version <tt>1.0.0</tt> once it is completely operative and well tested. Following the
-Linux kernel version numbering scheme, versions with <i>even</i> release numbers
-(like <tt>1.0.x</tt>, <tt>1.2.x</tt>, <tt>1.4.x</tt>...) should be stable releases,
-while those with <i>odd</i> release numbers (like <tt>1.1.x</tt>, <tt>1.3.x</tt>,
-<tt>1.5.x</tt>...) are usually considered "under development". The three parts of
-a version number are not limited to single digits, so a version number of <tt>1.2.15</tt>
-would be acceptable.
+version <tt>1.0.0</tt> once it is completely operative and well tested.
 
 <hr><h2><a name="Description">Description</a></h2>
 
