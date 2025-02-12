@@ -10034,7 +10034,7 @@ Video Disk Recorder Revision History
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
 
-2025-02-05:
+2025-02-12:
 
 - Removed all DEPRECATED_* code.
 - Fixed error checking in case the fps value can't be determined by the frame parser.
@@ -10073,3 +10073,8 @@ Video Disk Recorder Revision History
   cStatus::OsdCurrentItem() will still work as before, because the default implementation
   of cStatus::OsdCurrentItem2() calls cStatus::OsdCurrentItem().
 - Fixed unnecessary calls to cStatus::OsdCurrentItem2() when scrolling.
+- Added missing calls to cStatus::MsgOsdStatusMessage() and added the new virtual function
+  cStatus::OsdStatusMessage2(), which can be used to get the type of the message (thanks
+  to Markus Ehrnsperger). Plugins that implemented cStatus::OsdStatusMessage() will still
+  work as before, because the default implementation of cStatus::OsdStatusMessage2() calls
+  cStatus::OsdStatusMessage().

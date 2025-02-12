@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 5.4 2024/09/21 16:21:08 kls Exp $
+ * $Id: skins.c 5.5 2025/02/12 21:18:53 kls Exp $
  */
 
 #include "skins.h"
@@ -305,7 +305,7 @@ eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
      }
   cSkinDisplay::Current()->SetMessage(Type, s);
   cSkinDisplay::Current()->Flush();
-  cStatus::MsgOsdStatusMessage(s);
+  cStatus::MsgOsdStatusMessage(Type, s);
   eKeys k = kNone;
   if (Type != mtStatus) {
      k = Interface->Wait(Seconds);
@@ -316,7 +316,7 @@ eKeys cSkins::Message(eMessageType Type, const char *s, int Seconds)
         }
      else {
         cSkinDisplay::Current()->SetMessage(Type, NULL);
-        cStatus::MsgOsdStatusMessage(NULL);
+        cStatus::MsgOsdStatusMessage(Type, NULL);
         }
      }
   else if (!s && displayMessage) {

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 5.3 2025/01/29 11:15:26 kls Exp $
+ * $Id: status.c 5.4 2025/02/12 21:18:53 kls Exp $
  */
 
 #include <vdr/plugin.h>
@@ -27,7 +27,7 @@ protected:
   virtual void SetSubtitleTrack(int Index, const char * const *Tracks);
   virtual void OsdClear(void);
   virtual void OsdTitle(const char *Title);
-  virtual void OsdStatusMessage(const char *Message);
+  virtual void OsdStatusMessage2(eMessageType Type, const char *Message);
   virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
   virtual void OsdItem2(const char *Text, int Index, bool Selectable);
   virtual void OsdCurrentItem2(const char *Text, int Index);
@@ -86,9 +86,9 @@ void cStatusTest::OsdTitle(const char *Title)
   dsyslog("status: cStatusTest::OsdTitle '%s'", Title);
 }
 
-void cStatusTest::OsdStatusMessage(const char *Message)
+void cStatusTest::OsdStatusMessage2(eMessageType Type, const char *Message)
 {
-  dsyslog("status: cStatusTest::OsdStatusMessage '%s'", Message);
+  dsyslog("status: cStatusTest::OsdStatusMessage2 %d '%s'", Type, Message);
 }
 
 void cStatusTest::OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue)

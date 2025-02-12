@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 5.2 2025/01/29 11:15:26 kls Exp $
+ * $Id: status.h 5.3 2025/02/12 21:18:53 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -13,6 +13,7 @@
 #include "config.h"
 #include "device.h"
 #include "player.h"
+#include "skins.h"
 #include "tools.h"
 
 // Several member functions of the following classes are called with a pointer to
@@ -81,6 +82,7 @@ protected:
   virtual void OsdTitle(const char *Title) {}
                // Title has been displayed in the title line of the menu.
   virtual void OsdStatusMessage(const char *Message) {}
+  virtual void OsdStatusMessage2(eMessageType Type, const char *Message) { OsdStatusMessage(Message); }
                // Message has been displayed in the status line of the menu.
                // If Message is NULL, the status line has been cleared.
   virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue) {}
@@ -121,7 +123,9 @@ public:
   static void MsgSetSubtitleTrack(int Index, const char * const *Tracks);
   static void MsgOsdClear(void);
   static void MsgOsdTitle(const char *Title);
-  static void MsgOsdStatusMessage(const char *Message);
+  [[deprecated("use MsgOsdStatusMessage(eMessageType Type, const char *Message) instead")]]
+  static void MsgOsdStatusMessage(const char *Message) { MsgOsdStatusMessage(mtStatus, Message); }
+  static void MsgOsdStatusMessage(eMessageType Type, const char *Message);
   static void MsgOsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
   static void MsgOsdItem(const char *Text, int Index, bool Selectable = true);
   static void MsgOsdCurrentItem(const char *Text, int Index = -1);

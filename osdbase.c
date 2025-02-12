@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 5.6 2025/02/05 22:12:32 kls Exp $
+ * $Id: osdbase.c 5.7 2025/02/12 21:18:53 kls Exp $
  */
 
 #include "osdbase.h"
@@ -170,6 +170,7 @@ void cOsdMenu::SetStatus(const char *s)
   free(status);
   status = s ? strdup(s) : NULL;
   displayMenu->SetMessage(mtStatus, s);
+  cStatus::MsgOsdStatusMessage(mtStatus, s);
 }
 
 void cOsdMenu::SetTitle(const char *Title)
@@ -242,6 +243,7 @@ void cOsdMenu::Display(void)
   if (cOsdProvider::OsdSizeChanged(osdState))
      SetDisplayMenu();
   displayMenu->SetMessage(mtStatus, NULL);
+  cStatus::MsgOsdStatusMessage(mtStatus, NULL);
   displayMenu->Clear();
   if (conveyStatus)
      cStatus::MsgOsdClear();
@@ -287,8 +289,10 @@ void cOsdMenu::Display(void)
          }
      }
   displayMenu->SetScrollbar(count, first);
-  if (!isempty(status))
+  if (!isempty(status)) {
      displayMenu->SetMessage(mtStatus, status);
+     cStatus::MsgOsdStatusMessage(mtStatus, status);
+     }
 }
 
 void cOsdMenu::SetCurrent(cOsdItem *Item)
