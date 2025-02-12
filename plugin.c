@@ -4,9 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 4.4 2020/12/16 11:54:06 kls Exp $
+ * $Id: plugin.c 5.1 2025/02/12 22:22:20 kls Exp $
  */
 
+#define MUTE_DEPRECATED_MAINTHREADHOOK
 #include "plugin.h"
 #include <ctype.h>
 #include <dirent.h>

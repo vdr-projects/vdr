@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 5.1 2021/01/02 14:32:20 kls Exp $
+# $Id: newplugin 5.2 2025/02/12 22:22:20 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -216,7 +216,6 @@ public:
   virtual bool Start(void);
   virtual void Stop(void);
   virtual void Housekeeping(void);
-  virtual void MainThreadHook(void);
   virtual cString Active(void);
   virtual time_t WakeupTime(void);
   virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
@@ -272,12 +271,6 @@ void cPlugin${PLUGIN_CLASS}::Stop(void)
 void cPlugin${PLUGIN_CLASS}::Housekeeping(void)
 {
   // Perform any cleanup or other regular tasks.
-}
-
-void cPlugin${PLUGIN_CLASS}::MainThreadHook(void)
-{
-  // Perform actions in the context of the main program thread.
-  // WARNING: Use with great care - see PLUGINS.html!
 }
 
 cString cPlugin${PLUGIN_CLASS}::Active(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 4.1 2020/06/29 09:29:06 kls Exp $
+ * $Id: plugin.h 5.1 2025/02/12 22:22:20 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -43,6 +43,9 @@ public:
   virtual bool Start(void);
   virtual void Stop(void);
   virtual void Housekeeping(void);
+#ifndef MUTE_DEPRECATED_MAINTHREADHOOK
+  [[deprecated("use proper locking instead")]]
+#endif
   virtual void MainThreadHook(void);
   virtual cString Active(void);
   virtual time_t WakeupTime(void);

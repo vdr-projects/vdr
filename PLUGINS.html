@@ -74,7 +74,6 @@ structures and allows it to hook itself into specific areas to perform special a
 <li><a href="#Main menu entry">Main menu entry</a>
 <li><a href="#User interaction">User interaction</a>
 <li><a href="#Housekeeping">Housekeeping</a>
-<li><a href="#Main thread hook">Main thread hook</a>
 <li><a href="#Activity">Activity</a>
 <li><a href="#Wakeup">Wakeup</a>
 <li><a href="#Setup parameters">Setup parameters</a>
@@ -691,27 +690,6 @@ as possible! As long as the program stays inside this function, no other user
 interaction is possible. If a specific action takes longer than a few seconds,
 the plugin should launch a separate thread to do this.
 </b>
-
-<hr><h2><a name="Main thread hook">Main thread hook</a></h2>
-
-<div class="blurb">Pushing in...</div><p>
-
-Normally a plugin only reacts on user input if directly called through its
-<a href="#Main menu entry">main menu entry</a>, or performs some background
-activity in a separate thread. However, sometimes a plugin may need to do
-something in the context of the main program thread, without being explicitly
-called up by the user. In such a case it can implement the function
-
-<p><table><tr><td class="code"><pre>
-virtual void MainThreadHook(void);
-</pre></td></tr></table><p>
-
-in which it can do this. This function is called for every plugin once during
-every cycle of VDR's main program loop, which typically happens once every
-second.
-<b>Be very careful when using this function, and make sure you return from it
-as soon as possible! If you spend too much time in this function, the user
-interface performance will become sluggish!</b>
 
 <hr><h2><a name="Activity">Activity</a></h2>
 
