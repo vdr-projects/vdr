@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 5.7 2025/02/12 21:18:53 kls Exp $
+ * $Id: osdbase.c 5.8 2025/02/13 13:58:07 kls Exp $
  */
 
 #include "osdbase.h"
@@ -519,8 +519,10 @@ eOSState cOsdMenu::HotKey(eKeys Key)
       const char *s = item->Text();
       if (s && (s = skipspace(s)) != NULL) {
          if (*s == Key - k1 + '1') {
+            DisplayCurrent(false);
             current = item->Index();
             RefreshCurrent();
+            DisplayCurrent(true);
             cRemote::Put(kOk, true);
             break;
             }
