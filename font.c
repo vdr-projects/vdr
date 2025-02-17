@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 5.2 2022/12/06 12:30:13 kls Exp $
+ * $Id: font.c 5.3 2025/02/17 11:13:13 kls Exp $
  */
 
 #include "font.h"
@@ -618,7 +618,7 @@ void cTextWrapper::Set(const char *Text, const cFont *Font, int Width)
             }
          }
       w += cw;
-      if (strchr("-.,:;!?_", *p)) {
+      if (strchr("-.,:;!?_~", *p)) {
          Delim = p;
          Blank = NULL;
          }

@@ -10082,3 +10082,4 @@ Video Disk Recorder Revision History
 - The function cPlugin::MainThreadHook() has been deprecated and may be removed in future
   versions. Use proper locking instead.
 - Fixed unnecessary redisplays of menus.
+- Added '~' to the list of delimiters in cTextWrapper (thanks to Stefan Hofmann).
