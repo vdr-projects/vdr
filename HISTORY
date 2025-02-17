@@ -10034,7 +10034,7 @@ Video Disk Recorder Revision History
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
 
-2025-02-12:
+2025-02-17:
 
 - Removed all DEPRECATED_* code.
 - Fixed error checking in case the fps value can't be determined by the frame parser.
@@ -10081,3 +10081,4 @@ Video Disk Recorder Revision History
 - Adjusted PLUGINS.html to the new API version numbering introduced in version 2.7.2.
 - The function cPlugin::MainThreadHook() has been deprecated and may be removed in future
   versions. Use proper locking instead.
+- Fixed unnecessary redisplays of menus.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 5.8 2025/02/13 13:58:07 kls Exp $
+ * $Id: osdbase.c 5.9 2025/02/17 10:49:10 kls Exp $
  */
 
 #include "osdbase.h"
@@ -78,12 +78,16 @@ void cOsdObject::Show(void)
 cSkinDisplayMenu *cOsdMenu::displayMenu = NULL;
 int cOsdMenu::displayMenuCount = 0;
 int cOsdMenu::osdState = 0;
+cOsdMenu *cOsdMenu::topMenu = NULL;
 
 cOsdMenu::cOsdMenu(const char *Title, int c0, int c1, int c2, int c3, int c4)
 {
   isMenu = true;
   digit = 0;
   hasHotkeys = false;
+  if (!topMenu)
+     topMenu = this;
+  active = this == topMenu;
   displayMenuItems = 0;
   title = NULL;
   menuCategory = mcUnknown;
@@ -114,6 +118,8 @@ cOsdMenu::~cOsdMenu()
   cStatus::MsgOsdClear();
   if (!--displayMenuCount)
      DELETENULL(displayMenu);
+  if (this == topMenu)
+     topMenu = NULL;
 }
 
 void cOsdMenu::SetMenuCategory(eMenuCategory MenuCategory)
@@ -124,6 +130,11 @@ void cOsdMenu::SetMenuCategory(eMenuCategory MenuCategory)
 void cOsdMenu::SetMenuSortMode(eMenuSortMode MenuSortMode)
 {
   menuSortMode = MenuSortMode;
+}
+
+void cOsdMenu::SetActive(bool Active)
+{
+  active = Active;
 }
 
 void cOsdMenu::SetDisplayMenu(void)
@@ -240,6 +251,8 @@ void cOsdMenu::Display(void)
      subMenu->Display();
      return;
      }
+  if (!active)
+     return;
   if (cOsdProvider::OsdSizeChanged(osdState))
      SetDisplayMenu();
   displayMenu->SetMessage(mtStatus, NULL);
@@ -533,8 +546,10 @@ eOSState cOsdMenu::HotKey(eKeys Key)
 
 eOSState cOsdMenu::AddSubMenu(cOsdMenu *SubMenu)
 {
+  SetActive(false);
   delete subMenu;
   subMenu = SubMenu;
+  subMenu->SetActive(true);
   subMenu->Display();
   return osContinue; // convenience return value
 }
@@ -543,6 +558,7 @@ eOSState cOsdMenu::CloseSubMenu(bool ReDisplay)
 {
   delete subMenu;
   subMenu = NULL;
+  SetActive(true);
   if (ReDisplay) {
      RefreshCurrent();
      Display();

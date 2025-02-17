@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.20 2025/02/05 22:12:32 kls Exp $
+ * $Id: menu.c 5.21 2025/02/17 10:49:10 kls Exp $
  */
 
 #include "menu.h"
@@ -4673,15 +4673,16 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
                default:      break;
                }
     }
-  if (!HasSubMenu() && Update(HadSubMenu))
-     Display();
+  bool DoDisplay = Update();
   if (Key != kNone) {
      if (I18nCurrentLanguage() != osdLanguage) {
         Set();
         if (!HasSubMenu())
-           Display();
+           DoDisplay = true;
         }
      }
+  if (DoDisplay)
+     Display();
   return state;
 }
 

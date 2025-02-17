@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 5.1 2025/02/05 22:12:32 kls Exp $
+ * $Id: osdbase.h 5.2 2025/02/17 10:49:10 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -87,6 +87,7 @@ private:
   static cSkinDisplayMenu *displayMenu;
   static int displayMenuCount;
   static int osdState;
+  static cOsdMenu *topMenu;
   int displayMenuItems;
   char *title;
   int cols[cSkinDisplayMenu::MaxTabs];
@@ -102,6 +103,8 @@ private:
   char *status;
   int digit;
   bool hasHotkeys;
+  bool active;
+  void SetActive(bool Active);
   void DisplayHelp(bool Force = false);
   void DisplayNoStatus(void);
 protected:
