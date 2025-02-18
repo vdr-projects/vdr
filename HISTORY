@@ -10085,3 +10085,4 @@ Video Disk Recorder Revision History
 - Added '~' to the list of delimiters in cTextWrapper (thanks to Stefan Hofmann).
 - Fixed progress display when switching from "pause" to "slow back" (reported by Andreas
   Baierl).
+- Fixed spurious fast frames when switching from "slow back" to "slow forward".

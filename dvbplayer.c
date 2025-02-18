@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.5 2025/02/18 15:37:24 kls Exp $
+ * $Id: dvbplayer.c 5.6 2025/02/18 17:06:15 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -795,15 +795,17 @@ void cDvbPlayer::Forward(void)
                Pause();
                break;
                }
-            Empty();
             // run into pmPause
        case pmStill:
-       case pmPause:
+       case pmPause: {
+            LOCK_THREAD;
+            Empty();
             DeviceMute();
             playMode = pmSlow;
             playDir = pdForward;
             trickSpeed = NORMAL_SPEED;
             TrickSpeed(Setup.MultiSpeedMode ? -1 : -MAX_SPEEDS);
+            }
             break;
        default: esyslog("ERROR: unknown playMode %d (%s)", playMode, __FUNCTION__);
        }
@@ -844,7 +846,6 @@ void cDvbPlayer::Backward(void)
                Pause();
                break;
                }
-            Empty();
             // run into pmPause
        case pmStill:
        case pmPause: {
