@@ -3816,3 +3816,5 @@ Jose Angel <joseangelpp@gmail.com>
 
 Andreas Baierl <post@andreasbaierl.de>
  for implementing scaling images
+ for reporting a problem in the progress display when switching from "pause" to
+ "slow back"

@@ -10034,7 +10034,7 @@ Video Disk Recorder Revision History
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
 
-2025-02-17:
+2025-02-18:
 
 - Removed all DEPRECATED_* code.
 - Fixed error checking in case the fps value can't be determined by the frame parser.
@@ -10083,3 +10083,5 @@ Video Disk Recorder Revision History
   versions. Use proper locking instead.
 - Fixed unnecessary redisplays of menus.
 - Added '~' to the list of delimiters in cTextWrapper (thanks to Stefan Hofmann).
+- Fixed progress display when switching from "pause" to "slow back" (reported by Andreas
+  Baierl).

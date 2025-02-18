@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.4 2024/09/19 09:49:02 kls Exp $
+ * $Id: dvbplayer.c 5.5 2025/02/18 15:37:24 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -36,7 +36,7 @@ public:
   bool IsEmpty(void);
   void Put(uint32_t Pts, int Index, bool Independent);
   int FindIndex(uint32_t Pts);
-  int FindFrameNumber(uint32_t Pts);
+  int FindFrameNumber(uint32_t Pts, bool Forward);
   };
 
 cPtsIndex::cPtsIndex(void)
@@ -90,8 +90,10 @@ int cPtsIndex::FindIndex(uint32_t Pts)
   return Index;
 }
 
-int cPtsIndex::FindFrameNumber(uint32_t Pts)
+int cPtsIndex::FindFrameNumber(uint32_t Pts, bool Forward)
 {
+  if (!Forward)
+     return FindIndex(Pts); // there are only I frames in backward
   cMutexLock MutexLock(&mutex);
   if (w == r)
      return lastFound; // replay always starts at an I frame
@@ -967,7 +969,7 @@ bool cDvbPlayer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 bool cDvbPlayer::GetFrameNumber(int &Current, int &Total)
 {
   if (index) {
-     Current = ptsIndex.FindFrameNumber(DeviceGetSTC());
+     Current = ptsIndex.FindFrameNumber(DeviceGetSTC(), playDir == pdForward);
      Total = index->Last();
      return true;
      }
