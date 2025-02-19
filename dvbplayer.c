@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.6 2025/02/18 17:06:15 kls Exp $
+ * $Id: dvbplayer.c 5.7 2025/02/19 15:39:16 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -98,24 +98,22 @@ int cPtsIndex::FindFrameNumber(uint32_t Pts, bool Forward)
   if (w == r)
      return lastFound; // replay always starts at an I frame
   bool Valid = false;
-  int d;
   int FrameNumber = 0;
-  int UnplayedIFrame = 2; // GOPs may intersect, so we're looping until we found two unplayed I frames
+  int UnplayedIFrame = 2; // GOPs may intersect, so we loop until we processed a complete unplayed GOP
   for (int i = r; i != w && UnplayedIFrame; ) {
-      d = Pts - pi[i].pts;
-      if (d > 0x7FFFFFFF)
-         d = 0xFFFFFFFF - d; // handle rollover
-      if (d > 0) {
+      int32_t d = int32_t(Pts - pi[i].pts); // typecast handles rollover
+      if (d >= 0) {
          if (pi[i].independent) {
             FrameNumber = pi[i].index; // an I frame's index represents its frame number
             Valid = true;
+            if (d == 0)
+               UnplayedIFrame = 1; // if Pts is at an I frame we only need to check up to the next I frame
             }
          else
             FrameNumber++; // for every played non-I frame, increase frame number
          }
-      else
-        if (pi[i].independent)
-           --UnplayedIFrame;
+      else if (pi[i].independent)
+         --UnplayedIFrame;
       if (++i >= PTSINDEX_ENTRIES)
          i = 0;
       }

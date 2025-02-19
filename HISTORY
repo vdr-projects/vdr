@@ -10034,7 +10034,7 @@ Video Disk Recorder Revision History
   (suggested by Stefan Hofmann).
 - Added vdrrootdir and incdir to vdr.pc (thanks to Stefan Hofmann).
 
-2025-02-18:
+2025-02-19:
 
 - Removed all DEPRECATED_* code.
 - Fixed error checking in case the fps value can't be determined by the frame parser.
@@ -10086,3 +10086,4 @@ Video Disk Recorder Revision History
 - Fixed progress display when switching from "pause" to "slow back" (reported by Andreas
   Baierl).
 - Fixed spurious fast frames when switching from "slow back" to "slow forward".
+- Fixed cPtsIndex::FindFrameNumber() to handle the case where Pts points to an I-frame.
