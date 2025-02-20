@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.21 2025/02/17 10:49:10 kls Exp $
+ * $Id: menu.c 5.22 2025/02/20 10:23:15 kls Exp $
  */
 
 #include "menu.h"
@@ -342,6 +342,7 @@ void cMenuChannelItem::Set(void)
 
 void cMenuChannelItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
 {
+  LOCK_CHANNELS_READ;
   if (!DisplayMenu->SetItemChannel(channel, Index, Current, Selectable, sortMode == csmProvider))
      DisplayMenu->SetItem(Text(), Index, Current, Selectable);
 }
@@ -1293,6 +1294,7 @@ void cMenuTimerItem::Set(void)
 
 void cMenuTimerItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
 {
+  LOCK_TIMERS_READ;
   if (!DisplayMenu->SetItemTimer(timer, Index, Current, Selectable))
      DisplayMenu->SetItem(Text(), Index, Current, Selectable);
 }
@@ -1633,6 +1635,8 @@ bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
 
 void cMenuScheduleItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
 {
+  LOCK_CHANNELS_READ;
+  LOCK_SCHEDULES_READ;
   if (!DisplayMenu->SetItemEvent(event, Index, Current, Selectable, channel, withDate, timerMatch, timerActive))
      DisplayMenu->SetItem(Text(), Index, Current, Selectable);
 }
@@ -3049,6 +3053,7 @@ void cMenuRecordingItem::IncrementCounter(bool New)
 
 void cMenuRecordingItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
 {
+  LOCK_RECORDINGS_READ;
   if (!DisplayMenu->SetItemRecording(recording, Index, Current, Selectable, level, totalEntries, newEntries))
      DisplayMenu->SetItem(Text(), Index, Current, Selectable);
 }
