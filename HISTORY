@@ -10088,3 +10088,4 @@ Video Disk Recorder Revision History
 - Fixed spurious fast frames when switching from "slow back" to "slow forward".
 - Fixed cPtsIndex::FindFrameNumber() to handle the case where Pts points to an I-frame.
 - Added missing locks to SetMenuItem() functions.
+- Revised locking in cMenuSchedule and cMenuWhatsOn.

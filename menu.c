@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.22 2025/02/20 10:23:15 kls Exp $
+ * $Id: menu.c 5.23 2025/02/25 15:53:43 kls Exp $
  */
 
 #include "menu.h"
@@ -1521,6 +1521,7 @@ cMenuEvent::cMenuEvent(const cTimers *Timers, const cChannels *Channels, const c
 
 void cMenuEvent::Display(void)
 {
+  LOCK_SCHEDULES_READ;
   cOsdMenu::Display();
   DisplayMenu()->SetEvent(event);
   if (event->Description())
@@ -1607,6 +1608,7 @@ static const char *TimerMatchChars = " tT iI";
 
 bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
 {
+  LOCK_CHANNELS_READ;
   LOCK_SCHEDULES_READ;
   eTimerMatch OldTimerMatch = timerMatch;
   bool OldTimerActive = timerActive;
@@ -1682,7 +1684,6 @@ cMenuWhatsOn::cMenuWhatsOn(const cTimers *Timers, const cChannels *Channels, con
          }
       }
   currentChannel = CurrentChannelNr;
-  Display();
   SetHelpKeys(Channels);
 }
 
@@ -1783,10 +1784,8 @@ eOSState cMenuWhatsOn::Record(void)
      if (HasSubMenu())
         CloseSubMenu();
      }
-  if (Update()) {
-     LOCK_SCHEDULES_READ;
+  if (Update())
      Display();
-     }
   LOCK_CHANNELS_READ;
   SetHelpKeys(Channels);
   return osContinue;
@@ -1806,6 +1805,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        case kGreen:  {
                        cMenuScheduleItem *mi = (cMenuScheduleItem *)Get(Current());
                        if (mi) {
+                          LOCK_CHANNELS_READ;
                           scheduleEvent = mi->event;
                           currentChannel = mi->channel->Number();
                           }
@@ -1818,14 +1818,12 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        case kChanUp:
        case kChanDn|k_Repeat:
        case kChanDn: if (!HasSubMenu()) {
+                        LOCK_CHANNELS_READ;
                         for (cOsdItem *item = First(); item; item = Next(item)) {
                             if (((cMenuScheduleItem *)item)->channel->Number() == cDevice::CurrentChannel()) {
+                               DisplayCurrent(false);
                                SetCurrent(item);
-                               {
-                                 LOCK_SCHEDULES_READ;
-                                 Display();
-                               }
-                               LOCK_CHANNELS_READ;
+                               DisplayCurrent(true);
                                SetHelpKeys(Channels);
                                break;
                                }
@@ -1843,10 +1841,8 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        }
      }
   else if (!HasSubMenu()) {
-     if (HadSubMenu && Update()) {
-        LOCK_SCHEDULES_READ;
+     if (HadSubMenu && Update())
         Display();
-        }
      if (Key != kNone) {
         LOCK_CHANNELS_READ;
         SetHelpKeys(Channels);
@@ -2094,10 +2090,8 @@ eOSState cMenuSchedule::Record(void)
      if (HasSubMenu())
         CloseSubMenu();
      }
-  if (Update()) {
-     LOCK_SCHEDULES_READ;
+  if (Update())
      Display();
-     }
   SetHelpKeys();
   return osContinue;
 }
@@ -2191,10 +2185,8 @@ eOSState cMenuSchedule::ProcessKey(eKeys Key)
            Set(Timers, Channels, Channel, true);
            }
         }
-     else if (HadSubMenu && Update()) {
-        LOCK_SCHEDULES_READ;
+     else if (HadSubMenu && Update())
         Display();
-        }
      if (Key != kNone)
         SetHelpKeys();
      }
