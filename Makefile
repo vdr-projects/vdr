@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 5.4 2024/10/21 19:01:16 kls Exp $
+# $Id: Makefile 5.5 2025/03/02 14:24:24 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -16,7 +16,7 @@ CC       ?= gcc
 CFLAGS   ?= -g -O3 -Wall
 
 CXX      ?= g++
-CXXFLAGS ?= -g -O3 -Wall -Werror=overloaded-virtual -Wno-parentheses
+CXXFLAGS ?= -g -O3 -Wall -Wno-parentheses
 CXXFLAGS += $(CPPFLAGS)
 
 CDEFINES  = -D_GNU_SOURCE
