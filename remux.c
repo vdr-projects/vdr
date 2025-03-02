@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.18 2024/12/05 10:37:15 kls Exp $
+ * $Id: remux.c 5.19 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "remux.h"
@@ -1220,7 +1220,7 @@ cFrameParser::cFrameParser(void)
 class cAudioParser : public cFrameParser {
 public:
   cAudioParser(void);
-  virtual int Parse(const uchar *Data, int Length, int Pid);
+  virtual int Parse(const uchar *Data, int Length, int Pid) override;
   };
 
 cAudioParser::cAudioParser(void)
@@ -1260,7 +1260,7 @@ private:
     };
 public:
   cMpeg2Parser(void);
-  virtual int Parse(const uchar *Data, int Length, int Pid);
+  virtual int Parse(const uchar *Data, int Length, int Pid) override;
   };
 
 cMpeg2Parser::cMpeg2Parser(void)
@@ -1395,7 +1395,7 @@ public:
        ///< Sets up a new H.264 parser.
        ///< This class parses only the data absolutely necessary to determine the
        ///< frame borders and field count of the given H264 material.
-  virtual int Parse(const uchar *Data, int Length, int Pid);
+  virtual int Parse(const uchar *Data, int Length, int Pid) override;
   };
 
 cH264Parser::cH264Parser(void)
@@ -1697,7 +1697,7 @@ private:
   void ParseSequenceParameterSet(void);
 public:
   cH265Parser(void);
-  virtual int Parse(const uchar *Data, int Length, int Pid);
+  virtual int Parse(const uchar *Data, int Length, int Pid) override;
   };
 
 cH265Parser::cH265Parser(void)

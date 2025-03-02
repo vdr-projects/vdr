@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.h 1.2 2005/01/02 14:38:56 kls Exp $
+ * $Id: skinclassic.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __SKINCLASSIC_H
@@ -15,13 +15,13 @@
 class cSkinClassic : public cSkin {
 public:
   cSkinClassic(void);
-  virtual const char *Description(void);
-  virtual cSkinDisplayChannel *DisplayChannel(bool WithInfo);
-  virtual cSkinDisplayMenu *DisplayMenu(void);
-  virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
-  virtual cSkinDisplayVolume *DisplayVolume(void);
-  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
-  virtual cSkinDisplayMessage *DisplayMessage(void);
+  virtual const char *Description(void) override;
+  virtual cSkinDisplayChannel *DisplayChannel(bool WithInfo) override;
+  virtual cSkinDisplayMenu *DisplayMenu(void) override;
+  virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly) override;
+  virtual cSkinDisplayVolume *DisplayVolume(void) override;
+  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks) override;
+  virtual cSkinDisplayMessage *DisplayMessage(void) override;
   };
 
 #endif //__SKINCLASSIC_H

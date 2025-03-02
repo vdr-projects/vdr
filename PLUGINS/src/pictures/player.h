@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.h 2.1 2012/04/28 11:56:01 kls Exp $
+ * $Id: player.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef _PLAYER_H
@@ -35,12 +35,12 @@ private:
   void NextPicture(int Direction);
   void NextDirectory(int Direction);
   void DisplayCaption(void);
-  virtual void Hide(void) {}
+  virtual void Hide(void) override {}
 public:
   cPictureControl(cPictureEntry *Pictures, const cPictureEntry *PictureEntry, bool SlideShow = false);
-  virtual ~cPictureControl();
-  virtual cString GetHeader(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cPictureControl() override;
+  virtual cString GetHeader(void) override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   static bool Active(void) { return active > 0; }
   static const char *LastDisplayed(void);
   };

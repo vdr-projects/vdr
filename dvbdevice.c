@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.8 2024/09/09 08:53:57 kls Exp $
+ * $Id: dvbdevice.c 5.9 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -570,10 +570,10 @@ private:
   void ExecuteDiseqc(const cDiseqc *Diseqc, int *Frequency);
   void ResetToneAndVoltage(void);
   bool SetFrontend(void);
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cDvbTuner(const cDvbDevice *Device, int Adapter, int Frontend);
-  virtual ~cDvbTuner();
+  virtual ~cDvbTuner() override;
   bool ProvidesDeliverySystem(int DeliverySystem) const;
   bool ProvidesModulation(int System, int StreamId, int Modulation) const;
   bool ProvidesFrontend(const cChannel *Channel, bool Activate = false) const;
@@ -1817,9 +1817,9 @@ private:
   cDvbTransponderParameters dtp;
 public:
   cDvbSourceParam(char Source, const char *Description);
-  virtual void SetData(cChannel *Channel);
-  virtual void GetData(cChannel *Channel);
-  virtual cOsdItem *GetOsdItem(void);
+  virtual void SetData(cChannel *Channel) override;
+  virtual void GetData(cChannel *Channel) override;
+  virtual cOsdItem *GetOsdItem(void) override;
   };
 
 cDvbSourceParam::cDvbSourceParam(char Source, const char *Description)

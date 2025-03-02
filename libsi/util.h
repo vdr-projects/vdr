@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: util.h 5.1 2023/02/16 17:20:09 kls Exp $
+ *   $Id: util.h 5.2 2025/03/02 11:03:35 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -106,16 +106,16 @@ private:
    class DataOwnData : public Data {
    public:
       DataOwnData() {}
-      virtual ~DataOwnData();
-      virtual void assign(const unsigned char*data, int size);
-      virtual void Delete();
+      virtual ~DataOwnData() override;
+      virtual void assign(const unsigned char*data, int size) override;
+      virtual void Delete() override;
    };
    class DataForeignData : public Data {
    public:
       DataForeignData() {}
-      virtual ~DataForeignData();
-      virtual void assign(const unsigned char*data, int size);
-      virtual void Delete();
+      virtual ~DataForeignData() override;
+      virtual void assign(const unsigned char*data, int size) override;
+      virtual void Delete() override;
    };
    Data* data_;
    int off;

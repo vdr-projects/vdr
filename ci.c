@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.c 5.1 2021/06/09 09:41:18 kls Exp $
+ * $Id: ci.c 5.2 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "ci.h"
@@ -130,8 +130,8 @@ private:
   void DelEmmPids(void);
 public:
   cCaPidReceiver(void);
-  virtual ~cCaPidReceiver() { Detach(); }
-  virtual void Receive(const uchar *Data, int Length);
+  virtual ~cCaPidReceiver() override { Detach(); }
+  virtual void Receive(const uchar *Data, int Length) override;
   bool HasCaPids(void) const { return NumPids() - emmPids.Size() - 1 > 0; }
   void Reset(void) { DelEmmPids(); catVersion = -1; }
   bool HandlingPid(void);
@@ -314,10 +314,10 @@ private:
   time_t lastScrambledTime;
   int numTsPackets;
 protected:
-  virtual void Receive(const uchar *Data, int Length);
+  virtual void Receive(const uchar *Data, int Length) override;
 public:
   cCaActivationReceiver(const cChannel *Channel, cCamSlot *CamSlot);
-  virtual ~cCaActivationReceiver();
+  virtual ~cCaActivationReceiver() override;
   };
 
 cCaActivationReceiver::cCaActivationReceiver(const cChannel *Channel, cCamSlot *CamSlot)
@@ -806,7 +806,7 @@ private:
   int state;
 public:
   cCiResourceManager(uint16_t SessionId, cCiTransportConnection *Tc);
-  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL) override;
   };
 
 cCiResourceManager::cCiResourceManager(uint16_t SessionId, cCiTransportConnection *Tc)
@@ -1117,7 +1117,7 @@ private:
   int numRetries;
 public:
   cCiConditionalAccessSupport(uint16_t SessionId, cCiTransportConnection *Tc);
-  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL) override;
   const int *GetCaSystemIds(void) { return caSystemIds; }
   void SendPMT(cCiCaPmt *CaPmt);
   bool RepliesToQuery(void) { return repliesToQuery; }
@@ -1268,7 +1268,7 @@ void cCiConditionalAccessSupport::SendPMT(cCiCaPmt *CaPmt)
 class cCiHostControl : public cCiSession {
 public:
   cCiHostControl(uint16_t SessionId, cCiTransportConnection *Tc);
-  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL) override;
   };
 
 cCiHostControl::cCiHostControl(uint16_t SessionId, cCiTransportConnection* Tc)
@@ -1305,7 +1305,7 @@ private:
   void SendDateTime(void);
 public:
   cCiDateTime(uint16_t SessionId, cCiTransportConnection *Tc);
-  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL) override;
   };
 
 cCiDateTime::cCiDateTime(uint16_t SessionId, cCiTransportConnection *Tc)
@@ -1409,8 +1409,8 @@ private:
   cCiEnquiry *enquiry, *fetchedEnquiry;
 public:
   cCiMMI(uint16_t SessionId, cCiTransportConnection *Tc);
-  virtual ~cCiMMI();
-  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual ~cCiMMI() override;
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL) override;
   virtual bool HasUserIO(void) { return menu || enquiry; }
   cCiMenu *Menu(bool Clear = false);
   cCiEnquiry *Enquiry(bool Clear = false);
@@ -1742,7 +1742,7 @@ cCiResourceHandler::~cCiResourceHandler()
 class cCiDefaultResourceHandler : public cCiResourceHandler {
 public:
   virtual const uint32_t *ResourceIds(void) const;
-  virtual cCiSession *GetNewCiSession(uint32_t ResourceId, uint16_t SessionId, cCiTransportConnection *Tc);
+  virtual cCiSession *GetNewCiSession(uint32_t ResourceId, uint16_t SessionId, cCiTransportConnection *Tc) override;
   };
 
 const uint32_t *cCiDefaultResourceHandler::ResourceIds(void) const

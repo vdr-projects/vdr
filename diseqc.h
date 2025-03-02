@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: diseqc.h 4.1 2017/01/09 15:11:19 kls Exp $
+ * $Id: diseqc.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __DISEQC_H
@@ -19,16 +19,16 @@ private:
   void SendDiseqc(uint8_t *Codes, int NumCodes);
 public:
   cDiseqcPositioner(void);
-  virtual void Drive(ePositionerDirection Direction);
-  virtual void Step(ePositionerDirection Direction, uint Steps = 1);
-  virtual void Halt(void);
-  virtual void SetLimit(ePositionerDirection Direction);
-  virtual void DisableLimits(void);
-  virtual void EnableLimits(void);
-  virtual void StorePosition(uint Number);
-  virtual void RecalcPositions(uint Number);
-  virtual void GotoPosition(uint Number, int Longitude);
-  virtual void GotoAngle(int Longitude);
+  virtual void Drive(ePositionerDirection Direction) override;
+  virtual void Step(ePositionerDirection Direction, uint Steps = 1) override;
+  virtual void Halt(void) override;
+  virtual void SetLimit(ePositionerDirection Direction) override;
+  virtual void DisableLimits(void) override;
+  virtual void EnableLimits(void) override;
+  virtual void StorePosition(uint Number) override;
+  virtual void RecalcPositions(uint Number) override;
+  virtual void GotoPosition(uint Number, int Longitude) override;
+  virtual void GotoAngle(int Longitude) override;
   };
 
 class cScr : public cListObject {

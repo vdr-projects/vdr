@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.h 5.1 2024/07/08 09:34:33 kls Exp $
+ * $Id: dvbdevice.h 5.2 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __DVBDEVICE_H
@@ -179,7 +179,7 @@ public:
          ///< Returns true if any devices are available.
 protected:
   int adapter, frontend;
-  virtual bool IsBonded(void) const { return bondedDevice; }
+  virtual bool IsBonded(void) const override { return bondedDevice; }
 private:
   int fd_dvr, fd_ca;
   bool checkTsBuffer;
@@ -188,11 +188,11 @@ private:
   mutable bool needsDetachBondedReceivers;
 public:
   cDvbDevice(int Adapter, int Frontend);
-  virtual ~cDvbDevice();
+  virtual ~cDvbDevice() override;
   int Adapter(void) const { return adapter; }
   int Frontend(void) const;
-  virtual cString DeviceType(void) const;
-  virtual cString DeviceName(void) const;
+  virtual cString DeviceType(void) const override;
+  virtual cString DeviceName(void) const override;
   static bool BondDevices(const char *Bondings);
        ///< Bonds the devices as defined in the given Bondings string.
        ///< A bonding is a sequence of device numbers (starting at 1),
@@ -232,39 +232,39 @@ private:
   cDvbTuner *dvbTuner;
 public:
   virtual bool ProvidesDeliverySystem(int DeliverySystem) const;
-  virtual bool ProvidesSource(int Source) const;
-  virtual bool ProvidesTransponder(const cChannel *Channel) const;
-  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = IDLEPRIORITY, bool *NeedsDetachReceivers = NULL) const;
-  virtual bool ProvidesEIT(void) const;
-  virtual int NumProvidedSystems(void) const;
-  virtual const cPositioner *Positioner(void) const;
-  virtual bool SignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL, int *Status = NULL) const;
-  virtual int SignalStrength(void) const;
-  virtual int SignalQuality(void) const;
-  virtual const cChannel *GetCurrentlyTunedTransponder(void) const;
-  virtual bool IsTunedToTransponder(const cChannel *Channel) const;
-  virtual bool MaySwitchTransponder(const cChannel *Channel) const;
-  virtual void SetPowerSaveMode(bool On);
+  virtual bool ProvidesSource(int Source) const override;
+  virtual bool ProvidesTransponder(const cChannel *Channel) const override;
+  virtual bool ProvidesChannel(const cChannel *Channel, int Priority = IDLEPRIORITY, bool *NeedsDetachReceivers = NULL) const override;
+  virtual bool ProvidesEIT(void) const override;
+  virtual int NumProvidedSystems(void) const override;
+  virtual const cPositioner *Positioner(void) const override;
+  virtual bool SignalStats(int &Valid, double *Strength = NULL, double *Cnr = NULL, double *BerPre = NULL, double *BerPost = NULL, double *Per = NULL, int *Status = NULL) const override;
+  virtual int SignalStrength(void) const override;
+  virtual int SignalQuality(void) const override;
+  virtual const cChannel *GetCurrentlyTunedTransponder(void) const override;
+  virtual bool IsTunedToTransponder(const cChannel *Channel) const override;
+  virtual bool MaySwitchTransponder(const cChannel *Channel) const override;
+  virtual void SetPowerSaveMode(bool On) override;
 protected:
-  virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView);
+  virtual bool SetChannelDevice(const cChannel *Channel, bool LiveView) override;
 public:
-  virtual bool HasLock(int TimeoutMs = 0) const;
+  virtual bool HasLock(int TimeoutMs = 0) const override;
 
 // PID handle facilities
 
 protected:
-  virtual bool SetPid(cPidHandle *Handle, int Type, bool On);
+  virtual bool SetPid(cPidHandle *Handle, int Type, bool On) override;
 
 // Section filter facilities
 
 protected:
-  virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask);
-  virtual void CloseFilter(int Handle);
+  virtual int OpenFilter(u_short Pid, u_char Tid, u_char Mask) override;
+  virtual void CloseFilter(int Handle) override;
 
 // Common Interface facilities:
 
 public:
-  virtual bool HasCi(void);
+  virtual bool HasCi(void) override;
 
 // Audio facilities
 
@@ -283,10 +283,10 @@ public:
 private:
   cTSBuffer *tsBuffer;
 protected:
-  virtual bool OpenDvr(void);
-  virtual void CloseDvr(void);
-  virtual bool GetTSPacket(uchar *&Data);
-  virtual void DetachAllReceivers(void);
+  virtual bool OpenDvr(void) override;
+  virtual void CloseDvr(void) override;
+  virtual bool GetTSPacket(uchar *&Data) override;
+  virtual void DetachAllReceivers(void) override;
   };
 
 // A plugin that implements a DVB device derived from cDvbDevice needs to create
@@ -298,7 +298,7 @@ protected:
 class cDvbDeviceProbe : public cListObject {
 public:
   cDvbDeviceProbe(void);
-  virtual ~cDvbDeviceProbe();
+  virtual ~cDvbDeviceProbe() override;
   static uint32_t GetSubsystemId(int Adapter, int Frontend);
   virtual bool Probe(int Adapter, int Frontend) = 0;
      ///< Probes for a DVB device at the given Adapter and creates the appropriate

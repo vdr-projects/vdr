@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 4.2 2017/03/19 13:11:39 kls Exp $
+ * $Id: ringbuffer.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -75,10 +75,10 @@ public:
     ///< The buffer will be able to hold at most Size-Margin-1 bytes of data, and will
     ///< be guaranteed to return at least Margin bytes in one consecutive block.
     ///< The optional Description is used for debugging only.
-  virtual ~cRingBufferLinear();
-  virtual int Available(void);
-  virtual int Free(void) { return Size() - Available() - 1 - margin; }
-  virtual void Clear(void);
+  virtual ~cRingBufferLinear() override;
+  virtual int Available(void) override;
+  virtual int Free(void) override { return Size() - Available() - 1 - margin; }
+  virtual void Clear(void) override;
     ///< Immediately clears the ring buffer.
     ///< This function may safely be called from the reading thread without additional
     ///< locking. If called from the writing thread, proper locking must be used.
@@ -140,9 +140,9 @@ private:
   void Unlock(void) { mutex.Unlock(); }
 public:
   cRingBufferFrame(int Size, bool Statistics = false);
-  virtual ~cRingBufferFrame();
-  virtual int Available(void);
-  virtual void Clear(void);
+  virtual ~cRingBufferFrame() override;
+  virtual int Available(void) override;
+  virtual void Clear(void) override;
     // Immediately clears the ring buffer.
   bool Put(cFrame *Frame);
     // Puts the Frame into the ring buffer.

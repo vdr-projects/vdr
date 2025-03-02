@@ -850,7 +850,7 @@ private:
   int newGreetingTime;
   int newUseAlternateGreeting;
 protected:
-  virtual void Store(void);
+  virtual void Store(void) override;
 public:
   cMenuSetupHello(void);
   };
@@ -1296,7 +1296,7 @@ If a plugin wants to get informed on various events in VDR, it can derive a clas
 
 class cMyStatusMonitor : public cStatus {
 protected:
-  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView);
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView) override;
   };
 
 void cMyStatusMonitor::ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView)
@@ -1319,9 +1319,9 @@ private:
   cMyStatusMonitor *statusMonitor;
 public:
   cPluginStatus(void);
-  virtual ~cPluginStatus();
+  virtual ~cPluginStatus() override;
   ...
-  virtual bool Start(void);
+  virtual bool Start(void) override;
   ...
   };
 
@@ -1369,10 +1369,10 @@ First you need the actual player class, which is derived from the abstract <tt>c
 
 class cMyPlayer : public cPlayer {
 protected:
-  virtual void Activate(bool On);
+  virtual void Activate(bool On) override;
 public:
   cMyPlayer(void);
-  virtual ~cMyPlayer();
+  virtual ~cMyPlayer() override;
   };
 </pre></td></tr></table><p>
 
@@ -1385,11 +1385,11 @@ thread which, e.g.,  reads data from a file, you can additionally derive your cl
 
 class cMyPlayer : public cPlayer, cThread {
 protected:
-  virtual void Activate(bool On);
-  virtual void Action(void);
+  virtual void Activate(bool On) override;
+  virtual void Action(void) override;
 public:
   cMyPlayer(void);
-  virtual ~cMyPlayer();
+  virtual ~cMyPlayer() override;
   };
 </pre></td></tr></table><p>
 
@@ -1424,7 +1424,7 @@ requirements in order to set a given track, it can implement the
 following function to allow the device to set a specific track:
 
 <p><table><tr><td class="code"><pre>
-virtual void SetAudioTrack(eTrackType Type, const tTrackId *TrackId)
+virtual void SetAudioTrack(eTrackType Type, const tTrackId *TrackId);
 </pre></td></tr></table><p>
 
 A player that has special requirements about audio tracks should announce its
@@ -1447,10 +1447,10 @@ private:
   cMyPlayer *player;
 public:
   cMyControl(void);
-  virtual ~cMyControl();
-  virtual void Hide(void);
-  virtual cOsdObject *GetInfo(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cMyControl() override;
+  virtual void Hide(void) override;
+  virtual cOsdObject *GetInfo(void) override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 </pre></td></tr></table><p>
 
@@ -1550,8 +1550,8 @@ object derived from the <tt>cReceiver</tt> class:
 
 class cMyReceiver : public cReceiver, cThread {
 protected:
-  virtual void Activate(bool On);
-  virtual void Receive(uchar *Data, int Length);
+  virtual void Activate(bool On) override;
+  virtual void Receive(uchar *Data, int Length) override;
 public:
   cMyReceiver(int Pid);
   };
@@ -1617,7 +1617,7 @@ that sets the (initial) filter parameters:
 
 class cMyFilter : public cFilter {
 protected:
-  virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
+  virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length) override;
 public:
   cMyFilter(void);
   ...
@@ -1762,13 +1762,13 @@ that provides the handling objects necessary to do the actual work:
 class cMySkin : public cSkin {
 public:
   cMySkin(void);
-  virtual const char *Description(void);
-  virtual cSkinDisplayChannel *DisplayChannel(bool WithInfo);
-  virtual cSkinDisplayMenu *DisplayMenu(void);
-  virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
-  virtual cSkinDisplayVolume *DisplayVolume(void);
-  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
-  virtual cSkinDisplayMessage *DisplayMessage(void);
+  virtual const char *Description(void) override;
+  virtual cSkinDisplayChannel *DisplayChannel(bool WithInfo) override;
+  virtual cSkinDisplayMenu *DisplayMenu(void) override;
+  virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly) override;
+  virtual cSkinDisplayVolume *DisplayVolume(void) override;
+  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks) override;
+  virtual cSkinDisplayMessage *DisplayMessage(void) override;
   };
 </pre></td></tr></table><p>
 
@@ -1990,7 +1990,7 @@ access the device's OSD:
 class cMyOsdProvider : public cOsdProvider {
 public:
   cMyOsdProvider(void);
-  virtual cOsd *CreateOsd(int Left, int Top);
+  virtual cOsd *CreateOsd(int Left, int Top) override;
   };
 </pre></td></tr></table><p>
 
@@ -2055,8 +2055,8 @@ This is where <i>device hooks</i> can be used.
 class cMyDeviceHook : public cDeviceHook {
 public:
   cMyDeviceHook(void);
-  virtual bool DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const;
-  virtual bool DeviceProvidesEIT(const cDevice *Device) const;
+  virtual bool DeviceProvidesTransponder(const cDevice *Device, const cChannel *Channel) const override;
+  virtual bool DeviceProvidesEIT(const cDevice *Device) const override;
   };
 </pre></td></tr></table><p>
 
@@ -2124,16 +2124,16 @@ from <tt>cPositioner</tt>, as in
 class cMyPositioner : public cPositioner {
 public:
   cMyPositioner(void);
-  virtual void Drive(ePositionerDirection Direction);
-  virtual void Step(ePositionerDirection Direction, uint Steps = 1);
-  virtual void Halt(void);
-  virtual void SetLimit(ePositionerDirection Direction);
-  virtual void DisableLimits(void);
-  virtual void EnableLimits(void);
-  virtual void StorePosition(uint Number);
-  virtual void RecalcPositions(uint Number);
-  virtual void GotoPosition(uint Number, int Longitude);
-  virtual void GotoAngle(int Longitude);
+  virtual void Drive(ePositionerDirection Direction) override;
+  virtual void Step(ePositionerDirection Direction, uint Steps = 1) override;
+  virtual void Halt(void) override;
+  virtual void SetLimit(ePositionerDirection Direction) override;
+  virtual void DisableLimits(void) override;
+  virtual void EnableLimits(void) override;
+  virtual void StorePosition(uint Number) override;
+  virtual void RecalcPositions(uint Number) override;
+  virtual void GotoPosition(uint Number, int Longitude) override;
+  virtual void GotoAngle(int Longitude) override;
   };
 </pre></td></tr></table><p>
 
@@ -2162,12 +2162,12 @@ as in
 
 class cMyAudio : public cAudio, private cThread {
 private:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cMyAudio(void);
-  virtual void Play(const uchar *Data, int Length, uchar Id);
-  virtual void Mute(bool On);
-  virtual void Clear(void);
+  virtual void Play(const uchar *Data, int Length, uchar Id) override;
+  virtual void Mute(bool On) override;
+  virtual void Clear(void) override;
   };
 </pre></td></tr></table><p>
 
@@ -2218,10 +2218,10 @@ own remote control class from <tt>cRemote</tt>, as in
 
 class cMyRemote : public cRemote, private cThread {
 private:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cMyRemote(const char *Name);
-  virtual bool Initialize(void);
+  virtual bool Initialize(void) override;
   };
 </pre></td></tr></table><p>
 
@@ -2363,7 +2363,7 @@ of the broadcaster's EPG with one from some external database, you could do:
 
 class cMyEpgHandler : public cEpgHandler {
 public:
-  virtual bool SetDescription(cEvent *Event, const char *Description);
+  virtual bool SetDescription(cEvent *Event, const char *Description) override;
   };
 
 bool cMyEpgHandler::SetDescription(cEvent *Event, const char *Description)
@@ -2394,14 +2394,14 @@ as in
 class cMyVideoDirectory : public cVideoDirectory {
 public:
   cMyVideoDirectory(void);
-  virtual ~cMyVideoDirectory();
-  virtual int FreeMB(int *UsedMB = NULL);
-  virtual bool Register(const char *FileName);
-  virtual bool Rename(const char *OldName, const char *NewName);
-  virtual bool Move(const char *FromName, const char *ToName);
-  virtual bool Remove(const char *Name);
-  virtual void Cleanup(const char *IgnoreFiles[] = NULL);
-  virtual bool Contains(const char *Name);
+  virtual ~cMyVideoDirectory() override;
+  virtual int FreeMB(int *UsedMB = NULL) override;
+  virtual bool Register(const char *FileName) override;
+  virtual bool Rename(const char *OldName, const char *NewName) override;
+  virtual bool Move(const char *FromName, const char *ToName) override;
+  virtual bool Remove(const char *Name) override;
+  virtual void Cleanup(const char *IgnoreFiles[] = NULL) override;
+  virtual bool Contains(const char *Name) override;
   };
 </pre></td></tr></table><p>
 

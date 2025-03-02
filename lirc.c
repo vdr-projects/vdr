@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 5.2 2023/02/16 17:15:06 kls Exp $
+ * $Id: lirc.c 5.3 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "lirc.h"
@@ -29,7 +29,7 @@ private:
   enum { LIRC_KEY_BUF = 30, LIRC_BUFFER_SIZE = 128 };
   struct sockaddr_un addr;
   bool Connect(void);
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cLircUsrRemote(const char *DeviceName);
   };
@@ -37,7 +37,7 @@ public:
 #if HAVE_KERNEL_LIRC
 class cLircDevRemote : public cLircRemote {
 private:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cLircDevRemote(void);
   bool Connect(const char *DeviceName);

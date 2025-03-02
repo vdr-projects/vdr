@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 5.26 2025/02/26 10:35:03 kls Exp $
+ * $Id: config.h 5.27 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -120,7 +120,7 @@ private:
   }
 public:
   cConfig(const char *NeedsLocking = NULL): cList<T>(NeedsLocking) { fileName = NULL; }
-  virtual ~cConfig() { free(fileName); }
+  virtual ~cConfig() override { free(fileName); }
   const char *FileName(void) { return fileName; }
   bool Load(const char *FileName = NULL, bool AllowComments = false, bool MustExist = false)
   {
@@ -197,8 +197,8 @@ private:
   cList<cNestedItem> *subItems;
 public:
   cNestedItem(const char *Text, bool WithSubItems = false);
-  virtual ~cNestedItem();
-  virtual int Compare(const cListObject &ListObject) const;
+  virtual ~cNestedItem() override;
+  virtual int Compare(const cListObject &ListObject) const override;
   const char *Text(void) const { return text; }
   cList<cNestedItem> *SubItems(void) { return subItems; }
   void AddSubItem(cNestedItem *Item);
@@ -213,7 +213,7 @@ private:
   bool Write(FILE *f, cList<cNestedItem> *List, int Indent = 0);
 public:
   cNestedItemList(void);
-  virtual ~cNestedItemList();
+  virtual ~cNestedItemList() override;
   void Clear(void);
   bool Load(const char *FileName);
   bool Save(void);
@@ -238,8 +238,8 @@ private:
 public:
   cSetupLine(void);
   cSetupLine(const char *Name, const char *Value, const char *Plugin = NULL);
-  virtual ~cSetupLine();
-  virtual int Compare(const cListObject &ListObject) const;
+  virtual ~cSetupLine() override;
+  virtual int Compare(const cListObject &ListObject) const override;
   const char *Plugin(void) { return plugin; }
   const char *Name(void) { return name; }
   const char *Value(void) { return value; }

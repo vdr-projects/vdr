@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.12 2025/01/15 10:50:29 kls Exp $
+ * $Id: recording.h 5.13 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -143,14 +143,14 @@ private:
 public:
   cRecording(cTimer *Timer, const cEvent *Event);
   cRecording(const char *FileName);
-  virtual ~cRecording();
+  virtual ~cRecording() override;
   int Id(void) const { return id; }
   time_t Start(void) const { return start; }
   int Priority(void) const { return priority; }
   int Lifetime(void) const { return lifetime; }
   time_t Deleted(void) const { return deleted; }
   void SetDeleted(void) { deleted = time(NULL); }
-  virtual int Compare(const cListObject &ListObject) const;
+  virtual int Compare(const cListObject &ListObject) const override;
   bool IsInPath(const char *Path) const;
        ///< Returns true if this recording is stored anywhere under the given Path.
        ///< If Path is NULL or an empty string, the entire video directory is checked.
@@ -257,7 +257,7 @@ private:
   static const char *UpdateFileName(void);
 public:
   cRecordings(bool Deleted = false);
-  virtual ~cRecordings();
+  virtual ~cRecordings() override;
   static const cRecordings *GetRecordingsRead(cStateKey &StateKey, int TimeoutMs = 0) { return recordings.Lock(StateKey, false, TimeoutMs) ? &recordings : NULL; }
        ///< Gets the list of recordings for read access.
        ///< See cTimers::GetTimersRead() for details.
@@ -340,10 +340,10 @@ private:
   bool error;
   cRecordingsHandlerEntry *Get(const char *FileName);
 protected:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cRecordingsHandler(void);
-  virtual ~cRecordingsHandler();
+  virtual ~cRecordingsHandler() override;
   bool Add(int Usage, const char *FileNameSrc, const char *FileNameDst = NULL);
        ///< Adds the given FileNameSrc to the recordings handler for (later)
        ///< processing. Usage can be either ruCut, ruMove or ruCopy. FileNameDst
@@ -384,7 +384,7 @@ private:
   cString comment;
 public:
   cMark(int Position = 0, const char *Comment = NULL, double FramesPerSecond = DEFAULTFRAMESPERSECOND);
-  virtual ~cMark();
+  virtual ~cMark() override;
   int Position(void) const { return position; }
   const char *Comment(void) const { return comment; }
   void SetPosition(int Position) { position = Position; }

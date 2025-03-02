@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 5.3 2025/02/12 21:18:53 kls Exp $
+ * $Id: status.h 5.4 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -109,7 +109,7 @@ protected:
                // The OSD displays the given programme information.
 public:
   cStatus(void);
-  virtual ~cStatus();
+  virtual ~cStatus() override;
   // These functions are called whenever the related status information changes:
   static void MsgChannelChange(const cChannel *Channel);
   static void MsgTimerChange(const cTimer *Timer, eTimerChange Change);

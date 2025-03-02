@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 5.6 2024/09/19 09:49:02 kls Exp $
+ * $Id: skins.h 5.7 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -77,7 +77,7 @@ public:
   virtual void SetEvents(const cEvent *Present, const cEvent *Following) = 0;
        ///< Sets the Present and Following EPG events. If either of these
        ///< is not available, NULL will be given.
-  virtual void SetMessage(eMessageType Type, const char *Text) = 0;
+  virtual void SetMessage(eMessageType Type, const char *Text) override = 0;
        ///< Sets a one line message Text, with the given Type. Type can be used
        ///< to determine, e.g., the colors for displaying the Text.
        ///< If Text is NULL, any previously displayed message must be removed, and
@@ -216,7 +216,7 @@ public:
   virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL) = 0;
        ///< Sets the color buttons to the given strings. If any of the values is
        ///< NULL, any previous text must be removed from the related button.
-  virtual void SetMessage(eMessageType Type, const char *Text) = 0;
+  virtual void SetMessage(eMessageType Type, const char *Text) override = 0;
        ///< Sets a one line message Text, with the given Type. Type can be used
        ///< to determine, e.g., the colors for displaying the Text.
        ///< If Text is NULL, any previously displayed message must be removed, and
@@ -360,7 +360,7 @@ public:
        ///< needs to be able to handle variations in the length of this
        ///< string, which will occur when the user enters an actual value.
        ///< If Jump is NULL, the jump prompt shall be removed from the display.
-  virtual void SetMessage(eMessageType Type, const char *Text) = 0;
+  virtual void SetMessage(eMessageType Type, const char *Text) override = 0;
        ///< Sets a one line message Text, with the given Type. Type can be used
        ///< to determine, e.g., the colors for displaying the Text.
        ///< If Text is NULL, any previously displayed message must be removed, and
@@ -390,7 +390,7 @@ public:
 class cSkinDisplayMessage : public cSkinDisplay {
        ///< This class implements a simple message display.
 public:
-  virtual void SetMessage(eMessageType Type, const char *Text) = 0;
+  virtual void SetMessage(eMessageType Type, const char *Text) override = 0;
        ///< Sets the message to Text. Type can be used to decide how to display
        ///< the message, for instance in which colors.
   };
@@ -413,7 +413,7 @@ public:
        ///< be done in the pure functions below.
        ///< A cSkin object must be created on the heap and shall not be
        ///< explicitly deleted.
-  virtual ~cSkin();
+  virtual ~cSkin() override;
   const char *Name(void) { return name; }
   cTheme *Theme(void) { return theme; }
   virtual const char *Description(void) = 0;
@@ -504,7 +504,7 @@ public:
        ///< Processes the first queued message, if any.
   void Flush(void);
        ///< Flushes the currently active cSkinDisplay, if any.
-  virtual void Clear(void);
+  virtual void Clear(void) override;
        ///< Free up all registered skins
   };
 

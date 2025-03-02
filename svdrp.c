@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.10 2024/09/09 13:39:05 kls Exp $
+ * $Id: svdrp.c 5.11 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "svdrp.h"
@@ -600,10 +600,10 @@ private:
   void ProcessConnections(void);
   cSVDRPClient *GetClientForServer(const char *ServerName);
 protected:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cSVDRPClientHandler(int TcpPort, int UdpPort);
-  virtual ~cSVDRPClientHandler();
+  virtual ~cSVDRPClientHandler() override;
   void AddClient(cSVDRPServerParams &ServerParams, const char *IpAddress);
   bool Execute(const char *ServerName, const char *Command, cStringList *Response = NULL);
   bool GetServerNames(cStringList *ServerNames);
@@ -2746,10 +2746,10 @@ private:
   void HandleServerConnection(void);
   void ProcessConnections(void);
 protected:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cSVDRPServerHandler(int TcpPort);
-  virtual ~cSVDRPServerHandler();
+  virtual ~cSVDRPServerHandler() override;
   void WaitUntilReady(void);
   };
 

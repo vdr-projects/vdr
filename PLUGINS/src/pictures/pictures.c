@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: pictures.c 5.1 2022/12/05 15:26:23 kls Exp $
+ * $Id: pictures.c 5.2 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <getopt.h>
@@ -22,7 +22,7 @@ private:
   char newPictureDirectory[PATH_MAX];
   int newSlideShowDelay;
 protected:
-  virtual void Store(void);
+  virtual void Store(void) override;
 public:
   cMenuSetupPictures(void);
   };
@@ -48,15 +48,15 @@ private:
   // Add any member variables or functions you may need here.
 public:
   cPluginPictures(void);
-  virtual ~cPluginPictures();
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return tr(DESCRIPTION); }
-  virtual const char *CommandLineHelp(void);
-  virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY); }
-  virtual cOsdObject *MainMenuAction(void);
-  virtual cMenuSetupPage *SetupMenu(void);
-  virtual bool SetupParse(const char *Name, const char *Value);
+  virtual ~cPluginPictures() override;
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return tr(DESCRIPTION); }
+  virtual const char *CommandLineHelp(void) override;
+  virtual bool ProcessArgs(int argc, char *argv[]) override;
+  virtual const char *MainMenuEntry(void) override { return tr(MAINMENUENTRY); }
+  virtual cOsdObject *MainMenuAction(void) override;
+  virtual cMenuSetupPage *SetupMenu(void) override;
+  virtual bool SetupParse(const char *Name, const char *Value) override;
   };
 
 cPluginPictures::cPluginPictures(void)

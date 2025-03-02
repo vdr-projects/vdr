@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 5.6 2024/07/15 14:42:22 kls Exp $
+ * $Id: device.h 5.7 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -189,7 +189,7 @@ private:
   int cardIndex;
 protected:
   cDevice(void);
-  virtual ~cDevice();
+  virtual ~cDevice() override;
   virtual bool Ready(void);
          ///< Returns true if this device is ready. Devices with conditional
          ///< access hardware may need some time until they are up and running.
@@ -892,10 +892,10 @@ private:
   int deviceNumber;
   int delivered;
   cRingBufferLinear *ringBuffer;
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cTSBuffer(int File, int Size, int DeviceNumber);
-  virtual ~cTSBuffer();
+  virtual ~cTSBuffer() override;
   uchar *Get(int *Available = NULL, bool CheckAvailable = false);
      ///< Returns a pointer to the first TS packet in the buffer. If Available is given,
      ///< it will return the total number of consecutive bytes pointed to in the buffer.

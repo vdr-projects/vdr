@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.23 2025/02/25 15:53:43 kls Exp $
+ * $Id: menu.c 5.24 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "menu.h"
@@ -57,7 +57,7 @@
 
 class cMenuEditCaItem : public cMenuEditIntItem {
 protected:
-  virtual void Set(void);
+  virtual void Set(void) override;
 public:
   cMenuEditCaItem(const char *Name, int *Value);
   eOSState ProcessKey(eKeys Key);
@@ -100,7 +100,7 @@ class cMenuEditSrcItem : public cMenuEditIntItem {
 private:
   const cSource *source;
 protected:
-  virtual void Set(void);
+  virtual void Set(void) override;
 public:
   cMenuEditSrcItem(const char *Name, int *Value);
   eOSState ProcessKey(eKeys Key);
@@ -170,7 +170,7 @@ private:
 public:
   cMenuEditChannel(cStateKey *ChannelsStateKey, cChannel *Channel, bool New = false);
   cChannel *Channel(void) { return channel; }
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuEditChannel::cMenuEditChannel(cStateKey *ChannelsStateKey, cChannel *Channel, bool New)
@@ -295,10 +295,10 @@ public:
   static void SetSortMode(eChannelSortMode SortMode) { sortMode = SortMode; }
   static void IncSortMode(void) { sortMode = eChannelSortMode((sortMode == csmProvider) ? csmNumber : sortMode + 1); }
   static eChannelSortMode SortMode(void) { return sortMode; }
-  virtual int Compare(const cListObject &ListObject) const;
-  virtual void Set(void);
+  virtual int Compare(const cListObject &ListObject) const override;
+  virtual void Set(void) override;
   const cChannel *Channel(void) { return channel; }
-  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
+  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable) override;
   };
 
 cMenuChannelItem::eChannelSortMode cMenuChannelItem::sortMode = csmNumber;
@@ -365,11 +365,11 @@ protected:
   eOSState Edit(void);
   eOSState New(void);
   eOSState Delete(void);
-  virtual void Move(int From, int To);
+  virtual void Move(int From, int To) override;
 public:
   cMenuChannels(void);
   ~cMenuChannels();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuChannels::cMenuChannels(void)
@@ -676,7 +676,7 @@ class cMenuFolderItem : public cOsdItem {
 private:
   cNestedItem *folder;
 public:
-  virtual void Set(void);
+  virtual void Set(void) override;
   cMenuFolderItem(cNestedItem *Folder);
   cNestedItem *Folder(void) { return folder; }
   };
@@ -707,7 +707,7 @@ private:
 public:
   cMenuEditFolder(const char *Dir, cList<cNestedItem> *List, cNestedItem *Folder = NULL);
   cString GetFolder(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuEditFolder::cMenuEditFolder(const char *Dir, cList<cNestedItem> *List, cNestedItem *Folder)
@@ -1229,10 +1229,10 @@ private:
   const cTimer *timer;
 public:
   cMenuTimerItem(const cTimer *Timer);
-  virtual int Compare(const cListObject &ListObject) const;
-  virtual void Set(void);
+  virtual int Compare(const cListObject &ListObject) const override;
+  virtual void Set(void) override;
   const cTimer *Timer(void) { return timer; }
-  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
+  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable) override;
   };
 
 cMenuTimerItem::cMenuTimerItem(const cTimer *Timer)
@@ -1315,8 +1315,8 @@ private:
   void SetHelpKeys(void);
 public:
   cMenuTimers(void);
-  virtual ~cMenuTimers();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cMenuTimers() override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuTimers::cMenuTimers(void)
@@ -1576,9 +1576,9 @@ public:
   static void SetSortMode(eScheduleSortMode SortMode) { sortMode = SortMode; }
   static void IncSortMode(void) { sortMode = eScheduleSortMode((sortMode == ssmAllAll) ? ssmAllThis : sortMode + 1); }
   static eScheduleSortMode SortMode(void) { return sortMode; }
-  virtual int Compare(const cListObject &ListObject) const;
+  virtual int Compare(const cListObject &ListObject) const override;
   bool Update(const cTimers *Timers, bool Force = false);
-  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
+  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable) override;
   };
 
 cMenuScheduleItem::eScheduleSortMode cMenuScheduleItem::sortMode = ssmAllThis;
@@ -1662,7 +1662,7 @@ public:
   static int CurrentChannel(void) { return currentChannel; }
   static void SetCurrentChannel(int ChannelNr) { currentChannel = ChannelNr; }
   static const cEvent *ScheduleEvent(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 int cMenuWhatsOn::currentChannel = 0;
@@ -1873,8 +1873,8 @@ private:
   void SetHelpKeys(void);
 public:
   cMenuSchedule(void);
-  virtual ~cMenuSchedule();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cMenuSchedule() override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSchedule::cMenuSchedule(void)
@@ -2323,8 +2323,8 @@ private:
   eOSState Select(void);
 public:
   cMenuCam(cCamSlot *CamSlot);
-  virtual ~cMenuCam();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cMenuCam() override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuCam::cMenuCam(cCamSlot *CamSlot)
@@ -2524,7 +2524,7 @@ private:
   eOSState ApplyChanges(void);
 public:
   cMenuPathEdit(const char *Path);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuPathEdit::cMenuPathEdit(const char *Path)
@@ -2677,7 +2677,7 @@ private:
   eOSState ApplyChanges(void);
 public:
   cMenuRecordingEdit(const cRecording *Recording);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuRecordingEdit::cMenuRecordingEdit(const cRecording *Recording)
@@ -2908,8 +2908,8 @@ private:
   bool RefreshRecording(void);
 public:
   cMenuRecording(const cRecording *Recording, bool WithButtons = false);
-  virtual void Display(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual void Display(void) override;
+  virtual eOSState ProcessKey(eKeys Key) override;
 };
 
 cMenuRecording::cMenuRecording(const cRecording *Recording, bool WithButtons)
@@ -3011,7 +3011,7 @@ public:
   const cRecording *Recording(void) const { return recording; }
   bool IsDirectory(void) const { return name != NULL; }
   void SetRecording(const cRecording *Recording) { recording = Recording; }
-  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable);
+  virtual void SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable) override;
   };
 
 cMenuRecordingItem::cMenuRecordingItem(const cRecording *Recording, int Level)
@@ -3438,7 +3438,7 @@ eOSState cMenuRecordings::ProcessKey(eKeys Key)
 class cMenuSetupBase : public cMenuSetupPage {
 protected:
   cSetup data;
-  virtual void Store(void);
+  virtual void Store(void) override;
 public:
   cMenuSetupBase(void);
   };
@@ -3476,8 +3476,8 @@ private:
   virtual void Set(void);
 public:
   cMenuSetupOSD(void);
-  virtual ~cMenuSetupOSD();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cMenuSetupOSD() override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSetupOSD::cMenuSetupOSD(void)
@@ -3636,7 +3636,7 @@ private:
   void Setup(void);
 public:
   cMenuSetupEPG(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSetupEPG::cMenuSetupEPG(void)
@@ -3735,7 +3735,7 @@ private:
   const char *standardComplianceTexts[3];
 public:
   cMenuSetupDVB(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSetupDVB::cMenuSetupDVB(void)
@@ -3878,7 +3878,7 @@ private:
   void Setup(void);
 public:
   cMenuSetupLNB(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSetupLNB::cMenuSetupLNB(void)
@@ -4012,7 +4012,7 @@ private:
   void SetHelpKeys(void);
 public:
   cMenuSetupCAM(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSetupCAM::cMenuSetupCAM(void)
@@ -4195,7 +4195,7 @@ cMenuSetupRecord::cMenuSetupRecord(void)
 
 class cMenuSetupReplay : public cMenuSetupBase {
 protected:
-  virtual void Store(void);
+  virtual void Store(void) override;
 public:
   cMenuSetupReplay(void);
   };
@@ -4240,7 +4240,7 @@ private:
   void Set(void);
 public:
   cMenuSetupMisc(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSetupMisc::cMenuSetupMisc(void)
@@ -4338,7 +4338,7 @@ cMenuSetupPluginItem::cMenuSetupPluginItem(const char *Name, int Index)
 class cMenuSetupPlugins : public cMenuSetupBase {
 public:
   cMenuSetupPlugins(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSetupPlugins::cMenuSetupPlugins(void)
@@ -4392,7 +4392,7 @@ private:
   eOSState Restart(void);
 public:
   cMenuSetup(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cMenuSetup::cMenuSetup(void)

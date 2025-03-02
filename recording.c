@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.37 2025/01/18 20:57:06 kls Exp $
+ * $Id: recording.c 5.38 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "recording.h"
@@ -80,7 +80,7 @@ int InstanceId = 0;
 
 class cRemoveDeletedRecordingsThread : public cThread {
 protected:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cRemoveDeletedRecordingsThread(void);
   };
@@ -1504,7 +1504,7 @@ private:
   bool initial;
   void ScanVideoDir(const char *DirName, int LinkLevel = 0, int DirLevel = 0);
 protected:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cVideoDirectoryScannerThread(cRecordings *Recordings, cRecordings *DeletedRecordings);
   ~cVideoDirectoryScannerThread();
@@ -1823,10 +1823,10 @@ private:
   bool error;
   bool suspensionLogged;
   bool Throttled(void);
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cDirCopier(const char *DirNameSrc, const char *DirNameDst);
-  virtual ~cDirCopier();
+  virtual ~cDirCopier() override;
   bool Error(void) { return error; }
   };
 
@@ -2523,7 +2523,7 @@ private:
   cString recordingName;
   bool update;
 protected:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cIndexFileGenerator(const char *RecordingName, bool Update = false);
   ~cIndexFileGenerator();

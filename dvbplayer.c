@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.7 2025/02/19 15:39:16 kls Exp $
+ * $Id: dvbplayer.c 5.8 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -267,11 +267,11 @@ private:
   int Resume(void);
   bool Save(void);
 protected:
-  virtual void Activate(bool On);
-  virtual void Action(void);
+  virtual void Activate(bool On) override;
+  virtual void Action(void) override;
 public:
   cDvbPlayer(const char *FileName, bool PauseLive);
-  virtual ~cDvbPlayer();
+  virtual ~cDvbPlayer() override;
   void SetMarks(const cMarks *Marks);
   bool Active(void) { return cThread::Running(); }
   void Pause(void);
@@ -282,11 +282,11 @@ public:
   void SkipSeconds(int Seconds);
   void Goto(int Position, bool Still = false);
   virtual double FramesPerSecond(void) { return framesPerSecond; }
-  virtual void SetAudioTrack(eTrackType Type, const tTrackId *TrackId);
-  virtual const cErrors *GetErrors(void);
-  virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false);
-  virtual bool GetFrameNumber(int &Current, int &Total);
-  virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed);
+  virtual void SetAudioTrack(eTrackType Type, const tTrackId *TrackId) override;
+  virtual const cErrors *GetErrors(void) override;
+  virtual bool GetIndex(int &Current, int &Total, bool SnapToIFrame = false) override;
+  virtual bool GetFrameNumber(int &Current, int &Total) override;
+  virtual bool GetReplayMode(bool &Play, bool &Forward, int &Speed) override;
   };
 
 #define MAX_VIDEO_SLOWMOTION 63 // max. arg to pass to VIDEO_SLOWMOTION // TODO is this value correct?

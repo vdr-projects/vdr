@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 5.6 2024/10/13 09:47:18 kls Exp $
+ * $Id: player.h 5.7 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -89,7 +89,7 @@ protected:
   cPlayer *player;
 public:
   cControl(cPlayer *Player, bool Hidden = false);
-  virtual ~cControl();
+  virtual ~cControl() override;
   virtual void Hide(void) = 0;
   virtual cOsdObject *GetInfo(void);
          ///< Returns an OSD object that displays information about the currently

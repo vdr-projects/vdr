@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: mtd.h 1.11 2020/06/16 14:33:32 kls Exp $
+ * $Id: mtd.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __MTD_H
@@ -160,35 +160,35 @@ private:
   cRingBufferLinear *mtdBuffer;
   bool delivered;
 protected:
-  virtual const int *GetCaSystemIds(void);
-  virtual void SendCaPmt(uint8_t CmdId);
+  virtual const int *GetCaSystemIds(void) override;
+  virtual void SendCaPmt(uint8_t CmdId) override;
 public:
   cMtdCamSlot(cCamSlot *MasterSlot, int Index);
        ///< Creates a new "Multi Transponder Decryption" CAM slot, connected to the
        ///< given physical MasterSlot, using the given Index for mapping PIDs.
-  virtual ~cMtdCamSlot();
+  virtual ~cMtdCamSlot() override;
   cMtdMapper *MtdMapper(void) { return mtdMapper; }
-  virtual bool RepliesToQuery(void);
-  virtual bool ProvidesCa(const int *CaSystemIds);
-  virtual bool CanDecrypt(const cChannel *Channel, cMtdMapper *MtdMapper = NULL);
-  virtual void StartDecrypting(void);
-  virtual void StopDecrypting(void);
-  virtual uchar *Decrypt(uchar *Data, int &Count);
-  virtual bool TsPostProcess(uchar *Data);
-  virtual void InjectEit(int Sid);
+  virtual bool RepliesToQuery(void) override;
+  virtual bool ProvidesCa(const int *CaSystemIds) override;
+  virtual bool CanDecrypt(const cChannel *Channel, cMtdMapper *MtdMapper = NULL) override;
+  virtual void StartDecrypting(void) override;
+  virtual void StopDecrypting(void) override;
+  virtual uchar *Decrypt(uchar *Data, int &Count) override;
+  virtual bool TsPostProcess(uchar *Data) override;
+  virtual void InjectEit(int Sid) override;
   int PutData(const uchar *Data, int Count);
   int PutCat(const uchar *Data, int Count);
   // The following functions shall not be called for a cMtdCamSlot:
   virtual cCamSlot *Spawn(void) { MTD_DONT_CALL(NULL); }
-  virtual bool Reset(void) { MTD_DONT_CALL(false); }
-  virtual eModuleStatus ModuleStatus(void) { MTD_DONT_CALL(msNone); }
-  virtual const char *GetCamName(void) { MTD_DONT_CALL(NULL); }
-  virtual bool Ready(void) { MTD_DONT_CALL(false); }
-  virtual bool HasMMI(void) { MTD_DONT_CALL(false); }
-  virtual bool HasUserIO(void) { MTD_DONT_CALL(false); }
-  virtual bool EnterMenu(void) { MTD_DONT_CALL(false); }
-  virtual cCiMenu *GetMenu(void) { MTD_DONT_CALL(NULL); }
-  virtual cCiEnquiry *GetEnquiry(void) { MTD_DONT_CALL(NULL); }
+  virtual bool Reset(void) override { MTD_DONT_CALL(false); }
+  virtual eModuleStatus ModuleStatus(void) override { MTD_DONT_CALL(msNone); }
+  virtual const char *GetCamName(void) override { MTD_DONT_CALL(NULL); }
+  virtual bool Ready(void) override { MTD_DONT_CALL(false); }
+  virtual bool HasMMI(void) override { MTD_DONT_CALL(false); }
+  virtual bool HasUserIO(void) override { MTD_DONT_CALL(false); }
+  virtual bool EnterMenu(void) override { MTD_DONT_CALL(false); }
+  virtual cCiMenu *GetMenu(void) override { MTD_DONT_CALL(NULL); }
+  virtual cCiEnquiry *GetEnquiry(void) override { MTD_DONT_CALL(NULL); }
   };
 
 #endif //__MTD_H

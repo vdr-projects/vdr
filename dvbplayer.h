@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.h 5.1 2024/09/19 09:49:02 kls Exp $
+ * $Id: dvbplayer.h 5.2 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __DVBPLAYER_H
@@ -25,7 +25,7 @@ public:
        // If PauseLive is true, special care is taken to make sure the index
        // file of the recording is long enough to allow the player to display
        // the first frame in still picture mode.
-  virtual ~cDvbPlayerControl();
+  virtual ~cDvbPlayerControl() override;
   void SetMarks(const cMarks *Marks);
   bool Active(void);
   void Stop(void);

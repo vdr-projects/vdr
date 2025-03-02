@@ -6,7 +6,7 @@
  *
  * BiDi support by Osama Alrawab <alrawab@hotmail.com> @2008 Tripoli-Libya.
  *
- * $Id: font.c 5.3 2025/02/17 11:13:13 kls Exp $
+ * $Id: font.c 5.4 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "font.h"
@@ -49,7 +49,7 @@ private:
   cVector<tKerning> kerningCache;
 public:
   cGlyph(uint CharCode, FT_GlyphSlotRec_ *GlyphData);
-  virtual ~cGlyph();
+  virtual ~cGlyph() override;
   uint CharCode(void) const { return charCode; }
   uchar *Bitmap(void) const { return bitmap; }
   int AdvanceX(void) const { return advanceX; }
@@ -113,15 +113,15 @@ private:
   cGlyph* Glyph(uint CharCode, bool AntiAliased = false) const;
 public:
   cFreetypeFont(const char *Name, int CharHeight, int CharWidth = 0);
-  virtual ~cFreetypeFont();
-  virtual const char *FontName(void) const { return fontName; }
-  virtual int Size(void) const { return size; }
-  virtual int Width(void) const { return width; }
-  virtual int Width(uint c) const;
-  virtual int Width(const char *s) const;
-  virtual int Height(void) const { return height; }
-  virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const;
-  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const;
+  virtual ~cFreetypeFont() override;
+  virtual const char *FontName(void) const override { return fontName; }
+  virtual int Size(void) const override { return size; }
+  virtual int Width(void) const override { return width; }
+  virtual int Width(uint c) const override;
+  virtual int Width(const char *s) const override;
+  virtual int Height(void) const override { return height; }
+  virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const override;
+  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const override;
   };
 
 cFreetypeFont::cFreetypeFont(const char *Name, int CharHeight, int CharWidth)
@@ -391,12 +391,12 @@ private:
   int width;
 public:
   cDummyFont(int CharHeight, int CharWidth) { height = CharHeight; width = CharWidth; }
-  virtual int Width(void) const { return width ? width : height; }
-  virtual int Width(uint c) const { return width ? width : height; }
-  virtual int Width(const char *s) const { return width ? width : height; }
-  virtual int Height(void) const { return height; }
-  virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
-  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {};
+  virtual int Width(void) const override { return width ? width : height; }
+  virtual int Width(uint c) const override { return width ? width : height; }
+  virtual int Width(const char *s) const override { return width ? width : height; }
+  virtual int Height(void) const override { return height; }
+  virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const override {}
+  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const override {}
   };
 
 // --- cFont -----------------------------------------------------------------

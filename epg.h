@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 5.8 2024/10/13 09:47:18 kls Exp $
+ * $Id: epg.h 5.9 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -95,7 +95,7 @@ private:
 public:
   cEvent(tEventID EventID);
   ~cEvent();
-  virtual int Compare(const cListObject &ListObject) const;
+  virtual int Compare(const cListObject &ListObject) const override;
   tChannelID ChannelID(void) const;
   const cSchedule *Schedule(void) const { return schedule; }
   tEventID EventID(void) const { return eventID; }
@@ -231,7 +231,7 @@ DEF_LIST_LOCK(Schedules);
 class cEpgDataReader : public cThread {
 public:
   cEpgDataReader(void);
-  virtual void Action(void);
+  virtual void Action(void) override;
   };
 
 void ReportEpgBugFixStats(bool Force = false);
@@ -247,7 +247,7 @@ public:
           ///< handlers returns true in a particular call, the default processing
           ///< will take place.
           ///< EPG handlers will be deleted automatically at the end of the program.
-  virtual ~cEpgHandler();
+  virtual ~cEpgHandler() override;
   virtual bool IgnoreChannel(const cChannel *Channel) { return false; }
           ///< Before any EIT data for the given Channel is processed, the EPG handlers
           ///< are asked whether this Channel shall be completely ignored. If any of

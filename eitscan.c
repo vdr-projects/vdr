@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eitscan.c 5.7 2024/07/13 20:12:24 kls Exp $
+ * $Id: eitscan.c 5.8 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "eitscan.h"
@@ -21,7 +21,7 @@ private:
   cChannel channel;
 public:
   cScanData(const cChannel *Channel);
-  virtual int Compare(const cListObject &ListObject) const;
+  virtual int Compare(const cListObject &ListObject) const override;
   int Source(void) const { return channel.Source(); }
   int Transponder(void) const { return channel.Transponder(); }
   const cChannel *GetChannel(void) const { return &channel; }

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 4.1 2018/04/10 13:00:22 kls Exp $
+ * $Id: hello.c 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <getopt.h>
@@ -23,17 +23,17 @@ private:
   bool option_b;
 public:
   cPluginHello(void);
-  virtual ~cPluginHello();
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return tr(DESCRIPTION); }
-  virtual const char *CommandLineHelp(void);
-  virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual bool Start(void);
-  virtual void Housekeeping(void);
-  virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY); }
-  virtual cOsdObject *MainMenuAction(void);
-  virtual cMenuSetupPage *SetupMenu(void);
-  virtual bool SetupParse(const char *Name, const char *Value);
+  virtual ~cPluginHello() override;
+  virtual const char *Version(void) { return VERSION;  override}
+  virtual const char *Description(void) { return tr(DESCRIPTION);  override}
+  virtual const char *CommandLineHelp(void) override;
+  virtual bool ProcessArgs(int argc, char *argv[]) override;
+  virtual bool Start(void) override;
+  virtual void Housekeeping(void) override;
+  virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY);  override}
+  virtual cOsdObject *MainMenuAction(void) override;
+  virtual cMenuSetupPage *SetupMenu(void) override;
+  virtual bool SetupParse(const char *Name, const char *Value) override;
   };
 
 // Global variables that control the overall behaviour:
@@ -48,7 +48,7 @@ private:
   int newGreetingTime;
   int newUseAlternateGreeting;
 protected:
-  virtual void Store(void);
+  virtual void Store(void) override;
 public:
   cMenuSetupHello(void);
   };

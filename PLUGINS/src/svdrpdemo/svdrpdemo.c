@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svdrpdemo.c 4.1 2018/04/10 13:01:07 kls Exp $
+ * $Id: svdrpdemo.c 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <vdr/plugin.h>
@@ -15,10 +15,10 @@ class cPluginSvdrpdemo : public cPlugin {
 private:
   // Add any member variables or functions you may need here.
 public:
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return DESCRIPTION; }
-  virtual const char **SVDRPHelpPages(void);
-  virtual cString SVDRPCommand(const char *Command, const char *Option, int &ReplyCode);
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return DESCRIPTION; }
+  virtual const char **SVDRPHelpPages(void) override;
+  virtual cString SVDRPCommand(const char *Command, const char *Option, int &ReplyCode) override;
   };
 
 const char **cPluginSvdrpdemo::SVDRPHelpPages(void)

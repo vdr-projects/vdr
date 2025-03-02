@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: descriptor.h 4.2 2020/06/23 09:27:09 kls Exp $
+ *   $Id: descriptor.h 5.1 2025/03/02 11:03:35 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -24,18 +24,18 @@ public:
    String name; //name of the event
    String text; //short description
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class ExtendedEventDescriptor : public GroupDescriptor {
 public:
    class Item : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(item_extended_event)+sizeof(item_extended_event_mid)+item.getLength()+itemDescription.getLength(); }
+      virtual int getLength() override { return sizeof(item_extended_event)+sizeof(item_extended_event_mid)+item.getLength()+itemDescription.getLength(); }
       String item;
       String itemDescription;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    };
    char languageCode[4];
    int getDescriptorNumber();
@@ -43,7 +43,7 @@ public:
    StructureLoop<Item> itemLoop;
    String text;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_extended_event *s;
 };
@@ -80,7 +80,7 @@ public:
    int getReferenceServiceId() const;
    int getReferenceEventId() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_time_shifted_event *s;
 };
@@ -89,19 +89,19 @@ class ContentDescriptor : public Descriptor {
 public:
    class Nibble : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(nibble_content); }
+      virtual int getLength() override { return sizeof(nibble_content); }
       int getContentNibbleLevel1() const;
       int getContentNibbleLevel2() const;
       int getUserNibble1() const;
       int getUserNibble2() const;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const nibble_content *s;
    };
    StructureLoop<Nibble> nibbleLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class ParentalRatingDescriptor : public Descriptor {
@@ -110,15 +110,15 @@ public:
    public:
       char languageCode[4];
       int getRating() const;
-      virtual int getLength() { return sizeof(parental_rating); }
+      virtual int getLength() override { return sizeof(parental_rating); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const parental_rating *s;
    };
    StructureLoop<Rating> ratingLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class TeletextDescriptor : public Descriptor {
@@ -129,15 +129,15 @@ public:
       int getTeletextType() const;
       int getTeletextMagazineNumber() const;
       int getTeletextPageNumber() const;
-      virtual int getLength() { return sizeof(item_teletext); }
+      virtual int getLength() override { return sizeof(item_teletext); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const item_teletext *s;
    };
    StructureLoop<Teletext> teletextLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class CaDescriptor : public Descriptor {
@@ -146,7 +146,7 @@ public:
    int getCaPid() const;
    CharArray privateData;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_ca *s;
 };
@@ -155,7 +155,7 @@ class StreamIdentifierDescriptor : public Descriptor {
 public:
    int getComponentTag() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_stream_identifier *s;
 };
@@ -164,14 +164,14 @@ class NetworkNameDescriptor : public Descriptor {
 public:
    String name;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class CaIdentifierDescriptor : public Descriptor {
 public:
    TypeLoop<SixteenBit> identifiers;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class CarouselIdentifierDescriptor : public Descriptor {
@@ -179,7 +179,7 @@ public:
    int getCarouselId() const;
    int getFormatId() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_carousel_identifier *s;
 };
@@ -193,15 +193,15 @@ public:
    public:
       int getServiceId() const;
       int getServiceType() const;
-   virtual int getLength() { return sizeof(descr_service_list_loop); }
+   virtual int getLength() override { return sizeof(descr_service_list_loop); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const descr_service_list_loop *s;
    };
    StructureLoop<Service> serviceLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class SatelliteDeliverySystemDescriptor : public Descriptor {
@@ -216,7 +216,7 @@ public:
    int getSymbolRate() const;
    int getFecInner() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_satellite_delivery_system *s;
 };
@@ -229,7 +229,7 @@ public:
    int getSymbolRate() const;
    int getFecInner() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_cable_delivery_system *s;
 };
@@ -249,7 +249,7 @@ public:
    int getTransmissionMode() const;
    bool getOtherFrequency() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_terrestrial_delivery *s;
 };
@@ -260,7 +260,7 @@ public:
    String serviceName;
    String providerName;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_service *s;
 };
@@ -272,22 +272,22 @@ public:
       int getTransportStream() const;
       int getOriginalNetworkId() const;
       int getServiceId() const;
-      virtual int getLength() { return sizeof(item_nvod_reference); }
+      virtual int getLength() override { return sizeof(item_nvod_reference); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const item_nvod_reference *s;
    };
    StructureLoop<Service> serviceLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class TimeShiftedServiceDescriptor : public Descriptor {
 public:
    int getReferenceServiceId() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_time_shifted_service *s;
 };
@@ -301,7 +301,7 @@ public:
    char languageCode[4];
    String description;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_component *s;
 };
@@ -310,7 +310,7 @@ class PrivateDataSpecifierDescriptor : public Descriptor {
 public:
    int getPrivateDataSpecifier() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_private_data_specifier *s;
 };
@@ -323,15 +323,15 @@ public:
       int getSubtitlingType() const;
       int getCompositionPageId() const;
       int getAncillaryPageId() const;
-      virtual int getLength() { return sizeof(item_subtitling); }
+      virtual int getLength() override { return sizeof(item_subtitling); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const item_subtitling *s;
    };
    StructureLoop<Subtitling> subtitlingLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class ServiceMoveDescriptor : public Descriptor {
@@ -340,7 +340,7 @@ public:
    int getNewTransportStreamId() const;
    int getNewServiceId() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_service_move *s;
 };
@@ -350,7 +350,7 @@ public:
    int getCodingType() const;
    TypeLoop<ThirtyTwoBit> frequencies;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_frequency_list *s;
 };
@@ -359,7 +359,7 @@ class ServiceIdentifierDescriptor : public Descriptor {
 public:
    String textualServiceIdentifier;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class ContentIdentifierDescriptor : public Descriptor {
@@ -369,22 +369,22 @@ public:
       String identifier;
       int getCridType() const;
       int getCridLocation() const;
-      virtual int getLength() { return sizeof(content_identifier_entry)+identifier.getLength(); }
+      virtual int getLength() override { return sizeof(content_identifier_entry)+identifier.getLength(); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const content_identifier_entry *s;
    };
    StructureLoop<Identifier> identifierLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class DefaultAuthorityDescriptor : public Descriptor {
 public:
    String DefaultAuthority; //ID
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 //abstract base class
@@ -394,13 +394,13 @@ public:
    public:
       char languageCode[4];
       String name;
-      virtual int getLength() { return sizeof(entry_multilingual_name)+name.getLength(); }
+      virtual int getLength() override { return sizeof(entry_multilingual_name)+name.getLength(); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    };
    StructureLoop<Name> nameLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class MultilingualNetworkNameDescriptor : public MultilingualNameDescriptor {
@@ -416,7 +416,7 @@ public:
    int getComponentTag() const;
    //inherits nameLoop from MultilingualNameDescriptor
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_multilingual_component *s;
 };
@@ -425,15 +425,15 @@ class MultilingualServiceNameDescriptor : public Descriptor {
 public:
    class Name : public MultilingualNameDescriptor::Name {
    public:
-      virtual int getLength() { return sizeof(entry_multilingual_name)+providerName.getLength()+sizeof(entry_multilingual_service_name_mid)+name.getLength(); }
+      virtual int getLength() override { return sizeof(entry_multilingual_name)+providerName.getLength()+sizeof(entry_multilingual_service_name_mid)+name.getLength(); }
       String providerName;
       //inherits name, meaning: service name;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    };
    StructureLoop<Name> nameLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class LocalTimeOffsetDescriptor : public Descriptor {
@@ -441,20 +441,20 @@ public:
    class LocalTimeOffset : public LoopElement {
    public:
       char countryCode[4];
-      virtual int getLength() { return sizeof(local_time_offset_entry); }
+      virtual int getLength() override { return sizeof(local_time_offset_entry); }
       int getCountryId() const;
       int getLocalTimeOffsetPolarity() const;
       int getLocalTimeOffset() const;
       time_t getTimeOfChange() const;
       int getNextTimeOffset() const;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const local_time_offset_entry *s;
    };
    StructureLoop<LocalTimeOffset> localTimeOffsetLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class LinkageDescriptor : public Descriptor {
@@ -468,7 +468,7 @@ public:
    int getId() const;
    CharArray privateData;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_linkage *s;
    const descr_linkage_8 *s1;
@@ -479,17 +479,17 @@ public:
    char languageCode[4]; //for backwards compatibility
    class Language : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(descr_iso_639_language_loop); }
+      virtual int getLength() override { return sizeof(descr_iso_639_language_loop); }
       char languageCode[4];
       AudioType getAudioType();
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const descr_iso_639_language_loop *s;
    };
    StructureLoop<Language> languageLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class PDCDescriptor : public Descriptor {
@@ -499,7 +499,7 @@ public:
    int getHour() const;
    int getMinute() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_pdc *s;
 };
@@ -508,7 +508,7 @@ class AncillaryDataDescriptor : public Descriptor {
 public:
    int getAncillaryDataIdentifier() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_ancillary_data *s;
 };
@@ -521,7 +521,7 @@ public:
    int getScramblingSequenceIndex() const;
    int getInputStreamIdentifier() const { return input_stream_identifier; }
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_s2_satellite_delivery_system *s;
    const descr_scrambling_sequence_selector *sss;
@@ -533,7 +533,7 @@ public:
    int getExtendedDataFlag() const;
    int getExtensionDescriptorTag() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_extension *s;
    int extended_data_flag;
@@ -552,7 +552,7 @@ public:
    int getOtherFrequencyFlag() const;
    int getTfsFlag() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_t2_delivery_system *s;
    int extended_data_flag;
@@ -565,15 +565,15 @@ public:
       int getServiceId() const;
       int getVisibleServiceFlag() const;
       int getLogicalChannelNumber() const;
-      virtual int getLength() { return sizeof(item_logical_channel); }
+      virtual int getLength() override { return sizeof(item_logical_channel); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const item_logical_channel *s;
    };
    StructureLoop<LogicalChannel> logicalChannelLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class HdSimulcastLogicalChannelDescriptor : public Descriptor {
@@ -583,15 +583,15 @@ public:
       int getServiceId() const;
       int getVisibleServiceFlag() const;
       int getLogicalChannelNumber() const;
-      virtual int getLength() { return sizeof(item_hd_simulcast_logical_channel); }
+      virtual int getLength() override { return sizeof(item_hd_simulcast_logical_channel); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const item_hd_simulcast_logical_channel *s;
    };
    StructureLoop<HdSimulcastLogicalChannel> hdSimulcastLogicalChannelLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 // Private DVB Descriptor  Premiere.de
@@ -604,19 +604,19 @@ public:
    public:
       class StartTimeEntry : public LoopElement {
       public:
-         virtual int getLength() { return sizeof(item_premiere_content_transmission_time); }
+         virtual int getLength() override { return sizeof(item_premiere_content_transmission_time); }
          time_t getStartTime(int mjd) const; //UTC
       protected:
-         virtual void Parse();
+         virtual void Parse() override;
       private:
          const item_premiere_content_transmission_time *s;
       };
       StructureLoop<StartTimeEntry> startTimeLoop;
-      virtual int getLength();
+      virtual int getLength() override;
       int getMJD() const;
       int getLoopLength() const;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const item_premiere_content_transmission_day *s;
    };
@@ -625,7 +625,7 @@ public:
    int getTransportStreamId() const;
    int getServiceId() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_premiere_content_transmission *s;
 };
@@ -633,31 +633,31 @@ private:
 //a descriptor currently unimplemented in this library
 class UnimplementedDescriptor : public Descriptor {
 protected:
-   virtual void Parse() {}
+   virtual void Parse() override {}
 };
 
 class ApplicationSignallingDescriptor : public Descriptor {
 public:
    class ApplicationEntryDescriptor : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(application_signalling_entry); }
+      virtual int getLength() override { return sizeof(application_signalling_entry); }
       int getApplicationType() const;
       int getAITVersionNumber() const;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const application_signalling_entry *s;
    };
    StructureLoop<ApplicationEntryDescriptor> entryLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class MHP_ApplicationDescriptor : public Descriptor {
 public:
    class Profile : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(application_profile_entry); }
+      virtual int getLength() override { return sizeof(application_profile_entry); }
       int getApplicationProfile() const;
       int getVersionMajor() const;
       int getVersionMinor() const;
@@ -665,7 +665,7 @@ public:
    private:
       const application_profile_entry *s;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    };
    StructureLoop<Profile> profileLoop;
    bool isServiceBound() const;
@@ -675,32 +675,32 @@ public:
 private:
    const descr_application_end *s;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class MHP_ApplicationNameDescriptor : public Descriptor {
 public:
    class NameEntry : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(descr_application_name_entry)+name.getLength(); }
+      virtual int getLength() override { return sizeof(descr_application_name_entry)+name.getLength(); }
       char languageCode[4];
       String name;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    };
    StructureLoop<NameEntry> nameLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class MHP_TransportProtocolDescriptor : public Descriptor {
 public:
    class UrlExtensionEntry : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(descr_url_extension_entry)+UrlExtension.getLength(); }
+      virtual int getLength() override { return sizeof(descr_url_extension_entry)+UrlExtension.getLength(); }
       String UrlExtension;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    };
 
    enum Protocol { ObjectCarousel = 0x01, IPviaDVB = 0x02, HTTPoverInteractionChannel = 0x03 };
@@ -712,7 +712,7 @@ public:
    StructureLoop<UrlExtensionEntry> UrlExtensionLoop;
 
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_transport_protocol *s;
    bool remote;
@@ -724,14 +724,14 @@ class MHP_DVBJApplicationDescriptor : public Descriptor {
 public:
    class ApplicationEntry : public LoopElement {
    public:
-      virtual int getLength() { return sizeof(descr_dvbj_application_entry)+parameter.getLength(); }
+      virtual int getLength() override { return sizeof(descr_dvbj_application_entry)+parameter.getLength(); }
       String parameter;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    };
    StructureLoop<ApplicationEntry> applicationLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class MHP_DVBJApplicationLocationDescriptor : public Descriptor {
@@ -740,7 +740,7 @@ public:
    String classPath;
    String initialClass;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class MHP_ApplicationIconsDescriptor : public Descriptor {
@@ -748,7 +748,7 @@ public:
    String iconLocator;
    int getIconFlags() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_application_icons_descriptor_end *s;
 };
@@ -757,7 +757,7 @@ class MHP_SimpleApplicationLocationDescriptor : public Descriptor {
 public:
    char *getLocation(char *buffer, int size);
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    String location;
 };
@@ -767,7 +767,7 @@ public:
    int getFormatIdentifier() const;
    CharArray privateData;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_registration *s;
 };
@@ -788,7 +788,7 @@ public:
    int getFramePackingSEINotPresentFlag() const;
    CharArray privateData;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const descr_avc *s;
 };

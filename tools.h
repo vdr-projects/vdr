@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.11 2025/01/13 13:18:42 kls Exp $
+ * $Id: tools.h 5.12 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -838,7 +838,7 @@ inline int CompareStringsNumerically(const void *a, const void *b)
 class cStringList : public cVector<char *> {
 public:
   cStringList(int Allocated = 10): cVector<char *>(Allocated) {}
-  virtual ~cStringList();
+  virtual ~cStringList() override;
   int Find(const char *s) const;
   void Sort(bool IgnoreCase = false)
   {
@@ -851,7 +851,7 @@ public:
   {
     cVector<char *>::Sort(CompareStringsNumerically);
   }
-  virtual void Clear(void);
+  virtual void Clear(void) override;
   };
 
 class cFileNameList : public cStringList {

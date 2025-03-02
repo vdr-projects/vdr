@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sections.h 5.1 2021/06/08 15:10:51 kls Exp $
+ * $Id: sections.h 5.2 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __SECTIONS_H
@@ -34,10 +34,10 @@ private:
   cList<cFilterHandle> filterHandles;
   void Add(const cFilterData *FilterData);
   void Del(const cFilterData *FilterData);
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cSectionHandler(cDevice *Device);
-  virtual ~cSectionHandler();
+  virtual ~cSectionHandler() override;
   int Source(void);
   int Transponder(void);
   const cChannel *Channel(void);

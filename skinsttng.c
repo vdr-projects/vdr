@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 5.4 2024/09/21 10:53:07 kls Exp $
+ * $Id: skinsttng.c 5.5 2025/03/02 11:03:35 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures
@@ -146,11 +146,11 @@ private:
   static cBitmap bmTeletext, bmRadio, bmAudio, bmDolbyDigital, bmEncrypted, bmRecording;
 public:
   cSkinSTTNGDisplayChannel(bool WithInfo);
-  virtual ~cSkinSTTNGDisplayChannel();
-  virtual void SetChannel(const cChannel *Channel, int Number);
-  virtual void SetEvents(const cEvent *Present, const cEvent *Following);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinSTTNGDisplayChannel() override;
+  virtual void SetChannel(const cChannel *Channel, int Number) override;
+  virtual void SetEvents(const cEvent *Present, const cEvent *Following) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cBitmap cSkinSTTNGDisplayChannel::bmTeletext(teletext_xpm);
@@ -412,21 +412,21 @@ private:
   void SetTextScrollbar(void);
 public:
   cSkinSTTNGDisplayMenu(void);
-  virtual ~cSkinSTTNGDisplayMenu();
-  virtual void Scroll(bool Up, bool Page);
-  virtual int MaxItems(void);
-  virtual void Clear(void);
-  virtual void SetTitle(const char *Title);
-  virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable);
-  virtual void SetScrollbar(int Total, int Offset);
-  virtual void SetEvent(const cEvent *Event);
-  virtual void SetRecording(const cRecording *Recording);
-  virtual void SetText(const char *Text, bool FixedFont);
+  virtual ~cSkinSTTNGDisplayMenu() override;
+  virtual void Scroll(bool Up, bool Page) override;
+  virtual int MaxItems(void) override;
+  virtual void Clear(void) override;
+  virtual void SetTitle(const char *Title) override;
+  virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable) override;
+  virtual void SetScrollbar(int Total, int Offset) override;
+  virtual void SetEvent(const cEvent *Event) override;
+  virtual void SetRecording(const cRecording *Recording) override;
+  virtual void SetText(const char *Text, bool FixedFont) override;
   virtual int GetTextAreaWidth(void) const;
   virtual const cFont *GetTextAreaFont(bool FixedFont) const;
-  virtual void Flush(void);
+  virtual void Flush(void) override;
   };
 
 cSkinSTTNGDisplayMenu::cSkinSTTNGDisplayMenu(void)
@@ -807,15 +807,15 @@ private:
   int lastCurrentWidth;
 public:
   cSkinSTTNGDisplayReplay(bool ModeOnly);
-  virtual ~cSkinSTTNGDisplayReplay();
-  virtual void SetTitle(const char *Title);
-  virtual void SetMode(bool Play, bool Forward, int Speed);
-  virtual void SetProgress(int Current, int Total);
-  virtual void SetCurrent(const char *Current);
-  virtual void SetTotal(const char *Total);
-  virtual void SetJump(const char *Jump);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinSTTNGDisplayReplay() override;
+  virtual void SetTitle(const char *Title) override;
+  virtual void SetMode(bool Play, bool Forward, int Speed) override;
+  virtual void SetProgress(int Current, int Total) override;
+  virtual void SetCurrent(const char *Current) override;
+  virtual void SetTotal(const char *Total) override;
+  virtual void SetJump(const char *Jump) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cSkinSTTNGDisplayReplay::cSkinSTTNGDisplayReplay(bool ModeOnly)
@@ -958,9 +958,9 @@ private:
   int mute;
 public:
   cSkinSTTNGDisplayVolume(void);
-  virtual ~cSkinSTTNGDisplayVolume();
-  virtual void SetVolume(int Current, int Total, bool Mute);
-  virtual void Flush(void);
+  virtual ~cSkinSTTNGDisplayVolume() override;
+  virtual void SetVolume(int Current, int Total, bool Mute) override;
+  virtual void Flush(void) override;
   };
 
 cSkinSTTNGDisplayVolume::cSkinSTTNGDisplayVolume(void)
@@ -1052,10 +1052,10 @@ private:
   void SetItem(const char *Text, int Index, bool Current);
 public:
   cSkinSTTNGDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
-  virtual ~cSkinSTTNGDisplayTracks();
-  virtual void SetTrack(int Index, const char * const *Tracks);
-  virtual void SetAudioChannel(int AudioChannel);
-  virtual void Flush(void);
+  virtual ~cSkinSTTNGDisplayTracks() override;
+  virtual void SetTrack(int Index, const char * const *Tracks) override;
+  virtual void SetAudioChannel(int AudioChannel) override;
+  virtual void Flush(void) override;
   };
 
 cBitmap cSkinSTTNGDisplayTracks::bmAudioLeft(audioleft_xpm);
@@ -1212,9 +1212,9 @@ private:
   int y0, y1;
 public:
   cSkinSTTNGDisplayMessage(void);
-  virtual ~cSkinSTTNGDisplayMessage();
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinSTTNGDisplayMessage() override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cSkinSTTNGDisplayMessage::cSkinSTTNGDisplayMessage(void)

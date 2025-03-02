@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: player.c 5.1 2022/12/05 15:26:23 kls Exp $
+ * $Id: player.c 5.2 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "player.h"
@@ -33,7 +33,7 @@ private:
   int size;
   int length;
   uchar *buffer;
-  virtual void Activate(bool On);
+  virtual void Activate(bool On) override;
 public:
   cPicturePlayer(void);
   ~cPicturePlayer();

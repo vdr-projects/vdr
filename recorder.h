@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 5.3 2024/09/17 09:39:50 kls Exp $
+ * $Id: recorder.h 5.4 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -37,18 +37,18 @@ private:
   bool NextFile(void);
   void HandleErrors(bool Force = false);
 protected:
-  virtual void Activate(bool On);
+  virtual void Activate(bool On) override;
        ///< If you override Activate() you need to call Detach() (which is a
        ///< member of the cReceiver class) from your own destructor in order
        ///< to properly get a call to Activate(false) when your object is
        ///< destroyed.
-  virtual void Receive(const uchar *Data, int Length);
-  virtual void Action(void);
+  virtual void Receive(const uchar *Data, int Length) override;
+  virtual void Action(void) override;
 public:
   cRecorder(const char *FileName, const cChannel *Channel, int Priority);
        ///< Creates a new recorder for the given Channel and
        ///< the given Priority that will record into the file FileName.
-  virtual ~cRecorder();
+  virtual ~cRecorder() override;
   int Errors(void) { return oldErrors + errors; };
        ///< Returns the number of errors that were detected during recording.
        ///< Each frame that is missing or contains (any number of) errors counts as one error.

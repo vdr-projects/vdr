@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.c 5.4 2021/06/21 20:13:55 kls Exp $
+ * $Id: pat.c 5.5 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "pat.h"
@@ -26,7 +26,7 @@ private:
   uchar *data;
 public:
   cCaDescriptor(int CaSystem, int CaPid, int EsPid, int Length, const uchar *Data);
-  virtual ~cCaDescriptor();
+  virtual ~cCaDescriptor() override;
   bool operator== (const cCaDescriptor &arg) const;
   int CaSystem(void) { return caSystem; }
   int CaPid(void) { return caPid; }

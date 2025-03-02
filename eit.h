@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: eit.h 5.2 2021/04/04 11:06:30 kls Exp $
+ * $Id: eit.h 5.3 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __EIT_H
@@ -51,10 +51,10 @@ private:
   cEitTablesHash eitTablesHash;
   static time_t disableUntil;
 protected:
-  virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
+  virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length) override;
 public:
   cEitFilter(void);
-  virtual void SetStatus(bool On);
+  virtual void SetStatus(bool On) override;
   static void SetDisableUntil(time_t Time);
   };
 

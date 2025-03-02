@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: osddemo.c 4.5 2020/10/14 20:32:41 kls Exp $
+ * $Id: osddemo.c 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <vdr/osd.h>
@@ -231,9 +231,9 @@ private:
   tColor color;
 public:
   cLineGame(void);
-  virtual ~cLineGame();
-  virtual void Show(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cLineGame() override;
+  virtual void Show(void) override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cLineGame::cLineGame(void)
@@ -310,13 +310,13 @@ private:
   cPixmap *destroyablePixmap;
   cPixmap *toggleablePixmap;
   bool SetArea(void);
-  virtual void Action(void);
+  virtual void Action(void) override;
   cPixmap *CreateTextPixmap(const char *s, int Line, int Layer, tColor ColorFg, tColor ColorBg, const cFont *Font);
 public:
   cTrueColorDemo(void);
-  virtual ~cTrueColorDemo();
-  virtual void Show(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cTrueColorDemo() override;
+  virtual void Show(void) override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 cTrueColorDemo::cTrueColorDemo(void)
@@ -695,17 +695,17 @@ private:
   // Add any member variables or functions you may need here.
 public:
   cPluginOsddemo(void);
-  virtual ~cPluginOsddemo();
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return DESCRIPTION; }
-  virtual const char *CommandLineHelp(void);
-  virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual bool Start(void);
-  virtual void Housekeeping(void);
-  virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
-  virtual cOsdObject *MainMenuAction(void);
-  virtual cMenuSetupPage *SetupMenu(void);
-  virtual bool SetupParse(const char *Name, const char *Value);
+  virtual ~cPluginOsddemo() override;
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return DESCRIPTION; }
+  virtual const char *CommandLineHelp(void) override;
+  virtual bool ProcessArgs(int argc, char *argv[]) override;
+  virtual bool Start(void) override;
+  virtual void Housekeeping(void) override;
+  virtual const char *MainMenuEntry(void) override { return MAINMENUENTRY; }
+  virtual cOsdObject *MainMenuAction(void) override;
+  virtual cMenuSetupPage *SetupMenu(void) override;
+  virtual bool SetupParse(const char *Name, const char *Value) override;
   };
 
 cPluginOsddemo::cPluginOsddemo(void)

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 5.2 2024/01/18 12:04:57 kls Exp $
+ * $Id: osd.h 5.3 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -182,7 +182,7 @@ public:
        ///< Creates a bitmap and loads an XPM image from the given file.
   cBitmap(const char *const Xpm[]);
        ///< Creates a bitmap from the given XPM data.
-  virtual ~cBitmap();
+  virtual ~cBitmap() override;
   int X0(void) const { return x0; }
   int Y0(void) const { return y0; }
   int Width(void) const { return width; }
@@ -716,25 +716,25 @@ private:
 public:
   cPixmapMemory(void);
   cPixmapMemory(int Layer, const cRect &ViewPort, const cRect &DrawPort = cRect::Null);
-  virtual ~cPixmapMemory();
+  virtual ~cPixmapMemory() override;
   const uint8_t *Data(void) { return (uint8_t *)data; }
-  virtual void Clear(void);
-  virtual void Fill(tColor Color);
-  virtual void DrawImage(const cPoint &Point, const cImage &Image);
-  virtual void DrawImage(const cPoint &Point, int ImageHandle);
-  virtual void DrawScaledImage(const cPoint &Point, const cImage &Image, double FactorX, double FactorY, bool AntiAlias = false);
-  virtual void DrawScaledImage(const cPoint &Point, int ImageHandle, double FactorX, double FactorY, bool AntiAlias = false);
-  virtual void DrawPixel(const cPoint &Point, tColor Color);
-  virtual void DrawBlendedPixel(const cPoint &Point, tColor Color, uint8_t AlphaLayer = ALPHA_OPAQUE);
-  virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false);
-  virtual void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
-  virtual void DrawRectangle(const cRect &Rect, tColor Color);
-  virtual void DrawEllipse(const cRect &Rect, tColor Color, int Quadrants = 0);
-  virtual void DrawSlope(const cRect &Rect, tColor Color, int Type);
-  virtual void Render(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest);
-  virtual void Copy(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest);
-  virtual void Scroll(const cPoint &Dest, const cRect &Source = cRect::Null);
-  virtual void Pan(const cPoint &Dest, const cRect &Source = cRect::Null);
+  virtual void Clear(void) override;
+  virtual void Fill(tColor Color) override;
+  virtual void DrawImage(const cPoint &Point, const cImage &Image) override;
+  virtual void DrawImage(const cPoint &Point, int ImageHandle) override;
+  virtual void DrawScaledImage(const cPoint &Point, const cImage &Image, double FactorX, double FactorY, bool AntiAlias = false) override;
+  virtual void DrawScaledImage(const cPoint &Point, int ImageHandle, double FactorX, double FactorY, bool AntiAlias = false) override;
+  virtual void DrawPixel(const cPoint &Point, tColor Color) override;
+  virtual void DrawBlendedPixel(const cPoint &Point, tColor Color, uint8_t AlphaLayer = ALPHA_OPAQUE) override;
+  virtual void DrawBitmap(const cPoint &Point, const cBitmap &Bitmap, tColor ColorFg = 0, tColor ColorBg = 0, bool Overlay = false) override;
+  virtual void DrawText(const cPoint &Point, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault) override;
+  virtual void DrawRectangle(const cRect &Rect, tColor Color) override;
+  virtual void DrawEllipse(const cRect &Rect, tColor Color, int Quadrants = 0) override;
+  virtual void DrawSlope(const cRect &Rect, tColor Color, int Type) override;
+  virtual void Render(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest) override;
+  virtual void Copy(const cPixmap *Pixmap, const cRect &Source, const cPoint &Dest) override;
+  virtual void Scroll(const cPoint &Dest, const cRect &Source = cRect::Null) override;
+  virtual void Pan(const cPoint &Dest, const cRect &Source = cRect::Null) override;
   };
 
 #define MAXOSDAREAS 16

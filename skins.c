@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.c 5.5 2025/02/12 21:18:53 kls Exp $
+ * $Id: skins.c 5.6 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "skins.h"
@@ -27,7 +27,7 @@ private:
   cCondVar condVar;
 public:
   cSkinQueuedMessage(eMessageType Type, const char *s, int Seconds, int Timeout);
-  virtual ~cSkinQueuedMessage();
+  virtual ~cSkinQueuedMessage() override;
   };
 
 cSkinQueuedMessage::cSkinQueuedMessage(eMessageType Type, const char *s, int Seconds, int Timeout)

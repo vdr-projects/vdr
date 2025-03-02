@@ -6,7 +6,7 @@
  *
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 4.1 2015/04/28 09:25:57 kls Exp $
+ * $Id: dvbsubtitle.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H
@@ -47,8 +47,8 @@ private:
   void FinishPage(cDvbSubtitlePage *Page);
 public:
   cDvbSubtitleConverter(void);
-  virtual ~cDvbSubtitleConverter();
-  virtual void Action(void);
+  virtual ~cDvbSubtitleConverter() override;
+  virtual void Action(void) override;
   void Reset(void);
   void Freeze(bool Status) { frozen = Status; }
   int ConvertFragments(const uchar *Data, int Length); // for legacy PES recordings

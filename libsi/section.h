@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: section.h 2.1 2012/02/26 13:58:26 kls Exp $
+ *   $Id: section.h 5.1 2025/03/02 11:03:35 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -29,16 +29,16 @@ public:
       int getServiceId() const;
       int getPid() const;
       bool isNITPid() const { return getServiceId()==0; }
-      virtual int getLength() { return int(sizeof(pat_prog)); }
+      virtual int getLength() override { return int(sizeof(pat_prog)); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const pat_prog *s;
    };
    int getTransportStreamId() const;
    StructureLoop<Association> associationLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const pat *s;
 };
@@ -49,7 +49,7 @@ public:
    CAT() {}
    DescriptorLoop loop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class PMT : public NumberedSection {
@@ -61,9 +61,9 @@ public:
       int getPid() const;
       int getStreamType() const;
       DescriptorLoop streamDescriptors;
-      virtual int getLength() { return int(sizeof(pmt_info)+streamDescriptors.getLength()); }
+      virtual int getLength() override { return int(sizeof(pmt_info)+streamDescriptors.getLength()); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const pmt_info *s;
    };
@@ -72,7 +72,7 @@ public:
    int getServiceId() const;
    int getPCRPid() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const pmt *s;
 };
@@ -83,7 +83,7 @@ public:
    TSDT() {}
    DescriptorLoop transportStreamDescriptors;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const tsdt *s;
 };
@@ -96,10 +96,10 @@ public:
    public:
       int getTransportStreamId() const;
       int getOriginalNetworkId() const;
-      virtual int getLength() { return int(sizeof(ni_ts)+transportStreamDescriptors.getLength()); }
+      virtual int getLength() override { return int(sizeof(ni_ts)+transportStreamDescriptors.getLength()); }
       DescriptorLoop transportStreamDescriptors;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const ni_ts *s;
    };
@@ -107,7 +107,7 @@ public:
    StructureLoop<TransportStream> transportStreamLoop;
    int getNetworkId() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const nit *s;
 };
@@ -131,10 +131,10 @@ public:
       int getEITpresentFollowingFlag() const;
       RunningStatus getRunningStatus() const;
       int getFreeCaMode() const;
-      virtual int getLength() { return int(sizeof(sdt_descr)+serviceDescriptors.getLength()); }
+      virtual int getLength() override { return int(sizeof(sdt_descr)+serviceDescriptors.getLength()); }
       DescriptorLoop serviceDescriptors;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const sdt_descr *s;
    };
@@ -142,7 +142,7 @@ public:
    int getOriginalNetworkId() const;
    StructureLoop<Service> serviceLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const sdt *s;
 };
@@ -168,9 +168,9 @@ public:
       int getFreeCaMode() const;
 
       DescriptorLoop eventDescriptors;
-      virtual int getLength() { return int(sizeof(eit_event)+eventDescriptors.getLength()); }
+      virtual int getLength() override { return int(sizeof(eit_event)+eventDescriptors.getLength()); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const eit_event *s;
    };
@@ -186,7 +186,7 @@ public:
    //true if table describes TS on which it is broadcast, false if it describes other TS
    bool isActualTS() const;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const eit *s;
 };
@@ -197,7 +197,7 @@ public:
    TDT() {}
    time_t getTime() const; //UTC
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const tdt *s;
 };
@@ -209,7 +209,7 @@ public:
    time_t getTime() const;
    DescriptorLoop descriptorLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const tot *s;
 };
@@ -225,15 +225,15 @@ public:
       int getServiceId() const;
       int getEventId() const;
       RunningStatus getRunningStatus() const;
-      virtual int getLength() { return int(sizeof(rst_info)); }
+      virtual int getLength() override { return int(sizeof(rst_info)); }
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
    private:
       const rst_info *s;
    };
    StructureLoop<RunningInfo> infoLoop;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 class AIT : public NumberedSection {
@@ -242,13 +242,13 @@ public:
    AIT() {}
    class Application : public LoopElement {
    public:
-      virtual int getLength() { return int(sizeof(ait_app)+applicationDescriptors.getLength()); }
+      virtual int getLength() override { return int(sizeof(ait_app)+applicationDescriptors.getLength()); }
       long getOrganisationId() const;
       int getApplicationId() const;
       int getControlCode() const;
       MHP_DescriptorLoop applicationDescriptors;
    protected:
-      virtual void Parse();
+      virtual void Parse() override;
       const ait_app *s;
    };
    MHP_DescriptorLoop commonDescriptors;
@@ -257,7 +257,7 @@ public:
    int getAITVersion() const;
 protected:
    const ait *first;
-   virtual void Parse();
+   virtual void Parse() override;
 };
 
 /* Premiere Content Information Table */
@@ -270,7 +270,7 @@ public:
    time_t getDuration() const;
    PCIT_DescriptorLoop eventDescriptors;
 protected:
-   virtual void Parse();
+   virtual void Parse() override;
 private:
    const pcit *s;
 };

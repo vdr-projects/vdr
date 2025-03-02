@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 5.1 2021/07/01 15:40:46 kls Exp $
+ * $Id: skincurses.c 5.2 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <ncurses.h>
@@ -20,12 +20,12 @@ static const char *MAINMENUENTRY  = NULL;
 
 class cCursesFont : public cFont {
 public:
-  virtual int Width(void) const { return 1; }
-  virtual int Width(uint c) const { return 1; }
-  virtual int Width(const char *s) const { return s ? Utf8StrLen(s) : 0; }
-  virtual int Height(void) const { return 1; }
-  virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
-  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const {}
+  virtual int Width(void) const override { return 1; }
+  virtual int Width(uint c) const override { return 1; }
+  virtual int Width(const char *s) const override { return s ? Utf8StrLen(s) : 0; }
+  virtual int Height(void) const override { return 1; }
+  virtual void DrawText(cBitmap *Bitmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const override {}
+  virtual void DrawText(cPixmap *Pixmap, int x, int y, const char *s, tColor ColorFg, tColor ColorBg, int Width) const override {}
   };
 
 static const cCursesFont Font = cCursesFont(); // w/o the '= cCursesFont()' gcc 4.6 complains - can anybody explain why this is necessary?
@@ -64,12 +64,12 @@ private:
   void SetColor(int colorFg, int colorBg = clrBackground);
 public:
   cCursesOsd(int Left, int Top);
-  virtual ~cCursesOsd();
-  virtual void SaveRegion(int x1, int y1, int x2, int y2);
-  virtual void RestoreRegion(void);
-  virtual void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault);
-  virtual void DrawRectangle(int x1, int y1, int x2, int y2, tColor Color);
-  virtual void Flush(void);
+  virtual ~cCursesOsd() override;
+  virtual void SaveRegion(int x1, int y1, int x2, int y2) override;
+  virtual void RestoreRegion(void) override;
+  virtual void DrawText(int x, int y, const char *s, tColor ColorFg, tColor ColorBg, const cFont *Font, int Width = 0, int Height = 0, int Alignment = taDefault) override;
+  virtual void DrawRectangle(int x1, int y1, int x2, int y2, tColor Color) override;
+  virtual void Flush(void) override;
   };
 
 cCursesOsd::cCursesOsd(int Left, int Top)
@@ -193,11 +193,11 @@ private:
   bool message;
 public:
   cSkinCursesDisplayChannel(bool WithInfo);
-  virtual ~cSkinCursesDisplayChannel();
-  virtual void SetChannel(const cChannel *Channel, int Number);
-  virtual void SetEvents(const cEvent *Present, const cEvent *Following);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinCursesDisplayChannel() override;
+  virtual void SetChannel(const cChannel *Channel, int Number) override;
+  virtual void SetEvents(const cEvent *Present, const cEvent *Following) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cSkinCursesDisplayChannel::cSkinCursesDisplayChannel(bool WithInfo)
@@ -268,20 +268,20 @@ private:
   void SetTextScrollbar(void);
 public:
   cSkinCursesDisplayMenu(void);
-  virtual ~cSkinCursesDisplayMenu();
-  virtual void Scroll(bool Up, bool Page);
-  virtual int MaxItems(void);
-  virtual void Clear(void);
-  virtual void SetTitle(const char *Title);
-  virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable);
-  virtual void SetScrollbar(int Total, int Offset);
-  virtual void SetEvent(const cEvent *Event);
-  virtual void SetRecording(const cRecording *Recording);
-  virtual void SetText(const char *Text, bool FixedFont);
-  virtual const cFont *GetTextAreaFont(bool FixedFont) const { return &Font; }
-  virtual void Flush(void);
+  virtual ~cSkinCursesDisplayMenu() override;
+  virtual void Scroll(bool Up, bool Page) override;
+  virtual int MaxItems(void) override;
+  virtual void Clear(void) override;
+  virtual void SetTitle(const char *Title) override;
+  virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable) override;
+  virtual void SetScrollbar(int Total, int Offset) override;
+  virtual void SetEvent(const cEvent *Event) override;
+  virtual void SetRecording(const cRecording *Recording) override;
+  virtual void SetText(const char *Text, bool FixedFont) override;
+  virtual const cFont *GetTextAreaFont(bool FixedFont) const override { return &Font; }
+  virtual void Flush(void) override;
   };
 
 cSkinCursesDisplayMenu::cSkinCursesDisplayMenu(void)
@@ -507,15 +507,15 @@ private:
   bool message;
 public:
   cSkinCursesDisplayReplay(bool ModeOnly);
-  virtual ~cSkinCursesDisplayReplay();
-  virtual void SetTitle(const char *Title);
-  virtual void SetMode(bool Play, bool Forward, int Speed);
-  virtual void SetProgress(int Current, int Total);
-  virtual void SetCurrent(const char *Current);
-  virtual void SetTotal(const char *Total);
-  virtual void SetJump(const char *Jump);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinCursesDisplayReplay() override;
+  virtual void SetTitle(const char *Title) override;
+  virtual void SetMode(bool Play, bool Forward, int Speed) override;
+  virtual void SetProgress(int Current, int Total) override;
+  virtual void SetCurrent(const char *Current) override;
+  virtual void SetTotal(const char *Total) override;
+  virtual void SetJump(const char *Jump) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cSkinCursesDisplayReplay::cSkinCursesDisplayReplay(bool ModeOnly)
@@ -598,9 +598,9 @@ private:
   cOsd *osd;
 public:
   cSkinCursesDisplayVolume(void);
-  virtual ~cSkinCursesDisplayVolume();
-  virtual void SetVolume(int Current, int Total, bool Mute);
-  virtual void Flush(void);
+  virtual ~cSkinCursesDisplayVolume() override;
+  virtual void SetVolume(int Current, int Total, bool Mute) override;
+  virtual void Flush(void) override;
   };
 
 cSkinCursesDisplayVolume::cSkinCursesDisplayVolume(void)
@@ -645,10 +645,10 @@ private:
   void SetItem(const char *Text, int Index, bool Current);
 public:
   cSkinCursesDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
-  virtual ~cSkinCursesDisplayTracks();
-  virtual void SetTrack(int Index, const char * const *Tracks);
-  virtual void SetAudioChannel(int AudioChannel) {}
-  virtual void Flush(void);
+  virtual ~cSkinCursesDisplayTracks() override;
+  virtual void SetTrack(int Index, const char * const *Tracks) override;
+  virtual void SetAudioChannel(int AudioChannel) { override}
+  virtual void Flush(void) override;
   };
 
 cSkinCursesDisplayTracks::cSkinCursesDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
@@ -705,9 +705,9 @@ private:
   cOsd *osd;
 public:
   cSkinCursesDisplayMessage(void);
-  virtual ~cSkinCursesDisplayMessage();
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinCursesDisplayMessage() override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cSkinCursesDisplayMessage::cSkinCursesDisplayMessage(void)
@@ -735,13 +735,13 @@ void cSkinCursesDisplayMessage::Flush(void)
 class cSkinCurses : public cSkin {
 public:
   cSkinCurses(void);
-  virtual const char *Description(void);
-  virtual cSkinDisplayChannel *DisplayChannel(bool WithInfo);
-  virtual cSkinDisplayMenu *DisplayMenu(void);
-  virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly);
-  virtual cSkinDisplayVolume *DisplayVolume(void);
-  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
-  virtual cSkinDisplayMessage *DisplayMessage(void);
+  virtual const char *Description(void) override;
+  virtual cSkinDisplayChannel *DisplayChannel(bool WithInfo) override;
+  virtual cSkinDisplayMenu *DisplayMenu(void) override;
+  virtual cSkinDisplayReplay *DisplayReplay(bool ModeOnly) override;
+  virtual cSkinDisplayVolume *DisplayVolume(void) override;
+  virtual cSkinDisplayTracks *DisplayTracks(const char *Title, int NumTracks, const char * const *Tracks) override;
+  virtual cSkinDisplayMessage *DisplayMessage(void) override;
   };
 
 cSkinCurses::cSkinCurses(void)
@@ -791,18 +791,18 @@ private:
   // Add any member variables or functions you may need here.
 public:
   cPluginSkinCurses(void);
-  virtual ~cPluginSkinCurses();
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return tr(DESCRIPTION); }
-  virtual const char *CommandLineHelp(void);
-  virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual bool Initialize(void);
-  virtual bool Start(void);
-  virtual void Housekeeping(void);
-  virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY); }
-  virtual cOsdObject *MainMenuAction(void);
-  virtual cMenuSetupPage *SetupMenu(void);
-  virtual bool SetupParse(const char *Name, const char *Value);
+  virtual ~cPluginSkinCurses() override;
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return tr(DESCRIPTION); }
+  virtual const char *CommandLineHelp(void) override;
+  virtual bool ProcessArgs(int argc, char *argv[]) override;
+  virtual bool Initialize(void) override;
+  virtual bool Start(void) override;
+  virtual void Housekeeping(void) override;
+  virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY);  override}
+  virtual cOsdObject *MainMenuAction(void) override;
+  virtual cMenuSetupPage *SetupMenu(void) override;
+  virtual bool SetupParse(const char *Name, const char *Value) override;
   };
 
 cPluginSkinCurses::cPluginSkinCurses(void)

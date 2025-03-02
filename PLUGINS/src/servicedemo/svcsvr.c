@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svcsvr.c 4.1 2018/04/10 13:00:57 kls Exp $
+ * $Id: svcsvr.c 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <stdlib.h>
@@ -15,9 +15,9 @@ static const char *DESCRIPTION    = "Service demo server";
 
 class cPluginSvcSvr : public cPlugin {
 public:
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return DESCRIPTION; }
-  virtual bool Service(const char *Id, void *Data);
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return DESCRIPTION; }
+  virtual bool Service(const char *Id, void *Data) override;
   };
 
 struct ReportBoredPlugin_v1_0 {

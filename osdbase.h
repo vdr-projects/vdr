@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.h 5.2 2025/02/17 10:49:10 kls Exp $
+ * $Id: osdbase.h 5.3 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __OSDBASE_H
@@ -55,7 +55,7 @@ protected:
 public:
   cOsdItem(eOSState State = osUnknown);
   cOsdItem(const char *Text, eOSState State = osUnknown, bool Selectable = true);
-  virtual ~cOsdItem();
+  virtual ~cOsdItem() override;
   bool Selectable(void) const { return selectable; }
   void SetText(const char *Text, bool Copy = true);
   void SetSelectable(bool Selectable);
@@ -136,15 +136,15 @@ protected:
   virtual void Del(int Index);
 public:
   cOsdMenu(const char *Title, int c0 = 0, int c1 = 0, int c2 = 0, int c3 = 0, int c4 = 0);
-  virtual ~cOsdMenu();
-  virtual bool NeedsFastResponse(void) { return subMenu ? subMenu->NeedsFastResponse() : cOsdObject::NeedsFastResponse(); }
+  virtual ~cOsdMenu() override;
+  virtual bool NeedsFastResponse(void) override { return subMenu ? subMenu->NeedsFastResponse() : cOsdObject::NeedsFastResponse(); }
   void SetMenuCategory(eMenuCategory MenuCategory);
   void SetMenuSortMode(eMenuSortMode MenuSortMode);
   int Current(void) const { return current; }
   void Add(cOsdItem *Item, bool Current = false, cOsdItem *After = NULL);
   void Ins(cOsdItem *Item, bool Current = false, cOsdItem *Before = NULL);
   virtual void Display(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 #endif //__OSDBASE_H

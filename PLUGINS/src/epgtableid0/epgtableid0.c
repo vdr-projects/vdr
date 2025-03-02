@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: epgtableid0.c 4.1 2018/04/10 13:00:18 kls Exp $
+ * $Id: epgtableid0.c 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <vdr/epg.h>
@@ -18,16 +18,16 @@ class cTable0Handler : public cEpgHandler {
 private:
   bool Ignore(cEvent *Event) { return Event->TableID() == 0x00; }
 public:
-  virtual bool SetEventID(cEvent *Event, tEventID EventID);
-  virtual bool SetStartTime(cEvent *Event, time_t StartTime);
-  virtual bool SetDuration(cEvent *Event, int Duration);
-  virtual bool SetTitle(cEvent *Event, const char *Title);
-  virtual bool SetShortText(cEvent *Event, const char *ShortText);
-  virtual bool SetDescription(cEvent *Event, const char *Description);
-  virtual bool SetContents(cEvent *Event, uchar *Contents);
-  virtual bool SetParentalRating(cEvent *Event, int ParentalRating);
-  virtual bool SetVps(cEvent *Event, time_t Vps);
-  virtual bool FixEpgBugs(cEvent *Event);
+  virtual bool SetEventID(cEvent *Event, tEventID EventID) override;
+  virtual bool SetStartTime(cEvent *Event, time_t StartTime) override;
+  virtual bool SetDuration(cEvent *Event, int Duration) override;
+  virtual bool SetTitle(cEvent *Event, const char *Title) override;
+  virtual bool SetShortText(cEvent *Event, const char *ShortText) override;
+  virtual bool SetDescription(cEvent *Event, const char *Description) override;
+  virtual bool SetContents(cEvent *Event, uchar *Contents) override;
+  virtual bool SetParentalRating(cEvent *Event, int ParentalRating) override;
+  virtual bool SetVps(cEvent *Event, time_t Vps) override;
+  virtual bool FixEpgBugs(cEvent *Event) override;
   };
 
 bool cTable0Handler::SetEventID(cEvent *Event, tEventID EventID)
@@ -84,9 +84,9 @@ bool cTable0Handler::FixEpgBugs(cEvent *Event)
 
 class cPluginEpgtableid0 : public cPlugin {
 public:
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return DESCRIPTION; }
-  virtual bool Initialize(void);
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return DESCRIPTION; }
+  virtual bool Initialize(void) override;
   };
 
 bool cPluginEpgtableid0::Initialize(void)

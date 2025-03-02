@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: menu.h 1.1 2008/01/13 11:32:52 kls Exp $
+ * $Id: menu.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef _MENU_H
@@ -23,8 +23,8 @@ private:
   eOSState SelectItem(const char *Path = NULL, bool SlideShow = false);
 public:
   cPictureMenu(const cPictureEntry *PictureEntry, const char *Path = NULL);
-  ~cPictureMenu();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cPictureMenu() override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   static cPictureMenu *CreatePictureMenu(void);
   };
 

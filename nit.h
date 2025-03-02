@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: nit.h 4.1 2015/03/16 12:41:38 kls Exp $
+ * $Id: nit.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __NIT_H
@@ -18,10 +18,10 @@ private:
   cSectionSyncer sectionSyncer;
   cSdtFilter *sdtFilter;
 protected:
-  virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
+  virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length) override;
 public:
   cNitFilter(cSdtFilter *SdtFilter);
-  virtual void SetStatus(bool On);
+  virtual void SetStatus(bool On) override;
   };
 
 #endif //__NIT_H

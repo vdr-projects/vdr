@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 5.4 2025/02/12 21:18:53 kls Exp $
+ * $Id: status.c 5.5 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <vdr/plugin.h>
@@ -17,23 +17,23 @@ static const char *MAINMENUENTRY  = NULL;
 
 class cStatusTest : public cStatus {
 protected:
-  virtual void TimerChange(const cTimer *Timer, eTimerChange Change);
-  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView);
-  virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On);
-  virtual void Replaying(const cControl *Control, const char *Name, const char *FileName, bool On);
-  virtual void SetVolume(int Volume, bool Absolute);
-  virtual void SetAudioTrack(int Index, const char * const *Tracks);
-  virtual void SetAudioChannel(int AudioChannel);
-  virtual void SetSubtitleTrack(int Index, const char * const *Tracks);
-  virtual void OsdClear(void);
-  virtual void OsdTitle(const char *Title);
-  virtual void OsdStatusMessage2(eMessageType Type, const char *Message);
-  virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue);
-  virtual void OsdItem2(const char *Text, int Index, bool Selectable);
-  virtual void OsdCurrentItem2(const char *Text, int Index);
-  virtual void OsdTextItem(const char *Text, bool Scroll);
-  virtual void OsdChannel(const char *Text);
-  virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle);
+  virtual void TimerChange(const cTimer *Timer, eTimerChange Change) override;
+  virtual void ChannelSwitch(const cDevice *Device, int ChannelNumber, bool LiveView) override;
+  virtual void Recording(const cDevice *Device, const char *Name, const char *FileName, bool On) override;
+  virtual void Replaying(const cControl *Control, const char *Name, const char *FileName, bool On) override;
+  virtual void SetVolume(int Volume, bool Absolute) override;
+  virtual void SetAudioTrack(int Index, const char * const *Tracks) override;
+  virtual void SetAudioChannel(int AudioChannel) override;
+  virtual void SetSubtitleTrack(int Index, const char * const *Tracks) override;
+  virtual void OsdClear(void) override;
+  virtual void OsdTitle(const char *Title) override;
+  virtual void OsdStatusMessage2(eMessageType Type, const char *Message) override;
+  virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue) override;
+  virtual void OsdItem2(const char *Text, int Index, bool Selectable) override;
+  virtual void OsdCurrentItem2(const char *Text, int Index) override;
+  virtual void OsdTextItem(const char *Text, bool Scroll) override;
+  virtual void OsdChannel(const char *Text) override;
+  virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle) override;
   };
 
 void cStatusTest::TimerChange(const cTimer *Timer, eTimerChange Change)
@@ -137,17 +137,17 @@ private:
   cStatusTest *statusTest;
 public:
   cPluginStatus(void);
-  virtual ~cPluginStatus();
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return DESCRIPTION; }
-  virtual const char *CommandLineHelp(void);
-  virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual bool Start(void);
-  virtual void Housekeeping(void);
-  virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
-  virtual cOsdObject *MainMenuAction(void);
-  virtual cMenuSetupPage *SetupMenu(void);
-  virtual bool SetupParse(const char *Name, const char *Value);
+  virtual ~cPluginStatus() override;
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return DESCRIPTION; }
+  virtual const char *CommandLineHelp(void) override;
+  virtual bool ProcessArgs(int argc, char *argv[]) override;
+  virtual bool Start(void) override;
+  virtual void Housekeeping(void) override;
+  virtual const char *MainMenuEntry(void) override { return MAINMENUENTRY; }
+  virtual cOsdObject *MainMenuAction(void) override;
+  virtual cMenuSetupPage *SetupMenu(void) override;
+  virtual bool SetupParse(const char *Name, const char *Value) override;
   };
 
 cPluginStatus::cPluginStatus(void)

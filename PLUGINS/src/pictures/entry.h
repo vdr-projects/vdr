@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: entry.h 1.1 2008/01/13 11:29:27 kls Exp $
+ * $Id: entry.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef _ENTRY_H
@@ -20,8 +20,8 @@ private:
   void Load(void) const;
 public:
   cPictureEntry(const char *Name, const cPictureEntry *Parent, bool IsDirectory);
-  virtual ~cPictureEntry();
-  virtual int Compare(const cListObject &ListObject) const;
+  virtual ~cPictureEntry() override;
+  virtual int Compare(const cListObject &ListObject) const override;
   const char *Name(void) const { return name; }
   const cPictureEntry *Parent(void) const { return parent; }
   bool IsDirectory(void) const { return isDirectory; }

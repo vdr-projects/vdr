@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.13 2024/11/30 14:30:46 kls Exp $
+ * $Id: epg.c 5.14 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "epg.h"
@@ -1226,7 +1226,7 @@ private:
   cMutex mutex;
   bool dump;
 protected:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cEpgDataWriter(void);
   void SetDump(bool Dump) { dump = Dump; }

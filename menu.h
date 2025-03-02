@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.5 2024/10/11 14:10:50 kls Exp $
+ * $Id: menu.h 5.6 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -25,10 +25,10 @@ private:
   eDvbFont font;
 public:
   cMenuText(const char *Title, const char *Text, eDvbFont Font = fontOsd);
-  virtual ~cMenuText();
+  virtual ~cMenuText() override;
   void SetText(const char *Text);
-  virtual void Display(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual void Display(void) override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 class cMenuFolder : public cOsdMenu {
@@ -51,7 +51,7 @@ private:
 public:
   cMenuFolder(const char *Title, cNestedItemList *NestedItemList, const char *Path = NULL);
   cString GetFolder(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 class cMenuCommands : public cOsdMenu {
@@ -66,8 +66,8 @@ private:
   eOSState Execute(void);
 public:
   cMenuCommands(const char *Title, cList<cNestedItem> *Commands, const char *Parameters = NULL);
-  virtual ~cMenuCommands();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cMenuCommands() override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 class cMenuEditTimer : public cOsdMenu {
@@ -89,8 +89,8 @@ private:
   void SetHelpKeys(void);
 public:
   cMenuEditTimer(cTimer *Timer, bool New = false);
-  virtual ~cMenuEditTimer();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cMenuEditTimer() override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   static const cTimer *AddedTimer(void);
   };
 
@@ -99,8 +99,8 @@ private:
   const cEvent *event;
 public:
   cMenuEvent(const cTimers *Timers, const cChannels *Channels, const cEvent *Event, bool CanSwitch = false, bool Buttons = false);
-  virtual void Display(void);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual void Display(void) override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   };
 
 class cMenuMain : public cOsdMenu {
@@ -115,7 +115,7 @@ private:
   bool Update(bool Force = false);
 public:
   cMenuMain(eOSState State = osUnknown, bool OpenSubMenus = false);
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   static cOsdObject *PluginOsdObject(void);
   };
 
@@ -140,8 +140,8 @@ private:
 public:
   cDisplayChannel(int Number, bool Switched);
   cDisplayChannel(eKeys FirstKey);
-  virtual ~cDisplayChannel();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual ~cDisplayChannel() override;
+  virtual eOSState ProcessKey(eKeys Key) override;
   static bool IsOpen(void) { return currentDisplayChannel != NULL; }
   };
 
@@ -150,10 +150,10 @@ private:
   cSkinDisplayVolume *displayVolume;
   cTimeMs timeout;
   static cDisplayVolume *currentDisplayVolume;
-  virtual void Show(void);
+  virtual void Show(void) override;
   cDisplayVolume(void);
 public:
-  virtual ~cDisplayVolume();
+  virtual ~cDisplayVolume() override;
   static cDisplayVolume *Create(void);
   static void Process(eKeys Key);
   eOSState ProcessKey(eKeys Key);
@@ -167,10 +167,10 @@ private:
   char *descriptions[ttMaxTrackTypes + 1]; // list is NULL terminated
   int numTracks, track, audioChannel;
   static cDisplayTracks *currentDisplayTracks;
-  virtual void Show(void);
+  virtual void Show(void) override;
   cDisplayTracks(void);
 public:
-  virtual ~cDisplayTracks();
+  virtual ~cDisplayTracks() override;
   static bool IsOpen(void) { return currentDisplayTracks != NULL; }
   static cDisplayTracks *Create(void);
   static void Process(eKeys Key);
@@ -185,10 +185,10 @@ private:
   char *descriptions[ttMaxTrackTypes + 1]; // list is NULL terminated
   int numTracks, track;
   static cDisplaySubtitleTracks *currentDisplayTracks;
-  virtual void Show(void);
+  virtual void Show(void) override;
   cDisplaySubtitleTracks(void);
 public:
-  virtual ~cDisplaySubtitleTracks();
+  virtual ~cDisplaySubtitleTracks() override;
   static bool IsOpen(void) { return currentDisplayTracks != NULL; }
   static cDisplaySubtitleTracks *Create(void);
   static void Process(eKeys Key);
@@ -230,7 +230,7 @@ protected:
 public:
   cMenuRecordings(const char *Base = NULL, int Level = 0, bool OpenSubMenus = false, const cRecordingFilter *Filter = NULL);
   ~cMenuRecordings();
-  virtual eOSState ProcessKey(eKeys Key);
+  virtual eOSState ProcessKey(eKeys Key) override;
   static void SetRecording(const char *FileName);
   };
 
@@ -321,15 +321,15 @@ private:
   void EditTest(void);
 public:
   cReplayControl(bool PauseLive = false);
-  virtual ~cReplayControl();
+  virtual ~cReplayControl() override;
   void Stop(void);
-  virtual cOsdObject *GetInfo(void);
-  virtual const cRecording *GetRecording(void);
-  virtual eOSState ProcessKey(eKeys Key);
-  virtual void Show(void);
-  virtual void Hide(void);
+  virtual cOsdObject *GetInfo(void) override;
+  virtual const cRecording *GetRecording(void) override;
+  virtual eOSState ProcessKey(eKeys Key) override;
+  virtual void Show(void) override;
+  virtual void Hide(void) override;
   bool Visible(void) { return visible; }
-  virtual void ClearEditingMarks(void);
+  virtual void ClearEditingMarks(void) override;
   static void SetRecording(const char *FileName);
   static const char *NowReplaying(void);
   static const char *LastReplayed(void);

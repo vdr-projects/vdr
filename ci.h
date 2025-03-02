@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ci.h 4.14 2019/05/28 14:58:08 kls Exp $
+ * $Id: ci.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __CI_H
@@ -74,8 +74,8 @@ protected:
   char *menuString;
 public:
   cCiApplicationInformation(uint16_t SessionId, cCiTransportConnection *Tc);
-  virtual ~cCiApplicationInformation();
-  virtual void Process(int Length = 0, const uint8_t *Data = NULL);
+  virtual ~cCiApplicationInformation() override;
+  virtual void Process(int Length = 0, const uint8_t *Data = NULL) override;
   bool EnterMenu(void);
   const char *GetMenuString(void) { return menuString; }
   };
@@ -88,7 +88,7 @@ public:
        ///< registered with the global CiResourceHandlers, as in
        ///< CiResourceHandlers.Register(new cMyResourceHandler);
        ///< It will be automatically deleted at the end of the program.
-  virtual ~cCiResourceHandler();
+  virtual ~cCiResourceHandler() override;
   virtual const uint32_t *ResourceIds(void) const = 0;
        ///< Returns a pointer to an array of resource identifiers, where the
        ///< last value is zero.
@@ -180,7 +180,7 @@ protected:
        ///< Iterates over all added CAM slots of this adapter. Iter has to be
        ///< initialized to 0 and is required to store the iteration state.
        ///< Returns NULL if no further CAM slot is found.
-  virtual void Action(void);
+  virtual void Action(void) override;
        ///< Handles the attached CAM slots in a separate thread.
        ///< The derived class must call the Start() function to
        ///< actually start CAM handling.
@@ -207,7 +207,7 @@ protected:
        ///< 'true'.
 public:
   cCiAdapter(void);
-  virtual ~cCiAdapter();
+  virtual ~cCiAdapter() override;
        ///< The derived class must call Cancel(3) in its destructor.
   };
 
@@ -302,7 +302,7 @@ public:
        ///< one as their MasterSlot. This can speed up the search for a suitable CAM
        ///< when tuning to an encrypted channel, and it also makes the Setup/CAM menu
        ///< clearer because only the master CAM slots will be shown there.
-  virtual ~cCamSlot();
+  virtual ~cCamSlot() override;
   bool IsMasterSlot(void) { return !masterSlot; }
        ///< Returns true if this CAM slot itself is a master slot (which means that
        ///< it doesn't have a pointer to another CAM slot that's its master).

@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: svccli.c 4.1 2018/04/10 13:00:53 kls Exp $
+ * $Id: svccli.c 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #include <stdlib.h>
@@ -16,11 +16,11 @@ static const char *MAINMENUENTRY  = "Service demo";
 
 class cPluginSvcCli : public cPlugin {
 public:
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return DESCRIPTION; }
-  virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
-  virtual cOsdObject *MainMenuAction(void);
-  virtual bool Service(const char *Id, void *Data);
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return DESCRIPTION; }
+  virtual const char *MainMenuEntry(void) override { return MAINMENUENTRY; }
+  virtual cOsdObject *MainMenuAction(void) override;
+  virtual bool Service(const char *Id, void *Data) override;
   };
 
 struct ReportBoredPlugin_v1_0 {

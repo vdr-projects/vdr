@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 5.2 2022/12/06 16:57:01 kls Exp $
+ * $Id: dvbsubtitle.c 5.3 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1257,7 +1257,7 @@ private:
   cVector<cBitmap *> bitmaps;
 public:
   cDvbSubtitleBitmaps(int State, int64_t Pts, int Timeout, tArea *Areas, int NumAreas, double OsdFactorX, double OsdFactorY, tArea &AreaCombined, tArea &AreaOsd);
-  ~cDvbSubtitleBitmaps();
+  virtual ~cDvbSubtitleBitmaps() override;
   int State(void) { return state; }
   int64_t Pts(void) { return pts; }
   int Timeout(void) { return timeout; }

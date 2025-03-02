@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 5.3 2024/03/02 16:21:16 kls Exp $
+ * $Id: channels.c 5.4 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "channels.h"
@@ -834,7 +834,7 @@ public:
     channel = Channel;
     channelID = channel->GetChannelID();
     }
-  virtual int Compare(const cListObject &ListObject) const {
+  virtual int Compare(const cListObject &ListObject) const override {
     cChannelSorter *cs = (cChannelSorter *)&ListObject;
     return memcmp(&channelID, &cs->channelID, sizeof(channelID));
     }

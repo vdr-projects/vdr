@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.h 5.1 2025/02/12 22:22:20 kls Exp $
+ * $Id: plugin.h 5.2 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __PLUGIN_H
@@ -80,7 +80,7 @@ private:
   destroy_t *destroy;
 public:
   cDll(const char *FileName, const char *Args);
-  virtual ~cDll();
+  virtual ~cDll() override;
   bool Load(bool Log = false);
   cPlugin *Plugin(void) { return plugin; }
   };

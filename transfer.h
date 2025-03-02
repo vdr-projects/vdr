@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.h 4.2 2017/12/07 14:56:22 kls Exp $
+ * $Id: transfer.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __TRANSFER_H
@@ -20,11 +20,11 @@ private:
   int numLostPackets;
   cPatPmtGenerator patPmtGenerator;
 protected:
-  virtual void Activate(bool On);
-  virtual void Receive(const uchar *Data, int Length);
+  virtual void Activate(bool On) override;
+  virtual void Receive(const uchar *Data, int Length) override;
 public:
   cTransfer(const cChannel *Channel);
-  virtual ~cTransfer();
+  virtual ~cTransfer() override;
   };
 
 class cTransferControl : public cControl {
@@ -34,7 +34,7 @@ private:
 public:
   cTransferControl(cDevice *ReceiverDevice, const cChannel *Channel);
   ~cTransferControl();
-  virtual void Hide(void) {}
+  virtual void Hide(void) override {}
   static cDevice *ReceiverDevice(void) { return receiverDevice; }
   };
 

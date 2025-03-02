@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remote.h 3.1 2013/12/25 12:32:44 kls Exp $
+ * $Id: remote.h 5.1 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __REMOTE_H
@@ -40,7 +40,7 @@ protected:
   bool Put(uint64_t Code, bool Repeat = false, bool Release = false);
   bool Put(const char *Code, bool Repeat = false, bool Release = false);
 public:
-  virtual ~cRemote();
+  virtual ~cRemote() override;
   virtual bool Ready(void) { return true; }
   virtual bool Initialize(void);
   const char *Name(void) { return name; }
@@ -108,14 +108,14 @@ private:
   static bool rawMode;
   bool systemIsUtf8;
   struct termios savedTm;
-  virtual void Action(void);
+  virtual void Action(void) override;
   int ReadKey(void);
   uint64_t ReadKeySequence(void);
   int MapCodeToFunc(uint64_t Code);
   void PutKey(uint64_t Code, bool Repeat = false, bool Release = false);
 public:
   cKbdRemote(void);
-  virtual ~cKbdRemote();
+  virtual ~cKbdRemote() override;
   static bool KbdAvailable(void) { return kbdAvailable; }
   static uint64_t MapFuncToCode(int Func);
   static void SetRawMode(bool RawMode);

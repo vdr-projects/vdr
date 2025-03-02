@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.4 2025/01/10 13:12:04 kls Exp $
+ * $Id: cutter.c 5.5 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "cutter.h"
@@ -259,10 +259,10 @@ private:
   bool ProcessSequence(int LastEndIndex, int BeginIndex, int EndIndex, int NextBeginIndex);
   void HandleErrors(bool Force = false);
 protected:
-  virtual void Action(void);
+  virtual void Action(void) override;
 public:
   cCuttingThread(const char *FromFileName, const char *ToFileName, cRecordingInfo *RecordingInfo);
-  virtual ~cCuttingThread();
+  virtual ~cCuttingThread() override;
   const char *Error(void) { return error; }
   };
 

@@ -10089,3 +10089,8 @@ Video Disk Recorder Revision History
 - Fixed cPtsIndex::FindFrameNumber() to handle the case where Pts points to an I-frame.
 - Added missing locks to SetMenuItem() functions.
 - Revised locking in cMenuSchedule and cMenuWhatsOn.
+
+2025-03-02:
+
+- Added the "override" keyword to virtual functions reimplemented in derived classes.
+  Plugins may want to do the same, but don't have to.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.14 2024/07/06 11:19:21 kls Exp $
+ * $Id: device.c 5.15 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "device.h"
@@ -24,10 +24,10 @@
 
 class cLiveSubtitle : public cReceiver {
 protected:
-  virtual void Receive(const uchar *Data, int Length);
+  virtual void Receive(const uchar *Data, int Length) override;
 public:
   cLiveSubtitle(int SPid);
-  virtual ~cLiveSubtitle();
+  virtual ~cLiveSubtitle() override;
   };
 
 cLiveSubtitle::cLiveSubtitle(int SPid)

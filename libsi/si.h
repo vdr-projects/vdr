@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.h 5.1 2023/02/16 17:20:09 kls Exp $
+ *   $Id: si.h 5.2 2025/03/02 11:03:35 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -252,7 +252,7 @@ public:
    Section(const unsigned char *data, bool doCopy=true);
    Section() {}
    TableId getTableId() const;
-   virtual int getLength();
+   virtual int getLength() override;
 
    static int getLength(const unsigned char *d);
    static TableId getTableId(const unsigned char *d);
@@ -290,7 +290,7 @@ public:
    void setData(CharArray d, int l) { Object::setData(d); checkSize(l); length=l; }
    //convenience method
    void setDataAndOffset(CharArray d, int l, int &offset) { Object::setData(d); checkSize(l); length=l; offset+=l; }
-   virtual int getLength() { return length; }
+   virtual int getLength() override { return length; }
 private:
    int length;
 };
@@ -300,7 +300,7 @@ class LoopElement : public Object {
 
 class Descriptor : public LoopElement {
 public:
-   virtual int getLength();
+   virtual int getLength() override;
    DescriptorTag getDescriptorTag() const;
 
    static int getLength(const unsigned char *d);
@@ -331,7 +331,7 @@ public:
       int i;
    };
 protected:
-   virtual void Parse() {}
+   virtual void Parse() override {}
 };
 
 //contains LoopElements of one type only
@@ -519,7 +519,7 @@ public:
    //The emphasis marks 0x86 and 0x87 are still available in buffer, but not in shortVersion.
    char *getText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion);
 protected:
-   virtual void Parse() {}
+   virtual void Parse() override {}
    void decodeText(char *buffer, int size, const char **fromCode = NULL);
    void decodeText(char *buffer, char *shortVersion, int sizeBuffer, int sizeShortVersion);
 };

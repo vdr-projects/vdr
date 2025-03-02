@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: filter.h 5.5 2024/10/13 09:47:18 kls Exp $
+ * $Id: filter.h 5.6 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __FILTER_H
@@ -80,7 +80,7 @@ private:
 protected:
   cFilter(void);
   cFilter(u_short Pid, u_char Tid, u_char Mask = 0xFF);
-  virtual ~cFilter();
+  virtual ~cFilter() override;
   virtual void SetStatus(bool On);
        ///< Turns this filter on or off, depending on the value of On.
        ///< If the filter is turned off, any filter data that has been

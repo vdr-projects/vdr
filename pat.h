@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: pat.h 5.3 2021/06/21 20:13:55 kls Exp $
+ * $Id: pat.h 5.4 2025/03/02 11:03:35 kls Exp $
  */
 
 #ifndef __PAT_H
@@ -37,10 +37,10 @@ private:
   int  NumSidRequests(int Sid);
   void SwitchToNextPmtPid(void);
 protected:
-  virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length);
+  virtual void Process(u_short Pid, u_char Tid, const u_char *Data, int Length) override;
 public:
   cPatFilter(void);
-  virtual void SetStatus(bool On);
+  virtual void SetStatus(bool On) override;
   void Trigger(int = 0); // triggers reading the PMT PIDs that are currently not requested (dummy parameter for backwards compatibility, value is ignored)
   void Request(int Sid); // requests permanent reading of the PMT PID for this SID
   void Release(int Sid); // releases permanent reading of the PMT PID for this SID

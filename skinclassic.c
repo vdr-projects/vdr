@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinclassic.c 5.4 2024/09/21 10:53:07 kls Exp $
+ * $Id: skinclassic.c 5.5 2025/03/02 11:03:35 kls Exp $
  */
 
 #include "skinclassic.h"
@@ -84,11 +84,11 @@ private:
   cString lastDate;
 public:
   cSkinClassicDisplayChannel(bool WithInfo);
-  virtual ~cSkinClassicDisplayChannel();
-  virtual void SetChannel(const cChannel *Channel, int Number);
-  virtual void SetEvents(const cEvent *Present, const cEvent *Following);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinClassicDisplayChannel() override;
+  virtual void SetChannel(const cChannel *Channel, int Number) override;
+  virtual void SetEvents(const cEvent *Present, const cEvent *Following) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cSkinClassicDisplayChannel::cSkinClassicDisplayChannel(bool WithInfo)
@@ -180,21 +180,21 @@ private:
   void SetTextScrollbar(void);
 public:
   cSkinClassicDisplayMenu(void);
-  virtual ~cSkinClassicDisplayMenu();
-  virtual void Scroll(bool Up, bool Page);
-  virtual int MaxItems(void);
-  virtual void Clear(void);
-  virtual void SetTitle(const char *Title);
-  virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable);
-  virtual void SetScrollbar(int Total, int Offset);
-  virtual void SetEvent(const cEvent *Event);
-  virtual void SetRecording(const cRecording *Recording);
-  virtual void SetText(const char *Text, bool FixedFont);
+  virtual ~cSkinClassicDisplayMenu() override;
+  virtual void Scroll(bool Up, bool Page) override;
+  virtual int MaxItems(void) override;
+  virtual void Clear(void) override;
+  virtual void SetTitle(const char *Title) override;
+  virtual void SetButtons(const char *Red, const char *Green = NULL, const char *Yellow = NULL, const char *Blue = NULL) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void SetItem(const char *Text, int Index, bool Current, bool Selectable) override;
+  virtual void SetScrollbar(int Total, int Offset) override;
+  virtual void SetEvent(const cEvent *Event) override;
+  virtual void SetRecording(const cRecording *Recording) override;
+  virtual void SetText(const char *Text, bool FixedFont) override;
   virtual int GetTextAreaWidth(void) const;
   virtual const cFont *GetTextAreaFont(bool FixedFont) const;
-  virtual void Flush(void);
+  virtual void Flush(void) override;
   };
 
 cSkinClassicDisplayMenu::cSkinClassicDisplayMenu(void)
@@ -475,15 +475,15 @@ private:
   int lastCurrentWidth;
 public:
   cSkinClassicDisplayReplay(bool ModeOnly);
-  virtual ~cSkinClassicDisplayReplay();
-  virtual void SetTitle(const char *Title);
-  virtual void SetMode(bool Play, bool Forward, int Speed);
-  virtual void SetProgress(int Current, int Total);
-  virtual void SetCurrent(const char *Current);
-  virtual void SetTotal(const char *Total);
-  virtual void SetJump(const char *Jump);
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinClassicDisplayReplay() override;
+  virtual void SetTitle(const char *Title) override;
+  virtual void SetMode(bool Play, bool Forward, int Speed) override;
+  virtual void SetProgress(int Current, int Total) override;
+  virtual void SetCurrent(const char *Current) override;
+  virtual void SetTotal(const char *Total) override;
+  virtual void SetJump(const char *Jump) override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cSkinClassicDisplayReplay::cSkinClassicDisplayReplay(bool ModeOnly)
@@ -583,9 +583,9 @@ private:
   cOsd *osd;
 public:
   cSkinClassicDisplayVolume(void);
-  virtual ~cSkinClassicDisplayVolume();
-  virtual void SetVolume(int Current, int Total, bool Mute);
-  virtual void Flush(void);
+  virtual ~cSkinClassicDisplayVolume() override;
+  virtual void SetVolume(int Current, int Total, bool Mute) override;
+  virtual void Flush(void) override;
   };
 
 cSkinClassicDisplayVolume::cSkinClassicDisplayVolume(void)
@@ -642,10 +642,10 @@ private:
   void SetItem(const char *Text, int Index, bool Current);
 public:
   cSkinClassicDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
-  virtual ~cSkinClassicDisplayTracks();
-  virtual void SetTrack(int Index, const char * const *Tracks);
+  virtual ~cSkinClassicDisplayTracks() override;
+  virtual void SetTrack(int Index, const char * const *Tracks) override;
   virtual void SetAudioChannel(int AudioChannel) {}
-  virtual void Flush(void);
+  virtual void Flush(void) override;
   };
 
 cSkinClassicDisplayTracks::cSkinClassicDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks)
@@ -721,9 +721,9 @@ private:
   cOsd *osd;
 public:
   cSkinClassicDisplayMessage(void);
-  virtual ~cSkinClassicDisplayMessage();
-  virtual void SetMessage(eMessageType Type, const char *Text);
-  virtual void Flush(void);
+  virtual ~cSkinClassicDisplayMessage() override;
+  virtual void SetMessage(eMessageType Type, const char *Text) override;
+  virtual void Flush(void) override;
   };
 
 cSkinClassicDisplayMessage::cSkinClassicDisplayMessage(void)

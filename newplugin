@@ -12,7 +12,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: newplugin 5.2 2025/02/12 22:22:20 kls Exp $
+# $Id: newplugin 5.3 2025/03/02 11:03:35 kls Exp $
 
 $PLUGIN_NAME = $ARGV[0] || die "Usage: newplugin <name>\n";
 
@@ -207,24 +207,24 @@ private:
   // Add any member variables or functions you may need here.
 public:
   cPlugin$PLUGIN_CLASS(void);
-  virtual ~cPlugin$PLUGIN_CLASS();
-  virtual const char *Version(void) { return VERSION; }
-  virtual const char *Description(void) { return DESCRIPTION; }
-  virtual const char *CommandLineHelp(void);
-  virtual bool ProcessArgs(int argc, char *argv[]);
-  virtual bool Initialize(void);
-  virtual bool Start(void);
-  virtual void Stop(void);
-  virtual void Housekeeping(void);
-  virtual cString Active(void);
-  virtual time_t WakeupTime(void);
-  virtual const char *MainMenuEntry(void) { return MAINMENUENTRY; }
-  virtual cOsdObject *MainMenuAction(void);
-  virtual cMenuSetupPage *SetupMenu(void);
-  virtual bool SetupParse(const char *Name, const char *Value);
-  virtual bool Service(const char *Id, void *Data = NULL);
-  virtual const char **SVDRPHelpPages(void);
-  virtual cString SVDRPCommand(const char *Command, const char *Option, int &ReplyCode);
+  virtual ~cPlugin$PLUGIN_CLASS() override;
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return DESCRIPTION; }
+  virtual const char *CommandLineHelp(void) override;
+  virtual bool ProcessArgs(int argc, char *argv[]) override;
+  virtual bool Initialize(void) override;
+  virtual bool Start(void) override;
+  virtual void Stop(void) override;
+  virtual void Housekeeping(void) override;
+  virtual cString Active(void) override;
+  virtual time_t WakeupTime(void) override;
+  virtual const char *MainMenuEntry(void) override { return MAINMENUENTRY; }
+  virtual cOsdObject *MainMenuAction(void) override;
+  virtual cMenuSetupPage *SetupMenu(void) override;
+  virtual bool SetupParse(const char *Name, const char *Value) override;
+  virtual bool Service(const char *Id, void *Data = NULL) override;
+  virtual const char **SVDRPHelpPages(void) override;
+  virtual cString SVDRPCommand(const char *Command, const char *Option, int &ReplyCode) override;
   };
 
 cPlugin${PLUGIN_CLASS}::cPlugin$PLUGIN_CLASS(void)
