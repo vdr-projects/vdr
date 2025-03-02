@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 5.3 2025/02/12 21:18:53 kls Exp $
+ * $Id: status.c 5.4 2025/03/02 21:02:12 kls Exp $
  */
 
 #include "status.h"
@@ -98,7 +98,7 @@ void cStatus::MsgOsdTitle(const char *Title)
 void cStatus::MsgOsdStatusMessage(eMessageType Type, const char *Message)
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->OsdStatusMessage2(Type, Message);
+      sm->OsdStatusMessage(Type, Message);
 }
 
 void cStatus::MsgOsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue)
@@ -110,13 +110,13 @@ void cStatus::MsgOsdHelpKeys(const char *Red, const char *Green, const char *Yel
 void cStatus::MsgOsdItem(const char *Text, int Index, bool Selectable)
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->OsdItem2(Text, Index, Selectable);
+      sm->OsdItem(Text, Index, Selectable);
 }
 
 void cStatus::MsgOsdCurrentItem(const char *Text, int Index)
 {
   for (cStatus *sm = statusMonitors.First(); sm; sm = statusMonitors.Next(sm))
-      sm->OsdCurrentItem2(Text, Index);
+      sm->OsdCurrentItem(Text, Index);
 }
 
 void cStatus::MsgOsdTextItem(const char *Text, bool Scroll)

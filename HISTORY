@@ -10096,3 +10096,5 @@ Video Disk Recorder Revision History
   Plugins may want to do the same, but don't have to.
 - Removed -Werror=overloaded-virtual from Makefile and Make.config(.template).
   Plugins may want to do the same, but don't have to.
+- Renamed cStatus::Osd*2() to cStatus::Osd*().
+  Plugins that use these recently introduced functions need to remove the '2' from the name.

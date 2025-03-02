@@ -83,3 +83,7 @@ VDR Plugin 'status' Revision History
 - Activated logging of OsdItem2().
 - Added cStatus::OsdCurrentItem2().
 - Added cStatus::OsdStatusMessage2().
+
+2025-03-02: Version 2.6.2
+
+- Renamed cStatus::Osd*2() to cStatus::Osd*().

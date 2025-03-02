@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.h 5.4 2025/03/02 11:03:35 kls Exp $
+ * $Id: status.h 5.5 2025/03/02 21:02:12 kls Exp $
  */
 
 #ifndef __STATUS_H
@@ -82,21 +82,19 @@ protected:
   virtual void OsdTitle(const char *Title) {}
                // Title has been displayed in the title line of the menu.
   virtual void OsdStatusMessage(const char *Message) {}
-  virtual void OsdStatusMessage2(eMessageType Type, const char *Message) { OsdStatusMessage(Message); }
+  virtual void OsdStatusMessage(eMessageType Type, const char *Message) { OsdStatusMessage(Message); }
                // Message has been displayed in the status line of the menu.
                // If Message is NULL, the status line has been cleared.
   virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue) {}
                // The help keys have been set to the given values (may be NULL).
   virtual void OsdItem(const char *Text, int Index) {}
-               // The OSD displays the given single line Text as menu item at Index.
-  virtual void OsdItem2(const char *Text, int Index, bool Selectable) { OsdItem(Text, Index); }
+  virtual void OsdItem(const char *Text, int Index, bool Selectable) { OsdItem(Text, Index); }
                // The OSD displays the given single line Text as menu item at Index.
                // Selectable is true if this item can be selected.
   virtual void OsdCurrentItem(const char *Text) {}
+  virtual void OsdCurrentItem(const char *Text, int Index) { OsdCurrentItem(Text); }
                // The OSD displays the given single line Text as the current menu item.
-  virtual void OsdCurrentItem2(const char *Text, int Index) { OsdCurrentItem(Text); }
-               // The OSD displays the given single line Text as the current menu item.
-               // Index is the one that was given in OsdItem[2]() for this item.
+               // Index is the one that was given in OsdItem() for this item.
   virtual void OsdTextItem(const char *Text, bool Scroll) {}
                // The OSD displays the given multi line text. If Text points to an
                // actual string, that text shall be displayed and Scroll has no

@@ -3,13 +3,13 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: status.c 5.5 2025/03/02 11:03:35 kls Exp $
+ * $Id: status.c 5.6 2025/03/02 21:02:12 kls Exp $
  */
 
 #include <vdr/plugin.h>
 #include <vdr/status.h>
 
-static const char *VERSION        = "2.6.1";
+static const char *VERSION        = "2.6.2";
 static const char *DESCRIPTION    = "Status monitor test";
 static const char *MAINMENUENTRY  = NULL;
 
@@ -27,10 +27,10 @@ protected:
   virtual void SetSubtitleTrack(int Index, const char * const *Tracks) override;
   virtual void OsdClear(void) override;
   virtual void OsdTitle(const char *Title) override;
-  virtual void OsdStatusMessage2(eMessageType Type, const char *Message) override;
+  virtual void OsdStatusMessage(eMessageType Type, const char *Message) override;
   virtual void OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue) override;
-  virtual void OsdItem2(const char *Text, int Index, bool Selectable) override;
-  virtual void OsdCurrentItem2(const char *Text, int Index) override;
+  virtual void OsdItem(const char *Text, int Index, bool Selectable) override;
+  virtual void OsdCurrentItem(const char *Text, int Index) override;
   virtual void OsdTextItem(const char *Text, bool Scroll) override;
   virtual void OsdChannel(const char *Text) override;
   virtual void OsdProgramme(time_t PresentTime, const char *PresentTitle, const char *PresentSubtitle, time_t FollowingTime, const char *FollowingTitle, const char *FollowingSubtitle) override;
@@ -86,9 +86,9 @@ void cStatusTest::OsdTitle(const char *Title)
   dsyslog("status: cStatusTest::OsdTitle '%s'", Title);
 }
 
-void cStatusTest::OsdStatusMessage2(eMessageType Type, const char *Message)
+void cStatusTest::OsdStatusMessage(eMessageType Type, const char *Message)
 {
-  dsyslog("status: cStatusTest::OsdStatusMessage2 %d '%s'", Type, Message);
+  dsyslog("status: cStatusTest::OsdStatusMessage %d '%s'", Type, Message);
 }
 
 void cStatusTest::OsdHelpKeys(const char *Red, const char *Green, const char *Yellow, const char *Blue)
@@ -96,12 +96,12 @@ void cStatusTest::OsdHelpKeys(const char *Red, const char *Green, const char *Ye
   dsyslog("status: cStatusTest::OsdHelpKeys %s - %s - %s - %s", Red, Green, Yellow, Blue);
 }
 
-void cStatusTest::OsdItem2(const char *Text, int Index, bool Selected)
+void cStatusTest::OsdItem(const char *Text, int Index, bool Selected)
 {
-  dsyslog("status: cStatusTest::OsdItem2  %s %d %d", Text, Index, Selected);
+  dsyslog("status: cStatusTest::OsdItem  %s %d %d", Text, Index, Selected);
 }
 
-void cStatusTest::OsdCurrentItem2(const char *Text, int Index)
+void cStatusTest::OsdCurrentItem(const char *Text, int Index)
 {
   dsyslog("status: cStatusTest::OsdCurrentItem %s %d", Text, Index);
 }
