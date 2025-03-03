@@ -2596,6 +2596,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for implementing cStatus::OsdCurrentItem2() with the index of the current item
  for adding missing calls to cStatus::MsgOsdStatusMessage() and implementing
  cStatus::OsdStatusMessage2() with the type of the message
+ for suggesting to add a mutex lock to protect creating/deleting cStatus objects
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

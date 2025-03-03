@@ -4,23 +4,30 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: status.c 5.4 2025/03/02 21:02:12 kls Exp $
+ * $Id: status.c 5.5 2025/03/03 13:31:10 kls Exp $
  */
 
 #include "status.h"
+#include "thread.h"
 
 // --- cStatus ---------------------------------------------------------------
 
 cList<cStatus> cStatus::statusMonitors;
 
+static cMutex Mutex;
+
 cStatus::cStatus(void)
 {
+  Mutex.Lock();
   statusMonitors.Add(this);
+  Mutex.Unlock();
 }
 
 cStatus::~cStatus()
 {
+  Mutex.Lock();
   statusMonitors.Del(this, false);
+  Mutex.Unlock();
 }
 
 void cStatus::MsgChannelChange(const cChannel *Channel)

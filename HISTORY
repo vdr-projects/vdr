@@ -10090,7 +10090,7 @@ Video Disk Recorder Revision History
 - Added missing locks to SetMenuItem() functions.
 - Revised locking in cMenuSchedule and cMenuWhatsOn.
 
-2025-03-02:
+2025-03-03:
 
 - Added the "override" keyword to virtual functions reimplemented in derived classes.
   Plugins may want to do the same, but don't have to.
@@ -10100,3 +10100,5 @@ Video Disk Recorder Revision History
   Plugins that use these recently introduced functions need to remove the '2' from the name.
 - The new virtual function cSkinDisplayMenu::SetItemEvent(..., const cTimer *Timer) can be
   used to get full access to the timer (if any) defined for this event.
+- Added a mutex lock to protect creating/deleting cStatus objects (suggested by Markus
+  Ehrnsperger).
