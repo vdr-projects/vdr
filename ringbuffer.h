@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 5.1 2025/03/02 11:03:35 kls Exp $
+ * $Id: ringbuffer.h 5.2 2025/03/03 13:12:16 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
@@ -154,4 +154,4 @@ public:
     // Drops the Frame that has just been fetched with Get().
   };
 
-#endif // __RINGBUFFER_H
+#endif //__RINGBUFFER_H

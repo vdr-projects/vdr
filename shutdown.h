@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.h 2.1 2013/02/18 10:35:27 kls Exp $
+ * $Id: shutdown.h 5.1 2025/03/03 13:12:16 kls Exp $
  */
 
 #ifndef __SHUTDOWN_H
@@ -112,4 +112,4 @@ public:
 
 extern cShutdownHandler ShutdownHandler;
 
-#endif
+#endif //__SHUTDOWN_H

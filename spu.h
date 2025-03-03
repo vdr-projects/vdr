@@ -6,11 +6,11 @@
  * This code is distributed under the terms and conditions of the
  * GNU GENERAL PUBLIC LICENSE. See the file COPYING for details.
  *
- * $Id: spu.h 1.5 2006/04/17 11:00:00 kls Exp $
+ * $Id: spu.h 5.1 2025/03/03 13:12:16 kls Exp $
  */
 
-#ifndef __SPU_VDR_H
-#define __SPU_VDR_H
+#ifndef __SPU_H
+#define __SPU_H
 
 #include <inttypes.h>
 
@@ -39,4 +39,4 @@ class cSpuDecoder {
     virtual void processSPU(uint32_t pts, uint8_t * buf, bool AllowedShow = true) = 0;
 };
 
-#endif                          // __SPU_VDR_H
+#endif //__SPU_H

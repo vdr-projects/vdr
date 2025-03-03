@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.8 2024/12/04 14:33:22 kls Exp $
+ * $Id: remux.h 5.9 2025/03/03 13:12:16 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -594,4 +594,4 @@ public:
       ///< Returns the aspect ratio, or arUnknown if this information is not available.
   };
 
-#endif // __REMUX_H
+#endif //__REMUX_H
