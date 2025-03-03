@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 5.7 2025/03/02 11:03:35 kls Exp $
+ * $Id: skins.h 5.8 2025/03/03 11:05:23 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -244,6 +244,10 @@ public:
        ///< If the skin displays the Event item in its own way, it shall return true.
        ///< The default implementation does nothing and returns false, which results in
        ///< a call to SetItem() with a proper text.
+  virtual bool SetItemEvent(const cEvent *Event, int Index, bool Current, bool Selectable, const cChannel *Channel, bool WithDate, eTimerMatch TimerMatch, const cTimer *Timer) {
+       return SetItemEvent(Event, Index, Current, Selectable, Channel, WithDate, TimerMatch, Timer && Timer->HasFlags(tfActive)); }
+       ///< Like SetItemEvent(..., bool TimerActive), but with full access to the Timer.
+       ///< If Timer is NULL, no timer is defined for this event.
   virtual bool SetItemTimer(const cTimer *Timer, int Index, bool Current, bool Selectable) { return false; }
        ///< Sets the item at the given Index to Timer. See SetItem() for more information.
        ///< If a derived skin class implements this function, it can display a Timer item

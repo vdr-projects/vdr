@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.24 2025/03/02 11:03:35 kls Exp $
+ * $Id: menu.c 5.25 2025/03/03 11:05:23 kls Exp $
  */
 
 #include "menu.h"
@@ -1569,6 +1569,7 @@ private:
 public:
   const cEvent *event;
   const cChannel *channel;
+  const cTimer *timer;
   bool withDate;
   eTimerMatch timerMatch;
   bool timerActive;
@@ -1587,6 +1588,7 @@ cMenuScheduleItem::cMenuScheduleItem(const cTimers *Timers, const cEvent *Event,
 {
   event = Event;
   channel = Channel;
+  timer = NULL;
   withDate = WithDate;
   timerMatch = tmNone;
   timerActive = false;
@@ -1612,10 +1614,10 @@ bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
   LOCK_SCHEDULES_READ;
   eTimerMatch OldTimerMatch = timerMatch;
   bool OldTimerActive = timerActive;
-  const cTimer *Timer = Timers->GetMatch(event, &timerMatch);
-  if (event->EndTime() < time(NULL) && !event->IsRunning() && (!Timer || !Timer->Recording()))
+  timer = Timers->GetMatch(event, &timerMatch);
+  if (event->EndTime() < time(NULL) && !event->IsRunning() && (!timer || !timer->Recording()))
      timerMatch = tmNone;
-  timerActive = Timer && Timer->HasFlags(tfActive);
+  timerActive = timer && timer->HasFlags(tfActive);
   if (Force || timerMatch != OldTimerMatch || timerActive != OldTimerActive) {
      cString buffer;
      char t = TimerMatchChars[timerMatch + (timerActive ? 0 : 3)];
@@ -1637,9 +1639,10 @@ bool cMenuScheduleItem::Update(const cTimers *Timers, bool Force)
 
 void cMenuScheduleItem::SetMenuItem(cSkinDisplayMenu *DisplayMenu, int Index, bool Current, bool Selectable)
 {
+  LOCK_TIMERS_READ;
   LOCK_CHANNELS_READ;
   LOCK_SCHEDULES_READ;
-  if (!DisplayMenu->SetItemEvent(event, Index, Current, Selectable, channel, withDate, timerMatch, timerActive))
+  if (!DisplayMenu->SetItemEvent(event, Index, Current, Selectable, channel, withDate, timerMatch, timer))
      DisplayMenu->SetItem(Text(), Index, Current, Selectable);
 }
 

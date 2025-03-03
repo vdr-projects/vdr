@@ -10098,3 +10098,5 @@ Video Disk Recorder Revision History
   Plugins may want to do the same, but don't have to.
 - Renamed cStatus::Osd*2() to cStatus::Osd*().
   Plugins that use these recently introduced functions need to remove the '2' from the name.
+- The new virtual function cSkinDisplayMenu::SetItemEvent(..., const cTimer *Timer) can be
+  used to get full access to the timer (if any) defined for this event.
