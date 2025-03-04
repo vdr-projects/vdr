@@ -10100,7 +10100,7 @@ Video Disk Recorder Revision History
   Plugins that use these recently introduced functions need to remove the '2' from the name.
 - The new virtual function cSkinDisplayMenu::SetItemEvent(..., const cTimer *Timer) can be
   used to get full access to the timer (if any) defined for this event.
-- Added a mutex lock to protect creating/deleting cStatus objects (suggested by Markus
-  Ehrnsperger).
+- Added mutex locks to protect creating/deleting cStatus and cEpgHandler objects (suggested
+  by Markus Ehrnsperger).
 - Making absolutely sure cEvent::Title() never returns NULL.
   APIVERSNUM is now 30007.

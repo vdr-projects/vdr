@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.14 2025/03/02 11:03:35 kls Exp $
+ * $Id: epg.c 5.15 2025/03/04 16:27:49 kls Exp $
  */
 
 #include "epg.h"
@@ -1421,14 +1421,20 @@ void cEpgDataReader::Action(void)
 
 // --- cEpgHandler -----------------------------------------------------------
 
+static cMutex Mutex;
+
 cEpgHandler::cEpgHandler(void)
 {
+  Mutex.Lock();
   EpgHandlers.Add(this);
+  Mutex.Unlock();
 }
 
 cEpgHandler::~cEpgHandler()
 {
+  Mutex.Lock();
   EpgHandlers.Del(this, false);
+  Mutex.Unlock();
 }
 
 // --- cEpgHandlers ----------------------------------------------------------
