@@ -10090,7 +10090,7 @@ Video Disk Recorder Revision History
 - Added missing locks to SetMenuItem() functions.
 - Revised locking in cMenuSchedule and cMenuWhatsOn.
 
-2025-03-03:
+2025-03-04:
 
 - Added the "override" keyword to virtual functions reimplemented in derived classes.
   Plugins may want to do the same, but don't have to.
@@ -10102,3 +10102,5 @@ Video Disk Recorder Revision History
   used to get full access to the timer (if any) defined for this event.
 - Added a mutex lock to protect creating/deleting cStatus objects (suggested by Markus
   Ehrnsperger).
+- Making absolutely sure cEvent::Title() never returns NULL.
+  APIVERSNUM is now 30007.

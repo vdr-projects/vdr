@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 5.9 2025/03/02 11:03:35 kls Exp $
+ * $Id: epg.h 5.10 2025/03/04 15:54:07 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -102,7 +102,7 @@ public:
   uchar TableID(void) const { return tableID; }
   uchar Version(void) const { return version; }
   int RunningStatus(void) const { return runningStatus; }
-  const char *Title(void) const { return title; }
+  const char *Title(void) const { return title ? title : ""; }
   const char *ShortText(void) const { return shortText; }
   const char *Description(void) const { return description; }
   const cComponents *Components(void) const { return components; }
