@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-09-21 12:45+0200\n"
+"POT-Creation-Date: 2025-03-28 22:45+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -1081,6 +1081,9 @@ msgstr "添加新频道"
 
 msgid "add new transponders"
 msgstr "添加新转发器"
+
+msgid "after rewind"
+msgstr ""
 
 msgid "DVB"
 msgstr "卫星卡设置"

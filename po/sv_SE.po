@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-09-21 12:45+0200\n"
+"POT-Creation-Date: 2025-03-28 22:45+0100\n"
 "PO-Revision-Date: 2015-02-12 21:58+0100\n"
 "Last-Translator: Magnus Sirviö <sirwio@hotmail.com>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -1084,6 +1084,9 @@ msgstr "lägg till nya kanaler"
 
 msgid "add new transponders"
 msgstr "lägg till nya transponders"
+
+msgid "after rewind"
+msgstr ""
 
 msgid "DVB"
 msgstr "DVB"

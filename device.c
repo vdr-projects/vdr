@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.15 2025/03/02 11:03:35 kls Exp $
+ * $Id: device.c 5.16 2025/03/28 22:49:17 kls Exp $
  */
 
 #include "device.h"
@@ -1190,9 +1190,17 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
      autoSelectPreferredSubtitleLanguage = !Manual;
      if (dvbSubtitleConverter)
         dvbSubtitleConverter->Reset();
-     if (Type == ttNone && dvbSubtitleConverter) {
-        cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
-        DELETENULL(dvbSubtitleConverter);
+     if (dvbSubtitleConverter) {
+        if (Type == ttNone) {
+           if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND)
+              dvbSubtitleConverter->SetVisible(false);
+           else {
+              cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+              DELETENULL(dvbSubtitleConverter);
+              }
+           }
+        else if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND)
+           dvbSubtitleConverter->SetVisible(true);
         }
      DELETENULL(liveSubtitle);
      if (player)
@@ -1209,6 +1217,12 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
      return true;
      }
   return false;
+}
+
+void cDevice::SetTempSubtitles(void)
+{
+  if (dvbSubtitleConverter)
+     dvbSubtitleConverter->SetTempVisible();
 }
 
 void cDevice::EnsureAudioTrack(bool Force)
@@ -1248,7 +1262,7 @@ void cDevice::EnsureSubtitleTrack(void)
 {
   if (keepTracks)
      return;
-  if (Setup.DisplaySubtitles) {
+  if (Setup.DisplaySubtitles == SUBTITLES_ALWAYS || Setup.DisplaySubtitles == SUBTITLES_REWIND && Replaying() && !Transferring()) {
      eTrackType PreferredTrack = ttNone;
      int LanguagePreference = INT_MAX; // higher than the maximum possible value
      for (int i = ttSubtitleFirst; i <= ttSubtitleLast; i++) {
@@ -1449,8 +1463,11 @@ int cDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
 
 int cDevice::PlaySubtitle(const uchar *Data, int Length)
 {
-  if (!dvbSubtitleConverter)
+  if (!dvbSubtitleConverter) {
      dvbSubtitleConverter = new cDvbSubtitleConverter;
+     if (Replaying() && !Transferring())
+        dvbSubtitleConverter->SetVisible(Setup.DisplaySubtitles != SUBTITLES_REWIND);
+     }
   return dvbSubtitleConverter->ConvertFragments(Data, Length);
 }
 
@@ -1618,8 +1635,11 @@ int cDevice::PlayTsAudio(const uchar *Data, int Length)
 
 int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
 {
-  if (!dvbSubtitleConverter)
+  if (!dvbSubtitleConverter) {
      dvbSubtitleConverter = new cDvbSubtitleConverter;
+     if (Replaying() && !Transferring())
+        dvbSubtitleConverter->SetVisible(Setup.DisplaySubtitles != SUBTITLES_REWIND);
+     }
   tsToPesSubtitle.PutTs(Data, Length);
   int l;
   if (const uchar *p = tsToPesSubtitle.GetPes(l)) {

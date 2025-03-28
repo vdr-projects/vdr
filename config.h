@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 5.28 2025/03/04 15:54:07 kls Exp $
+ * $Id: config.h 5.29 2025/03/28 22:49:17 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -75,6 +75,12 @@
 #define STANDARD_DVB       0
 #define STANDARD_ANSISCTE  1
 #define STANDARD_NORDIG    2
+
+// Automatic subtitles:
+
+#define SUBTITLES_NO     0
+#define SUBTITLES_ALWAYS 1
+#define SUBTITLES_REWIND 2
 
 typedef uint32_t in_addr_t; //XXX from /usr/include/netinet/in.h (apparently this is not defined on systems with glibc < 2.2)
 

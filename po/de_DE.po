@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-09-21 12:45+0200\n"
+"POT-Creation-Date: 2025-03-28 22:45+0100\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -1081,6 +1081,9 @@ msgstr "neue Kanäle hinzufügen"
 
 msgid "add new transponders"
 msgstr "neue Transponder hinzufügen"
+
+msgid "after rewind"
+msgstr "nach Rücklauf"
 
 msgid "DVB"
 msgstr "DVB"

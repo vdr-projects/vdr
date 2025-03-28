@@ -949,9 +949,12 @@ VDR version 2.6.6 added '/' to this list.
                          many "Audio language" options which allow you to select the
                          individual preferred languages.
 
-  Display subtitles = no If set to 'yes', the first available subtitles in the list
+  Display subtitles = no If set to 'always', the first available subtitles in the list
                          of preferred subtitle languages will be turned on when
-                         switching to a channel that provides subtitles.
+                         switching to a channel or playing a recording that provides
+                         subtitles. 'after rewind' turns on subtitles after a fast
+                         rewind during replay, and off again when the point where the
+                         rewind was started is reached.
 
   Subtitle languages = 0 Some tv stations broadcast various subtitle tracks in different
                          languages. This option allows you to define which language(s)

@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 5.4 2025/03/28 21:55:03 kls Exp $
+ * $Id: dvbsubtitle.c 5.5 2025/03/28 22:49:17 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1369,6 +1369,8 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   osdDeltaX = osdDeltaY = 0;
   osdFactorX = osdFactorY = 1.0;
   retention = SUBTITLE_RETENTION;
+  visible = true;
+  endVisible = -1;
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
   current = NULL;
@@ -1383,6 +1385,24 @@ cDvbSubtitleConverter::~cDvbSubtitleConverter()
   delete osd;
   delete bitmaps;
   delete pages;
+}
+
+void cDvbSubtitleConverter::SetVisible(bool Visible)
+{
+  LOCK_THREAD;
+  visible = Visible;
+  if (!visible)
+     DELETENULL(osd);
+  endVisible = -1;
+}
+
+void cDvbSubtitleConverter::SetTempVisible(void)
+{
+  LOCK_THREAD;
+  if (!visible) {
+     endVisible = cDevice::PrimaryDevice()->GetSTC();
+     visible = true;
+     }
 }
 
 void cDvbSubtitleConverter::SetupChanged(void)
@@ -1400,10 +1420,6 @@ void cDvbSubtitleConverter::Reset(void)
   DELETENULL(osd);
   frozen = false;
   ddsVersionNumber = -1;
-  displayWidth = windowWidth = 720;
-  displayHeight = windowHeight = 576;
-  windowHorizontalOffset = 0;
-  windowVerticalOffset = 0;
   Unlock();
 }
 
@@ -1496,6 +1512,8 @@ static int PtsDeltaMs(int64_t a, int64_t b)
   return (LimitTo32Bit(a) - LimitTo32Bit(b)) / 90; // some devices only deliver 32 bits, PTS are in 1/90000s
 }
 
+#define TEMPSUBTITLETAIL 1000 // ms
+
 void cDvbSubtitleConverter::Action(void)
 {
   int LastSetupLevel = setupLevel;
@@ -1529,9 +1547,14 @@ void cDvbSubtitleConverter::Action(void)
                      This = sb;
                   if (This && This != current) {
                      current = This;
-                     if (!current->HasBitmaps() || current->Timeout() * 1000 - PtsDeltaMs(STC, current->Pts()) <= 0)
+                     if (endVisible >= 0 && PtsDeltaMs(STC, endVisible) > TEMPSUBTITLETAIL) {
+                        visible = false;
+                        endVisible = -1;
                         DELETENULL(osd);
-                     else if (AssertOsd()) {
+                        }
+                     else if (!current->HasBitmaps() || current->Timeout() * 1000 - PtsDeltaMs(STC, current->Pts()) <= 0)
+                        DELETENULL(osd);
+                     else if (visible && AssertOsd()) {
                         dbgoutput("showing bitmap #%d of %d<br>\n", current->Index() + 1, bitmaps->Count());
                         current->Draw(osd);
                         dbgconverter("PTS: %" PRId64 "  STC: %" PRId64 " (%" PRId64 ") timeout: %d<br>\n", current->Pts(), STC, Delta, current->Timeout());

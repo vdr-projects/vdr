@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.25 2025/03/03 11:05:23 kls Exp $
+ * $Id: menu.c 5.26 2025/03/28 22:49:17 kls Exp $
  */
 
 #include "menu.h"
@@ -3735,6 +3735,7 @@ private:
   void Setup(void);
   const char *videoDisplayFormatTexts[3];
   const char *updateChannelsTexts[6];
+  const char *displaySubtitlesTexts[3];
   const char *standardComplianceTexts[3];
 public:
   cMenuSetupDVB(void);
@@ -3759,6 +3760,9 @@ cMenuSetupDVB::cMenuSetupDVB(void)
   updateChannelsTexts[3] = tr("names and PIDs");
   updateChannelsTexts[4] = tr("add new channels");
   updateChannelsTexts[5] = tr("add new transponders");
+  displaySubtitlesTexts[0] = tr("no");
+  displaySubtitlesTexts[1] = tr("always");
+  displaySubtitlesTexts[2] = tr("after rewind");
   standardComplianceTexts[0] = "DVB";
   standardComplianceTexts[1] = "ANSI/SCTE";
   standardComplianceTexts[2] = "NORDIG";
@@ -3784,8 +3788,8 @@ void cMenuSetupDVB::Setup(void)
   Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nLanguages()->Size()));
   for (int i = 0; i < numAudioLanguages; i++)
       Add(new cMenuEditStraItem(tr("Setup.DVB$Audio language"),    &data.AudioLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
-  Add(new cMenuEditBoolItem(tr("Setup.DVB$Display subtitles"),     &data.DisplaySubtitles));
-  if (data.DisplaySubtitles) {
+  Add(new cMenuEditStraItem(tr("Setup.DVB$Display subtitles"),     &data.DisplaySubtitles, 3, displaySubtitlesTexts));
+  if (data.DisplaySubtitles != SUBTITLES_NO) {
      Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle languages"),    &numSubtitleLanguages, 0, I18nLanguages()->Size()));
      for (int i = 0; i < numSubtitleLanguages; i++)
          Add(new cMenuEditStraItem(tr("Setup.DVB$Subtitle language"), &data.SubtitleLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
@@ -3803,8 +3807,8 @@ eOSState cMenuSetupDVB::ProcessKey(eKeys Key)
   int oldVideoDisplayFormat = ::Setup.VideoDisplayFormat;
   bool oldVideoFormat = ::Setup.VideoFormat;
   bool newVideoFormat = data.VideoFormat;
-  bool oldDisplaySubtitles = ::Setup.DisplaySubtitles;
-  bool newDisplaySubtitles = data.DisplaySubtitles;
+  int oldDisplaySubtitles = ::Setup.DisplaySubtitles;
+  int newDisplaySubtitles = data.DisplaySubtitles;
   int oldnumAudioLanguages = numAudioLanguages;
   int oldnumSubtitleLanguages = numSubtitleLanguages;
   eOSState state = cMenuSetupBase::ProcessKey(Key);

@@ -6,7 +6,7 @@
  *
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 5.2 2025/03/28 21:55:03 kls Exp $
+ * $Id: dvbsubtitle.h 5.3 2025/03/28 22:49:17 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H
@@ -38,6 +38,8 @@ private:
   double osdFactorX;
   double osdFactorY;
   int retention;
+  bool visible;
+  uint64_t endVisible;
   cList<cDvbSubtitlePage> *pages;
   cList<cDvbSubtitleBitmaps> *bitmaps;
   cDvbSubtitleBitmaps *current;
@@ -51,6 +53,8 @@ public:
   cDvbSubtitleConverter(void);
   virtual ~cDvbSubtitleConverter() override;
   virtual void Action(void) override;
+  void SetVisible(bool Visible);
+  void SetTempVisible(void);
   void Reset(void);
   void Freeze(bool Status) { frozen = Status; }
   int ConvertFragments(const uchar *Data, int Length); // for legacy PES recordings

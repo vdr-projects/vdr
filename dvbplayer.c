@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.8 2025/03/02 11:03:35 kls Exp $
+ * $Id: dvbplayer.c 5.9 2025/03/28 22:49:17 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -826,6 +826,7 @@ void cDvbPlayer::Backward(void)
             // run into pmPlay
        case pmPlay: {
             LOCK_THREAD;
+            DeviceSetTempSubtitles();
             Empty();
             if (DeviceIsPlayingVideo())
                DeviceMute();

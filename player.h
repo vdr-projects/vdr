@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 5.7 2025/03/02 11:03:35 kls Exp $
+ * $Id: player.h 5.8 2025/03/28 22:49:17 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -34,6 +34,7 @@ protected:
   void DeviceMute(void) { if (device) device->Mute(); }
   void DeviceSetVideoDisplayFormat(eVideoDisplayFormat VideoDisplayFormat) { if (device) device->SetVideoDisplayFormat(VideoDisplayFormat); }
   void DeviceStillPicture(const uchar *Data, int Length) { if (device) device->StillPicture(Data, Length); }
+  void DeviceSetTempSubtitles(void) { if (device) device->SetTempSubtitles(); }
   uint64_t DeviceGetSTC(void) { return device ? device->GetSTC() : -1; }
   void Detach(void);
   virtual void Activate(bool On) {}

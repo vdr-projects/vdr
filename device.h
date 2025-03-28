@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 5.7 2025/03/02 11:03:35 kls Exp $
+ * $Id: device.h 5.8 2025/03/28 22:49:17 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -601,6 +601,8 @@ public:
        ///< will be done for the rest of the current replay session, or until
        ///< the channel is changed.
        ///< Returns true if Type is a valid subtitle track, false otherwise.
+  void SetTempSubtitles(void);
+       ///< Temporarily turn on subtitles after a fast rewind during reply.
   void EnsureAudioTrack(bool Force = false);
        ///< Makes sure an audio track is selected that is actually available.
        ///< If Force is true, the language and Dolby Digital settings will

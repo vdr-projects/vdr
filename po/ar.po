@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-09-21 12:45+0200\n"
+"POT-Creation-Date: 2025-03-28 22:45+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1083,6 +1083,9 @@ msgstr "اضافة قناة جديدة"
 
 msgid "add new transponders"
 msgstr "اضافة مصدر قنوات جديد"
+
+msgid "after rewind"
+msgstr ""
 
 msgid "DVB"
 msgstr "الدى فى بى"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 5.1 2024/03/04 21:13:58 kls Exp $
+ * $Id: config.c 5.2 2025/03/28 22:49:17 kls Exp $
  */
 
 #include "config.h"
@@ -402,7 +402,7 @@ cSetup::cSetup(void)
   MarginStart = 2;
   MarginStop = 10;
   AudioLanguages[0] = -1;
-  DisplaySubtitles = 0;
+  DisplaySubtitles = SUBTITLES_NO;
   SubtitleLanguages[0] = -1;
   SubtitleOffset = 0;
   SubtitleFgTransparency = 0;

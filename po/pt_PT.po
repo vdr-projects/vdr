@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2024-09-21 12:45+0200\n"
+"POT-Creation-Date: 2025-03-28 22:45+0100\n"
 "PO-Revision-Date: 2010-03-28 22:49+0100\n"
 "Last-Translator: Cris Silva <hudokkow@gmail.com>\n"
 "Language-Team: Portuguese <vdr@linuxtv.org>\n"
@@ -1080,6 +1080,9 @@ msgstr "adicionar novos canais"
 
 msgid "add new transponders"
 msgstr "adicionar novos transponders"
+
+msgid "after rewind"
+msgstr ""
 
 msgid "DVB"
 msgstr "Placa DVB"
