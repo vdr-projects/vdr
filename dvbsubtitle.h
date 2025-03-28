@@ -6,7 +6,7 @@
  *
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  *
- * $Id: dvbsubtitle.h 5.1 2025/03/02 11:03:35 kls Exp $
+ * $Id: dvbsubtitle.h 5.2 2025/03/28 21:55:03 kls Exp $
  */
 
 #ifndef __DVBSUBTITLE_H
@@ -37,8 +37,10 @@ private:
   int osdDeltaY;
   double osdFactorX;
   double osdFactorY;
+  int retention;
   cList<cDvbSubtitlePage> *pages;
   cList<cDvbSubtitleBitmaps> *bitmaps;
+  cDvbSubtitleBitmaps *current;
   cDvbSubtitlePage *GetPageById(int PageId, bool New = false);
   void SetOsdData(void);
   bool AssertOsd(void);

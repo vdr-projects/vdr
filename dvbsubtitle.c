@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 5.3 2025/03/02 11:03:35 kls Exp $
+ * $Id: dvbsubtitle.c 5.4 2025/03/28 21:55:03 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1351,6 +1351,8 @@ void cDvbSubtitleBitmaps::DbgDump(int WindowWidth, int WindowHeight)
 
 // --- cDvbSubtitleConverter -------------------------------------------------
 
+#define SUBTITLE_RETENTION 120 // seconds
+
 int cDvbSubtitleConverter::setupLevel = 0;
 
 cDvbSubtitleConverter::cDvbSubtitleConverter(void)
@@ -1364,8 +1366,12 @@ cDvbSubtitleConverter::cDvbSubtitleConverter(void)
   displayHeight = windowHeight = 576;
   windowHorizontalOffset = 0;
   windowVerticalOffset = 0;
+  osdDeltaX = osdDeltaY = 0;
+  osdFactorX = osdFactorY = 1.0;
+  retention = SUBTITLE_RETENTION;
   pages = new cList<cDvbSubtitlePage>;
   bitmaps = new cList<cDvbSubtitleBitmaps>;
+  current = NULL;
   SD.Reset();
   Start();
 }
@@ -1390,7 +1396,7 @@ void cDvbSubtitleConverter::Reset(void)
   dvbSubtitleAssembler->Reset();
   Lock();
   pages->Clear();
-  bitmaps->Clear();
+  current = NULL;
   DELETENULL(osd);
   frozen = false;
   ddsVersionNumber = -1;
@@ -1485,51 +1491,59 @@ int cDvbSubtitleConverter::Convert(const uchar *Data, int Length)
 
 #define LimitTo32Bit(n) ((n) & 0x00000000FFFFFFFFL)
 
+static int PtsDeltaMs(int64_t a, int64_t b)
+{
+  return (LimitTo32Bit(a) - LimitTo32Bit(b)) / 90; // some devices only deliver 32 bits, PTS are in 1/90000s
+}
+
 void cDvbSubtitleConverter::Action(void)
 {
   int LastSetupLevel = setupLevel;
-  cTimeMs Timeout;
   while (Running()) {
         int WaitMs = 100;
         if (!frozen) {
            LOCK_THREAD;
            if (osd) {
               int NewSetupLevel = setupLevel;
-              if (Timeout.TimedOut() || LastSetupLevel != NewSetupLevel) {
+              if (LastSetupLevel != NewSetupLevel) {
                  dbgoutput("closing osd<br>\n");
                  DELETENULL(osd);
                  }
               LastSetupLevel = NewSetupLevel;
               }
-           for (cDvbSubtitleBitmaps *sb = bitmaps->First(); sb; sb = bitmaps->Next(sb)) {
+           int64_t STC = cDevice::PrimaryDevice()->GetSTC();
+           if (osd && current && current->Timeout() * 1000 - PtsDeltaMs(STC, current->Pts()) <= 0)
+              DELETENULL(osd);
+           for (cDvbSubtitleBitmaps *sb = bitmaps->First(); sb; ) {
                // Calculate the Delta between the STC (the current timestamp of the video)
                // and the bitmap's PTS (the timestamp when the bitmap shall be presented).
                // A negative Delta means that the bitmap will be presented in the future:
-               int64_t STC = cDevice::PrimaryDevice()->GetSTC();
-               int64_t Delta = LimitTo32Bit(STC) - LimitTo32Bit(sb->Pts()); // some devices only deliver 32 bits
-               if (Delta > (int64_t(1) << 31))
-                  Delta -= (int64_t(1) << 32);
-               else if (Delta < -((int64_t(1) << 31) - 1))
-                  Delta += (int64_t(1) << 32);
-               Delta /= 90; // STC and PTS are in 1/90000s
-               if (Delta >= 0) { // found a bitmap that shall be displayed...
-                  if (Delta < sb->Timeout() * 1000) { // ...and has not timed out yet
-                     if (!sb->HasBitmaps()) {
-                        Timeout.Set();
-                        WaitMs = 0;
-                        }
+               cDvbSubtitleBitmaps *This = NULL;
+               int Delta = PtsDeltaMs(STC, sb->Pts());
+               if (Delta > 0 && sb == bitmaps->Last())
+                  Delta = 0; // avoids sticky subtitles at longer pauses
+               if (Delta <= 0) { // found the bitmap that shall be displayed next
+                  if (Delta < 0)
+                     This = bitmaps->Prev(sb);
+                  else if (Delta == 0)
+                     This = sb;
+                  if (This && This != current) {
+                     current = This;
+                     if (!current->HasBitmaps() || current->Timeout() * 1000 - PtsDeltaMs(STC, current->Pts()) <= 0)
+                        DELETENULL(osd);
                      else if (AssertOsd()) {
-                        dbgoutput("showing bitmap #%d of %d<br>\n", sb->Index() + 1, bitmaps->Count());
-                        sb->Draw(osd);
-                        Timeout.Set(sb->Timeout() * 1000);
-                        dbgconverter("PTS: %" PRId64 "  STC: %" PRId64 " (%" PRId64 ") timeout: %d<br>\n", sb->Pts(), STC, Delta, sb->Timeout());
+                        dbgoutput("showing bitmap #%d of %d<br>\n", current->Index() + 1, bitmaps->Count());
+                        current->Draw(osd);
+                        dbgconverter("PTS: %" PRId64 "  STC: %" PRId64 " (%" PRId64 ") timeout: %d<br>\n", current->Pts(), STC, Delta, current->Timeout());
                         }
                      }
-                  else
-                     WaitMs = 0; // bitmap already timed out, so try next one immediately
-                  dbgoutput("deleting bitmap #%d of %d<br>\n", sb->Index() + 1, bitmaps->Count());
-                  bitmaps->Del(sb);
                   break;
+                  }
+               cDvbSubtitleBitmaps *sbOld = sb;
+               sb = bitmaps->Next(sb);
+               if (sbOld != current) {
+                  if (Delta > (sbOld->Timeout() + retention) * 1000)
+                     bitmaps->Del(sbOld);
                   }
                }
            }
@@ -1770,13 +1784,21 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
      return;
   int NumAreas;
   tArea *Areas = Page->GetAreas(NumAreas);
-  if (!Areas)
-     return;
   tArea AreaCombined = Page->CombineAreas(NumAreas, Areas);
+  cDvbSubtitleBitmaps *After = NULL;
+  for (cDvbSubtitleBitmaps *sb = bitmaps->Last(); sb; sb = bitmaps->Prev(sb)) {
+      int64_t Delta = PtsDeltaMs(sb->Pts(), Page->Pts());
+      if (Delta == 0)
+         return; // we already have this one
+      if (Delta < 0) {
+         After = sb;
+         break;
+         }
+      }
   tArea AreaOsd = Page->ScaleArea(AreaCombined, osdFactorX, osdFactorY);
   int Bpp = 8;
   bool Reduced = false;
-  if (osd) {
+  if (NumAreas) {
      while (osd->CanHandleAreas(&AreaOsd, 1) != oeOk) {
            dbgoutput("CanHandleAreas: %d<br>\n", osd->CanHandleAreas(&AreaOsd, 1));
            int HalfBpp = Bpp / 2;
@@ -1792,7 +1814,10 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
            }
      }
   cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->PageState(), Page->Pts(), Page->PageTimeout(), Areas, NumAreas, osdFactorX, osdFactorY, AreaCombined, AreaOsd);
-  bitmaps->Add(Bitmaps);
+  if (After)
+     bitmaps->Add(Bitmaps, After);
+  else
+     bitmaps->Ins(Bitmaps);
   for (int i = 0; i < NumAreas; i++) {
       if (cSubtitleRegionRef *srr = Page->GetRegionRefByIndex(i)) {
          if (cSubtitleRegion *sr = Page->GetRegionById(srr->RegionId())) {

@@ -10090,7 +10090,7 @@ Video Disk Recorder Revision History
 - Added missing locks to SetMenuItem() functions.
 - Revised locking in cMenuSchedule and cMenuWhatsOn.
 
-2025-03-04:
+2025-03-28:
 
 - Added the "override" keyword to virtual functions reimplemented in derived classes.
   Plugins may want to do the same, but don't have to.
@@ -10104,3 +10104,7 @@ Video Disk Recorder Revision History
   by Markus Ehrnsperger).
 - Making absolutely sure cEvent::Title() never returns NULL.
   APIVERSNUM is now 30007.
+- Improved subtitle handling:
+  + Subtitles now disappear as signaled in the data stream.
+  + Subtitles are now kept in memory for at least 120 seconds, to have them readily
+    available after a short rewind during replay.
