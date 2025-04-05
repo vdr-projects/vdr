@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 5.5 2025/03/28 22:49:17 kls Exp $
+ * $Id: dvbsubtitle.c 5.6 2025/04/05 10:16:18 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1578,10 +1578,7 @@ void cDvbSubtitleConverter::SetOsdData(void)
 {
   int OsdWidth, OsdHeight;
   double OsdAspect;
-  int VideoWidth, VideoHeight;
-  double VideoAspect;
   cDevice::PrimaryDevice()->GetOsdSize(OsdWidth, OsdHeight, OsdAspect);
-  cDevice::PrimaryDevice()->GetVideoSize(VideoWidth, VideoHeight, VideoAspect);
   if (OsdWidth == displayWidth && OsdHeight == displayHeight) {
      osdFactorX = osdFactorY = 1.0;
      osdDeltaX = osdDeltaY = 0;

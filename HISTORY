@@ -10090,7 +10090,7 @@ Video Disk Recorder Revision History
 - Added missing locks to SetMenuItem() functions.
 - Revised locking in cMenuSchedule and cMenuWhatsOn.
 
-2025-03-28:
+2025-04-05:
 
 - Added the "override" keyword to virtual functions reimplemented in derived classes.
   Plugins may want to do the same, but don't have to.
@@ -10112,3 +10112,4 @@ Video Disk Recorder Revision History
   + The setup option "DVB/Display subtitles" now has three settings: "no" and "always"
     behave like before, the new "after rewind" turns on subtitles after a fast rewind
     during replay, and off again when the point where the rewind was started is reached.
+- Removed an unnecessary call to cDevice::GetVideoSize().
