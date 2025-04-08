@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.10 2025/04/08 14:11:05 kls Exp $
+ * $Id: dvbplayer.c 5.11 2025/04/08 14:16:57 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -35,8 +35,8 @@ public:
   void Clear(void);
   bool IsEmpty(void);
   void Put(uint32_t Pts, int Index, bool Independent);
-  int FindIndex(uint32_t Pts);
-  int FindFrameNumber(uint32_t Pts, bool Forward);
+  int FindIndex(uint32_t Pts, bool Still);
+  int FindFrameNumber(uint32_t Pts, bool Forward, bool Still);
   };
 
 cPtsIndex::cPtsIndex(void)
@@ -68,10 +68,10 @@ void cPtsIndex::Put(uint32_t Pts, int Index, bool Independent)
      r = (r + 1) % PTSINDEX_ENTRIES;
 }
 
-int cPtsIndex::FindIndex(uint32_t Pts)
+int cPtsIndex::FindIndex(uint32_t Pts, bool Still)
 {
   cMutexLock MutexLock(&mutex);
-  if (w == r)
+  if (w == r || Pts == 0 && !Still) // while 0 is a valid PTS, DeviceGetSTC() might return 0 if, after a jump,  the device hasn't displayed a frame, yet
      return lastFound; // list is empty, let's not jump way off the last known position
   uint32_t Delta = 0xFFFFFFFF;
   int Index = -1;
@@ -90,12 +90,12 @@ int cPtsIndex::FindIndex(uint32_t Pts)
   return Index;
 }
 
-int cPtsIndex::FindFrameNumber(uint32_t Pts, bool Forward)
+int cPtsIndex::FindFrameNumber(uint32_t Pts, bool Forward, bool Still)
 {
   if (!Forward)
-     return FindIndex(Pts); // there are only I frames in backward
+     return FindIndex(Pts, Still); // there are only I frames in backward
   cMutexLock MutexLock(&mutex);
-  if (w == r)
+  if (w == r || Pts == 0 && !Still) // while 0 is a valid PTS, DeviceGetSTC() might return 0 if, after a jump,  the device hasn't displayed a frame, yet
      return lastFound; // replay always starts at an I frame
   bool Valid = false;
   int FrameNumber = 0;
@@ -117,7 +117,11 @@ int cPtsIndex::FindFrameNumber(uint32_t Pts, bool Forward)
       if (++i >= PTSINDEX_ENTRIES)
          i = 0;
       }
-  return Valid ? FrameNumber : FindIndex(Pts); // fall back during trick speeds
+  if (Valid) {
+     lastFound = FrameNumber;
+     return FrameNumber;
+     }
+  return FindIndex(Pts, Still); // fall back during trick speeds
 }
 
 // --- cNonBlockingFileReader ------------------------------------------------
@@ -377,7 +381,7 @@ void cDvbPlayer::Empty(void)
   if (nonBlockingFileReader)
      nonBlockingFileReader->Clear();
   if (!firstPacket) // don't set the readIndex twice if Empty() is called more than once
-     readIndex = ptsIndex.FindIndex(DeviceGetSTC()) - 1;  // Action() will first increment it!
+     readIndex = ptsIndex.FindIndex(DeviceGetSTC(), playMode == pmStill) - 1;  // Action() will first increment it!
   delete readFrame; // might not have been stored in the buffer in Action()
   readFrame = NULL;
   playFrame = NULL;
@@ -415,7 +419,7 @@ int cDvbPlayer::Resume(void)
 bool cDvbPlayer::Save(void)
 {
   if (index) {
-     int Index = ptsIndex.FindIndex(DeviceGetSTC());
+     int Index = ptsIndex.FindIndex(DeviceGetSTC(), playMode == pmStill);
      if (Index >= 0) {
         if (Setup.SkipEdited && marks) {
            cStateKey StateKey;
@@ -699,7 +703,7 @@ void cDvbPlayer::Action(void)
                 SwitchToPlay = true;
                 }
              LastStc = Stc;
-             int Index = ptsIndex.FindIndex(Stc);
+             int Index = ptsIndex.FindIndex(Stc, playMode == pmStill);
              if (playDir == pdForward && !SwitchToPlayFrame) {
                 if (Index >= LastReadFrame)
                    break; // automatically stop at end of recording
@@ -881,7 +885,7 @@ void cDvbPlayer::SkipSeconds(int Seconds)
 {
   if (index && Seconds) {
      LOCK_THREAD;
-     int Index = ptsIndex.FindIndex(DeviceGetSTC());
+     int Index = ptsIndex.FindIndex(DeviceGetSTC(), playMode == pmStill);
      Empty();
      if (Index >= 0) {
         Index = max(Index + SecondsToFrames(Seconds, framesPerSecond), 0);
@@ -953,7 +957,7 @@ const cErrors *cDvbPlayer::GetErrors(void)
 bool cDvbPlayer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 {
   if (index) {
-     Current = ptsIndex.FindIndex(DeviceGetSTC());
+     Current = ptsIndex.FindIndex(DeviceGetSTC(), playMode == pmStill);
      if (SnapToIFrame) {
         int i1 = index->GetNextIFrame(Current + 1, false);
         int i2 = index->GetNextIFrame(Current, true);
@@ -969,7 +973,7 @@ bool cDvbPlayer::GetIndex(int &Current, int &Total, bool SnapToIFrame)
 bool cDvbPlayer::GetFrameNumber(int &Current, int &Total)
 {
   if (index) {
-     Current = ptsIndex.FindFrameNumber(DeviceGetSTC(), playDir == pdForward);
+     Current = ptsIndex.FindFrameNumber(DeviceGetSTC(), playDir == pdForward, playMode == pmStill);
      Total = index->Last();
      return true;
      }

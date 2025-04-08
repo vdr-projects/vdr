@@ -10114,3 +10114,5 @@ Video Disk Recorder Revision History
     during replay, and off again when the point where the rewind was started is reached.
 - Removed an unnecessary call to cDevice::GetVideoSize().
 - Moved the call to Empty() back into the pmSlow case (thanks to Andreas Baierl).
+- Fixed spurious times shown in the progress display when switching from "play" to "fast
+  forward".
