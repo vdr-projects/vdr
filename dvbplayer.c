@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.9 2025/03/28 22:49:17 kls Exp $
+ * $Id: dvbplayer.c 5.10 2025/04/08 14:11:05 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -793,11 +793,11 @@ void cDvbPlayer::Forward(void)
                Pause();
                break;
                }
+            Empty();
             // run into pmPause
        case pmStill:
        case pmPause: {
             LOCK_THREAD;
-            Empty();
             DeviceMute();
             playMode = pmSlow;
             playDir = pdForward;
