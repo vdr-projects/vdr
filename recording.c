@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.38 2025/03/02 11:03:35 kls Exp $
+ * $Id: recording.c 5.39 2025/04/11 12:39:03 kls Exp $
  */
 
 #include "recording.h"
@@ -495,6 +495,10 @@ bool cRecordingInfo::Read(FILE *f)
         return false;
      if (modified == st.st_mtime)
         return true;
+     if (modified) {
+        delete ownEvent;
+        event = ownEvent = new cEvent(0);
+        }
      modified = st.st_mtime;
      cReadLine ReadLine;
      char *s;
