@@ -10090,7 +10090,7 @@ Video Disk Recorder Revision History
 - Added missing locks to SetMenuItem() functions.
 - Revised locking in cMenuSchedule and cMenuWhatsOn.
 
-2025-04-11:
+2025-04-12: Version 2.7.5
 
 - Added the "override" keyword to virtual functions reimplemented in derived classes.
   Plugins may want to do the same, but don't have to.
