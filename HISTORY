@@ -10118,3 +10118,7 @@ Video Disk Recorder Revision History
   forward".
 - Now deleting old recording info before reading modified info file (suggested by
   Stefan Hofmann).
+
+2025-04-12:
+
+- Fixed some misplaced 'override' keywords in the 'hello' and 'skincurses' plugins.

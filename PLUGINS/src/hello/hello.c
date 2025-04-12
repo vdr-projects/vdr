@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: hello.c 5.1 2025/03/02 11:03:35 kls Exp $
+ * $Id: hello.c 5.2 2025/04/12 20:40:48 kls Exp $
  */
 
 #include <getopt.h>
@@ -24,13 +24,13 @@ private:
 public:
   cPluginHello(void);
   virtual ~cPluginHello() override;
-  virtual const char *Version(void) { return VERSION;  override}
-  virtual const char *Description(void) { return tr(DESCRIPTION);  override}
+  virtual const char *Version(void) override { return VERSION; }
+  virtual const char *Description(void) override { return tr(DESCRIPTION); }
   virtual const char *CommandLineHelp(void) override;
   virtual bool ProcessArgs(int argc, char *argv[]) override;
   virtual bool Start(void) override;
   virtual void Housekeeping(void) override;
-  virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY);  override}
+  virtual const char *MainMenuEntry(void) override { return tr(MAINMENUENTRY);}
   virtual cOsdObject *MainMenuAction(void) override;
   virtual cMenuSetupPage *SetupMenu(void) override;
   virtual bool SetupParse(const char *Name, const char *Value) override;

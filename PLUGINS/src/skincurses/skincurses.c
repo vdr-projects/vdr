@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 5.2 2025/03/02 11:03:35 kls Exp $
+ * $Id: skincurses.c 5.3 2025/04/12 20:40:48 kls Exp $
  */
 
 #include <ncurses.h>
@@ -647,7 +647,7 @@ public:
   cSkinCursesDisplayTracks(const char *Title, int NumTracks, const char * const *Tracks);
   virtual ~cSkinCursesDisplayTracks() override;
   virtual void SetTrack(int Index, const char * const *Tracks) override;
-  virtual void SetAudioChannel(int AudioChannel) { override}
+  virtual void SetAudioChannel(int AudioChannel) override {}
   virtual void Flush(void) override;
   };
 
@@ -799,7 +799,7 @@ public:
   virtual bool Initialize(void) override;
   virtual bool Start(void) override;
   virtual void Housekeeping(void) override;
-  virtual const char *MainMenuEntry(void) { return tr(MAINMENUENTRY);  override}
+  virtual const char *MainMenuEntry(void) override { return tr(MAINMENUENTRY); }
   virtual cOsdObject *MainMenuAction(void) override;
   virtual cMenuSetupPage *SetupMenu(void) override;
   virtual bool SetupParse(const char *Name, const char *Value) override;
