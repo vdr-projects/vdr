@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.13 2025/03/02 11:03:35 kls Exp $
+ * $Id: recording.h 5.14 2025/04/15 19:38:46 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -93,6 +93,8 @@ public:
   const cComponents *Components(void) const { return event->Components(); }
   const char *Aux(void) const { return aux; }
   double FramesPerSecond(void) const { return framesPerSecond; }
+  int Priority(void) const { return priority; }
+  int Lifetime(void) const { return lifetime; }
   uint16_t FrameWidth(void) const { return frameWidth; }
   uint16_t FrameHeight(void) const { return frameHeight; }
   eScanType ScanType(void) const { return scanType; }
@@ -101,6 +103,8 @@ public:
   const char *AspectRatioText(void) const { return AspectRatioTexts[aspectRatio]; }
   cString FrameParams(void) const;
   void SetFramesPerSecond(double FramesPerSecond);
+  void SetPriority(int Priority);
+  void SetLifetime(int Lifetime);
   void SetFrameParams(uint16_t FrameWidth, uint16_t FrameHeight, eScanType ScanType, eAspectRatio AspectRatio);
   void SetFileName(const char *FileName);
   int Errors(void) const { return errors; } // returns -1 if undefined
@@ -128,7 +132,6 @@ private:
   int instanceId;
   bool isPesRecording;
   mutable int isOnVideoDirectoryFileSystem; // -1 = unknown, 0 = no, 1 = yes
-  double framesPerSecond;
   cRecordingInfo *info;
   cRecording(const cRecording&); // can't copy cRecording
   cRecording &operator=(const cRecording &); // can't assign cRecording
@@ -137,8 +140,6 @@ private:
   void ClearSortName(void);
   void SetId(int Id); // should only be set by cRecordings
   time_t start;
-  int priority;
-  int lifetime;
   time_t deleted;
 public:
   cRecording(cTimer *Timer, const cEvent *Event);
@@ -146,8 +147,8 @@ public:
   virtual ~cRecording() override;
   int Id(void) const { return id; }
   time_t Start(void) const { return start; }
-  int Priority(void) const { return priority; }
-  int Lifetime(void) const { return lifetime; }
+  int Priority(void) const { return info->Priority(); }
+  int Lifetime(void) const { return info->Lifetime(); }
   time_t Deleted(void) const { return deleted; }
   void SetDeleted(void) { deleted = time(NULL); }
   virtual int Compare(const cListObject &ListObject) const override;
@@ -171,7 +172,7 @@ public:
   const char *PrefixFileName(char Prefix);
   int HierarchyLevels(void) const;
   void ResetResume(void) const;
-  double FramesPerSecond(void) const { return framesPerSecond; }
+  double FramesPerSecond(void) const { return info->FramesPerSecond(); }
   int NumFrames(void) const;
        ///< Returns the number of frames in this recording.
        ///< If the number of frames is unknown, -1 will be returned.

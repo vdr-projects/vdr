@@ -10119,6 +10119,8 @@ Video Disk Recorder Revision History
 - Now deleting old recording info before reading modified info file (suggested by
   Stefan Hofmann).
 
-2025-04-12:
+2025-04-15:
 
 - Fixed some misplaced 'override' keywords in the 'hello' and 'skincurses' plugins.
+- cRecording now fetches priority, lifetime and framesPerSecond from cRecordingInfo.
+  APIVERSNUM is now 30008.
