@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.40 2025/04/15 19:38:46 kls Exp $
+ * $Id: recording.c 5.41 2025/04/16 09:14:20 kls Exp $
  */
 
 #include "recording.h"
@@ -497,13 +497,13 @@ void cRecordingInfo::SetErrors(int Errors)
   errors = Errors;
 }
 
-bool cRecordingInfo::Read(FILE *f)
+bool cRecordingInfo::Read(FILE *f, bool Force)
 {
   if (ownEvent) {
      struct stat st;
      if (fstat(fileno(f), &st))
         return false;
-     if (modified == st.st_mtime)
+     if (modified == st.st_mtime && !Force)
         return true;
      if (modified) {
         delete ownEvent;
@@ -614,13 +614,13 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
   return true;
 }
 
-bool cRecordingInfo::Read(void)
+bool cRecordingInfo::Read(bool Force)
 {
   bool Result = false;
   if (fileName) {
      FILE *f = fopen(fileName, "r");
      if (f) {
-        if (Read(f))
+        if (Read(f, Force))
            Result = true;
         else
            esyslog("ERROR: EPG data problem in file %s", fileName);
@@ -1281,9 +1281,9 @@ bool cRecording::DeleteMarks(void)
   return cMarks::DeleteMarksFile(this);
 }
 
-void cRecording::ReadInfo(void)
+void cRecording::ReadInfo(bool Force)
 {
-  info->Read();
+  info->Read(Force);
 }
 
 bool cRecording::WriteInfo(const char *OtherFileName)
@@ -1729,7 +1729,7 @@ void cRecordings::DelByName(const char *FileName)
 void cRecordings::UpdateByName(const char *FileName)
 {
   if (cRecording *Recording = GetByName(FileName))
-     Recording->ReadInfo();
+     Recording->ReadInfo(true);
 }
 
 int cRecordings::TotalFileSizeMB(void) const

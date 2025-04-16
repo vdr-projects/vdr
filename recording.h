@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.14 2025/04/15 19:38:46 kls Exp $
+ * $Id: recording.h 5.15 2025/04/16 09:14:20 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -80,7 +80,7 @@ private:
   char *fileName;
   int errors;
   cRecordingInfo(const cChannel *Channel = NULL, const cEvent *Event = NULL);
-  bool Read(FILE *f);
+  bool Read(FILE *f, bool Force = false);
 public:
   cRecordingInfo(const char *FileName);
   ~cRecordingInfo();
@@ -110,7 +110,7 @@ public:
   int Errors(void) const { return errors; } // returns -1 if undefined
   void SetErrors(int Errors);
   bool Write(FILE *f, const char *Prefix = "") const;
-  bool Read(void);
+  bool Read(bool Force = false);
   bool Write(void) const;
   void SetData(const char *Title, const char *ShortText, const char *Description);
   void SetAux(const char *Aux);
@@ -201,7 +201,7 @@ public:
        ///< Deletes the editing marks from this recording (if any).
        ///< Returns true if the operation was successful. If there is no marks file
        ///< for this recording, it also returns true.
-  void ReadInfo(void);
+  void ReadInfo(bool Force = false);
   bool WriteInfo(const char *OtherFileName = NULL);
        ///< Writes in info file of this recording. If OtherFileName is given, the info
        ///< file will be written under that recording file name instead of this
