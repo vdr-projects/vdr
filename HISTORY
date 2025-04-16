@@ -10126,3 +10126,4 @@ Video Disk Recorder Revision History
   APIVERSNUM is now 30008.
 - Now forcing re-reading the info file of an ongoing recording (reported by Christoph
   Haubrich).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
