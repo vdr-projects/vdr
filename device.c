@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.16 2025/03/28 22:49:17 kls Exp $
+ * $Id: device.c 5.17 2025/04/18 09:48:11 kls Exp $
  */
 
 #include "device.h"
@@ -1188,9 +1188,8 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
   if (Type == ttNone || IS_SUBTITLE_TRACK(Type)) {
      currentSubtitleTrack = Type;
      autoSelectPreferredSubtitleLanguage = !Manual;
-     if (dvbSubtitleConverter)
-        dvbSubtitleConverter->Reset();
      if (dvbSubtitleConverter) {
+        dvbSubtitleConverter->Reset();
         if (Type == ttNone) {
            if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND)
               dvbSubtitleConverter->SetVisible(false);
@@ -1199,7 +1198,7 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
               DELETENULL(dvbSubtitleConverter);
               }
            }
-        else if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND)
+        else if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND && Manual)
            dvbSubtitleConverter->SetVisible(true);
         }
      DELETENULL(liveSubtitle);

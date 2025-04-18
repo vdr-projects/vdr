@@ -954,7 +954,10 @@ VDR version 2.6.6 added '/' to this list.
                          switching to a channel or playing a recording that provides
                          subtitles. 'after rewind' turns on subtitles after a fast
                          rewind during replay, and off again when the point where the
-                         rewind was started is reached.
+                         rewind was started is reached. In 'after rewind' mode you
+                         can manually turn on subtitles by opening the Subtitles menu
+                         and pressing Ok. If you later switch back to "No subtitles"
+                         VDR will automatically go into 'after rewind' mode again.
 
   Subtitle languages = 0 Some tv stations broadcast various subtitle tracks in different
                          languages. This option allows you to define which language(s)

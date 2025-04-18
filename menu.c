@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.26 2025/03/28 22:49:17 kls Exp $
+ * $Id: menu.c 5.27 2025/04/18 09:48:11 kls Exp $
  */
 
 #include "menu.h"
@@ -5305,8 +5305,7 @@ eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
          timeout.Set(TRACKTIMEOUT);
          break;
     case kOk:
-         if (types[track] != cDevice::PrimaryDevice()->GetCurrentSubtitleTrack())
-            oldTrack = -1; // make sure we explicitly switch to that track
+         oldTrack = -1; // make sure we explicitly switch to that track
          timeout.Set();
          break;
     case kNone: break;
@@ -5316,6 +5315,10 @@ eOSState cDisplaySubtitleTracks::ProcessKey(eKeys Key)
   if (track != oldTrack) {
      Show();
      cDevice::PrimaryDevice()->SetCurrentSubtitleTrack(types[track], true);
+     if (track == ttNone && Setup.DisplaySubtitles == SUBTITLES_REWIND) {
+        cDevice::PrimaryDevice()->SetCurrentSubtitleTrack(types[track], false);
+        cDevice::PrimaryDevice()->EnsureSubtitleTrack();
+        }
      }
   return timeout.TimedOut() ? osEnd : osContinue;
 }
