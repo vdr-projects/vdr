@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 5.3 2025/01/15 08:43:12 kls Exp $
+ * $Id: thread.c 5.4 2025/06/17 20:32:06 kls Exp $
  */
 
 #include "thread.h"
@@ -40,6 +40,7 @@ static bool GetAbsTime(struct timespec *Abstime, int MillisecondsFromNow)
 {
   struct timeval now;
   if (gettimeofday(&now, NULL) == 0) {           // get current time
+     MillisecondsFromNow  = max(MillisecondsFromNow, 3); // // making sure the time is >2ms to avoid possible busy waits
      now.tv_sec  += MillisecondsFromNow / 1000;  // add full seconds
      now.tv_usec += (MillisecondsFromNow % 1000) * 1000;  // add microseconds
      if (now.tv_usec >= 1000000) {               // take care of an overflow
@@ -72,7 +73,7 @@ cCondWait::~cCondWait()
 void cCondWait::SleepMs(int TimeoutMs)
 {
   cCondWait w;
-  w.Wait(max(TimeoutMs, 3)); // making sure the time is >2ms to avoid a possible busy wait
+  w.Wait(TimeoutMs);
 }
 
 bool cCondWait::Wait(int TimeoutMs)

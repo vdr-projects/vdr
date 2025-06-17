@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.15 2025/01/15 08:57:45 kls Exp $
+ * $Id: tools.c 5.16 2025/06/17 20:32:06 kls Exp $
  */
 
 #include "tools.h"
@@ -1585,7 +1585,7 @@ void cPoller::Del(int FileHandle, bool Out)
 bool cPoller::Poll(int TimeoutMs)
 {
   if (numFileHandles) {
-     if (poll(pfd, numFileHandles, TimeoutMs) != 0)
+     if (poll(pfd, numFileHandles, max(TimeoutMs, 3)) != 0) // can't let it be 0, otherwise poll() returns immediately, even if no file descriptors are ready
         return true; // returns true even in case of an error, to let the caller
                      // access the file and thus see the error code
      }
