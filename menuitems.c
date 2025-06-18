@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 5.3 2025/01/29 10:20:17 kls Exp $
+ * $Id: menuitems.c 5.4 2025/06/18 20:22:10 kls Exp $
  */
 
 #include "menuitems.h"
@@ -100,7 +100,7 @@ eOSState cMenuEditIntItem::ProcessKey(eKeys Key)
      bool IsRepeat = Key & k_Repeat;
      Key = NORMALKEY(Key);
      switch (Key) {
-       case kNone: break;
+       case kNone: return state;
        case k0 ... k9:
             if (fresh) {
                newValue = 0;
@@ -300,7 +300,7 @@ eOSState cMenuEditPrcItem::ProcessKey(eKeys Key)
      double newValue = round(*value * factor); // avoids precision problems
      Key = NORMALKEY(Key);
      switch (Key) {
-       case kNone: break;
+       case kNone: return state;
        case k0 ... k9:
             if (fresh) {
                newValue = 0;

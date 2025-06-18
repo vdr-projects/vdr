@@ -10130,3 +10130,5 @@ Video Disk Recorder Revision History
 - Enabled manually turning subtitles on/off in 'after rewind' mode.
 - Limiting timeouts to a minimum of 3ms to avoid problems with polls and waits if timeout is 0.
 - Fixed strreplace() in case the search string is empty (thanks to Stefan Hofmann).
+- Fixed automatic moving of the cursor when inputting characters with number keys (reported
+  by Stefan Hofmann).

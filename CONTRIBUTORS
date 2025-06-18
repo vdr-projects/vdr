@@ -3389,6 +3389,8 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for adding '~' to the list of delimiters in cTextWrapper
  for suggesting to delete old recording info before reading modified info file
  for fixing strreplace() in case the search string is empty
+ for reporting broken automatic moving of the cursor when inputting characters with
+ number keys
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a
