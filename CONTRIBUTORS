@@ -3388,6 +3388,7 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for reporting missing setting the file name of the info file after renaming a recording
  for adding '~' to the list of delimiters in cTextWrapper
  for suggesting to delete old recording info before reading modified info file
+ for fixing strreplace() in case the search string is empty
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a

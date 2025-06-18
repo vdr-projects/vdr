@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.16 2025/06/17 20:32:06 kls Exp $
+ * $Id: tools.c 5.17 2025/06/18 08:44:47 kls Exp $
  */
 
 #include "tools.h"
@@ -154,7 +154,7 @@ char *strreplace(char *s, char c1, char c2)
 
 char *strreplace(char *s, const char *s1, const char *s2)
 {
-  if (!s || !s1 || !s2 || strcmp(s1, s2) == 0)
+  if (!s || !s1 || !*s1 || !s2 || strcmp(s1, s2) == 0)
      return s;
   char *q = s;
   if (char *p = strstr(s, s1)) {

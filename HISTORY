@@ -10119,7 +10119,7 @@ Video Disk Recorder Revision History
 - Now deleting old recording info before reading modified info file (suggested by
   Stefan Hofmann).
 
-2025-06-17:
+2025-06-18:
 
 - Fixed some misplaced 'override' keywords in the 'hello' and 'skincurses' plugins.
 - cRecording now fetches priority, lifetime and framesPerSecond from cRecordingInfo.
@@ -10129,3 +10129,4 @@ Video Disk Recorder Revision History
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Enabled manually turning subtitles on/off in 'after rewind' mode.
 - Limiting timeouts to a minimum of 3ms to avoid problems with polls and waits if timeout is 0.
+- Fixed strreplace() in case the search string is empty (thanks to Stefan Hofmann).
