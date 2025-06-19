@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.41 2025/04/16 09:14:20 kls Exp $
+ * $Id: recording.c 5.42 2025/06/19 13:35:32 kls Exp $
  */
 
 #include "recording.h"
@@ -1702,6 +1702,8 @@ void cRecordings::AddByName(const char *FileName, bool TriggerUpdate)
      if (TriggerUpdate)
         TouchUpdate();
      }
+  else
+     UpdateByName(FileName);
 }
 
 void cRecordings::DelByName(const char *FileName)
@@ -1728,8 +1730,10 @@ void cRecordings::DelByName(const char *FileName)
 
 void cRecordings::UpdateByName(const char *FileName)
 {
-  if (cRecording *Recording = GetByName(FileName))
+  if (cRecording *Recording = GetByName(FileName)) {
+     Recording->numFrames = -1;
      Recording->ReadInfo(true);
+     }
 }
 
 int cRecordings::TotalFileSizeMB(void) const
