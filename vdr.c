@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.18 2024/12/02 12:40:56 kls Exp $
+ * $Id: vdr.c 5.19 2025/06/20 13:44:13 kls Exp $
  */
 
 #include <getopt.h>
@@ -1313,7 +1313,7 @@ int main(int argc, char *argv[])
                   Interact->ProcessKey(key);
                   continue;
                   }
-               else
+               else if (!cDevice::PrimaryDevice()->Replaying() || cDevice::PrimaryDevice()->Transferring())
                   cDevice::SwitchChannel(NORMALKEY(key) == kChanUp ? 1 : -1);
                break;
           // Volume control:

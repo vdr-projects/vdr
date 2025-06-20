@@ -10134,3 +10134,4 @@ Video Disk Recorder Revision History
   by Stefan Hofmann).
 - Fixed updating the index when cutting a recording again (thanks to Matthias Senzel).
 - Speeded up determining the timer status of events in the Schedules menus.
+- Fixed Channel+/Channel- keys stopping replay of a recording.
