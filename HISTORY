@@ -10119,7 +10119,7 @@ Video Disk Recorder Revision History
 - Now deleting old recording info before reading modified info file (suggested by
   Stefan Hofmann).
 
-2025-06-19:
+2025-06-20:
 
 - Fixed some misplaced 'override' keywords in the 'hello' and 'skincurses' plugins.
 - cRecording now fetches priority, lifetime and framesPerSecond from cRecordingInfo.
@@ -10133,3 +10133,4 @@ Video Disk Recorder Revision History
 - Fixed automatic moving of the cursor when inputting characters with number keys (reported
   by Stefan Hofmann).
 - Fixed updating the index when cutting a recording again (thanks to Matthias Senzel).
+- Speeded up determining the timer status of events in the Schedules menus.
