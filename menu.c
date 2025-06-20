@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.28 2025/06/20 10:20:22 kls Exp $
+ * $Id: menu.c 5.29 2025/06/20 14:02:57 kls Exp $
  */
 
 #include "menu.h"
@@ -1822,6 +1822,7 @@ eOSState cMenuWhatsOn::ProcessKey(eKeys Key)
        case kChanUp:
        case kChanDn|k_Repeat:
        case kChanDn: if (!HasSubMenu()) {
+                        LOCK_TIMERS_READ;
                         LOCK_CHANNELS_READ;
                         for (cOsdItem *item = First(); item; item = Next(item)) {
                             if (((cMenuScheduleItem *)item)->channel->Number() == cDevice::CurrentChannel()) {

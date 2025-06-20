@@ -10135,3 +10135,5 @@ Video Disk Recorder Revision History
 - Fixed updating the index when cutting a recording again (thanks to Matthias Senzel).
 - Speeded up determining the timer status of events in the Schedules menus.
 - Fixed Channel+/Channel- keys stopping replay of a recording.
+- Fixed an invalid lock sequence when pressing the Channel+/Channel- keys while in the
+  "What's on..." menu in live view.
