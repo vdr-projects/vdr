@@ -10137,3 +10137,7 @@ Video Disk Recorder Revision History
 - Fixed Channel+/Channel- keys stopping replay of a recording.
 - Fixed an invalid lock sequence when pressing the Channel+/Channel- keys while in the
   "What's on..." menu in live view.
+
+2025-06-23:
+
+- Fixed cPoller::Poll() to allow negative timeout values again.
