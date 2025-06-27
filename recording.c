@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.42 2025/06/19 13:35:32 kls Exp $
+ * $Id: recording.c 5.43 2025/06/27 08:46:07 kls Exp $
  */
 
 #include "recording.h"
@@ -2604,8 +2604,20 @@ void cIndexFileGenerator::Action(void)
         if (Data) {
            if (FrameDetector.Synced()) {
               // Step 3 - generate the index:
-              if (TsPid(Data) == PATPID)
+              if (TsPid(Data) == PATPID) {
+                 int OldPatVersion, OldPmtVersion;
+                 PatPmtParser.GetVersions(OldPatVersion, OldPmtVersion);
+                 if (PatPmtParser.ParsePatPmt(Data, Length)) {
+                    int NewPatVersion, NewPmtVersion;
+                    if (PatPmtParser.GetVersions(NewPatVersion, NewPmtVersion)) {
+                       if (NewPatVersion != OldPatVersion || NewPmtVersion != OldPmtVersion) {
+                          dsyslog("PAT/PMT version change while generating index");
+                          FrameDetector.SetPid(PatPmtParser.Vpid() ? PatPmtParser.Vpid() : PatPmtParser.Apid(0), PatPmtParser.Vpid() ? PatPmtParser.Vtype() : PatPmtParser.Atype(0));
+                          }
+                       }
+                    }
                  FrameOffset = FileSize; // the PAT/PMT is at the beginning of an I-frame
+                 }
               int Processed = FrameDetector.Analyze(Data, Length);
               if (Processed > 0) {
                  int PreviousErrors = 0;

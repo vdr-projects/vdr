@@ -10138,6 +10138,8 @@ Video Disk Recorder Revision History
 - Fixed an invalid lock sequence when pressing the Channel+/Channel- keys while in the
   "What's on..." menu in live view.
 
-2025-06-23:
+2025-06-27:
 
 - Fixed cPoller::Poll() to allow negative timeout values again.
+- When regenerating the index of a recording, PID changes are now taken into account
+  (reported by Christoph Haubrich).
