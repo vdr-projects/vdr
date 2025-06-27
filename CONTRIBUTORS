@@ -3464,6 +3464,8 @@ Matthias Senzel <matthias.senzel@t-online.de>
  for reporting a bug in handling cSkinDisplayMenu::GetTextAreaFont()
  for reporting characters being cut off while editing in the LCARS skin
  for fixing updating the index when cutting a recording again
+ for making the '0' key in the "Timers" menu toggle between showing all timers and only
+ the active ones
 
 Marek Nazarko <mnazarko@gmail.com>
  for translating OSD texts to the Polish language

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.29 2025/06/20 14:02:57 kls Exp $
+ * $Id: menu.c 5.30 2025/06/27 09:05:20 kls Exp $
  */
 
 #include "menu.h"
@@ -1305,6 +1305,7 @@ class cMenuTimers : public cOsdMenu {
 private:
   cStateKey timersStateKey;
   int helpKeys;
+  bool showAllTimers;
   void Set(void);
   eOSState Edit(void);
   eOSState New(void);
@@ -1324,6 +1325,7 @@ cMenuTimers::cMenuTimers(void)
 {
   SetMenuCategory(mcTimer);
   helpKeys = -1;
+  showAllTimers = true;
   cMenuEditTimer::AddedTimer(); // to clear any leftovers
   Set();
 }
@@ -1342,9 +1344,11 @@ void cMenuTimers::Set(void)
        LOCK_SCHEDULES_READ;
        for (const cTimer *Timer = Timers->First(); Timer; Timer = Timers->Next(Timer)) {
            cMenuTimerItem *Item = new cMenuTimerItem(Timer);
-           Add(Item);
-           if (CurrentTimer && Timer->Id() == CurrentTimer->Id() && (!Timer->Remote() && !CurrentTimer->Remote() || Timer->Remote() && CurrentTimer->Remote() && strcmp(Timer->Remote(), CurrentTimer->Remote()) == 0))
-              CurrentItem = Item;
+           if (showAllTimers || Timer->HasFlags(tfActive)) {
+              Add(Item);
+              if (CurrentTimer && Timer->Id() == CurrentTimer->Id() && (!Timer->Remote() && !CurrentTimer->Remote() || Timer->Remote() && CurrentTimer->Remote() && strcmp(Timer->Remote(), CurrentTimer->Remote()) == 0))
+                 CurrentItem = Item;
+              }
            }
      }
      Sort();
@@ -1473,8 +1477,10 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
   if (!HasSubMenu())
      Set();
   eOSState state = cOsdMenu::ProcessKey(Key);
+  bool oldShowAllTimers = showAllTimers;
   if (state == osUnknown) {
      switch (Key) {
+       case k0:      showAllTimers = !showAllTimers; break;
        case kOk:     return Edit();
        case kRed:    state = OnOff(); break; // must go through SetHelpKeys()!
        case kGreen:  return New();
@@ -1494,6 +1500,10 @@ eOSState cMenuTimers::ProcessKey(eKeys Key)
      SetCurrent(CurrentItem);
      SetHelpKeys();
      Display();
+     }
+  if (showAllTimers != oldShowAllTimers) {
+     timersStateKey.Reset();
+     Set();
      }
   if (Key != kNone)
      SetHelpKeys();
