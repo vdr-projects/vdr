@@ -10138,10 +10138,29 @@ Video Disk Recorder Revision History
 - Fixed an invalid lock sequence when pressing the Channel+/Channel- keys while in the
   "What's on..." menu in live view.
 
-2025-06-27:
+2025-07-06:
 
 - Fixed cPoller::Poll() to allow negative timeout values again.
 - When regenerating the index of a recording, PID changes are now taken into account
   (reported by Christoph Haubrich).
 - In the "Timers" menu the '0' key now toggles between showing all timers and only
   the active ones (thanks to Matthias Senzel).
+- Reworked cTimer::Matches() (triggered by Markus Ehrnsperger):
+  + Calculating the raw start/stop time of a timer has been moved to the new function
+    cTimer::CalcStartStopTime(). If a plugin calls cTimer::Matches() with Directly==true,
+    it should use cTimer::CalcStartStopTime() instead. If it calls cTimer::Matches() with
+    Directly==false, it should call cTimer::Matches(time_t t, int Margin) instead.
+  + The versions of cTimer::Matches() with 'bool Directly' are deprecated. Existing calls
+    with Directly==true are redirected to cTimer::CalcStartStopTime(), and a log message
+    is issued.
+  + cTimer::Matches() now reports an error if it is called with a time parameter that is
+    not the current time.
+  + The "first day" parameter of a repeating timer is now only reset if cTimer::Matches()
+    is called with t==0 and Margin==0 and it has been exceeded.
+  + Access to the cached cTimer::start-/stopTime members is now protected via a mutex.
+  + Plugins that use cTimer should continue to work as before. However, the author should
+    react accordingly to compile time and log messages regarding these modifications.
+    To test whether the plugin code will compile once the deprecated functions are
+    removed in a future version, the macro DEPRECATED_TIMER_MATCHES can be set to 0 in
+    timers.h.
+  APIVERSNUM is now 30009.

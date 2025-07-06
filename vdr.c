@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.19 2025/06/20 13:44:13 kls Exp $
+ * $Id: vdr.c 5.20 2025/07/06 15:06:55 kls Exp $
  */
 
 #include <getopt.h>
@@ -1137,7 +1137,7 @@ int main(int argc, char *argv[])
                  bool NeedsTransponder = false;
                  if (Timer->HasFlags(tfActive) && !Timer->Recording()) {
                     if (Timer->HasFlags(tfVps)) {
-                       if (Timer->Matches(Now, true, Setup.VpsMargin))
+                       if (Timer->Matches(Now, Setup.VpsMargin))
                           InVpsMargin = true;
                        else if (Timer->Event()) {
                           LOCK_SCHEDULES_READ;
@@ -1152,7 +1152,7 @@ int main(int argc, char *argv[])
                           }
                        }
                     else
-                       NeedsTransponder = Timer->Matches(Now, true, TIMERLOOKAHEADTIME);
+                       NeedsTransponder = Timer->Matches(Now, TIMERLOOKAHEADTIME);
                     }
                  if (!Timer->Recording())
                     Timer->SetInVpsMargin(InVpsMargin);

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.30 2025/06/27 09:05:20 kls Exp $
+ * $Id: menu.c 5.31 2025/07/06 15:06:55 kls Exp $
  */
 
 #include "menu.h"
@@ -1785,7 +1785,7 @@ eOSState cMenuWhatsOn::Record(void)
         Timer = t;
         return AddSubMenu(new cMenuEditTimer(Timer));
         }
-     if (Timer->Matches(0, false, NEWTIMERLIMIT))
+     if (Timer->Matches(0, NEWTIMERLIMIT))
         return AddSubMenu(new cMenuEditTimer(Timer, true));
      Timers->Add(Timer);
      Timers->SetModified();
@@ -2092,7 +2092,7 @@ eOSState cMenuSchedule::Record(void)
         Timer = t;
         return AddSubMenu(new cMenuEditTimer(Timer));
         }
-     if (Timer->Matches(0, false, NEWTIMERLIMIT))
+     if (Timer->Matches(0, NEWTIMERLIMIT))
         return AddSubMenu(new cMenuEditTimer(Timer, true));
      Timers->Add(Timer);
      Timers->SetModified();

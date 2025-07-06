@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.25 2025/01/13 14:44:18 kls Exp $
+ * $Id: timers.c 5.26 2025/07/06 15:06:55 kls Exp $
  */
 
 #include "timers.h"
@@ -570,7 +570,7 @@ void cTimer::SetFile(const char *File)
 #define EITPRESENTFOLLOWINGRATE 10 // max. seconds between two occurrences of the "EIT present/following table for the actual multiplex" (2s by the standard, using some more for safety)
 #define EITPRESENTFOLLOWINGGRACE 60 // max. seconds before reporting a loss of VPS control of an ongoing recording
 
-bool cTimer::Matches(time_t t, bool Directly, int Margin) const
+void cTimer::CalcStartStopTime(time_t &startTime, time_t &stopTime, time_t t) const
 {
   startTime = stopTime = 0;
   if (t == 0)
@@ -605,9 +605,60 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
          }
      if (!startTime)
         startTime = IncDay(t, 7); // just to have something that's more than a week in the future
-     else if (!Directly && (t > startTime || t > day + SECSINDAY + 3600)) // +3600 in case of DST change
-        day = 0;
      }
+}
+
+#if DEPRECATED_TIMER_MATCHES
+bool cTimer::Matches(time_t t, bool Directly) const
+{
+  if (Directly) {
+     static bool MatchesDirectlyReported = false;
+     if (!MatchesDirectlyReported) {
+        esyslog("ERROR: cTimer::Matches() called with Directly==true - use cTimer::CalcStartStopTime() instead");
+        cBackTrace::BackTrace();
+        MatchesDirectlyReported = true;
+        }
+     cMutexLock MutexLock(&mutex);
+     CalcStartStopTime(startTime, stopTime, t);
+     return startTime <= t && t < stopTime;
+     }
+  return Matches(t, 0);
+}
+
+bool cTimer::Matches(time_t t, bool Directly, int Margin) const
+{
+  if (Directly) {
+     static bool MatchesDirectlyReported = false;
+     if (!MatchesDirectlyReported) {
+        esyslog("ERROR: cTimer::Matches() called with Directly==true - use cTimer::CalcStartStopTime() instead");
+        cBackTrace::BackTrace();
+        MatchesDirectlyReported = true;
+        }
+     cMutexLock MutexLock(&mutex);
+     CalcStartStopTime(startTime, stopTime, t);
+     return startTime <= t && t < stopTime;
+     }
+  return Matches(t, Margin);
+}
+#endif
+
+bool cTimer::Matches(time_t t, int Margin) const
+{
+  static bool TimeDiffReported = false;
+  bool IsNow = false;
+  if (t == 0) {
+     t = time(NULL);
+     IsNow = Margin == 0;
+     }
+  else if (!TimeDiffReported && abs(t - time(NULL)) > 10) {
+     esyslog("ERROR: cTimer::Matches() called with invalid time - use cTimer::CalcStartStopTime() instead");
+     cBackTrace::BackTrace();
+     TimeDiffReported = true;
+     }
+  cMutexLock MutexLock(&mutex);
+  CalcStartStopTime(startTime, stopTime, t);
+  if (IsNow && !IsSingleEvent() && (t > startTime || t > day + SECSINDAY + 3600)) // +3600 in case of DST change
+     day = 0;
 
   if (IsPatternTimer())
      return false; // we only need to have start/stopTime initialized
@@ -620,43 +671,41 @@ bool cTimer::Matches(time_t t, bool Directly, int Margin) const
      if (event) {
         if (HasFlags(tfVps)) {
            if (event->Vps()) {
-              if (Margin || !Directly) {
-                 startTime = event->StartTime();
-                 stopTime = event->EndTime();
-                 if (!Margin) { // this is an actual check
-                    const cSchedule *Schedule = event->Schedule();
-                    if (Schedule && Schedule->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) { // VPS control can only work with up-to-date events...
-                       if (!vpsActive) {
-                          vpsActive = true;
-                          if (Recording())
-                             dsyslog("timer %s regained VPS control", *ToDescr());
-                          }
-                       bool running = event->IsRunning(true);
-                       if (!running) {
-                          if (Recording() && vpsNotRunning == 0)
-                             vpsNotRunning = time(NULL);
-                          }
-                       else
-                          vpsNotRunning = 0;
-                       return running || time(NULL) < vpsNotRunning + VPSGRACE;
+              startTime = event->StartTime();
+              stopTime = event->EndTime();
+              if (!Margin) { // this is an actual check
+                 const cSchedule *Schedule = event->Schedule();
+                 if (Schedule && Schedule->PresentSeenWithin(EITPRESENTFOLLOWINGRATE)) { // VPS control can only work with up-to-date events...
+                    if (!vpsActive) {
+                       vpsActive = true;
+                       if (Recording())
+                          dsyslog("timer %s regained VPS control", *ToDescr());
                        }
-                    if (Recording()) {
-                       if (Schedule && Schedule->PresentSeenWithin(EITPRESENTFOLLOWINGGRACE))
-                          return event->IsRunning(true); // give it a chance to recover - worst case: the recording will be 60 seconds too long
-                       if (vpsActive) {
-                          vpsActive = false;
-                          esyslog("ERROR: timer %s lost VPS control", *ToDescr());
-                          }
-                       // ...otherwise we fall back to normal timer handling below (note: Margin == 0!)
+                    bool running = event->IsRunning(true);
+                    if (!running) {
+                       if (Recording() && vpsNotRunning == 0)
+                          vpsNotRunning = time(NULL);
                        }
                     else
-                       return false; // relying on vdr.c to ensure that a transponder is tuned to this channel
+                       vpsNotRunning = 0;
+                    return running || time(NULL) < vpsNotRunning + VPSGRACE;
                     }
+                 if (Recording()) {
+                    if (Schedule && Schedule->PresentSeenWithin(EITPRESENTFOLLOWINGGRACE))
+                       return event->IsRunning(true); // give it a chance to recover - worst case: the recording will be 60 seconds too long
+                    if (vpsActive) {
+                       vpsActive = false;
+                       esyslog("ERROR: timer %s lost VPS control", *ToDescr());
+                       }
+                    // ...otherwise we fall back to normal timer handling below (note: Margin == 0!)
+                    }
+                 else
+                    return false; // relying on vdr.c to ensure that a transponder is tuned to this channel
                  }
               }
            }
         else if (HasFlags(tfSpawned)) {
-           if (!Margin && !Directly) { // this is an actual check
+           if (!Margin) { // this is an actual check
               // The spawned timer's start-/stopTimes are adjusted to the event's times in AdjustSpawnedTimer().
               // However, in order to make sure the timer is set to the correct event, the margins at begin
               // end end are limited by the durations of the events before and after this timer's event.
@@ -696,7 +745,8 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
            return tmNone;
         UseVps = false;
         }
-     Matches(UseVps ? Event->Vps() : Event->StartTime(), true);
+     time_t startTime, stopTime; // not modifying the class members here!
+     CalcStartStopTime(startTime, stopTime, UseVps ? Event->Vps() : Event->StartTime());
      int overlap = 0;
      if (UseVps) {
         if (startTime == Event->Vps()) {
@@ -718,7 +768,6 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
               overlap = FULLMATCH;
            }
         }
-     startTime = stopTime = 0;
      if (Overlap)
         *Overlap = overlap;
      return overlap >= FULLMATCH ? tmFull : overlap > 0 ? tmPartial : tmNone;
@@ -749,7 +798,7 @@ bool cTimer::Expired(void) const
            if (FirstEvent) {
               if (Schedule) {
                  for (const cEvent *e = FirstEvent; e; e = Schedule->Events()->Next(e)) {
-                     if (e->Vps() == startTime) {
+                     if (e->Vps() == StartTime()) {
                         ExpireTime = e->EndTime() + EXPIRELATENCY;
                         dsyslog("timer %s is waiting for next VPS event %s", *ToDescr(), *e->ToDescr());
                         // no break here - let's play it safe and look at *all* events
@@ -770,6 +819,7 @@ bool cTimer::Expired(void) const
 
 time_t cTimer::StartTime(void) const
 {
+  cMutexLock MutexLock(&mutex);
   if (!startTime)
      Matches();
   return startTime;
@@ -777,6 +827,7 @@ time_t cTimer::StartTime(void) const
 
 time_t cTimer::StopTime(void) const
 {
+  cMutexLock MutexLock(&mutex);
   if (!stopTime)
      Matches();
   return stopTime;
@@ -944,9 +995,10 @@ bool cTimer::SetEventFromSchedule(const cSchedules *Schedules)
            // Normal timers match the event they have the most overlap with:
            int Overlap = 0;
            // Set up the time frame within which to check events:
-           Matches(0, true);
-           time_t TimeFrameBegin = StartTime() - EPGLIMITBEFORE;
-           time_t TimeFrameEnd   = StopTime()  + EPGLIMITAFTER;
+           time_t startTime, stopTime; // not modifying the class members here!
+           CalcStartStopTime(startTime, stopTime);
+           time_t TimeFrameBegin = startTime - EPGLIMITBEFORE;
+           time_t TimeFrameEnd   = stopTime  + EPGLIMITAFTER;
            for (const cEvent *e = Schedule->Events()->First(); e; e = Schedule->Events()->Next(e)) {
                if (e->EndTime() < TimeFrameBegin)
                   continue; // skip events way before the timer starts
@@ -1079,6 +1131,7 @@ bool cTimer::HasFlags(uint Flags) const
 
 void cTimer::Skip(void)
 {
+  cMutexLock MutexLock(&mutex);
   day = IncDay(SetTime(StartTime(), 0), 1);
   startTime = 0;
   SetEvent(NULL);

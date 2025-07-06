@@ -2601,6 +2601,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  cStatus::OsdStatusMessage2() with the type of the message
  for suggesting to add mutex locks to protect creating/deleting cStatus and cEpgHandler
  objects
+ for reporting that cTimer::StartTime() may return different values, depending on the
+ parameters of a previous call to cTimer::Matches()
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

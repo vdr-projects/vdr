@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.12 2025/03/02 11:03:35 kls Exp $
+ * $Id: timers.h 5.13 2025/07/06 15:06:55 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -31,6 +31,7 @@ class cTimers;
 class cTimer : public cListObject {
   friend class cMenuEditTimer;
 private:
+  mutable cMutex mutex;
   int id;
   mutable time_t startTime, stopTime; ///< the time_t value calculated from 'day', 'start' and 'stop'
   int scheduleStateSet;
@@ -95,11 +96,36 @@ public:
   void SetPattern(const char *Pattern);
   void SetFile(const char *File);
   bool IsPatternTimer(void) const { return *pattern; }
-  bool Matches(time_t t = 0, bool Directly = false, int Margin = 0) const;
+  void CalcStartStopTime(time_t &startTime, time_t &stopTime, time_t t = 0) const;
+       ///< Calculates the raw start and stop time of this timer, as given by the user in the timer definition.
+       ///< If t is given, and this is a repeating timer, the start and stop times on that day are returned
+       ///< (default is "today"). t can be any time_t value on the given day.
+#define DEPRECATED_TIMER_MATCHES 1
+#if DEPRECATED_TIMER_MATCHES
+  // for backwards compatibility, remove these functions once Matches(time_t ...) has default parameters:
+  bool Matches(void) const { return Matches(0, 0); }
+  bool Matches(time_t t) const { return Matches(t, 0); }
+  [[deprecated("use CalcStartStopTime() instead")]] bool Matches(time_t t, bool Directly) const;
+  [[deprecated("use CalcStartStopTime() instead")]] bool Matches(time_t t, bool Directly, int Margin) const;
+  bool Matches(time_t t, int Margin) const;
+#else
+  bool Matches(time_t t = 0, int Margin = 0) const;
+       ///< Returns true if this timer matches now. If several timers need to be checked with the exact same time, t can be given
+       ///< (which needs to be close to the current time, otherwise an error is logged). If Margin is given, it is subtracted from
+       ///< the timer's actual start time. This can be used to check whether the timer will start within the next Margin seconds.
+       ///< If called with t==0 and Margin==0 (which is regularly done), the "first day" parameter of a repeating timer is reset
+       ///< if it has been exceeded.
+       ///< The actual start/stop times of the timer are stored for retrieval via the StartTime() and StopTime() functions.
+       ///< For VPS timers these are the times of the respective EPG event.
+#endif
   eTimerMatch Matches(const cEvent *Event, int *Overlap = NULL) const;
   bool Expired(void) const;
-  time_t StartTime(void) const; ///< the start time as given by the user
-  time_t StopTime(void) const; ///< the stop time as given by the user
+  time_t StartTime(void) const;
+       ///< The start time of this timer, which is the time as given by the user (for normal timers) or the start time
+       ///< of the event that is assigned to this timer (for VPS timers).
+  time_t StopTime(void) const;
+       ///< The stop time of this timer, which is the time as given by the user (for normal timers) or the end time
+       ///< of the event that is assigned to this timer (for VPS timers).
   time_t StartTimeEvent(void) const; ///< the start/stop times as given by the event (for VPS timers), by event plus margins (for spawned non-VPS timers),
   time_t StopTimeEvent(void) const; ///< or by the user (for normal timers)
   void SetId(int Id);
