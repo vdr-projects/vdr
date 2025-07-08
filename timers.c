@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.26 2025/07/06 15:06:55 kls Exp $
+ * $Id: timers.c 5.27 2025/07/08 14:23:44 kls Exp $
  */
 
 #include "timers.h"
@@ -593,9 +593,9 @@ void cTimer::CalcStartStopTime(time_t &startTime, time_t &stopTime, time_t t) co
          time_t t0 = IncDay(d, i);
          if (DayMatches(t0)) {
             time_t a = SetTime(t0, begin);
+            time_t b = a + length;
             if (length < 0)
-               t0 = IncDay(d, i + 1);
-            time_t b = SetTime(t0, end);
+               b += SECSINDAY;
             if ((!day || a >= day) && t < b) {
                startTime = a;
                stopTime = b;

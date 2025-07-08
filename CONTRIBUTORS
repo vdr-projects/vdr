@@ -2603,6 +2603,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  objects
  for reporting that cTimer::StartTime() may return different values, depending on the
  parameters of a previous call to cTimer::Matches()
+ for fixing the stop time of repeating timers in case of DST change
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
