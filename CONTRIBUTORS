@@ -2971,6 +2971,7 @@ Johann Friedrichs <johann.friedrichs@web.de>
  for reporting a bug in handling the tfRecording flag in the SVDRP commands MODT and UPDT
  for adding a missing '-D' to the 'plugins' target of the Makefile
  for adding code for the 'qks' audio track
+ for reporting a possible lockup in cCondWait::SleepMs()
 
 Timo Helkio <timolavi@mbnet.fi>
  for reporting a hangup when replaying a TS recording with subtitles activated

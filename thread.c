@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 5.4 2025/06/17 20:32:06 kls Exp $
+ * $Id: thread.c 5.5 2025/07/09 16:13:43 kls Exp $
  */
 
 #include "thread.h"
@@ -73,7 +73,7 @@ cCondWait::~cCondWait()
 void cCondWait::SleepMs(int TimeoutMs)
 {
   cCondWait w;
-  w.Wait(TimeoutMs);
+  w.Wait(max(TimeoutMs, 3)); // making sure the time is >2ms to avoid a possible busy wait
 }
 
 bool cCondWait::Wait(int TimeoutMs)

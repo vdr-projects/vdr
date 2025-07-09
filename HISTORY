@@ -10166,3 +10166,5 @@ Video Disk Recorder Revision History
   APIVERSNUM is now 30009.
 - Fixed the stop time of repeating timers in case of DST change (thanks to Markus Ehrnsperger).
 - Fixed expiring VPS timers in case the event has not yet startet after its announced end time.
+- Reverted the change in cCondWait::SleepMs() because of a possible lockup (reported by Johann
+  Friedrichs).
