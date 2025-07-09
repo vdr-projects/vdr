@@ -10138,7 +10138,7 @@ Video Disk Recorder Revision History
 - Fixed an invalid lock sequence when pressing the Channel+/Channel- keys while in the
   "What's on..." menu in live view.
 
-2025-07-08:
+2025-07-09:
 
 - Fixed cPoller::Poll() to allow negative timeout values again.
 - When regenerating the index of a recording, PID changes are now taken into account
@@ -10165,3 +10165,4 @@ Video Disk Recorder Revision History
     timers.h.
   APIVERSNUM is now 30009.
 - Fixed the stop time of repeating timers in case of DST change (thanks to Markus Ehrnsperger).
+- Fixed expiring VPS timers in case the event has not yet startet after its announced end time.
