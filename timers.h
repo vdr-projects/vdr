@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.13 2025/07/06 15:06:55 kls Exp $
+ * $Id: timers.h 5.14 2025/07/10 19:12:24 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -100,6 +100,9 @@ public:
        ///< Calculates the raw start and stop time of this timer, as given by the user in the timer definition.
        ///< If t is given, and this is a repeating timer, the start and stop times on that day are returned
        ///< (default is "today"). t can be any time_t value on the given day.
+  time_t VpsTime(time_t t = 0) const;
+       ///< Returns the VPS time of this timer. This is a shortcut for calling CalcStartStopTime() and using the
+       ///< result given in the startTime parameter. The parameter t is handed to CalcStartStopTime().
 #define DEPRECATED_TIMER_MATCHES 1
 #if DEPRECATED_TIMER_MATCHES
   // for backwards compatibility, remove these functions once Matches(time_t ...) has default parameters:

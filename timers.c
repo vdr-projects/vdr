@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.28 2025/07/09 14:49:59 kls Exp $
+ * $Id: timers.c 5.29 2025/07/10 19:12:24 kls Exp $
  */
 
 #include "timers.h"
@@ -608,6 +608,13 @@ void cTimer::CalcStartStopTime(time_t &startTime, time_t &stopTime, time_t t) co
      }
 }
 
+time_t cTimer::VpsTime(time_t t) const
+{
+  time_t startTime, stopTime;
+  CalcStartStopTime(startTime, stopTime, t);
+  return startTime;
+}
+
 #if DEPRECATED_TIMER_MATCHES
 bool cTimer::Matches(time_t t, bool Directly) const
 {
@@ -797,8 +804,9 @@ bool cTimer::Expired(void) const
               }
            if (FirstEvent) {
               if (Schedule) {
+                 time_t Vps = VpsTime();
                  for (const cEvent *e = FirstEvent; e; e = Schedule->Events()->Next(e)) {
-                     if (e->Vps() == StartTime()) {
+                     if (e->Vps() == Vps) {
                         ExpireTime = e->EndTime() + EXPIRELATENCY;
                         dsyslog("timer %s is waiting for next VPS event %s", *ToDescr(), *e->ToDescr());
                         // no break here - let's play it safe and look at *all* events
@@ -1132,7 +1140,7 @@ bool cTimer::HasFlags(uint Flags) const
 void cTimer::Skip(void)
 {
   cMutexLock MutexLock(&mutex);
-  day = IncDay(SetTime(StartTime(), 0), 1);
+  day = IncDay(SetTime(VpsTime(), 0), 1);
   startTime = 0;
   SetEvent(NULL);
 }

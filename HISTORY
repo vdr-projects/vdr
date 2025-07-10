@@ -10138,7 +10138,7 @@ Video Disk Recorder Revision History
 - Fixed an invalid lock sequence when pressing the Channel+/Channel- keys while in the
   "What's on..." menu in live view.
 
-2025-07-09:
+2025-07-10:
 
 - Fixed cPoller::Poll() to allow negative timeout values again.
 - When regenerating the index of a recording, PID changes are now taken into account
@@ -10168,3 +10168,4 @@ Video Disk Recorder Revision History
 - Fixed expiring VPS timers in case the event has not yet startet after its announced end time.
 - Reverted the change in cCondWait::SleepMs() because of a possible lockup (reported by Johann
   Friedrichs).
+- Added cTimer::VpsTime() (suggested by Markus Ehrnsperger).
