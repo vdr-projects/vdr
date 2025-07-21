@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.11 2025/03/02 11:03:35 kls Exp $
+ * $Id: svdrp.c 5.12 2025/07/21 08:26:31 kls Exp $
  */
 
 #include "svdrp.h"
@@ -246,7 +246,6 @@ bool cSocket::SendDgram(const char *Dgram, int Port)
   Addr.sin_port = htons(Port);
   // Send datagram:
   dbgsvdrp("> %s:%d %s\n", inet_ntoa(Addr.sin_addr), Port, Dgram);
-  dsyslog("SVDRP %s > %s:%d send dgram '%s'", Setup.SVDRPHostName, inet_ntoa(Addr.sin_addr), Port, Dgram);
   int Length = strlen(Dgram);
   int Sent = sendto(Socket, Dgram, Length, 0, (sockaddr *)&Addr, sizeof(Addr));
   if (Sent < 0)
@@ -301,7 +300,6 @@ cString cSocket::Discover(void)
            }
         if (strcmp(strgetval(buf, "name", ':'), Setup.SVDRPHostName) != 0) { // ignore our own broadcast
            dbgsvdrp("< %s discovery received (%s)\n", lastIpAddress.Connection(), buf);
-           isyslog("SVDRP %s < %s discovery received (%s)", Setup.SVDRPHostName, lastIpAddress.Connection(), buf);
            return buf;
            }
         }
@@ -714,8 +712,14 @@ void cSVDRPClientHandler::Action(void)
 {
   if (udpSocket.Listen()) {
      SVDRPClientPoller.Add(udpSocket.Socket(), false);
-     SendDiscover();
+     time_t LastDiscover = 0;
+#define SVDRPDiscoverDelta 60 // seconds
      while (Running()) {
+           time_t Now = time(NULL);
+           if (Now - LastDiscover >= SVDRPDiscoverDelta) {
+              SendDiscover();
+              LastDiscover = Now;
+              }
            SVDRPClientPoller.Poll(1000);
            cMutexLock MutexLock(&mutex);
            HandleClientConnection();
