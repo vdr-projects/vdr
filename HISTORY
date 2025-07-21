@@ -10172,3 +10172,4 @@ Video Disk Recorder Revision History
 - Now sending the SVDRP discover broadcast once per minute, to re-establish lost connections.
 - If an SVDRP peer connection is lost, the connection in the opposite direction is now also
   closed (reported by Markus Ehrnsperger).
+- Shutdown now takes into account the VPS margin (reported by Christoph Haubrich).

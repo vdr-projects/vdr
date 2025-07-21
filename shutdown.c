@@ -6,7 +6,7 @@
  *
  * Original version written by Udo Richter <udo_richter@gmx.de>.
  *
- * $Id: shutdown.c 5.1 2022/11/22 14:33:48 kls Exp $
+ * $Id: shutdown.c 5.2 2025/07/21 19:58:14 kls Exp $
  */
 
 #include "shutdown.h"
@@ -90,6 +90,17 @@ cShutdownHandler::~cShutdownHandler()
   free(shutdownCommand);
 }
 
+static time_t GetWakeupTime(const cTimer *Timer)
+{
+  if (Timer) {
+     time_t t = Timer->StartTime();
+     if (Timer->HasFlags(tfVps))
+        t -= Setup.VpsMargin;
+     return t;
+     }
+  return 0;
+}
+
 void cShutdownHandler::RequestEmergencyExit(void)
 {
   if (Setup.EmergencyExit) {
@@ -170,9 +181,8 @@ bool cShutdownHandler::ConfirmShutdown(bool Interactive)
      }
 
   LOCK_TIMERS_READ;
-  const cTimer *Timer = Timers->GetNextActiveTimer();
-  time_t Next = Timer ? Timer->StartTime() : 0;
-  time_t Delta = Timer ? Next - time(NULL) : 0;
+  time_t Next = GetWakeupTime(Timers->GetNextActiveTimer());
+  time_t Delta = Next ? Next - time(NULL) : 0;
 
   if (cRecordControls::Active() || (Next && Delta <= 0)) {
      // VPS recordings in timer end margin may cause Delta <= 0
@@ -214,9 +224,8 @@ bool cShutdownHandler::ConfirmRestart(bool Interactive)
      }
 
   LOCK_TIMERS_READ;
-  const cTimer *Timer = Timers->GetNextActiveTimer();
-  time_t Next = Timer ? Timer->StartTime() : 0;
-  time_t Delta = Timer ? Next - time(NULL) : 0;
+  time_t Next = GetWakeupTime(Timers->GetNextActiveTimer());
+  time_t Delta = Next ? Next - time(NULL) : 0;
 
   if (cRecordControls::Active() || (Next && Delta <= 0)) {
      // VPS recordings in timer end margin may cause Delta <= 0
@@ -237,7 +246,7 @@ bool cShutdownHandler::DoShutdown(bool Force)
   const cTimer *Timer = Timers->GetNextActiveTimer();
   cPlugin *Plugin = cPluginManager::GetNextWakeupPlugin();
 
-  time_t Next = Timer ? Timer->StartTime() : 0;
+  time_t Next = GetWakeupTime(Timer);
   time_t NextPlugin = Plugin ? Plugin->WakeupTime() : 0;
   if (NextPlugin && (!Next || Next > NextPlugin)) {
      Next = NextPlugin;

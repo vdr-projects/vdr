@@ -2477,6 +2477,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  for reporting a problem where the info file of an ongoing recording was not re-read
  for reporting that some channels change their video PID in the middle of a broadcast,
  which needs to be taken into account when regenerating the index of a recording
+ for reporting that shutdown needs to take into account the VPS margin
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present
