@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.12 2025/07/21 08:26:31 kls Exp $
+ * $Id: svdrp.c 5.13 2025/07/21 08:39:20 kls Exp $
  */
 
 #include "svdrp.h"
@@ -324,10 +324,10 @@ private:
   int fetchFlags;
   bool connected;
   bool Send(const char *Command);
-  void Close(void);
 public:
   cSVDRPClient(const char *Address, int Port, const char *ServerName, int Timeout);
   ~cSVDRPClient();
+  void Close(void);
   const char *ServerName(void) const { return serverName; }
   const char *Connection(void) const { return serverIpAddress.Connection(); }
   bool HasAddress(const char *Address, int Port) const;
@@ -465,6 +465,7 @@ bool cSVDRPClient::Process(cStringList *Response)
             }
          else if (Timeout.TimedOut()) {
             esyslog("SVDRP %s < %s timeout while waiting for response from '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
+            Close();
             return false;
             }
          else if (!Response && numChars == 0)
@@ -603,6 +604,7 @@ public:
   cSVDRPClientHandler(int TcpPort, int UdpPort);
   virtual ~cSVDRPClientHandler() override;
   void AddClient(cSVDRPServerParams &ServerParams, const char *IpAddress);
+  void CloseClient(const char *ServerName);
   bool Execute(const char *ServerName, const char *Command, cStringList *Response = NULL);
   bool GetServerNames(cStringList *ServerNames);
   bool TriggerFetchingTimers(const char *ServerName);
@@ -694,6 +696,17 @@ void cSVDRPClientHandler::AddClient(cSVDRPServerParams &ServerParams, const char
   if (ServerParams.Host() && strcmp(ServerParams.Host(), Setup.SVDRPHostName) != 0)
      return; // the remote VDR requests a specific host, but it's not us
   clientConnections.Append(new cSVDRPClient(IpAddress, ServerParams.Port(), ServerParams.Name(), ServerParams.Timeout()));
+}
+
+void cSVDRPClientHandler::CloseClient(const char *ServerName)
+{
+  cMutexLock MutexLock(&mutex);
+  for (int i = 0; i < clientConnections.Size(); i++) {
+      if (strcmp(clientConnections[i]->ServerName(), ServerName) == 0) {
+         clientConnections[i]->Close();
+         break;
+         }
+      }
 }
 
 void cSVDRPClientHandler::HandleClientConnection(void)
@@ -2784,6 +2797,8 @@ void cSVDRPServerHandler::ProcessConnections(void)
 {
   for (int i = 0; i < serverConnections.Size(); i++) {
       if (!serverConnections[i]->Process()) {
+         if (SVDRPClientHandler)
+            SVDRPClientHandler->CloseClient(serverConnections[i]->ClientName());
          delete serverConnections[i];
          serverConnections.Remove(i);
          i--;

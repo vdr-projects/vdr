@@ -2605,6 +2605,8 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  parameters of a previous call to cTimer::Matches()
  for fixing the stop time of repeating timers in case of DST change
  for suggesting to add cTimer::VpsTime()
+ for reporting that if an SVDRP peer connection is lost, the connection in the opposite
+ direction needs to be closed
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
