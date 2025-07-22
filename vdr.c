@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.20 2025/07/06 15:06:55 kls Exp $
+ * $Id: vdr.c 5.21 2025/07/22 21:10:00 kls Exp $
  */
 
 #include <getopt.h>
@@ -1593,6 +1593,8 @@ int main(int argc, char *argv[])
                  }
               }
            }
+
+        cReplayControl::DelTimeshiftTimer();
 
         ReportEpgBugFixStats();
 

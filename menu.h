@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.6 2025/03/02 11:03:35 kls Exp $
+ * $Id: menu.h 5.7 2025/07/22 21:10:00 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -292,6 +292,7 @@ public:
 
 class cReplayControl : public cDvbPlayerControl {
 private:
+  static cTimer *timeshiftTimer;
   cSkinDisplayReplay *displayReplay;
   cAdaptiveSkipper adaptiveSkipper;
   cMarks marks;
@@ -322,6 +323,7 @@ private:
 public:
   cReplayControl(bool PauseLive = false);
   virtual ~cReplayControl() override;
+  static void DelTimeshiftTimer(void);
   void Stop(void);
   virtual cOsdObject *GetInfo(void) override;
   virtual const cRecording *GetRecording(void) override;

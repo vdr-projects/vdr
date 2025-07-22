@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.31 2025/07/06 15:06:55 kls Exp $
+ * $Id: menu.c 5.32 2025/07/22 21:10:00 kls Exp $
  */
 
 #include "menu.h"
@@ -5725,6 +5725,7 @@ int cAdaptiveSkipper::GetValue(eKeys Key)
 
 // --- cReplayControl --------------------------------------------------------
 
+cTimer *cReplayControl::timeshiftTimer = NULL;
 cReplayControl *cReplayControl::currentReplayControl = NULL;
 cString cReplayControl::fileName;
 
@@ -5760,6 +5761,18 @@ cReplayControl::~cReplayControl()
      currentReplayControl = NULL;
 }
 
+void cReplayControl::DelTimeshiftTimer(void)
+{
+  if (timeshiftTimer) {
+     LOCK_TIMERS_WRITE;
+     Timers->SetExplicitModify();
+     Timers->Del(timeshiftTimer);
+     Timers->SetModified();
+     isyslog("deleted timer %s", *timeshiftTimer->ToDescr());
+     timeshiftTimer = NULL;
+     }
+}
+
 void cReplayControl::Stop(void)
 {
   Hide();
@@ -5769,17 +5782,10 @@ void cReplayControl::Stop(void)
      if (rc && rc->InstantId()) {
         if (Active()) {
            if (Setup.DelTimeshiftRec == 2 || Interface->Confirm(tr("Delete timeshift recording?"))) {
-              {
-                LOCK_TIMERS_WRITE;
-                Timers->SetExplicitModify();
-                cTimer *Timer = rc->Timer();
-                rc->Stop(false); // don't execute user command
-                if (Timer) {
-                   Timers->Del(Timer);
-                   Timers->SetModified();
-                   isyslog("deleted timer %s", *Timer->ToDescr());
-                   }
-              }
+              // At this point somewhere up the call stack there may be a lock on the Channels, so we can't
+              // lock the Timers here and have to delete this timer later:
+              timeshiftTimer = rc->Timer();
+              rc->Stop(false); // don't execute user command
               cDvbPlayerControl::Stop();
               bool Error = false;
               {

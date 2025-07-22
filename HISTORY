@@ -10138,7 +10138,7 @@ Video Disk Recorder Revision History
 - Fixed an invalid lock sequence when pressing the Channel+/Channel- keys while in the
   "What's on..." menu in live view.
 
-2025-07-21:
+2025-07-22:
 
 - Fixed cPoller::Poll() to allow negative timeout values again.
 - When regenerating the index of a recording, PID changes are now taken into account
@@ -10173,3 +10173,4 @@ Video Disk Recorder Revision History
 - If an SVDRP peer connection is lost, the connection in the opposite direction is now also
   closed (reported by Markus Ehrnsperger).
 - Shutdown now takes into account the VPS margin (reported by Christoph Haubrich).
+- Fixed an 'invalid lock sequence' when deleting the timeshift timer.
