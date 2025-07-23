@@ -3839,3 +3839,4 @@ Andreas Baierl <post@andreasbaierl.de>
  for reporting a problem in the progress display when switching from "pause" to
  "slow back"
  for moving the call to Empty() back into the pmSlow case
+ for reporting a missing DeviceFreeze() when pausing at the last mark

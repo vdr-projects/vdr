@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.11 2025/04/08 14:16:57 kls Exp $
+ * $Id: dvbplayer.c 5.12 2025/07/23 08:56:52 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -679,6 +679,7 @@ void cDvbPlayer::Action(void)
           else {
              if (AtLastMark) {
                 if (Setup.PauseAtLastMark) {
+                   DeviceFreeze();
                    playMode = pmPause;
                    AtLastMark = false;
                    }
