@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.43 2025/06/27 08:46:07 kls Exp $
+ * $Id: recording.c 5.44 2025/10/26 10:18:10 kls Exp $
  */
 
 #include "recording.h"
@@ -2285,7 +2285,7 @@ bool cMark::Parse(const char *s)
   if (p) {
      p = skipspace(p);
      if (*p)
-        comment = strdup(p);
+        comment = p;
      }
   return true;
 }
