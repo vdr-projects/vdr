@@ -4,6 +4,7 @@
 # Klaus Schmidinger <vdr@tvdr.de>, 2000-2015
 # Albert Danis <a.danis@gmx.de>, 2015
 # Johann Friedrichs <johann.friedrichs@web.de>, 2022
+# Stefan Hofmann <stefan.hofmann@t-online.de>, 2025
 #
 msgid ""
 msgstr ""
@@ -11,7 +12,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2025-03-28 22:45+0100\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
-"Last-Translator: Klaus Schmidinger <vdr@tvdr.de>\n"
+"Last-Translator: Stefan Hofmann <stefan.hofmann@t-online.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
@@ -76,7 +77,7 @@ msgid "Hierarchy"
 msgstr "Hierarchie"
 
 msgid "Rolloff"
-msgstr "Rolloff"
+msgstr "Roll-off"
 
 msgid "StreamId"
 msgstr "Stream-ID"
@@ -352,7 +353,7 @@ msgid "LanguageName$audio description (qad)"
 msgstr "Audiodeskription (qad)"
 
 msgid "LanguageName$clear speech (qks)"
-msgstr "Klare Sprache"
+msgstr "klare Sprache"
 
 msgid "LanguageName$uncoded languages (mis)"
 msgstr "einzelne andere Sprachen (mis)"
@@ -557,7 +558,7 @@ msgid "encrypted"
 msgstr "verschlüsselt"
 
 msgid "Edit channel"
-msgstr "Kanal editieren"
+msgstr "Kanal bearbeiten"
 
 msgid "Name"
 msgstr "Name"
@@ -614,7 +615,7 @@ msgid "Channels"
 msgstr "Kanäle"
 
 msgid "Button$Edit"
-msgstr "Editieren"
+msgstr "Bearbeiten"
 
 msgid "Button$New"
 msgstr "Neu"
@@ -632,7 +633,7 @@ msgid "Delete channel?"
 msgstr "Kanal löschen?"
 
 msgid "Edit folder"
-msgstr "Verzeichnis editieren"
+msgstr "Verzeichnis bearbeiten"
 
 msgid "New folder"
 msgstr "Neues Verzeichnis"
@@ -654,7 +655,7 @@ msgid "Delete folder?"
 msgstr "Verzeichnis löschen?"
 
 msgid "Edit timer"
-msgstr "Timer editieren"
+msgstr "Timer bearbeiten"
 
 msgid "Active"
 msgstr "Aktiv"
@@ -750,7 +751,7 @@ msgid "What's on now?"
 msgstr "Was läuft jetzt?"
 
 msgid "What's on next?"
-msgstr "Was läuft als nächstes?"
+msgstr "Was läuft als Nächstes?"
 
 msgid "Button$Next"
 msgstr "Nächste"
@@ -789,7 +790,7 @@ msgid "CAM not responding!"
 msgstr "CAM antwortet nicht!"
 
 msgid "Edit path"
-msgstr "Pfad editieren"
+msgstr "Pfad bearbeiten"
 
 msgid "Folder"
 msgstr "Ordner"
@@ -798,20 +799,20 @@ msgid "Size"
 msgstr "Größe"
 
 msgid "This folder is currently in use - no changes are possible!"
-msgstr "Dieser Ordner ist zur Zeit in Verwendung - es sind keine Änderungen möglich!"
+msgstr "Dieser Ordner ist zur Zeit in Verwendung - keine Änderungen möglich!"
 
 #, c-format
 msgid "Move entire folder containing %d recordings?"
-msgstr "Ganzen Ordner mit %d Aufnahmen verschieben?"
+msgstr "Ganzen Ordner mit %d Aufzeichnungen verschieben?"
 
 msgid "Error while moving folder!"
 msgstr "Fehler beim Verschieben des Ordners!"
 
 msgid "Edit recording"
-msgstr "Aufnahme editieren"
+msgstr "Aufzeichnung bearbeiten"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr "Diese Aufnahme ist zur Zeit in Verwendung - es sind keine Änderungen möglich!"
+msgstr "Diese Aufzeichnung ist zur Zeit in Verwendung - keine Änderungen möglich!"
 
 msgid "Button$Cancel cutting"
 msgstr "Schnitt abbrechen"
@@ -838,7 +839,7 @@ msgid "Button$Delete marks"
 msgstr "Marken löschen"
 
 msgid "Recording vanished!"
-msgstr "Aufnahme verschwunden!"
+msgstr "Aufzeichnung verschwunden!"
 
 msgid "Edited version already exists - overwrite?"
 msgstr "Geschnittene Version existiert bereits - überschreiben?"
@@ -847,13 +848,13 @@ msgid "Not enough free disk space to start editing process!"
 msgstr "Nicht genug freier Plattenplatz zum Schneiden!"
 
 msgid "Error while queueing recording for cutting!"
-msgstr "Fehler beim Hinzufügen der Aufnahme zur Schnittwarteschlange"
+msgstr "Fehler beim Hinzufügen der Aufzeichnung zur Schnittwarteschlange"
 
 msgid "Rename recording to folder name?"
-msgstr "Aufnahme in Ordnername umbenennen?"
+msgstr "Aufzeichnung in Ordnername umbenennen?"
 
 msgid "Delete editing marks for this recording?"
-msgstr "Schnittmarken für diese Aufnahme löschen?"
+msgstr "Schnittmarken für diese Aufzeichnung löschen?"
 
 msgid "Error while deleting editing marks!"
 msgstr "Fehler beim Löschen der Schnittmarken!"
@@ -940,7 +941,7 @@ msgid "Setup.OSD$Message time (s)"
 msgstr "Anzeigedauer für Nachrichten (s)"
 
 msgid "Setup.OSD$Use small font"
-msgstr "Kleine Schrift benutzen"
+msgstr "Kleine Schrift verwenden"
 
 msgid "Setup.OSD$Anti-alias"
 msgstr "Kantenglättung"
@@ -964,7 +965,7 @@ msgid "Setup.OSD$Fixed font size (%)"
 msgstr "Festbreiten-Schriftgröße (%)"
 
 msgid "Setup.OSD$Channel info position"
-msgstr "Kanalinfo-Position"
+msgstr "Position der Kanalinformationen"
 
 msgid "bottom"
 msgstr "unten"
@@ -973,13 +974,13 @@ msgid "top"
 msgstr "oben"
 
 msgid "Setup.OSD$Channel info time (s)"
-msgstr "Anzeigedauer für Kanalinfo (s)"
+msgstr "Anzeigedauer für Kanalinformationen (s)"
 
 msgid "Setup.OSD$Info on channel switch"
-msgstr "Info beim Kanalwechsel"
+msgstr "Informationen beim Kanalwechsel"
 
 msgid "Setup.OSD$Timeout requested channel info"
-msgstr "Angeforderte Kanalinfo schließen"
+msgstr "Angeforderte Kanalinformationen schließen"
 
 msgid "Setup.OSD$Scroll pages"
 msgstr "Seitenweise scrollen"
@@ -1000,10 +1001,10 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Verzeichnisse immer zuerst einsortieren"
 
 msgid "Setup.OSD$Default sort mode for recordings"
-msgstr "Standard Sortierreihenfolge für Aufnahmen"
+msgstr "Standard-Sortierung für Aufzeichnungen"
 
 msgid "Setup.OSD$Sorting direction for recordings"
-msgstr "Sortierreihenfolge für Aufnahmen"
+msgstr "Sortierreihenfolge für Aufzeichnungen"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Nummerntasten für Zeichen"
@@ -1030,10 +1031,10 @@ msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Zeit bis zur EPG-Aktualisierung (h)"
 
 msgid "Setup.EPG$EPG scan max. channel number (0=all)"
-msgstr "Maximaler Kanal für EPG-Scan (0=alle)"
+msgstr "Max. Kanal für EPG-Aktualisierung (0 = alle)"
 
 msgid "Setup.EPG$EPG pause after scan"
-msgstr "Pause nach EPG-Scan"
+msgstr "Pause nach EPG-Aktualisierung"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "EPG-Fehlerbereinigungsstufe"
@@ -1056,13 +1057,13 @@ msgid "Setup.EPG$Preferred language"
 msgstr "Bevorzugte Sprache"
 
 msgid "pan&scan"
-msgstr "pan&scan"
+msgstr "Pan & Scan"
 
 msgid "letterbox"
 msgstr "Letterbox"
 
 msgid "center cut out"
-msgstr "Center-cut-out"
+msgstr "Center cut-out"
 
 msgid "no"
 msgstr "nein"
@@ -1140,7 +1141,7 @@ msgid "LNB"
 msgstr "LNB"
 
 msgid "Setup.LNB$Use DiSEqC"
-msgstr "DiSEqC benutzen"
+msgstr "DiSEqC verwenden"
 
 msgid "Setup.LNB$SLOF (MHz)"
 msgstr "SLOF (MHz)"
@@ -1180,10 +1181,10 @@ msgid "East"
 msgstr "Ost"
 
 msgid "Setup.LNB$Max. positioner swing (degrees)"
-msgstr "Max. Positionier-Winkel (Grad)"
+msgstr "Maximaler Positionierwinkel (Grad)"
 
 msgid "Setup.LNB$Positioner speed (degrees/s)"
-msgstr "Max. Positionier-Geschwindigkeit (Grad/s)"
+msgstr "Maximale Positioniergeschwindigkeit (Grad/s)"
 
 msgid "CAM reset"
 msgstr "CAM zurückgesetzt"
@@ -1265,10 +1266,10 @@ msgid "Setup.Recording$Margin at stop (min)"
 msgstr "Nachlauf am Timer-Ende (min)"
 
 msgid "Setup.Recording$Default priority"
-msgstr "Default-Priorität"
+msgstr "Standard-Priorität"
 
 msgid "Setup.Recording$Default lifetime (d)"
-msgstr "Default-Lebensdauer (d)"
+msgstr "Standard-Lebensdauer (Tage)"
 
 msgid "Setup.Recording$Record key handling"
 msgstr "Funktion der Aufnehmen-Taste"
@@ -1280,13 +1281,13 @@ msgid "Setup.Recording$Pause priority"
 msgstr "Pause-Priorität"
 
 msgid "Setup.Recording$Pause lifetime (d)"
-msgstr "Pause-Lebensdauer (d)"
+msgstr "Pause-Lebensdauer (Tage)"
 
 msgid "Setup.Recording$Use episode name"
 msgstr "Episodenname verwenden"
 
 msgid "Setup.Recording$Use VPS"
-msgstr "VPS benutzen"
+msgstr "VPS verwenden"
 
 msgid "Setup.Recording$VPS margin (s)"
 msgstr "Zeitvorlauf bei VPS (s)"
@@ -1304,13 +1305,13 @@ msgid "Setup.Recording$present event"
 msgstr "laufende Sendung"
 
 msgid "Setup.Recording$Max. video file size (MB)"
-msgstr "Max. Videodateigröße (MB)"
+msgstr "Maximale Videodateigröße (MB)"
 
 msgid "Setup.Recording$Split edited files"
-msgstr "Editierte Dateien aufteilen"
+msgstr "Bearbeitete Dateien aufteilen"
 
 msgid "Setup.Recording$Delete timeshift recording"
-msgstr "Zeitversetzte Aufnahme löschen"
+msgstr "Zeitversetzte Aufzeichnung löschen"
 
 msgid "Replay"
 msgstr "Wiedergabe"
@@ -1349,13 +1350,13 @@ msgid "Setup.Replay$Alternate behavior for adaptive skipping"
 msgstr "Alternatives Verhalten beim adapt. Springen"
 
 msgid "Setup.Replay$Use Prev/Next keys for adaptive skipping"
-msgstr "Adaptives Springen mit Zurück/Vorwärts-Tasten"
+msgstr "Adapt. Springen mit Zurück/Vorwärts-Tasten"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys (s)"
 msgstr "Sprungweite mit Taste Grün/Gelb (s)"
 
 msgid "Setup.Replay$Skip distance with Green/Yellow keys in repeat (s)"
-msgstr "Sprungweite mit Taste Grün/Gelb bei Wiederh. (s)"
+msgstr "Sprungweite mit Grün/Gelb bei Wiederh. (s)"
 
 msgid "Setup.Replay$Resume ID"
 msgstr "Wiedergabe-ID"
@@ -1385,13 +1386,13 @@ msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP trennen bei Inaktivität (s)"
 
 msgid "Setup.Miscellaneous$SVDRP peering"
-msgstr "SVDRP Verbindung"
+msgstr "SVDRP-Verbindung"
 
 msgid "Setup.Miscellaneous$SVDRP host name"
-msgstr "SVDRP Maschinenname"
+msgstr "SVDRP-Maschinenname"
 
 msgid "Setup.Miscellaneous$SVDRP default host"
-msgstr "SVDRP Standardmaschine"
+msgstr "SVDRP-Standardmaschine"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Mindestzeit für vorherigen Kanal (s)"
@@ -1415,10 +1416,10 @@ msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Lautstärke beim Einschalten"
 
 msgid "Setup.Miscellaneous$Volume steps"
-msgstr "Anzahl Lautstärke Schritte"
+msgstr "Anzahl Lautstärke-Schritte"
 
 msgid "Setup.Miscellaneous$Volume linearize"
-msgstr "Lautstärke Kurve korrigieren"
+msgstr "Lautstärke-Kurve korrigieren"
 
 msgid "Setup.Miscellaneous$Channels wrap"
 msgstr "Rundum zappen"
@@ -1490,7 +1491,7 @@ msgid "Pausing live video..."
 msgstr "Live-Signal wird angehalten..."
 
 msgid "Delete timeshift recording?"
-msgstr "Zeitversetzte Aufnahme löschen?"
+msgstr "Zeitversetzte Aufzeichnung löschen?"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Jump: "
@@ -1536,7 +1537,7 @@ msgid "Up/Dn for new location - OK to move"
 msgstr "Auf/Ab für neue Position - dann OK"
 
 msgid "Primary device has no MPEG decoder, can't attach player!"
-msgstr "Primäres Device hat keinen MPEG-Decoder, Wiedergabe nicht möglich!"
+msgstr "Das primäre Gerät hat keinen MPEG-Dekoder. Wiedergabe nicht möglich!"
 
 msgid "Low disk space!"
 msgstr "Platte beinahe voll!"
