@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.13 2025/07/21 08:39:20 kls Exp $
+ * $Id: svdrp.c 5.14 2025/11/15 10:46:11 kls Exp $
  */
 
 #include "svdrp.h"
@@ -948,7 +948,9 @@ const char *HelpPages[] = {
   "    by the LSTC command.",
   "NEWT <settings>\n"
   "    Create a new timer. Settings must be in the same format as returned\n"
-  "    by the LSTT command.",
+  "    by the LSTT command. If a timer with the same channel, day, start\n"
+  "    and stop time already exists, the data of the existing timer is returned\n"
+  "    with code 550.",
   "NEXT [ abs | rel ]\n"
   "    Show the next timer event. If no option is given, the output will be\n"
   "    in human readable form. With option 'abs' the absolute time of the next\n"
@@ -2273,10 +2275,19 @@ void cSVDRPServer::CmdNEWT(const char *Option)
      cTimer *Timer = new cTimer;
      if (Timer->Parse(Option)) {
         LOCK_TIMERS_WRITE;
-        Timer->ClrFlags(tfRecording);
-        Timers->Add(Timer);
-        isyslog("SVDRP %s < %s added timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
-        Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
+        const cTimer *t = Timers->GetTimer(Timer);
+        if (!t) {
+           Timer->ClrFlags(tfRecording);
+           Timers->Add(Timer);
+           isyslog("SVDRP %s < %s added timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
+           Reply(250, "%d %s", Timer->Id(), *Timer->ToText(true));
+           }
+        else {
+           isyslog("SVDRP %s < %s attempted to add timer %s", Setup.SVDRPHostName, *clientName, *Timer->ToDescr());
+           isyslog("SVDRP %s < %s timer already exists as %s", Setup.SVDRPHostName, *clientName, *t->ToDescr());
+           delete Timer;
+           Reply(550, "%d %s", t->Id(), *t->ToText(true));
+           }
         return;
         }
      else

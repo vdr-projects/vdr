@@ -3712,6 +3712,7 @@ Stefan Pöschel <basic.master@gmx.de>
 Robert Hannebauer <vdr@hannebauer.org>
  for fixing an overflow of PIDs in a receiver
  for fixing opening the UDP port in peerdemo
+ for reporting that the SVDRP command NEWT could create duplicate timers
 
 Aitugan Sarbassov <isarbassov@gmail.com>
  for adding 'S58.5E Kazsat 3' to sources.conf
