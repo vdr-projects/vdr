@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.12 2025/03/02 11:03:35 kls Exp $
+ * $Id: tools.h 5.13 2025/11/21 09:52:51 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -785,13 +785,16 @@ public:
        }
     return false;
   }
-  virtual void Remove(int Index)
+  virtual void Remove(int Index, int Count = 1)
   {
-    if (Index < 0)
+    if (Index < 0 || Index >= size || Count < 1)
        return; // prevents out-of-bounds access
-    if (Index < size - 1)
-       memmove(&data[Index], &data[Index + 1], (size - Index) * sizeof(T));
-    size--;
+    if (Index + Count > size)
+       Count = size - Index;
+    int Tail = size - (Index + Count);
+    if (Tail > 0)
+       memmove(&data[Index], &data[Index + Count], Tail * sizeof(T));
+    size -= Count;
   }
   bool RemoveElement(const T &Data)
   {
