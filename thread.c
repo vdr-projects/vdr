@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 5.5 2025/07/09 16:13:43 kls Exp $
+ * $Id: thread.c 5.6 2025/12/02 21:14:44 kls Exp $
  */
 
 #include "thread.h"
@@ -357,11 +357,12 @@ void cThread::Cancel(int WaitSeconds)
   running = false;
   if (active && WaitSeconds > -1) {
      if (WaitSeconds > 0) {
-        for (time_t t0 = time(NULL) + WaitSeconds; time(NULL) < t0; ) {
-            if (!Active())
-               return;
-            cCondWait::SleepMs(10);
-            }
+        cTimeMs t(WaitSeconds * 1000);
+        while (!t.TimedOut()) {
+              if (!Active())
+                 return;
+              cCondWait::SleepMs(10);
+              }
         esyslog("ERROR: %s thread %d won't end (waited %d seconds) - canceling it...", description ? description : "", childThreadId, WaitSeconds);
         }
      pthread_cancel(childTid);

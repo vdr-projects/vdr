@@ -10176,7 +10176,7 @@ Video Disk Recorder Revision History
 - Fixed an 'invalid lock sequence' when deleting the timeshift timer.
 - Added DeviceFreeze() when pausing at the last mark (reported by Andreas Baierl).
 
-2025-11-21:
+2025-12-02:
 
 - Fixed a memory leak in cMark::Parse() (thanks to Fabian Wolter).
 - Revised the German language texts (thanks to Stefan Hofmann).
@@ -10185,3 +10185,4 @@ Video Disk Recorder Revision History
 - cVector::Remove() can now remove more than one elements (also fixed an off-by-one error in
   the call to memmove()).
   APIVERSNUM is now 30010.
+- Now using cTimeMs in cThread::Cancel() to make sure the given timeout is handled correctly.
