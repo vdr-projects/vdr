@@ -10188,3 +10188,4 @@ Video Disk Recorder Revision History
 - Now using cTimeMs in cThread::Cancel() to make sure the given timeout is handled correctly.
 - cTimeMs::Elapsed() now always returns the time since the last call to Set(); introduced
   cTimeMs::Remaining() and cTimeMs::Reset().
+- Fixed ending a recording right before the next I-frame.

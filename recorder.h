@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 5.4 2025/03/02 11:03:35 kls Exp $
+ * $Id: recorder.h 5.5 2025/12/03 19:46:39 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -26,6 +26,7 @@ private:
   cIndexFile *index;
   cUnbufferedFile *recordFile;
   char *recordingName;
+  bool working;
   bool firstIframeSeen;
   off_t fileSize;
   time_t lastDiskSpaceCheck;
@@ -49,6 +50,9 @@ public:
        ///< Creates a new recorder for the given Channel and
        ///< the given Priority that will record into the file FileName.
   virtual ~cRecorder() override;
+  void Stop(void);
+       ///< Stops the recorder. Call this before calling Errors() to allow the recording
+       ///< thread to end gracefully.
   int Errors(void) { return oldErrors + errors; };
        ///< Returns the number of errors that were detected during recording.
        ///< Each frame that is missing or contains (any number of) errors counts as one error.

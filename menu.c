@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.32 2025/07/22 21:10:00 kls Exp $
+ * $Id: menu.c 5.33 2025/12/03 19:46:39 kls Exp $
  */
 
 #include "menu.h"
@@ -5456,6 +5456,7 @@ void cRecordControl::Stop(bool ExecuteUserCommand)
   if (timer) {
      bool Finished = timer->HasFlags(tfActive) && !timer->Matches();
      if (recorder) {
+        recorder->Stop();
         int Errors = recorder->Errors();
         isyslog("timer %s %s with %d error%s", *timer->ToDescr(), Finished ? "finished" : "stopped", Errors, Errors != 1 ? "s" : "");
         if (timer->HasFlags(tfAvoid) && Errors == 0 && Finished) {

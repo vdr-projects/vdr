@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.10 2024/09/19 09:49:02 kls Exp $
+ * $Id: recorder.c 5.11 2025/12/03 19:46:39 kls Exp $
  */
 
 #include "recorder.h"
@@ -31,6 +31,7 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
   oldErrors = max(0, recordingInfo->Errors()); // in case this is a re-started recording
   errors = 0;
   lastErrors = 0;
+  working = false;
   firstIframeSeen = false;
 
   // Make sure the disk is up and running:
@@ -73,12 +74,18 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
 
 cRecorder::~cRecorder()
 {
+  Cancel(3); // in case the caller didn't call Stop()
   Detach();
   delete index;
   delete fileName;
   delete frameDetector;
   delete ringBuffer;
   free(recordingName);
+}
+
+void cRecorder::Stop(void)
+{
+  Cancel(3);
 }
 
 #define ERROR_LOG_DELTA 1 // seconds between logging errors
@@ -134,7 +141,7 @@ void cRecorder::Activate(bool On)
 
 void cRecorder::Receive(const uchar *Data, int Length)
 {
-  if (Running()) {
+  if (working) {
      static const uchar aff[TS_SIZE - 4] = { 0xB7, 0x00,
        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
        0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF,
@@ -158,7 +165,7 @@ void cRecorder::Receive(const uchar *Data, int Length)
      if ((Data[3] & 0b00110000) == 0b00100000 && !memcmp(Data + 4, aff, sizeof(aff)))
         return; // Adaptation Field Filler found, skipping
      int p = ringBuffer->Put(Data, Length);
-     if (p != Length && Running())
+     if (p != Length && working)
         ringBuffer->ReportOverflow(Length - p);
      }
 }
@@ -176,14 +183,17 @@ void cRecorder::Action(void)
   NextFile();
   if (fileName->Number() > 1 || oldErrors)
      frameDetector->SetMissing();
-  while (Running()) {
+  working = true;
+  while (true) {
         int r;
         uchar *b = ringBuffer->Get(r);
         if (b) {
            int Count = frameDetector->Analyze(b, r);
            if (Count) {
-              if (!Running() && frameDetector->IndependentFrame()) // finish the recording before the next independent frame
+              if (!Running() && frameDetector->IndependentFrame()) { // finish the recording before the next independent frame
+                 working = false;
                  break;
+                 }
               if (frameDetector->Synced()) {
                  if (!InfoWritten) {
                     if ((frameDetector->FramesPerSecond() > 0 && DoubleEqual(recordingInfo->FramesPerSecond(), DEFAULTFRAMESPERSECOND) && !DoubleEqual(recordingInfo->FramesPerSecond(), frameDetector->FramesPerSecond())) ||
