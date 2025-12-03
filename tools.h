@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.13 2025/11/21 09:52:51 kls Exp $
+ * $Id: tools.h 5.14 2025/12/03 11:00:05 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -404,6 +404,7 @@ public:
 class cTimeMs {
 private:
   uint64_t begin;
+  uint64_t end;
 public:
   cTimeMs(int Ms = 0);
       ///< Creates a timer with ms resolution and an initial timeout of Ms.
@@ -411,14 +412,24 @@ public:
       ///< time.
   static uint64_t Now(void);
   void Set(int Ms = 0);
-      ///< Sets the timer. If Ms is 0, call Elapsed() to get the number of milliseconds
+      ///< Sets the timer. Call Elapsed() to get the number of milliseconds
       ///< since the timer has been set. If Ms is greater than 0, TimedOut() returns
       ///< true as soon as Ms milliseconds have passed since calling Set(). If Ms is
       ///< negative, results are undefined.
-      ///< Depending on the value of Ms, an object of cTimeMs can handle either
-      ///< timeouts or elapsed times, not both at the same time.
   bool TimedOut(void) const;
+      ///< Returns true if the number of milliseconds given in the last call to Set()
+      ///< have passed.
   uint64_t Elapsed(void) const;
+      ///< Returns the number of milliseconds that have elapsed since the last call
+      ///< to Set().
+  uint64_t Remaining(void) const;
+      ///< Returns the number of milliseconds remaining until the timer times out.
+      ///< A negative value means that the timer has timed out that many milliseconds
+      ///< in the past.
+  void Reset(void);
+      ///< Resets the timer to the same timeout as given in the last call to Set().
+      ///< This is equivalent to calling Set() with a value, but saves you from having
+      ///< to specify the value again.
   };
 
 class cReadLine {

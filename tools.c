@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.18 2025/06/23 09:23:05 kls Exp $
+ * $Id: tools.c 5.19 2025/12/03 11:00:05 kls Exp $
  */
 
 #include "tools.h"
@@ -756,10 +756,9 @@ off_t FileSize(const char *FileName)
 
 cTimeMs::cTimeMs(int Ms)
 {
-  if (Ms >= 0)
-     Set(Ms);
-  else
-     begin = 0;
+  begin = 0;
+  end = 0;
+  Set(Ms);
 }
 
 uint64_t cTimeMs::Now(void)
@@ -807,17 +806,30 @@ uint64_t cTimeMs::Now(void)
 
 void cTimeMs::Set(int Ms)
 {
-  begin = Now() + Ms;
+  if (Ms >= 0) {
+     begin = Now();
+     end = begin + Ms;
+     }
 }
 
 bool cTimeMs::TimedOut(void) const
 {
-  return Now() >= begin;
+  return Now() >= end;
 }
 
 uint64_t cTimeMs::Elapsed(void) const
 {
   return Now() - begin;
+}
+
+uint64_t cTimeMs::Remaining(void) const
+{
+  return end - Now();
+}
+
+void cTimeMs::Reset(void)
+{
+  Set(end - begin);
 }
 
 // --- UTF-8 support ---------------------------------------------------------
