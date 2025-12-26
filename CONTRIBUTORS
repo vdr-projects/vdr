@@ -3402,6 +3402,8 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for reporting broken automatic moving of the cursor when inputting characters with
  number keys
  for revising the German language texts
+ for reporting that the number of missing frames may be way off after regenerating the index
+ if there are longer gaps in the recording
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a

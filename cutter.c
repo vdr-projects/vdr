@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.5 2025/03/02 11:03:35 kls Exp $
+ * $Id: cutter.c 5.6 2025/12/26 16:04:59 kls Exp $
  */
 
 #include "cutter.h"
@@ -249,7 +249,7 @@ private:
   cPatPmtParser patPmtParser;
   bool Throttled(void);
   bool SwitchFile(bool Force = false);
-  bool LoadFrame(int Index, uchar *Buffer, bool &Independent, int &Length, bool *Errors = NULL, bool *Missing = NULL);
+  bool LoadFrame(int Index, uchar *Buffer, bool &Independent, int &Length);
   bool FramesAreEqual(int Index1, int Index2);
   void GetPendingPackets(uchar *Buffer, int &Length, int Index);
        // Gather all non-video TS packets from Index upward that either belong to
@@ -340,11 +340,11 @@ bool cCuttingThread::Throttled(void)
   return false;
 }
 
-bool cCuttingThread::LoadFrame(int Index, uchar *Buffer, bool &Independent, int &Length, bool *Errors, bool *Missing)
+bool cCuttingThread::LoadFrame(int Index, uchar *Buffer, bool &Independent, int &Length)
 {
   uint16_t FileNumber;
   off_t FileOffset;
-  if (fromIndex->Get(Index, &FileNumber, &FileOffset, &Independent, &Length, Errors, Missing)) {
+  if (fromIndex->Get(Index, &FileNumber, &FileOffset, &Independent, &Length)) {
      fromFile = fromFileName->SetOffset(FileNumber, FileOffset);
      if (fromFile) {
         fromFile->SetReadAhead(MEGABYTE(20));
@@ -564,12 +564,31 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
      error = "malloc";
      return false;
      }
+  cPatPmtParser PatPmtParser;
+  cFrameChecker FrameChecker;
   for (int Index = BeginIndex; Running() && Index < EndIndex; Index++) {
       bool Independent;
       int Length;
-      bool Errors;
-      bool Missing;
-      if (LoadFrame(Index, Buffer, Independent, Length, &Errors, &Missing)) {
+      if (LoadFrame(Index, Buffer, Independent, Length)) {
+         bool Errors = false;
+         bool Missing = false;
+         if (!isPesRecording) {
+            int OldPatVersion, OldPmtVersion;
+            PatPmtParser.GetVersions(OldPatVersion, OldPmtVersion);
+            if (PatPmtParser.ParsePatPmt(Buffer, Length)) {
+               if (OldPatVersion >= 0 && OldPmtVersion >= 0) {
+                  int NewPatVersion, NewPmtVersion;
+                  if (PatPmtParser.GetVersions(NewPatVersion, NewPmtVersion)) {
+                     if (NewPatVersion != OldPatVersion || NewPmtVersion != OldPmtVersion) {
+                        dsyslog("PAT/PMT version change while cutting");
+                        FrameChecker.Reset();
+                        }
+                     }
+                  }
+               }
+
+            FrameChecker.Check(Buffer, Length, Independent, Errors, Missing, Index == EndIndex - 1);
+            }
          // Make sure there is enough disk space:
          AssertFreeDiskSpace(-1);
          bool CutIn = !SeamlessBegin && Index == BeginIndex;
@@ -590,7 +609,7 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
             error = "toIndex";
             return false;
             }
-         frameErrors += Errors + Missing;
+         frameErrors = FrameChecker.TotalErrors();
          HandleErrors();
          // Write data:
          if (toFile->Write(Buffer, Length) < 0) {

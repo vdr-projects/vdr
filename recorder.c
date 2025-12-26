@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.11 2025/12/03 19:46:39 kls Exp $
+ * $Id: recorder.c 5.12 2025/12/26 16:04:59 kls Exp $
  */
 
 #include "recorder.h"
@@ -15,6 +15,7 @@
 // The maximum time we wait before assuming that a recorded video data stream
 // is broken:
 #define MAXBROKENTIMEOUT 30000 // milliseconds
+#define LEFTOVERTIMEOUT   2000 // milliseconds
 
 #define MINFREEDISKSPACE    (512) // MB
 #define DISKCHECKINTERVAL   100 // seconds
@@ -28,9 +29,10 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
   recordingName = strdup(FileName);
   recordingInfo = new cRecordingInfo(recordingName);
   recordingInfo->Read();
-  oldErrors = max(0, recordingInfo->Errors()); // in case this is a re-started recording
+  tmpErrors = recordingInfo->TmpErrors();
+  oldErrors = max(0, recordingInfo->Errors()) - tmpErrors; // in case this is a re-started recording
   errors = 0;
-  lastErrors = 0;
+  lastErrors = oldErrors + tmpErrors;
   working = false;
   firstIframeSeen = false;
 
@@ -94,14 +96,15 @@ void cRecorder::HandleErrors(bool Force)
 {
   // We don't log every single error separately, to avoid spamming the log file:
   if (Force || time(NULL) - lastErrorLog >= ERROR_LOG_DELTA) {
-     if (errors > lastErrors) {
-        int d = errors - lastErrors;
-        esyslog("%s: %d new error%s (total %d)", recordingName, d, d > 1 ? "s" : "", oldErrors + errors);
-        recordingInfo->SetErrors(oldErrors + errors);
+     int AllErrors = oldErrors + errors + tmpErrors;
+     if (AllErrors != lastErrors) {
+        int d = AllErrors - lastErrors;
+        esyslog("%s: %d new error%s (total %d)", recordingName, d, d > 1 ? "s" : "", AllErrors);
+        recordingInfo->SetErrors(AllErrors, tmpErrors);
         recordingInfo->Write();
         LOCK_RECORDINGS_WRITE;
         Recordings->UpdateByName(recordingName);
-        lastErrors = errors;
+        lastErrors = AllErrors;
         }
      lastErrorLog = time(NULL);
      }
@@ -170,21 +173,77 @@ void cRecorder::Receive(const uchar *Data, int Length)
      }
 }
 
+#define MIN_IFRAMES_FOR_LAST_PTS 2
+
+void cRecorder::GetLastPts(const char *RecordingName)
+{
+  dsyslog("getting last PTS of '%s'", RecordingName);
+  if (cIndexFile *Index = new cIndexFile(RecordingName, false)) {
+     cFileName *FileName = new cFileName(RecordingName, false);
+     uint16_t FileNumber;
+     off_t FileOffset;
+     bool Independent;
+     uchar Buffer[MAXFRAMESIZE];
+     int Length;
+     int64_t LastPts = -1;
+     int IframesSeen = 0;
+     for (int i = Index->Last(); i >= 0; i--) {
+         if (Index->Get(i, &FileNumber, &FileOffset, &Independent, &Length)) {
+            if (cUnbufferedFile *f = FileName->SetOffset(FileNumber, FileOffset)) {
+               int l = ReadFrame(f, Buffer, Length, sizeof(Buffer));
+               if (l > 0) {
+                  int64_t Pts = TsGetPts(Buffer, Length);
+                  if (LastPts < 0 || PtsDiff(LastPts, Pts) > 0) {
+                     LastPts = Pts;
+                     IframesSeen = 0;
+                     }
+                  if (Independent) {
+                     if (++IframesSeen >= MIN_IFRAMES_FOR_LAST_PTS)
+                        break;
+                     }
+                  }
+               else
+                  break;
+               }
+            else
+               break;
+            }
+         else
+            break;
+         }
+     frameDetector->SetLastPts(LastPts);
+     delete FileName;
+     delete Index;
+     }
+}
+
 void cRecorder::Action(void)
 {
+//#define TEST_VDSB 40000 // 40000 to test VDSB without restart, 70000 for VDSB with restart
+#ifdef TEST_VDSB
+  cTimeMs VdsbTimer;
+#endif
   cTimeMs t(MAXBROKENTIMEOUT);
   bool InfoWritten = false;
   bool pendIndependentFrame = false;
   uint16_t pendNumber = 0;
   off_t pendFileSize = 0;
-  bool pendErrors = false;
   bool pendMissing = false;
+  int NumIframesSeen = 0;
   // Check if this is a resumed recording, in which case we definitely missed frames:
   NextFile();
   if (fileName->Number() > 1 || oldErrors)
-     frameDetector->SetMissing();
+     GetLastPts(recordingName);
   working = true;
   while (true) {
+#ifdef TEST_VDSB
+        int Vdsb = VdsbTimer.Elapsed();
+        if (Vdsb > 30000 && Vdsb < TEST_VDSB) {
+           working = false;
+           cCondWait::SleepMs(100);
+           }
+        working = true;
+#endif
         int r;
         uchar *b = ringBuffer->Get(r);
         if (b) {
@@ -213,24 +272,22 @@ void cRecorder::Action(void)
                     firstIframeSeen = true; // start recording with the first I-frame
                     if (!NextFile())
                        break;
-                    int PreviousErrors = 0;
-                    int MissingFrames = 0;
-                    if (frameDetector->NewFrame(&PreviousErrors, &MissingFrames)) {
+                    bool PreviousErrors = false;
+                    bool MissingFrames = false;
+                    if (frameDetector->NewFrame(PreviousErrors, MissingFrames)) {
                        if (index) {
                           if (pendNumber > 0)
-                             index->Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
+                             index->Write(pendIndependentFrame, pendNumber, pendFileSize, PreviousErrors, pendMissing);
                           pendIndependentFrame = frameDetector->IndependentFrame();
                           pendNumber = fileName->Number();
                           pendFileSize = fileSize;
-                          pendErrors = PreviousErrors;
                           pendMissing = MissingFrames;
                           }
-                       if (PreviousErrors)
-                          errors++;
-                       if (MissingFrames)
-                          errors++;
+                       errors = frameDetector->Errors();
                        }
                     if (frameDetector->IndependentFrame()) {
+                       NumIframesSeen++;
+                       tmpErrors = 0;
                        recordFile->Write(patPmtGenerator.GetPat(), TS_SIZE);
                        fileSize += TS_SIZE;
                        int Index = 0;
@@ -238,13 +295,14 @@ void cRecorder::Action(void)
                              recordFile->Write(pmt, TS_SIZE);
                              fileSize += TS_SIZE;
                              }
-                       t.Set(MAXBROKENTIMEOUT);
+                       t.Reset();
                        }
                     if (recordFile->Write(b, Count) < 0) {
                        LOG_ERROR_STR(fileName->Name());
                        break;
                        }
-                    HandleErrors();
+                    if (NumIframesSeen >= 2) // avoids extra log entry when resuming a recording
+                       HandleErrors();
                     fileSize += Count;
                     }
                  }
@@ -252,17 +310,30 @@ void cRecorder::Action(void)
               }
            }
         if (t.TimedOut()) {
-           if (pendNumber > 0)
-              index->Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
-           frameDetector->SetMissing();
-           errors += MAXBROKENTIMEOUT / 1000 * frameDetector->FramesPerSecond();
-           HandleErrors(true);
            esyslog("ERROR: video data stream broken");
+           tmpErrors += int(round(frameDetector->FramesPerSecond() * t.Elapsed() / 1000));
+           if (pendNumber > 0) {
+              bool PreviousErrors = false;
+              errors = frameDetector->Errors(&PreviousErrors);
+              index->Write(pendIndependentFrame, pendNumber, pendFileSize, PreviousErrors, pendMissing);
+              pendNumber = 0;
+              }
+           HandleErrors(true);
            ShutdownHandler.RequestEmergencyExit();
-           t.Set(MAXBROKENTIMEOUT);
+           t.Reset();
            }
+        if (!Running() && ShutdownHandler.EmergencyExitRequested())
+           break;
         }
-  if (pendNumber > 0)
-     index->Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
+  // Estimate the number of missing frames in case the data stream was broken, but the timer
+  // didn't reach the timeout, yet:
+  int dt = t.Elapsed();
+  if (dt > LEFTOVERTIMEOUT)
+     tmpErrors += int(round(frameDetector->FramesPerSecond() * dt / 1000));
+  if (pendNumber > 0) {
+     bool PreviousErrors = false;
+     errors = frameDetector->Errors(&PreviousErrors);
+     index->Write(pendIndependentFrame, pendNumber, pendFileSize, PreviousErrors, pendMissing);
+     }
   HandleErrors(true);
 }

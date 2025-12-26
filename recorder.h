@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.h 5.5 2025/12/03 19:46:39 kls Exp $
+ * $Id: recorder.h 5.6 2025/12/26 16:04:59 kls Exp $
  */
 
 #ifndef __RECORDER_H
@@ -32,8 +32,10 @@ private:
   time_t lastDiskSpaceCheck;
   time_t lastErrorLog;
   int oldErrors;
+  int tmpErrors;
   int errors;
   int lastErrors;
+  void GetLastPts(const char *RecordingName);
   bool RunningLowOnDiskSpace(void);
   bool NextFile(void);
   void HandleErrors(bool Force = false);
@@ -53,7 +55,7 @@ public:
   void Stop(void);
        ///< Stops the recorder. Call this before calling Errors() to allow the recording
        ///< thread to end gracefully.
-  int Errors(void) { return oldErrors + errors; };
+  int Errors(void) { return oldErrors + errors + tmpErrors; };
        ///< Returns the number of errors that were detected during recording.
        ///< Each frame that is missing or contains (any number of) errors counts as one error.
        ///< If this is a resumed recording, this includes errors that occurred

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.44 2025/10/26 10:18:10 kls Exp $
+ * $Id: recording.c 5.45 2025/12/26 16:04:59 kls Exp $
  */
 
 #include "recording.h"
@@ -428,6 +428,7 @@ cRecordingInfo::cRecordingInfo(const char *FileName)
   event = ownEvent;
   aux = NULL;
   errors = -1;
+  tmpErrors = 0;
   framesPerSecond = DEFAULTFRAMESPERSECOND;
   frameWidth = 0;
   frameHeight = 0;
@@ -492,9 +493,10 @@ void cRecordingInfo::SetFileName(const char *FileName)
   fileName = strdup(cString::sprintf("%s%s", FileName, IsPesRecording ? INFOFILESUFFIX ".vdr" : INFOFILESUFFIX));
 }
 
-void cRecordingInfo::SetErrors(int Errors)
+void cRecordingInfo::SetErrors(int Errors, int TmpErrors)
 {
   errors = Errors;
+  tmpErrors = TmpErrors;
 }
 
 bool cRecordingInfo::Read(FILE *f, bool Force)
@@ -580,6 +582,10 @@ bool cRecordingInfo::Read(FILE *f, bool Force)
              case 'P': priority = atoi(t);
                        break;
              case 'O': errors = atoi(t);
+                       if (t = strchr(t, ' '))
+                          tmpErrors = atoi(t);
+                       else
+                          tmpErrors = 0;
                        break;
              case '@': free(aux);
                        aux = strdup(t);
@@ -608,7 +614,10 @@ bool cRecordingInfo::Write(FILE *f, const char *Prefix) const
      fprintf(f, "%sF %s\n", Prefix, *dtoa(framesPerSecond, "%.10g"));
   fprintf(f, "%sP %d\n", Prefix, priority);
   fprintf(f, "%sL %d\n", Prefix, lifetime);
-  fprintf(f, "%sO %d\n", Prefix, errors);
+  fprintf(f, "%sO %d",   Prefix, errors);
+  if (tmpErrors)
+     fprintf(f, " %d", tmpErrors);
+  fprintf(f, "\n");
   if (aux)
      fprintf(f, "%s@ %s\n", Prefix, aux);
   return true;
@@ -1293,7 +1302,7 @@ bool cRecording::WriteInfo(const char *OtherFileName)
      // Let's keep the error counter if this is a re-started recording:
      cRecordingInfo ExistingInfo(FileName());
      if (ExistingInfo.Read())
-        info->SetErrors(max(0, ExistingInfo.Errors()));
+        info->SetErrors(max(0, ExistingInfo.Errors()), max(0, ExistingInfo.TmpErrors()));
      else
         info->SetErrors(0);
      }
@@ -2570,7 +2579,6 @@ void cIndexFileGenerator::Action(void)
   bool pendIndependentFrame = false;
   uint16_t pendNumber = 0;
   off_t pendFileSize = 0;
-  bool pendErrors = false;
   bool pendMissing = false;
   int Errors = 0;
   if (update) {
@@ -2620,24 +2628,20 @@ void cIndexFileGenerator::Action(void)
                  }
               int Processed = FrameDetector.Analyze(Data, Length);
               if (Processed > 0) {
-                 int PreviousErrors = 0;
-                 int MissingFrames = 0;
-                 if (FrameDetector.NewFrame(&PreviousErrors, &MissingFrames)) {
+                 bool PreviousErrors = false;
+                 bool MissingFrames = false;
+                 if (FrameDetector.NewFrame(PreviousErrors, MissingFrames)) {
                     if (IndexFileWritten || Last < 0) { // check for first frame and do not write if in update mode
                        if (pendNumber > 0)
-                          IndexFile.Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
+                          IndexFile.Write(pendIndependentFrame, pendNumber, pendFileSize, PreviousErrors, pendMissing);
                        pendIndependentFrame = FrameDetector.IndependentFrame();
                        pendNumber = FileName.Number();
                        pendFileSize = FrameOffset >= 0 ? FrameOffset : FileSize;
-                       pendErrors = PreviousErrors;
                        pendMissing = MissingFrames;
                        }
                     FrameOffset = -1;
                     IndexFileWritten = true;
-                    if (PreviousErrors)
-                       Errors++;
-                    if (MissingFrames)
-                       Errors++;
+                    Errors = FrameDetector.Errors();
                     }
                  FileSize += Processed;
                  Buffer.Del(Processed);
@@ -2703,8 +2707,11 @@ void cIndexFileGenerator::Action(void)
            }
         // Recording has been processed:
         else {
+           bool PreviousErrors = false;
+           bool MissingFrames = false;
+           Errors = FrameDetector.Errors(&PreviousErrors, &MissingFrames);
            if (pendNumber > 0)
-              IndexFile.Write(pendIndependentFrame, pendNumber, pendFileSize, pendErrors, pendMissing);
+              IndexFile.Write(pendIndependentFrame, pendNumber, pendFileSize, PreviousErrors, pendMissing || MissingFrames);
            IndexFileComplete = true;
            break;
            }
@@ -2756,7 +2763,7 @@ struct __attribute__((packed)) tIndexTs {
   uint64_t offset:40; // up to 1TB per file (not using off_t here - must definitely be exactly 64 bit!)
   int reserved:5;     // reserved for future use
   int errors:1;       // 1=this frame contains errors
-  int missing:1;      // 1=there are frames missing after this one
+  int missing:1;      // 1=there are frames missing before this one
   int independent:1;  // marks frames that can be displayed by themselves (for trick modes)
   uint16_t number:16; // up to 64K files per recording
   tIndexTs(off_t Offset, bool Independent, uint16_t Number, bool Errors, bool Missing)

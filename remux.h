@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.9 2025/03/03 13:12:16 kls Exp $
+ * $Id: remux.h 5.10 2025/12/26 16:04:59 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -523,7 +523,27 @@ enum eAspectRatio {
 extern const char *ScanTypeChars;
 extern const char *AspectRatioTexts[];
 
-class cFrameChecker;
+class cTsChecker;
+class cPtsChecker;
+
+class cFrameChecker {
+private:
+  cTsChecker *tsChecker;
+  cPtsChecker *ptsChecker;
+public:
+  cFrameChecker(void);
+  ~cFrameChecker();
+  void Reset(void);
+  bool Check(const uchar *Data, int Length, bool Independent, bool &Errors, bool &Missing, bool Final);
+      ///< Check Length bytes of the given Data (which must be a complete frame), with
+      ///< Independent telling whether this is an I-frame. Errors returns true if this frame
+      ///< contains any TS errors, while Missing is true if there are any frames missing before
+      ///< this one. Final must be set to true if this is the last frame to be checked, otherwise false.
+      ///< Returns true if either Errors or Missing is true.
+  int TotalErrors(void);
+      ///< Returns the total number of all errors and missing frames detected in the data
+      ///< given to the calls to Check().
+  };
 
 class cFrameDetector {
 private:
@@ -547,9 +567,12 @@ private:
                             // while others put an entire GOP into one payload unit (> 1).
   bool scanning;
   bool firstIframeSeen;
+  int previousErrors;
+  int missingFrames;
   cFrameParser *parser;
+  cTsChecker *tsChecker;
+  cPtsChecker *ptsChecker;
 public:
-  cFrameChecker *frameChecker;
   cFrameDetector(int Pid = 0, int Type = 0);
       ///< Sets up a frame detector for the given Pid and stream Type.
       ///< If no Pid and Type is given, they need to be set by a separate
@@ -557,8 +580,15 @@ public:
   ~cFrameDetector();
   void SetPid(int Pid, int Type);
       ///< Sets the Pid and stream Type to detect frames for.
-  void SetMissing(void);
-      ///< Call if this is a resumed recording, which has missing frames.
+  [[deprecated("use SetLastPts() instead")]] void SetMissing(void) {}
+  void SetLastPts(int64_t LastPts);
+      ///< If this is a resumed recording, call this function with the last PTS of
+      ///< the previous recording.
+  int Errors(bool *PreviousErrors = NULL, bool *MissingFrames = NULL);
+      ///< Returns the total number of errors so far. This includes TS errors and
+      ///< missing frames (each missing frame counts as one error).
+      ///< If PreviousErrors and MissingFrames are given, these will return the final
+      ///< information about these conditions.
   int Analyze(const uchar *Data, int Length, bool ErrorCheck = true);
       ///< Analyzes the TS packets pointed to by Data. Length is the number of
       ///< bytes Data points to, and must be a multiple of TS_SIZE.
@@ -570,11 +600,12 @@ public:
       ///< is scanned for the PAT/PMT and then a rewind is done on the file.
   bool Synced(void) { return synced; }
       ///< Returns true if the frame detector has synced on the data stream.
-  bool NewFrame(int *PreviousErrors = NULL, int *MissingFrames = NULL);
+  [[deprecated("use NewFrame(bool&, bool&) instead")]] bool NewFrame(int *PreviousErrors = NULL, int *MissingFrames = NULL);
+  bool NewFrame(bool &PreviousErrors, bool &MissingFrames);
       ///< Returns true if the data given to the last call to Analyze() started a
-      ///< new frame. If PreviousErrors is given, it will be set to the number of errors in
-      ///< the previous frame. If MissingFrames is given, it will be set to the number of
-      ///< missing frames between the previous frame and this one.
+      ///< new frame. PreviousErrors is set to true if there were any errors in
+      ///< the previous frame. MissingFrames is set to true if there were any
+      ///< missing frames before this one.
       ///< The results returned in PreviousErrors and MissingFrames are only valid if the
       ///< function returns true.
   bool IndependentFrame(void) { return independentFrame; }
