@@ -10176,7 +10176,7 @@ Video Disk Recorder Revision History
 - Fixed an 'invalid lock sequence' when deleting the timeshift timer.
 - Added DeviceFreeze() when pausing at the last mark (reported by Andreas Baierl).
 
-2025-12-26:
+2025-12-27:
 
 - Fixed a memory leak in cMark::Parse() (thanks to Fabian Wolter).
 - Revised the German language texts (thanks to Stefan Hofmann).
@@ -10205,3 +10205,5 @@ Video Disk Recorder Revision History
     missing frames will be determined when the recording is resumed (if possible).
   + When cutting a recording, the error checks are now newly performed to keep the error
     count consistent.
+- Added a workaround for H.265 recordings where the I-frames have no PTS (reported by Jürgen
+  Schneider).

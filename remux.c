@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.20 2025/12/26 16:04:59 kls Exp $
+ * $Id: remux.c 5.21 2025/12/27 14:47:17 kls Exp $
  */
 
 #include "remux.h"
@@ -2026,6 +2026,7 @@ static inline int ComparePts(const void *a, const void *b)
 class cPtsChecker {
 private:
   cVector<int64_t> pts;
+  bool iFrameNoPts;
   int frameDelta;
   int totalMissing;
   int oldMissing;
@@ -2047,6 +2048,7 @@ cPtsChecker::cPtsChecker(void)
 
 void cPtsChecker::Clear(void)
 {
+  iFrameNoPts = false;
   totalMissing = 0;
   oldMissing = 0;
 }
@@ -2073,6 +2075,10 @@ void cPtsChecker::Process(void)
          int d = int(PtsDiff(pts[i - 1], pts[i]));
          if (d > frameDelta) {
             d = (d / frameDelta) - 1;
+            if (d > 0 && iFrameNoPts) {
+               d--;
+               iFrameNoPts = false;
+               }
             if (d > 0)
                Missing += d;
             }
@@ -2089,6 +2095,10 @@ void cPtsChecker::AddPts(int64_t Pts, bool IndependentFrame)
      // Recover after a total discontinuity:
      if (Pts >= 0 && pts.Size() == 1 && PtsDiff(pts[0], Pts) < 0)
         pts.Clear();
+     // In H.265 there can be I-frames that have no PTS (if anybody knows how players
+     // handle this, please let me know). This is a workaround for such cases:
+     if (Pts < 0)
+        iFrameNoPts = true;
      }
   if (Pts >= 0)
      pts.Append(Pts);

@@ -3818,6 +3818,7 @@ Jürgen Schneider <jsffm@web.de>
  short text when generating the pattern timer file name
  for reporting a problem with spawned timers jumping to the next event in case
  Setup.EPGLinger is very small
+ for reporting a problem with H.265 recordings where the I-frames have no PTS
 
 Stefan Verse <Verse@amotronics.de>
  for fixing an occasional black screen when switching channels
