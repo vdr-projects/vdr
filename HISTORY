@@ -10207,3 +10207,5 @@ Video Disk Recorder Revision History
     count consistent.
 - Added a workaround for H.265 recordings where the I-frames have no PTS (reported by Jürgen
   Schneider).
+- The command line option --updindex is now deprecated. If it is given, the index file will
+  be generated completely new, as if --genindex had been given.

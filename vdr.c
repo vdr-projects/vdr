@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.21 2025/07/22 21:10:00 kls Exp $
+ * $Id: vdr.c 5.22 2025/12/27 15:55:18 kls Exp $
  */
 
 #include <getopt.h>
@@ -501,7 +501,8 @@ int main(int argc, char *argv[])
                     UserDump = true;
                     break;
           case 'u' | 0x200:
-                    return GenerateIndex(optarg, true) ? 0 : 2;
+                    fprintf(stderr, "vdr: option '--updindex' is deprecated, using '--genindex' instead\n");
+                    return GenerateIndex(optarg) ? 0 : 2;
           case 'V': DisplayVersion = true;
                     break;
           case 'v' | 0x100:
@@ -599,7 +600,6 @@ int main(int argc, char *argv[])
                "  -t TTY,   --terminal=TTY controlling tty\n"
                "  -u USER,  --user=USER    run as user USER; only applicable if started as\n"
                "                           root; USER can be a user name or a numerical id\n"
-               "            --updindex=REC update index for recording REC and exit\n"
                "            --userdump     allow coredumps if -u is given (debugging)\n"
                "  -v DIR,   --video=DIR    use DIR as video directory (default: %s)\n"
                "  -V,       --version      print version information and exit\n"

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.16 2025/12/26 16:04:59 kls Exp $
+ * $Id: recording.h 5.17 2025/12/27 15:55:18 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -504,7 +504,10 @@ private:
   void ConvertToPes(tIndexTs *IndexTs, int Count);
   bool CatchUp(int Index = -1);
 public:
-  cIndexFile(const char *FileName, bool Record, bool IsPesRecording = false, bool PauseLive = false, bool Update = false);
+  cIndexFile(const char *FileName, bool Record, bool IsPesRecording = false, bool PauseLive = false);
+  [[deprecated("use cIndexFile(::cIndexFile(const char *, bool, bool, bool) instead")]]
+  cIndexFile(const char *FileName, bool Record, bool IsPesRecording, bool PauseLive, bool Update)
+  :cIndexFile(FileName, Record, IsPesRecording, PauseLive) {}
   ~cIndexFile();
   bool Ok(void) { return index != NULL; }
   bool Write(bool Independent, uint16_t FileNumber, off_t FileOffset, bool Errors = false, bool Missing = false);
@@ -579,11 +582,11 @@ char *ExchangeChars(char *s, bool ToFileSystem);
       // be modified and may be reallocated if more space is needed. The return
       // value points to the resulting string, which may be different from s.
 
-bool GenerateIndex(const char *FileName, bool Update = false);
+bool GenerateIndex(const char *FileName);
        ///< Generates the index of the existing recording with the given FileName.
-       ///< If Update is true, an existing index file will be checked whether it is
-       ///< complete, and will be updated if it isn't. Otherwise an existing index
-       ///< file will be removed before a new one is generated.
+       ///< An existing index file will be removed before a new one is generated.
+[[deprecated("use GenerateIndex(const char *FileName) instead")]]
+inline bool GenerateIndex(const char *FileName, bool Update) { return GenerateIndex(FileName); }
 
 enum eRecordingsSortDir { rsdAscending, rsdDescending };
 enum eRecordingsSortMode { rsmName, rsmTime };

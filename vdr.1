@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 5.4 2024/09/09 10:58:55 kls Exp $
+.\" $Id: vdr.1 5.5 2025/12/27 15:55:18 kls Exp $
 .\"
 .TH vdr 1 "27 Dec 2021" "2.7" "Video Disk Recorder"
 .SH NAME
@@ -210,18 +210,6 @@ Starting vdr as 'root' is necessary if the system time shall
 be set from the transponder data, but for security reasons
 vdr can switch to a lesser privileged user id during normal
 operation. \fIuser\fR can be a user name or a numerical id.
-.TP
-.BI \-\-updindex= rec
-Update the index file for the given recording.
-\fIrec\fR must be the full path name of an existing recording.
-The recording must be in TS format.
-If the recording already has an index file, it will be checked
-whether it is complete, and will be updated if it isn't. If
-there is no index file yet, a new one will be generated.
-The program will return immediately after updating the index.
-Note that using this option while another instance of VDR is
-currently replaying the given recording, or if the recording
-has not been finished yet, may lead to unexpected results.
 .TP
 .BI \-\-userdump
 Allow coredumps if -u is given (only for debugging).
