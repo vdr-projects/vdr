@@ -10176,7 +10176,7 @@ Video Disk Recorder Revision History
 - Fixed an 'invalid lock sequence' when deleting the timeshift timer.
 - Added DeviceFreeze() when pausing at the last mark (reported by Andreas Baierl).
 
-2025-12-27:
+2025-12-29:
 
 - Fixed a memory leak in cMark::Parse() (thanks to Fabian Wolter).
 - Revised the German language texts (thanks to Stefan Hofmann).
@@ -10209,3 +10209,6 @@ Video Disk Recorder Revision History
   Schneider).
 - The command line option --updindex is now deprecated. If it is given, the index file will
   be generated completely new, as if --genindex had been given.
+- Combined cRecorder::GetLastPts() and cFileName->GetLastPatPmtVersions(). GetLastPatPmtVersions()
+  is now deprecated and will be removed in a future version. Contact vdr@tvdr.de if your
+  plugin uses this function.

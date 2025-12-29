@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.12 2025/12/26 16:04:59 kls Exp $
+ * $Id: recorder.c 5.13 2025/12/29 14:14:05 kls Exp $
  */
 
 #include "recorder.h"
@@ -60,9 +60,10 @@ cRecorder::cRecorder(const char *FileName, const cChannel *Channel, int Priority
   lastDiskSpaceCheck = time(NULL);
   lastErrorLog = 0;
   fileName = new cFileName(FileName, true);
-  int PatVersion, PmtVersion;
-  if (fileName->GetLastPatPmtVersions(PatVersion, PmtVersion))
-     patPmtGenerator.SetVersions(PatVersion + 1, PmtVersion + 1);
+  // Check if this is a resumed recording, in which case we definitely missed frames:
+  NextFile();
+  if (fileName->Number() > 1 || oldErrors)
+     GetLastPts(recordingName);
   patPmtGenerator.SetChannel(Channel);
   recordFile = fileName->Open();
   if (!recordFile)
@@ -187,17 +188,27 @@ void cRecorder::GetLastPts(const char *RecordingName)
      int Length;
      int64_t LastPts = -1;
      int IframesSeen = 0;
+     cPatPmtParser PatPmtParser;
+     bool GotPatPmtVersions = false;
      for (int i = Index->Last(); i >= 0; i--) {
          if (Index->Get(i, &FileNumber, &FileOffset, &Independent, &Length)) {
             if (cUnbufferedFile *f = FileName->SetOffset(FileNumber, FileOffset)) {
                int l = ReadFrame(f, Buffer, Length, sizeof(Buffer));
                if (l > 0) {
-                  int64_t Pts = TsGetPts(Buffer, Length);
+                  int64_t Pts = TsGetPts(Buffer, l);
                   if (LastPts < 0 || PtsDiff(LastPts, Pts) > 0) {
                      LastPts = Pts;
                      IframesSeen = 0;
                      }
                   if (Independent) {
+                     if (!GotPatPmtVersions && PatPmtParser.ParsePatPmt(Buffer, l)) {
+                        int PatVersion;
+                        int PmtVersion;
+                        if (PatPmtParser.GetVersions(PatVersion, PmtVersion)) {
+                           patPmtGenerator.SetVersions(PatVersion + 1, PmtVersion + 1);
+                           GotPatPmtVersions = true;
+                           }
+                        }
                      if (++IframesSeen >= MIN_IFRAMES_FOR_LAST_PTS)
                         break;
                      }
@@ -230,10 +241,6 @@ void cRecorder::Action(void)
   off_t pendFileSize = 0;
   bool pendMissing = false;
   int NumIframesSeen = 0;
-  // Check if this is a resumed recording, in which case we definitely missed frames:
-  NextFile();
-  if (fileName->Number() > 1 || oldErrors)
-     GetLastPts(recordingName);
   working = true;
   while (true) {
 #ifdef TEST_VDSB

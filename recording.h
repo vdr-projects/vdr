@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.17 2025/12/27 15:55:18 kls Exp $
+ * $Id: recording.h 5.18 2025/12/29 14:14:05 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -546,6 +546,7 @@ public:
   ~cFileName();
   const char *Name(void) { return fileName; }
   uint16_t Number(void) { return fileNumber; }
+  [[deprecated("will be removed in a future version, if your plugin uses this function, contact vdr@tvdr.de")]]
   bool GetLastPatPmtVersions(int &PatVersion, int &PmtVersion);
   cUnbufferedFile *Open(void);
   void Close(void);
