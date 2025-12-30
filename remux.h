@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.10 2025/12/26 16:04:59 kls Exp $
+ * $Id: remux.h 5.11 2025/12/30 12:38:52 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -285,7 +285,7 @@ public:
        ///< was found within the payload data. The next call to GetByte() will return the
        ///< value immediately following the Code. If the code was not found, the read
        ///< index will remain the same as before this call, so that several calls to
-       ///< Find() can be performed starting at the same index..
+       ///< Find() can be performed starting at the same index.
        ///< The special code 0xFFFFFFFF can not be searched, because this value is used
        ///< to initialize the scanner.
   };
@@ -342,8 +342,8 @@ public:
   uchar *GetPmt(int &Index);
        ///< Returns a pointer to the Index'th TS packet of the PMT section.
        ///< Index must be initialized to 0 and will be incremented by each
-       ///< call to GetPmt(). Returns NULL is all packets of the PMT section
-       ///< have been fetched..
+       ///< call to GetPmt(). Returns NULL if all packets of the PMT section
+       ///< have been fetched.
   };
 
 // PAT/PMT Parser:
