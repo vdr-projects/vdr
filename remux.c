@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.21 2025/12/27 14:47:17 kls Exp $
+ * $Id: remux.c 5.22 2025/12/30 13:48:59 kls Exp $
  */
 
 #include "remux.h"
@@ -2026,6 +2026,7 @@ static inline int ComparePts(const void *a, const void *b)
 class cPtsChecker {
 private:
   cVector<int64_t> pts;
+  int64_t lastPts;
   bool iFrameNoPts;
   int frameDelta;
   int totalMissing;
@@ -2048,6 +2049,7 @@ cPtsChecker::cPtsChecker(void)
 
 void cPtsChecker::Clear(void)
 {
+  lastPts = -1;
   iFrameNoPts = false;
   totalMissing = 0;
   oldMissing = 0;
@@ -2071,6 +2073,11 @@ void cPtsChecker::Process(void)
         return; // can't continue without frameDelta
      int Missing = 0;
      int Number = pts.Size();
+     if (Number > 0 && pts[Number - 1] == lastPts) {
+        // Don't get stuck at a total discontinuity:
+        pts.Remove(Number - 1);
+        Number--;
+        }
      for (int i = 1; i < Number; i++) {
          int d = int(PtsDiff(pts[i - 1], pts[i]));
          if (d > frameDelta) {
@@ -2085,6 +2092,8 @@ void cPtsChecker::Process(void)
          }
      totalMissing += Missing;
      pts.Remove(0, Number - 1); // leave the last value in the list
+     if (pts.Size() == 1)
+        lastPts = pts[0];
      }
 }
 
@@ -2092,9 +2101,6 @@ void cPtsChecker::AddPts(int64_t Pts, bool IndependentFrame)
 {
   if (IndependentFrame) {
      Process();
-     // Recover after a total discontinuity:
-     if (Pts >= 0 && pts.Size() == 1 && PtsDiff(pts[0], Pts) < 0)
-        pts.Clear();
      // In H.265 there can be I-frames that have no PTS (if anybody knows how players
      // handle this, please let me know). This is a workaround for such cases:
      if (Pts < 0)
