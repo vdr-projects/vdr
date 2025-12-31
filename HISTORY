@@ -10215,3 +10215,5 @@ Video Disk Recorder Revision History
 - Fixed a duplicate log message when the cutting thread ends.
 - Added indentation of conditional setup options (suggested by Tomasz Maciej Nowak).
 - Updated the Polish OSD texts (thanks to Tomasz Maciej Nowak).
+- Fixed the fix for expiring VPS timers in case the event has not yet startet after its
+  announced end time.

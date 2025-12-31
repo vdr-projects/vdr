@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.29 2025/07/10 19:12:24 kls Exp $
+ * $Id: timers.c 5.30 2025/12/31 14:37:25 kls Exp $
  */
 
 #include "timers.h"
@@ -786,7 +786,7 @@ eTimerMatch cTimer::Matches(const cEvent *Event, int *Overlap) const
 
 bool cTimer::Expired(void) const
 {
-  if (IsSingleEvent() && !Recording() && (!event || event->RunningStatus() == SI::RunningStatusNotRunning)) {
+  if (IsSingleEvent() && !Recording() && (!event || !HasFlags(tfVps) || event->RunningStatus() == SI::RunningStatusNotRunning)) {
      time_t Now = time(NULL);
      time_t ExpireTime = StopTimeEvent();
      if (HasFlags(tfVps)) {
