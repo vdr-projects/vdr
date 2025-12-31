@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.12 2025/07/23 08:56:52 kls Exp $
+ * $Id: dvbplayer.c 5.13 2025/12/31 14:55:38 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -616,8 +616,10 @@ void cDvbPlayer::Action(void)
                    Sleep = true;
                 }
              }
-          else
+          else {
              Sleep = true;
+             continue;
+             }
 
           if (dropFrame) {
              if (!eof || (playDir != pdForward && dropFrame->Index() > 0) || (playDir == pdForward && dropFrame->Index() < readIndex)) {

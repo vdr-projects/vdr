@@ -3846,6 +3846,7 @@ Andreas Baierl <post@andreasbaierl.de>
  "slow back"
  for moving the call to Empty() back into the pmSlow case
  for reporting a missing DeviceFreeze() when pausing at the last mark
+ for fixing a possible loss of audio packets when switching from Pause to Play
 
 Fabian Wolter <vdr-ml@fabian-wolter.de>
  for fixing a memory leak in cMark::Parse()

@@ -10217,3 +10217,5 @@ Video Disk Recorder Revision History
 - Updated the Polish OSD texts (thanks to Tomasz Maciej Nowak).
 - Fixed the fix for expiring VPS timers in case the event has not yet startet after its
   announced end time.
+- Fixed a possible loss of audio packets when switching from Pause to Play (thanks to Andreas
+  Baierl).
