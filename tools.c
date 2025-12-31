@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.19 2025/12/03 11:00:05 kls Exp $
+ * $Id: tools.c 5.20 2025/12/31 12:47:03 kls Exp $
  */
 
 #include "tools.h"
@@ -405,6 +405,11 @@ bool StrInArray(const char *a[], const char *s)
            }
      }
   return false;
+}
+
+cString Indent(int n, const char *s)
+{
+  return cString::sprintf("%*s%s", n, "", s);
 }
 
 cString AddDirectory(const char *DirName, const char *FileName)

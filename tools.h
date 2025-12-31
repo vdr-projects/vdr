@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.14 2025/12/03 11:00:05 kls Exp $
+ * $Id: tools.h 5.15 2025/12/31 12:47:03 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -301,6 +301,8 @@ inline void Poke13(uchar *p, uint16_t v)
   *p++ = v >> 8;
   *p = v & 0xFF;
 }
+cString Indent(int n, const char *s);
+    ///< Returns the given string s, preceeded with n blanks for indentation.
 cString AddDirectory(const char *DirName, const char *FileName);
 bool EntriesOnSameFileSystem(const char *File1, const char *File2);
     ///< Checks whether the given files are on the same file system. If either of the

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.33 2025/12/03 19:46:39 kls Exp $
+ * $Id: menu.c 5.34 2025/12/31 12:47:03 kls Exp $
  */
 
 #include "menu.h"
@@ -3678,12 +3678,12 @@ void cMenuSetupEPG::Setup(void)
   Add(new cMenuEditIntItem( tr("Setup.EPG$EPG linger time (min)"),     &data.EPGLinger, 0));
   Add(new cMenuEditBoolItem(tr("Setup.EPG$Set system time"),           &data.SetSystemTime));
   if (data.SetSystemTime)
-     Add(new cMenuEditTranItem(tr("Setup.EPG$Use time from transponder"), &data.TimeTransponder, &data.TimeSource));
+     Add(new cMenuEditTranItem(Indent(2, tr("Setup.EPG$Use time from transponder")), &data.TimeTransponder, &data.TimeSource));
   // TRANSLATORS: note the plural!
   Add(new cMenuEditIntItem( tr("Setup.EPG$Preferred languages"),       &numLanguages, 0, I18nLanguages()->Size()));
   for (int i = 0; i < numLanguages; i++)
       // TRANSLATORS: note the singular!
-      Add(new cMenuEditStraItem(tr("Setup.EPG$Preferred language"),    &data.EPGLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
+      Add(new cMenuEditStraItem(Indent(2, tr("Setup.EPG$Preferred language")), &data.EPGLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
 
   SetCurrent(Get(current));
   Display();
@@ -3799,15 +3799,15 @@ void cMenuSetupDVB::Setup(void)
   Add(new cMenuEditStraItem(tr("Setup.DVB$Update channels"),       &data.UpdateChannels, 6, updateChannelsTexts));
   Add(new cMenuEditIntItem( tr("Setup.DVB$Audio languages"),       &numAudioLanguages, 0, I18nLanguages()->Size()));
   for (int i = 0; i < numAudioLanguages; i++)
-      Add(new cMenuEditStraItem(tr("Setup.DVB$Audio language"),    &data.AudioLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
+      Add(new cMenuEditStraItem(Indent(2, tr("Setup.DVB$Audio language")), &data.AudioLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
   Add(new cMenuEditStraItem(tr("Setup.DVB$Display subtitles"),     &data.DisplaySubtitles, 3, displaySubtitlesTexts));
   if (data.DisplaySubtitles != SUBTITLES_NO) {
-     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle languages"),    &numSubtitleLanguages, 0, I18nLanguages()->Size()));
+     Add(new cMenuEditIntItem(Indent(2, tr("Setup.DVB$Subtitle languages")),     &numSubtitleLanguages, 0, I18nLanguages()->Size()));
      for (int i = 0; i < numSubtitleLanguages; i++)
-         Add(new cMenuEditStraItem(tr("Setup.DVB$Subtitle language"), &data.SubtitleLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
-     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle offset"),                  &data.SubtitleOffset,      -100, 100));
-     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle foreground transparency"), &data.SubtitleFgTransparency, 0, 9));
-     Add(new cMenuEditIntItem( tr("Setup.DVB$Subtitle background transparency"), &data.SubtitleBgTransparency, 0, 10));
+         Add(new cMenuEditStraItem(Indent(4, tr("Setup.DVB$Subtitle language")), &data.SubtitleLanguages[i], I18nLanguages()->Size(), &I18nLanguages()->At(0)));
+     Add(new cMenuEditIntItem(Indent(2, tr("Setup.DVB$Subtitle offset")),                  &data.SubtitleOffset,      -100, 100));
+     Add(new cMenuEditIntItem(Indent(2, tr("Setup.DVB$Subtitle foreground transparency")), &data.SubtitleFgTransparency, 0, 9));
+     Add(new cMenuEditIntItem(Indent(2, tr("Setup.DVB$Subtitle background transparency")), &data.SubtitleBgTransparency, 0, 10));
      }
 
   SetCurrent(Get(current));
@@ -4284,11 +4284,11 @@ void cMenuSetupMisc::Set(void)
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$SVDRP timeout (s)"),          &data.SVDRPTimeout));
   Add(new cMenuEditStraItem(tr("Setup.Miscellaneous$SVDRP peering"),              &data.SVDRPPeering, 3, svdrpPeeringModeTexts));
   if (data.SVDRPPeering) {
-     Add(new cMenuEditStrItem( tr("Setup.Miscellaneous$SVDRP host name"), data.SVDRPHostName, sizeof(data.SVDRPHostName)));
+     Add(new cMenuEditStrItem(Indent(2, tr("Setup.Miscellaneous$SVDRP host name")), data.SVDRPHostName, sizeof(data.SVDRPHostName)));
      if (GetSVDRPServerNames(&svdrpServerNames)) {
         svdrpServerNames.Sort(true);
         svdrpServerNames.Insert(strdup(""));
-        Add(new cMenuEditStrlItem(tr("Setup.Miscellaneous$SVDRP default host"), data.SVDRPDefaultHost, sizeof(data.SVDRPDefaultHost), &svdrpServerNames));
+        Add(new cMenuEditStrlItem(Indent(2, tr("Setup.Miscellaneous$SVDRP default host")), data.SVDRPDefaultHost, sizeof(data.SVDRPDefaultHost), &svdrpServerNames));
         }
      }
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Zap timeout (s)"),            &data.ZapTimeout));

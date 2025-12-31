@@ -10213,3 +10213,4 @@ Video Disk Recorder Revision History
   is now deprecated and will be removed in a future version. Contact vdr@tvdr.de if your
   plugin uses this function.
 - Fixed a duplicate log message when the cutting thread ends.
+- Added indentation of conditional setup options (suggested by Tomasz Maciej Nowak).
