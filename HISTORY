@@ -10214,3 +10214,4 @@ Video Disk Recorder Revision History
   plugin uses this function.
 - Fixed a duplicate log message when the cutting thread ends.
 - Added indentation of conditional setup options (suggested by Tomasz Maciej Nowak).
+- Updated the Polish OSD texts (thanks to Tomasz Maciej Nowak).
