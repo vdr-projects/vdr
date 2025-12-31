@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.6 2025/12/26 16:04:59 kls Exp $
+ * $Id: cutter.c 5.7 2025/12/31 11:00:06 kls Exp $
  */
 
 #include "cutter.h"
@@ -751,8 +751,10 @@ bool cCutter::Start(void)
 
 void cCutter::Stop(void)
 {
-  bool Interrupted = cuttingThread && cuttingThread->Active();
-  const char *Error = cuttingThread ? cuttingThread->Error() : NULL;
+  if (!cuttingThread)
+     return;
+  bool Interrupted = cuttingThread->Active();
+  const char *Error = cuttingThread->Error();
   delete cuttingThread;
   cuttingThread = NULL;
   SetRecordingTimerId(editedVersionName, NULL);
