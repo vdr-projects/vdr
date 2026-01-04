@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Stefan Hofmann <stefan.hofmann@t-online.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -1405,6 +1405,9 @@ msgstr "Fernbedienung Wiederholverzögerung (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Fernbedienung Wiederholintervall (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr "Aufbewahrung gelöschter Aufzeichnungen (d)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanal beim Einschalten"

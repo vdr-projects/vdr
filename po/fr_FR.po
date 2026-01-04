@@ -18,7 +18,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2018-04-14 10:16+0100\n"
 "Last-Translator: Bernard Jaulin <bernard.jaulin@gmail.com>\n"
 "Language-Team: French <vdr@linuxtv.org>\n"
@@ -1413,6 +1413,9 @@ msgstr "Délai répétition de la télécommande (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Delta répétition de la télécommande (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Chaîne initiale"

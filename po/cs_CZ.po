@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Aleš Juřík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -1405,6 +1405,9 @@ msgstr "Zpoždění pro začátek opakování stisku klávesy (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Perioda opakování stisku klávesy (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanál po spuštění"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2018-03-18 20:00+0100\n"
 "Last-Translator: Yarema aka Knedlyk <yupadmin@gmail.com>\n"
 "Language-Team: Ukrainian <vdr@linuxtv.org>\n"
@@ -1403,6 +1403,9 @@ msgstr "Затримка повтору кнопок пульта (мс)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Різниця повторів кнопок пульта (мс)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Канал при включенні"

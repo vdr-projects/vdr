@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.46 2025/12/27 15:55:18 kls Exp $
+ * $Id: recording.c 5.47 2026/01/04 10:18:40 kls Exp $
  */
 
 #include "recording.h"
@@ -108,7 +108,7 @@ void cRemoveDeletedRecordingsThread::Action(void)
             interrupted = true; // react immediately on user input
          if (interrupted)
             break;
-         if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
+         if (r->RetentionExpired()) {
             cRecording *next = DeletedRecordings->Next(r);
             r->Remove();
             DeletedRecordings->Del(r);
@@ -139,7 +139,7 @@ void RemoveDeletedRecordings(void)
      if (!RemoveDeletedRecordingsThread.Active()) {
         LOCK_DELETEDRECORDINGS_READ;
         for (const cRecording *r = DeletedRecordings->First(); r; r = DeletedRecordings->Next(r)) {
-            if (r->Deleted() && time(NULL) - r->Deleted() > DELETEDLIFETIME) {
+            if (r->RetentionExpired()) {
                RemoveDeletedRecordingsThread.Start();
                break;
                }
@@ -175,7 +175,7 @@ void AssertFreeDiskSpace(int Priority, bool Force)
              cRecording *r0 = NULL;
              while (r) {
                    if (r->IsOnVideoDirectoryFileSystem()) { // only remove recordings that will actually increase the free video disk space
-                      if (!r0 || r->Start() < r0->Start())
+                      if (!r0 || r->Deleted() < r0->Deleted())
                          r0 = r;
                       }
                    r = DeletedRecordings->Next(r);
@@ -1135,6 +1135,20 @@ int cRecording::GetResume(void) const
   return resume;
 }
 
+bool cRecording::RetentionExpired(void) const
+{
+  if (Deleted()) {
+     int Retention = Setup.DeleteRetention > 0 ? Setup.DeleteRetention * SECSINDAY : DELETEDLIFETIME;
+     return time(NULL) - Deleted() > Retention;
+     }
+  return false;
+}
+
+void cRecording::SetDeleted(void)
+{
+  deleted = LastModifiedTime(FileName());
+}
+
 int cRecording::Compare(const cListObject &ListObject) const
 {
   cRecording *r = (cRecording *)&ListObject;
@@ -1389,6 +1403,8 @@ bool cRecording::Delete(void)
      isyslog("deleting recording '%s'", FileName());
      if (access(FileName(), F_OK) == 0) {
         result = cVideoDirectory::RenameVideoFile(FileName(), NewName);
+        if (result)
+           TouchFile(NewName);
         cRecordingUserCommand::InvokeCommand(RUC_DELETERECORDING, NewName);
         }
      else {
@@ -1425,8 +1441,10 @@ bool cRecording::Undelete(void)
         }
      else {
         isyslog("undeleting recording '%s'", FileName());
-        if (access(FileName(), F_OK) == 0)
+        if (access(FileName(), F_OK) == 0) {
            result = cVideoDirectory::RenameVideoFile(FileName(), NewName);
+           deleted = 0;
+           }
         else {
            isyslog("deleted recording '%s' vanished", FileName());
            result = false;

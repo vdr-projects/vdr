@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.18 2025/12/29 14:14:05 kls Exp $
+ * $Id: recording.h 5.19 2026/01/04 10:18:40 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -152,7 +152,8 @@ public:
   int Priority(void) const { return info->Priority(); }
   int Lifetime(void) const { return info->Lifetime(); }
   time_t Deleted(void) const { return deleted; }
-  void SetDeleted(void) { deleted = time(NULL); }
+  bool RetentionExpired(void) const;
+  void SetDeleted(void);
   virtual int Compare(const cListObject &ListObject) const override;
   bool IsInPath(const char *Path) const;
        ///< Returns true if this recording is stored anywhere under the given Path.

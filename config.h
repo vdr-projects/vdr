@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 5.35 2025/11/21 09:52:51 kls Exp $
+ * $Id: config.h 5.36 2026/01/04 10:18:40 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -45,6 +45,7 @@
 #define IDLEPRIORITY      (MINPRIORITY - 1)  // priority of an idle device
 #define MAXLIFETIME       99
 #define DEFINSTRECTIME    180 // default instant recording time (minutes)
+#define DEFRETENTIONTIME  0   // default deleted recording retention time (days)
 
 #define TIMERMACRO_TITLE    "TITLE"
 #define TIMERMACRO_EPISODE  "EPISODE"
@@ -312,6 +313,7 @@ public:
   int ChannelEntryTimeout;
   int RcRepeatDelay;
   int RcRepeatDelta;
+  int DeleteRetention;
   int DefaultPriority, DefaultLifetime;
   int RecordKeyHandling;
   int PauseKeyHandling;

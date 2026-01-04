@@ -1290,6 +1290,13 @@ VDR version 2.6.6 added '/' to this list.
                          If the remote control in use has a repeat delta that is
                          longer than that given in this parameter, that longer delta
                          will prevail.
+
+  Deleted recordings retention = 0
+                         The time (in days) before a deleted recording is actually
+                         removed from the disk (unless the disk runs full while
+                         recording). With the default value of 0 deleted recordings
+                         can be removed after 5 minutes.
+
   Initial channel =      The channel ID of the channel that shall be tuned to when
                          VDR starts. Default is empty, which means that it will
                          tune to the channel that was on before VDR was stopped.

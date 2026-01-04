@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1406,6 +1406,9 @@ msgstr "Remote control repeat delay (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Remote control repeat delta (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "القناة الاساسية"

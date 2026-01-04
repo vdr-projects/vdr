@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2013-03-16 15:05+0100\n"
 "Last-Translator: Zoran Turalija <zoran.turalija@gmail.com>\n"
 "Language-Team: Serbian <vdr@linuxtv.org>\n"
@@ -1403,6 +1403,9 @@ msgstr "Pauza ponavljanja komande daljinskog (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Ka¹njenje ponavljanja komande daljinskog (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Poèetni kanal"

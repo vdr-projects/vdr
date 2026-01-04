@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2025-04-16 19:49+0200\n"
 "Last-Translator: Gringo <openpli@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -1408,6 +1408,9 @@ msgstr "Ritardo ripetizione controllo remoto (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Intervallo ripetizione controllo remoto (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Canale iniziale"

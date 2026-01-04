@@ -10176,7 +10176,7 @@ Video Disk Recorder Revision History
 - Fixed an 'invalid lock sequence' when deleting the timeshift timer.
 - Added DeviceFreeze() when pausing at the last mark (reported by Andreas Baierl).
 
-2025-12-31:
+2026-01-04:
 
 - Fixed a memory leak in cMark::Parse() (thanks to Fabian Wolter).
 - Revised the German language texts (thanks to Stefan Hofmann).
@@ -10219,3 +10219,9 @@ Video Disk Recorder Revision History
   announced end time.
 - Fixed a possible loss of audio packets when switching from Pause to Play (thanks to Andreas
   Baierl).
+- Made the time before a deleted recording is actually removed from the disk adjustable
+  (suggested by Stefan Hofmann).
+  The new setup option "Miscellaneous/Deleted recordings retention" can be used to set the
+  time (in days) deleted recordings will be kept on disk before being finally removed
+  (unless new recordings need the space). With the default value of 0 the behavior is
+  as before (5 minutes).

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2025-12-19 17:56+0100\n"
 "Last-Translator: Tomasz Maciej Nowak <tmn505@gmail.com>\n"
 "Language-Team: Polish <vdr@linuxtv.org>\n"
@@ -1405,6 +1405,9 @@ msgstr "Czas opóźnienia powtarzania dla pilota (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Delta opóźnienia powtarzania dla pilota (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Początkowy kanał"

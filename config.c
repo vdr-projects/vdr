@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 5.2 2025/03/28 22:49:17 kls Exp $
+ * $Id: config.c 5.3 2026/01/04 10:18:40 kls Exp $
  */
 
 #include "config.h"
@@ -421,6 +421,7 @@ cSetup::cSetup(void)
   ChannelEntryTimeout = 1000;
   RcRepeatDelay = 300;
   RcRepeatDelta = 100;
+  DeleteRetention = DEFRETENTIONTIME;
   DefaultPriority = 50;
   DefaultLifetime = MAXLIFETIME;
   RecordKeyHandling = 2;
@@ -651,6 +652,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "ChannelEntryTimeout")) ChannelEntryTimeout= atoi(Value);
   else if (!strcasecmp(Name, "RcRepeatDelay"))       RcRepeatDelay      = atoi(Value);
   else if (!strcasecmp(Name, "RcRepeatDelta"))       RcRepeatDelta      = atoi(Value);
+  else if (!strcasecmp(Name, "DeleteRetention"))     DeleteRetention    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultPriority"))     DefaultPriority    = atoi(Value);
   else if (!strcasecmp(Name, "DefaultLifetime"))     DefaultLifetime    = atoi(Value);
   else if (!strcasecmp(Name, "RecordKeyHandling"))   RecordKeyHandling  = atoi(Value);
@@ -785,6 +787,7 @@ bool cSetup::Save(void)
   Store("ChannelEntryTimeout",ChannelEntryTimeout);
   Store("RcRepeatDelay",      RcRepeatDelay);
   Store("RcRepeatDelta",      RcRepeatDelta);
+  Store("DeleteRetention",    DeleteRetention);
   Store("DefaultPriority",    DefaultPriority);
   Store("DefaultLifetime",    DefaultLifetime);
   Store("RecordKeyHandling",  RecordKeyHandling);

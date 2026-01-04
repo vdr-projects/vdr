@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2018-03-31 21:47+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <kde-i18n-doc@kde.org>\n"
@@ -1404,6 +1404,9 @@ msgstr "Оддолжување на повторување на даљинско
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Делта на повторување на даљинско (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Почетен канал"

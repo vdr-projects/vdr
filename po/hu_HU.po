@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.6\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2024-02-09 06:29+0000\n"
 "Last-Translator: István Füley <ifuley@tigercomp.ro>\n"
 "Language-Team: Hungarian\n"
@@ -1410,6 +1410,9 @@ msgstr "Távirányító ismétlés késleltetése (ms)"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Távirányító ismétlés intervalluma (ms)"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Csatorna induláskor"

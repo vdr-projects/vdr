@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2025-03-28 22:45+0100\n"
+"POT-Creation-Date: 2026-01-01 23:00+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -1404,6 +1404,9 @@ msgstr "远程控制重复延时（ms）"
 
 msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "远程控制重复增量（ms）"
+
+msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
+msgstr ""
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "初始频道"
