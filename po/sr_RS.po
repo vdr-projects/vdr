@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2013-03-16 15:05+0100\n"
 "Last-Translator: Zoran Turalija <zoran.turalija@gmail.com>\n"
 "Language-Team: Serbian <vdr@linuxtv.org>\n"
@@ -866,17 +866,41 @@ msgstr ""
 msgid "Recording info"
 msgstr "Detalji snimanja"
 
+msgid "Button$Recordings"
+msgstr ""
+
+msgid "Button$Restore"
+msgstr ""
+
+msgid "Button$Permanently delete"
+msgstr ""
+
 msgid "Button$Play"
 msgstr "Start"
 
 msgid "Button$Rewind"
 msgstr "Na poèetak"
 
+msgid "Deleted in"
+msgstr ""
+
+msgid "Deleted recordings"
+msgstr ""
+
 msgid "Recordings"
 msgstr "Snimci"
 
+msgid "Button$Deleted recordings"
+msgstr ""
+
 msgid "Commands"
 msgstr "Komande"
+
+msgid "No deleted recordings"
+msgstr ""
+
+msgid "No recordings"
+msgstr ""
 
 msgid "Delete recording?"
 msgstr "Izbri¹i snimak?"
@@ -886,6 +910,21 @@ msgstr "Snimak je izmenjen - stvarno izbrisati?"
 
 msgid "Error while deleting recording!"
 msgstr "Gre¹ka prilikom brisanja snimka!"
+
+msgid "Restore recording?"
+msgstr ""
+
+msgid "Error while restoring recording!"
+msgstr ""
+
+msgid "Permanently delete recording?"
+msgstr ""
+
+msgid "Are you sure? This can't be undone!"
+msgstr ""
+
+msgid "Error while permanently deleting recording!"
+msgstr ""
 
 msgid "Recording commands"
 msgstr "Komande snimanja"

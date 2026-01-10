@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2018-03-31 21:47+0100\n"
 "Last-Translator: Dimitar Petrovski <dimeptr@gmail.com>\n"
 "Language-Team: Macedonian <kde-i18n-doc@kde.org>\n"
@@ -867,17 +867,41 @@ msgstr "Грешка при промена на папка/име!"
 msgid "Recording info"
 msgstr "Детали на снимката"
 
+msgid "Button$Recordings"
+msgstr ""
+
+msgid "Button$Restore"
+msgstr ""
+
+msgid "Button$Permanently delete"
+msgstr ""
+
 msgid "Button$Play"
 msgstr "Старт"
 
 msgid "Button$Rewind"
 msgstr "Премотај"
 
+msgid "Deleted in"
+msgstr ""
+
+msgid "Deleted recordings"
+msgstr ""
+
 msgid "Recordings"
 msgstr "Снимки"
 
+msgid "Button$Deleted recordings"
+msgstr ""
+
 msgid "Commands"
 msgstr "Наредби"
+
+msgid "No deleted recordings"
+msgstr ""
+
+msgid "No recordings"
+msgstr ""
 
 msgid "Delete recording?"
 msgstr "Избриши снимка?"
@@ -887,6 +911,21 @@ msgstr "Снимката се уредува - бриши?"
 
 msgid "Error while deleting recording!"
 msgstr "Грешка при бришење на снимката!"
+
+msgid "Restore recording?"
+msgstr ""
+
+msgid "Error while restoring recording!"
+msgstr ""
+
+msgid "Permanently delete recording?"
+msgstr ""
+
+msgid "Are you sure? This can't be undone!"
+msgstr ""
+
+msgid "Error while permanently deleting recording!"
+msgstr ""
 
 msgid "Recording commands"
 msgstr "Наредби за снимање"

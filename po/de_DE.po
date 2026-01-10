@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Stefan Hofmann <stefan.hofmann@t-online.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -868,17 +868,41 @@ msgstr "Fehler beim Ändern des Ordners bzw. Namens!"
 msgid "Recording info"
 msgstr "Aufzeichnung"
 
+msgid "Button$Recordings"
+msgstr "Aufzeichnungen"
+
+msgid "Button$Restore"
+msgstr "Wiederherstellen"
+
+msgid "Button$Permanently delete"
+msgstr "Endgültig löschen"
+
 msgid "Button$Play"
 msgstr "Wiedergabe"
 
 msgid "Button$Rewind"
 msgstr "Anfang"
 
+msgid "Deleted in"
+msgstr "Gelöscht in"
+
+msgid "Deleted recordings"
+msgstr "Gelöschte Aufzeichnungen"
+
 msgid "Recordings"
 msgstr "Aufzeichnungen"
 
+msgid "Button$Deleted recordings"
+msgstr "Gelöschte Aufz."
+
 msgid "Commands"
 msgstr "Befehle"
+
+msgid "No deleted recordings"
+msgstr "Keine gelöschten Aufzeichnungen"
+
+msgid "No recordings"
+msgstr "Keine Aufzeichnungen"
 
 msgid "Delete recording?"
 msgstr "Aufzeichnung löschen?"
@@ -888,6 +912,21 @@ msgstr "Aufzeichnung wird bearbeitet - trotzdem löschen?"
 
 msgid "Error while deleting recording!"
 msgstr "Fehler beim Löschen der Aufzeichnung!"
+
+msgid "Restore recording?"
+msgstr "Aufzeichnung wiederherstellen?"
+
+msgid "Error while restoring recording!"
+msgstr "Fehler beim Wiederherstellen der Aufzeichnung!"
+
+msgid "Permanently delete recording?"
+msgstr "Aufzeichnung endgültig löschen?"
+
+msgid "Are you sure? This can't be undone!"
+msgstr "Sind Sie sicher? Das lässt sich nicht rückgängig machen!"
+
+msgid "Error while permanently deleting recording!"
+msgstr "Fehler beim endgültigen Löschen der Aufzeichnung!"
 
 msgid "Recording commands"
 msgstr "Befehle für Aufzeichnungen"

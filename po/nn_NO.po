@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Truls Slevigen <truls@slevigen.no>\n"
 "Language-Team: Norwegian Nynorsk <vdr@linuxtv.org>\n"
@@ -866,17 +866,41 @@ msgstr ""
 msgid "Recording info"
 msgstr ""
 
+msgid "Button$Recordings"
+msgstr ""
+
+msgid "Button$Restore"
+msgstr ""
+
+msgid "Button$Permanently delete"
+msgstr ""
+
 msgid "Button$Play"
 msgstr "Spill av"
 
 msgid "Button$Rewind"
 msgstr "Spol tilbake"
 
+msgid "Deleted in"
+msgstr ""
+
+msgid "Deleted recordings"
+msgstr ""
+
 msgid "Recordings"
 msgstr "Opptak"
 
+msgid "Button$Deleted recordings"
+msgstr ""
+
 msgid "Commands"
 msgstr "Kommandoer"
+
+msgid "No deleted recordings"
+msgstr ""
+
+msgid "No recordings"
+msgstr ""
 
 msgid "Delete recording?"
 msgstr "Slette opptak?"
@@ -886,6 +910,21 @@ msgstr ""
 
 msgid "Error while deleting recording!"
 msgstr "Feil under sletting av opptak!"
+
+msgid "Restore recording?"
+msgstr ""
+
+msgid "Error while restoring recording!"
+msgstr ""
+
+msgid "Permanently delete recording?"
+msgstr ""
+
+msgid "Are you sure? This can't be undone!"
+msgstr ""
+
+msgid "Error while permanently deleting recording!"
+msgstr ""
 
 msgid "Recording commands"
 msgstr ""

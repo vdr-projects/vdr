@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2013-03-04 12:46+0100\n"
 "Last-Translator: Matjaz Thaler <matjaz.thaler@guest.arnes.si>\n"
 "Language-Team: Slovenian <vdr@linuxtv.org>\n"
@@ -866,17 +866,41 @@ msgstr ""
 msgid "Recording info"
 msgstr "Podatki o snemanju"
 
+msgid "Button$Recordings"
+msgstr ""
+
+msgid "Button$Restore"
+msgstr ""
+
+msgid "Button$Permanently delete"
+msgstr ""
+
 msgid "Button$Play"
 msgstr "Predvajaj"
 
 msgid "Button$Rewind"
 msgstr "Na zaèetek"
 
+msgid "Deleted in"
+msgstr ""
+
+msgid "Deleted recordings"
+msgstr ""
+
 msgid "Recordings"
 msgstr "Posnetki"
 
+msgid "Button$Deleted recordings"
+msgstr ""
+
 msgid "Commands"
 msgstr "Ukazi"
+
+msgid "No deleted recordings"
+msgstr ""
+
+msgid "No recordings"
+msgstr ""
 
 msgid "Delete recording?"
 msgstr "Izbri¹i posnetek?"
@@ -886,6 +910,21 @@ msgstr "Posnetek se ureja - zares izbri¹i?"
 
 msgid "Error while deleting recording!"
 msgstr "Napaka pri brisanju posnetka!"
+
+msgid "Restore recording?"
+msgstr ""
+
+msgid "Error while restoring recording!"
+msgstr ""
+
+msgid "Permanently delete recording?"
+msgstr ""
+
+msgid "Are you sure? This can't be undone!"
+msgstr ""
+
+msgid "Error while permanently deleting recording!"
+msgstr ""
 
 msgid "Recording commands"
 msgstr "Ukazi za snemanje"

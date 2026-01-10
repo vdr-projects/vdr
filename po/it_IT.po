@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2025-04-16 19:49+0200\n"
 "Last-Translator: Gringo <openpli@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -871,17 +871,41 @@ msgstr "Errore durante la modifica cartella/nome!"
 msgid "Recording info"
 msgstr "Info registrazione"
 
+msgid "Button$Recordings"
+msgstr ""
+
+msgid "Button$Restore"
+msgstr ""
+
+msgid "Button$Permanently delete"
+msgstr ""
+
 msgid "Button$Play"
 msgstr "Riproduci"
 
 msgid "Button$Rewind"
 msgstr "Riavvolgi"
 
+msgid "Deleted in"
+msgstr ""
+
+msgid "Deleted recordings"
+msgstr ""
+
 msgid "Recordings"
 msgstr "Registrazioni"
 
+msgid "Button$Deleted recordings"
+msgstr ""
+
 msgid "Commands"
 msgstr "Comandi"
+
+msgid "No deleted recordings"
+msgstr ""
+
+msgid "No recordings"
+msgstr ""
 
 msgid "Delete recording?"
 msgstr "Eliminare la registrazione?"
@@ -891,6 +915,21 @@ msgstr "La registrazione è stata modificata - sicuro di eliminare?"
 
 msgid "Error while deleting recording!"
 msgstr "Errore eliminazione registrazione!"
+
+msgid "Restore recording?"
+msgstr ""
+
+msgid "Error while restoring recording!"
+msgstr ""
+
+msgid "Permanently delete recording?"
+msgstr ""
+
+msgid "Are you sure? This can't be undone!"
+msgstr ""
+
+msgid "Error while permanently deleting recording!"
+msgstr ""
 
 msgid "Recording commands"
 msgstr "Comandi di registrazione"

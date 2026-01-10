@@ -10176,7 +10176,7 @@ Video Disk Recorder Revision History
 - Fixed an 'invalid lock sequence' when deleting the timeshift timer.
 - Added DeviceFreeze() when pausing at the last mark (reported by Andreas Baierl).
 
-2026-01-04:
+2026-01-10:
 
 - Fixed a memory leak in cMark::Parse() (thanks to Fabian Wolter).
 - Revised the German language texts (thanks to Stefan Hofmann).
@@ -10225,3 +10225,11 @@ Video Disk Recorder Revision History
   time (in days) deleted recordings will be kept on disk before being finally removed
   (unless new recordings need the space). With the default value of 0 the behavior is
   as before (5 minutes).
+- Deleted recordings that are still in their retention period can now be restored (based on
+  the 'undelete' patch from Matthias Senzel). Press the "Red" key in the "Setup" menu to
+  open the list of deleted recordings.
+  This includes the following changes:
+  + cRecording::Delete() now changes the extension of the cRecording's name member from *.rec to *.del.
+  + cRecording::Undelete() now changes the extension of the cRecording's name member from *.del to *.rec.
+  + cMenuRecordings::Delete() now moves the cRecording object from Recordings to DeletedRecordings.
+  See "MANUAL/Restoring deleted recordings" for details.

@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2015-02-12 21:58+0100\n"
 "Last-Translator: Magnus Sirviö <sirwio@hotmail.com>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -870,17 +870,41 @@ msgstr "Ett fel uppstod när mapp/namn skulle ändras!"
 msgid "Recording info"
 msgstr "Inspelningsinformation"
 
+msgid "Button$Recordings"
+msgstr ""
+
+msgid "Button$Restore"
+msgstr ""
+
+msgid "Button$Permanently delete"
+msgstr ""
+
 msgid "Button$Play"
 msgstr "Spela upp"
 
 msgid "Button$Rewind"
 msgstr "Återspolning"
 
+msgid "Deleted in"
+msgstr ""
+
+msgid "Deleted recordings"
+msgstr ""
+
 msgid "Recordings"
 msgstr "Inspelningar"
 
+msgid "Button$Deleted recordings"
+msgstr ""
+
 msgid "Commands"
 msgstr "Kommandon"
+
+msgid "No deleted recordings"
+msgstr ""
+
+msgid "No recordings"
+msgstr ""
 
 msgid "Delete recording?"
 msgstr "Ta bort inspelningen?"
@@ -890,6 +914,21 @@ msgstr "Inspelningen redigeras - vill du verkligen radera?"
 
 msgid "Error while deleting recording!"
 msgstr "Inspelningen gick inte att ta bort!"
+
+msgid "Restore recording?"
+msgstr ""
+
+msgid "Error while restoring recording!"
+msgstr ""
+
+msgid "Permanently delete recording?"
+msgstr ""
+
+msgid "Are you sure? This can't be undone!"
+msgstr ""
+
+msgid "Error while permanently deleting recording!"
+msgstr ""
 
 msgid "Recording commands"
 msgstr "Inspelningskommandon"

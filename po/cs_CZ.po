@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2010-05-06 11:00+0200\n"
 "Last-Translator: Aleš Juřík <ajurik@quick.cz>\n"
 "Language-Team: Czech <vdr@linuxtv.org>\n"
@@ -868,17 +868,41 @@ msgstr "Chyba při změně složky/jména!"
 msgid "Recording info"
 msgstr "Detail nahrávky"
 
+msgid "Button$Recordings"
+msgstr ""
+
+msgid "Button$Restore"
+msgstr ""
+
+msgid "Button$Permanently delete"
+msgstr ""
+
 msgid "Button$Play"
 msgstr "Přehrát"
 
 msgid "Button$Rewind"
 msgstr "Na začátek"
 
+msgid "Deleted in"
+msgstr ""
+
+msgid "Deleted recordings"
+msgstr ""
+
 msgid "Recordings"
 msgstr "Nahrávky"
 
+msgid "Button$Deleted recordings"
+msgstr ""
+
 msgid "Commands"
 msgstr "Příkazy"
+
+msgid "No deleted recordings"
+msgstr ""
+
+msgid "No recordings"
+msgstr ""
 
 msgid "Delete recording?"
 msgstr "Smazat nahrávku?"
@@ -888,6 +912,21 @@ msgstr "Nahrávka je editována - opravdu smazat?"
 
 msgid "Error while deleting recording!"
 msgstr "Chyba při mazání nahrávky!"
+
+msgid "Restore recording?"
+msgstr ""
+
+msgid "Error while restoring recording!"
+msgstr ""
+
+msgid "Permanently delete recording?"
+msgstr ""
+
+msgid "Are you sure? This can't be undone!"
+msgstr ""
+
+msgid "Error while permanently deleting recording!"
+msgstr ""
 
 msgid "Recording commands"
 msgstr "Příkazy nahrávání"

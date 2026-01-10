@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.7 2025/07/22 21:10:00 kls Exp $
+ * $Id: menu.h 5.8 2026/01/10 20:26:08 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -213,22 +213,29 @@ private:
   int level;
   cStateKey recordingsStateKey;
   int helpKeys;
+  bool delRecMenu;
   const cRecordingFilter *filter;
   static cString path;
   static cString fileName;
+  static cString deletedName;
+  static time_t toggleDelRec;
   void SetHelpKeys(void);
   void Set(bool Refresh = false);
   bool Open(bool OpenSubMenus = false);
+  eOSState AdjustTitle(eOSState State);
   eOSState Play(void);
   eOSState Rewind(void);
   eOSState Delete(void);
+  eOSState Restore(void);
+  eOSState Purge(void);
   eOSState Info(void);
   eOSState Sort(void);
   eOSState Commands(eKeys Key = kNone);
+  void SetDeleted(const char *FileName);
 protected:
   cString DirectoryName(void);
 public:
-  cMenuRecordings(const char *Base = NULL, int Level = 0, bool OpenSubMenus = false, const cRecordingFilter *Filter = NULL);
+  cMenuRecordings(const char *Base = NULL, int Level = 0, bool OpenSubMenus = false, const cRecordingFilter *Filter = NULL, bool DelRecMenu = false);
   ~cMenuRecordings();
   virtual eOSState ProcessKey(eKeys Key) override;
   static void SetRecording(const char *FileName);

@@ -324,6 +324,21 @@ Version 2.7
   one of the keys '1'..'9' in the "Recordings" menu executes the corresponding
   command from 'reccmds.conf' (see also "Executing system commands" below).
 
+* Restoring deleted recordings
+
+  If a recording has been deleted, it can be restored within the retention
+  period defined in "Setup/Miscellaneous/Deleted recordings retention".
+  To enter the list of deleted recordings press the "Red" key in the "Setup"
+  menu and navigate to the recording you want to restore. Press the "Green"
+  key to restore the recording. The "Yellow" key will permanently delete
+  the selected recording by physically removing it from the disk (this
+  operation can not be undone!).
+  Inside the "Deleted recordings" menu the "Red" key switches to the list
+  of recordings. After switching from "Deleted recordings" to "Recordings"
+  the "Red" key becomes a toggle switch between the two menus. Once you
+  close these menus it falls back to its normal function in the "Recordings"
+  menu.
+
 * Replay Control
 
   The following keys have the listed meaning in Replay mode:

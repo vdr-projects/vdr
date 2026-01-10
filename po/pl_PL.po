@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-01 23:00+0100\n"
+"POT-Creation-Date: 2026-01-10 21:26+0100\n"
 "PO-Revision-Date: 2025-12-19 17:56+0100\n"
 "Last-Translator: Tomasz Maciej Nowak <tmn505@gmail.com>\n"
 "Language-Team: Polish <vdr@linuxtv.org>\n"
@@ -868,17 +868,41 @@ msgstr "Błąd podczas zmiany katalogu/nazwy!"
 msgid "Recording info"
 msgstr "Informacje o nagraniu"
 
+msgid "Button$Recordings"
+msgstr ""
+
+msgid "Button$Restore"
+msgstr ""
+
+msgid "Button$Permanently delete"
+msgstr ""
+
 msgid "Button$Play"
 msgstr "Odtwórz"
 
 msgid "Button$Rewind"
 msgstr "Początek"
 
+msgid "Deleted in"
+msgstr ""
+
+msgid "Deleted recordings"
+msgstr ""
+
 msgid "Recordings"
 msgstr "Nagrania"
 
+msgid "Button$Deleted recordings"
+msgstr ""
+
 msgid "Commands"
 msgstr "Polecenia"
+
+msgid "No deleted recordings"
+msgstr ""
+
+msgid "No recordings"
+msgstr ""
 
 msgid "Delete recording?"
 msgstr "Usunąć nagranie?"
@@ -888,6 +912,21 @@ msgstr "Nagranie jest edytowane - jesteś pewien że chcesz je usunąć?"
 
 msgid "Error while deleting recording!"
 msgstr "Błąd podczas usuwania nagrania!"
+
+msgid "Restore recording?"
+msgstr ""
+
+msgid "Error while restoring recording!"
+msgstr ""
+
+msgid "Permanently delete recording?"
+msgstr ""
+
+msgid "Are you sure? This can't be undone!"
+msgstr ""
+
+msgid "Error while permanently deleting recording!"
+msgstr ""
 
 msgid "Recording commands"
 msgstr "Polecenia nagrań"
