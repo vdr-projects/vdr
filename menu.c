@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.36 2026/01/10 20:26:08 kls Exp $
+ * $Id: menu.c 5.37 2026/01/11 10:40:24 kls Exp $
  */
 
 #include "menu.h"
@@ -3144,7 +3144,7 @@ void cMenuRecordings::SetHelpKeys(void)
        case 2: SetHelp(delRecMenu ? tr("Button$Recordings") : tr("Button$Open"), NULL, NULL, delRecMenu ? NULL : tr("Button$Edit")); break;
        case 3: SetHelp(tr("Button$Recordings"), tr("Button$Restore"), tr("Button$Permanently delete"), tr("Button$Info")); break;
        case 4: SetHelp(tr("Button$Deleted recordings"), tr("Button$Rewind"), tr("Button$Delete"), tr("Button$Info")); break;
-       case 5: SetHelp(RecordingCommands.Count() ? tr("Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), tr("Button$Info")); break;
+       case 5: SetHelp(RecordingCommands.Count() ? tr("Button$Commands") : tr("Button$Play"), tr("Button$Rewind"), tr("Button$Delete"), tr("Button$Info")); break;
        case 6: SetHelp(delRecMenu ? tr("Button$Recordings") : tr("Button$Deleted recordings")); break;
        default: ;
        }
@@ -4667,7 +4667,7 @@ cMenuMain::cMenuMain(eOSState State, bool OpenSubMenus)
     case osTimers:     AddSubMenu(new cMenuTimers); break;
     case osRecordings: AddSubMenu(new cMenuRecordings(NULL, 0, OpenSubMenus)); break;
     case osSetup:      AddSubMenu(new cMenuSetup); break;
-    case osCommands:   AddSubMenu(new cMenuCommands(tr("Commands"), &Commands)); break;
+    case osCommands:   AddSubMenu(new cMenuCommands(tr("Button$Commands"), &Commands)); break;
     default: break;
     }
 }
@@ -4709,7 +4709,7 @@ void cMenuMain::Set(void)
 
   Add(new cOsdItem(hk(tr("Setup")),      osSetup));
   if (Commands.Count())
-     Add(new cOsdItem(hk(tr("Commands")),  osCommands));
+     Add(new cOsdItem(hk(tr("Button$Commands")),  osCommands));
 
   Update(true);
 
@@ -4789,7 +4789,7 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
     case osRecsOpen:   return AddSubMenu(new cMenuRecordings(NULL, 0, true));
     case osRecsDel:    return AddSubMenu(new cMenuRecordings(NULL, 0, true, NULL, true));
     case osSetup:      return AddSubMenu(new cMenuSetup);
-    case osCommands:   return AddSubMenu(new cMenuCommands(tr("Commands"), &Commands));
+    case osCommands:   return AddSubMenu(new cMenuCommands(tr("Button$Commands"), &Commands));
     case osStopRecord: if (Interface->Confirm(tr("Stop recording?"))) {
                           if (cOsdItem *item = Get(Current())) {
                              cRecordControls::Stop(item->Text() + strlen(tr(STOP_RECORDING)));

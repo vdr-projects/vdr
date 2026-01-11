@@ -10176,7 +10176,7 @@ Video Disk Recorder Revision History
 - Fixed an 'invalid lock sequence' when deleting the timeshift timer.
 - Added DeviceFreeze() when pausing at the last mark (reported by Andreas Baierl).
 
-2026-01-10:
+2026-01-11:
 
 - Fixed a memory leak in cMark::Parse() (thanks to Fabian Wolter).
 - Revised the German language texts (thanks to Stefan Hofmann).
@@ -10233,3 +10233,4 @@ Video Disk Recorder Revision History
   + cRecording::Undelete() now changes the extension of the cRecording's name member from *.del to *.rec.
   + cMenuRecordings::Delete() now moves the cRecording object from Recordings to DeletedRecordings.
   See "MANUAL/Restoring deleted recordings" for details.
+- Fixed the button text for "Command".
