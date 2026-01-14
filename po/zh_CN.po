@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-11 11:40+0100\n"
+"POT-Creation-Date: 2026-01-14 10:42+0100\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -881,6 +881,21 @@ msgstr "播放"
 
 msgid "Button$Rewind"
 msgstr "重放"
+
+#, c-format
+msgid "Deleted recording (%d days left)"
+msgstr ""
+
+#, c-format
+msgid "Deleted recording (%d hours left)"
+msgstr ""
+
+#, c-format
+msgid "Deleted recording (%d minutes left)"
+msgstr ""
+
+msgid "Deleted recording (expired)"
+msgstr ""
 
 msgid "Deleted in"
 msgstr ""

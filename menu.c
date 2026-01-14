@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.37 2026/01/11 10:40:24 kls Exp $
+ * $Id: menu.c 5.38 2026/01/14 09:42:35 kls Exp $
  */
 
 #include "menu.h"
@@ -2941,6 +2941,16 @@ cMenuRecording::cMenuRecording(const cRecording *Recording, bool WithButtons)
         SetHelp(tr("Button$Recordings"), tr("Button$Restore"), tr("Button$Permanently delete"));
      else
         SetHelp(tr("Button$Play"), tr("Button$Rewind"), NULL, tr("Button$Edit"));
+     }
+  if (recording->Deleted()) {
+     int t = recording->Deleted() + Setup.DeleteRetention * SECSINDAY - time(NULL);
+     cString buffer;
+     // Note how '2 * ...' is used to avoid the plural/singular problem ;-).
+     if      (t > 2 * SECSINDAY) buffer = cString::sprintf(tr("Deleted recording (%d days left)"),    int(t / SECSINDAY));
+     else if (t > 2 *      3600) buffer = cString::sprintf(tr("Deleted recording (%d hours left)"),   int(t / 3600));
+     else if (t > 2 *        60) buffer = cString::sprintf(tr("Deleted recording (%d minutes left)"), int(t / 60));
+     else                        buffer = cString::sprintf(tr("Deleted recording (expired)"));
+     SetTitle(*buffer);
      }
 }
 

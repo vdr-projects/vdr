@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-11 11:40+0100\n"
+"POT-Creation-Date: 2026-01-14 10:42+0100\n"
 "PO-Revision-Date: 2015-02-10 13:45+0100\n"
 "Last-Translator: Stefan Hofmann <stefan.hofmann@t-online.de>\n"
 "Language-Team: German <vdr@linuxtv.org>\n"
@@ -882,6 +882,21 @@ msgstr "Wiedergabe"
 
 msgid "Button$Rewind"
 msgstr "Anfang"
+
+#, c-format
+msgid "Deleted recording (%d days left)"
+msgstr "Gelöschte Aufzeichnung (%d Tage verbleibend)"
+
+#, c-format
+msgid "Deleted recording (%d hours left)"
+msgstr "Gelöschte Aufzeichnung (%d Stunden verbleibend)"
+
+#, c-format
+msgid "Deleted recording (%d minutes left)"
+msgstr "Gelöschte Aufzeichnung (%d Minuten verbleibend"
+
+msgid "Deleted recording (expired)"
+msgstr "Gelöschte Aufzeichnung (abgelaufen)"
 
 msgid "Deleted in"
 msgstr "Gelöscht in"
