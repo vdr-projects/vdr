@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.14 2025/11/15 10:46:11 kls Exp $
+ * $Id: svdrp.c 5.15 2026/01/14 10:19:11 kls Exp $
  */
 
 #include "svdrp.h"
@@ -965,7 +965,7 @@ const char *HelpPages[] = {
   "    Used by peer-to-peer connections between VDRs to keep the connection\n"
   "    from timing out. May be used at any time and simply returns a line of\n"
   "    the form '<hostname> is alive'.",
-  "PLAY <id> [ begin | <position> ]\n"
+  "PLAY [ <id> [ begin | <position> ] ]\n"
   "    Play the recording with the given id. Before a recording can be\n"
   "    played, an LSTR command should have been executed in order to retrieve\n"
   "    the recording ids.\n"
@@ -974,7 +974,9 @@ const char *HelpPages[] = {
   "    position. If neither 'begin' nor a <position> are given, replay is resumed\n"
   "    at the position where any previous replay was stopped, or from the beginning\n"
   "    by default. To control or stop the replay session, use the usual remote\n"
-  "    control keypresses via the HITK command.",
+  "    control keypresses via the HITK command.\n"
+  "    Without any parameters PLAY returns the id and title of the recording that\n"
+  "    is currently being played (if any).",
   "PLUG <name> [ help | main ] [ <command> [ <options> ]]\n"
   "    Send a command to a plugin.\n"
   "    The PLUG command without any parameters lists all plugins.\n"
@@ -2370,8 +2372,15 @@ void cSVDRPServer::CmdPLAY(const char *Option)
         Reply(501, "Error in recording id \"%s\"", num);
      free(opt);
      }
+  else if (const char *FileName = cReplayControl::NowReplaying()) {
+     LOCK_RECORDINGS_READ;
+     if (const cRecording *Recording = Recordings->GetByName(FileName))
+        Reply(250, "%d %s", Recording->Id(), Recording->Title(' ', true));
+     else
+        Reply(550, "Recording \"%s\" not found", FileName);
+     }
   else
-     Reply(501, "Missing recording id");
+     Reply(550, "Not playing");
 }
 
 void cSVDRPServer::CmdPLUG(const char *Option)

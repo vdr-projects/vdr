@@ -10235,3 +10235,5 @@ Video Disk Recorder Revision History
   + The info page of a deleted recording shows the remaining time of that recording.
   See "MANUAL/Restoring deleted recordings" for details.
 - Fixed the button text for "Command".
+- The SVDRP command PLAY now returns the id and title of the currently replayed recording
+  if no parameter is given (suggested by Stefan Hofmann).

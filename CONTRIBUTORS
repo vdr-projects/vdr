@@ -3406,6 +3406,8 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  if there are longer gaps in the recording
  for suggesting to make the time before a deleted recording is actually removed from the
  disk adjustable
+ for suggesting to make the SVDRP command PLAY return the id and title of the currently
+ replayed recording if no parameter is given
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a
