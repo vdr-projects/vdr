@@ -5,15 +5,15 @@
 # Antonio Ospite <ospite@studenti.unina.it>, 2003, 2006
 # Sean Carlos <seanc@libero.it>, 2005
 # Nino Gerbino <ngerb@interfree.it>, 2006, 2015
-# Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013, 2015, 2018, 2020, 2022, 2024
+# Diego Pierotto <vdr-italian@tiscali.it>, 2007-2010, 2012, 2013, 2015, 2018, 2020, 2022, 2024-2026
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-14 10:42+0100\n"
+"POT-Creation-Date: 2026-01-14 11:37+0100\n"
 "PO-Revision-Date: 2025-04-16 19:49+0200\n"
-"Last-Translator: Gringo <openpli@tiscali.it>\n"
+"Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
 "Language: it\n"
 "MIME-Version: 1.0\n"
@@ -872,13 +872,13 @@ msgid "Recording info"
 msgstr "Info registrazione"
 
 msgid "Button$Recordings"
-msgstr ""
+msgstr "Registrazioni"
 
 msgid "Button$Restore"
-msgstr ""
+msgstr "Ripristina"
 
 msgid "Button$Permanently delete"
-msgstr ""
+msgstr "Elimina definitivamente"
 
 msgid "Button$Play"
 msgstr "Riproduci"
@@ -888,39 +888,39 @@ msgstr "Riavvolgi"
 
 #, c-format
 msgid "Deleted recording (%d days left)"
-msgstr ""
+msgstr "Registrazione eliminata (mancano %d giorni)"
 
 #, c-format
 msgid "Deleted recording (%d hours left)"
-msgstr ""
+msgstr "Registrazione eliminata (mancano %d ore)"
 
 #, c-format
 msgid "Deleted recording (%d minutes left)"
-msgstr ""
+msgstr "Registrazione eliminata (mancano %d minuti)"
 
 msgid "Deleted recording (expired)"
-msgstr ""
+msgstr "Registrazione eliminata (scaduta)"
 
 msgid "Deleted in"
-msgstr ""
+msgstr "Eliminato in"
 
 msgid "Deleted recordings"
-msgstr ""
+msgstr "Registrazioni eliminate"
 
 msgid "Recordings"
 msgstr "Registrazioni"
 
 msgid "Button$Deleted recordings"
-msgstr ""
+msgstr "Registrazioni eliminate"
 
 msgid "Button$Commands"
 msgstr "Comandi"
 
 msgid "No deleted recordings"
-msgstr ""
+msgstr "Nessuna registrazione eliminata"
 
 msgid "No recordings"
-msgstr ""
+msgstr "Nessuna registrazione"
 
 msgid "Delete recording?"
 msgstr "Eliminare la registrazione?"
@@ -932,19 +932,19 @@ msgid "Error while deleting recording!"
 msgstr "Errore eliminazione registrazione!"
 
 msgid "Restore recording?"
-msgstr ""
+msgstr "Ripristinare la registrazione?"
 
 msgid "Error while restoring recording!"
-msgstr ""
+msgstr "Errore durante il ripristino della registrazione!"
 
 msgid "Permanently delete recording?"
-msgstr ""
+msgstr "Eliminare definitivamente la registrazione?"
 
 msgid "Are you sure? This can't be undone!"
-msgstr ""
+msgstr "Sei sicuro? Non si può tornare indietro!"
 
 msgid "Error while permanently deleting recording!"
-msgstr ""
+msgstr "Errore durante l'eliminazione definitiva della registrazione!"
 
 msgid "Recording commands"
 msgstr "Comandi di registrazione"
@@ -1464,7 +1464,7 @@ msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Intervallo ripetizione controllo remoto (ms)"
 
 msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
-msgstr ""
+msgstr "Conservazione delle registrazioni eliminate (d)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Canale iniziale"

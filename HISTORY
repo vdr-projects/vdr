@@ -10237,3 +10237,4 @@ Video Disk Recorder Revision History
 - Fixed the button text for "Command".
 - The SVDRP command PLAY now returns the id and title of the currently replayed recording
   if no parameter is given (suggested by Stefan Hofmann).
+- Updated the Italian OSD texts (thanks to Diego Pierotto).
