@@ -4,14 +4,14 @@
 # Michael Rakowski <mrak@gmx.de>, 2002, 2003, 2008
 # Jaroslaw Swierczynski <swiergot@gmail.com>, 2006
 # Marek Nazarko <mnazarko@gmail.com>, 2013
-# Tomasz Maciej Nowak <tmn505@gmail.com>, 2015, 2018, 2025
+# Tomasz Maciej Nowak <tmn505@gmail.com>, 2015, 2018, 2025-2026
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.6.0\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-14 10:42+0100\n"
-"PO-Revision-Date: 2025-12-19 17:56+0100\n"
+"POT-Creation-Date: 2026-01-16 21:28+0100\n"
+"PO-Revision-Date: 2026-01-15 23:47+0100\n"
 "Last-Translator: Tomasz Maciej Nowak <tmn505@gmail.com>\n"
 "Language-Team: Polish <vdr@linuxtv.org>\n"
 "Language: pl_PL\n"
@@ -869,13 +869,13 @@ msgid "Recording info"
 msgstr "Informacje o nagraniu"
 
 msgid "Button$Recordings"
-msgstr ""
+msgstr "Nagrania"
 
 msgid "Button$Restore"
-msgstr ""
+msgstr "Przywróć"
 
 msgid "Button$Permanently delete"
-msgstr ""
+msgstr "Kasuj"
 
 msgid "Button$Play"
 msgstr "Odtwórz"
@@ -885,42 +885,42 @@ msgstr "Początek"
 
 #, c-format
 msgid "Deleted recording (%d days left)"
-msgstr ""
+msgstr "Skasowane nagranie (pozostało %d dni)"
 
 #, c-format
 msgid "Deleted recording (%d hours left)"
-msgstr ""
+msgstr "Skasowane nagranie (pozostało %d godzin)"
 
 #, c-format
 msgid "Deleted recording (%d minutes left)"
-msgstr ""
+msgstr "Skasowane nagranie (pozostało %d minut)"
 
 msgid "Deleted recording (expired)"
-msgstr ""
+msgstr "Skasowane nagranie (wygasło)"
 
 msgid "Deleted in"
-msgstr ""
+msgstr "Skasowane w"
 
 msgid "Deleted recordings"
-msgstr ""
+msgstr "Skasowane nagrania"
 
 msgid "Recordings"
 msgstr "Nagrania"
 
 msgid "Button$Deleted recordings"
-msgstr ""
+msgstr "Skasowane nagrania"
 
 msgid "Button$Commands"
 msgstr "Polecenia"
 
 msgid "No deleted recordings"
-msgstr ""
+msgstr "Brak skasowanych nagrań"
 
 msgid "No recordings"
-msgstr ""
+msgstr "Brak nagrań"
 
 msgid "Delete recording?"
-msgstr "Usunąć nagranie?"
+msgstr "Skasować nagranie?"
 
 msgid "Recording is being edited - really delete?"
 msgstr "Nagranie jest edytowane - jesteś pewien że chcesz je usunąć?"
@@ -929,19 +929,19 @@ msgid "Error while deleting recording!"
 msgstr "Błąd podczas usuwania nagrania!"
 
 msgid "Restore recording?"
-msgstr ""
+msgstr "Przywrócić nagranie?"
 
 msgid "Error while restoring recording!"
-msgstr ""
+msgstr "Wystąpił błąd podczas przywracania nagrania!"
 
 msgid "Permanently delete recording?"
-msgstr ""
+msgstr "Permanentnie usunąć to nagranie?"
 
 msgid "Are you sure? This can't be undone!"
-msgstr ""
+msgstr "Na pewno? Tego nie można cofnąć!"
 
 msgid "Error while permanently deleting recording!"
-msgstr ""
+msgstr "Wystąpił błąd podczas usuwania nagrania!"
 
 msgid "Recording commands"
 msgstr "Polecenia nagrań"
@@ -1461,7 +1461,7 @@ msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Delta opóźnienia powtarzania dla pilota (ms)"
 
 msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
-msgstr ""
+msgstr "Retencja skasowanych nagrań (d)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Początkowy kanał"
