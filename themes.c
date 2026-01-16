@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 2.2 2012/02/17 13:57:32 kls Exp $
+ * $Id: themes.c 5.1 2026/01/16 10:49:49 kls Exp $
  */
 
 #include "themes.h"
@@ -210,9 +210,6 @@ char *cThemes::themesDirectory = NULL;
 cThemes::cThemes(void)
 {
   numThemes = 0;
-  names = 0;
-  fileNames = NULL;
-  descriptions = NULL;
 }
 
 cThemes::~cThemes()
@@ -222,59 +219,43 @@ cThemes::~cThemes()
 
 void cThemes::Clear(void)
 {
-  for (int i = 0; i < numThemes; i++) {
-      free(names[i]);
-      free(fileNames[i]);
-      free(descriptions[i]);
-      }
-  free(names);
-  free(fileNames);
-  free(descriptions);
+  names.Clear();
+  fileNames.Clear();
+  descriptions.Clear();
   numThemes = 0;
-  names = 0;
-  fileNames = NULL;
-  descriptions = NULL;
 }
 
 bool cThemes::Load(const char *SkinName)
 {
   Clear();
   if (themesDirectory) {
+     cStringList Data;
      cReadDir d(themesDirectory);
      struct dirent *e;
      while ((e = d.Next()) != NULL) {
            if (strstr(e->d_name, SkinName) == e->d_name && e->d_name[strlen(SkinName)] == '-') {
               cString FileName = AddDirectory(themesDirectory, e->d_name);
               cTheme Theme;
-              if (Theme.Load(*FileName, true)) {
-                 if (char **NewBuffer = (char **)realloc(names, (numThemes + 1) * sizeof(char *))) {
-                    names = NewBuffer;
-                    names[numThemes] = strdup(Theme.Name());
-                    }
-                 else {
-                    esyslog("ERROR: out of memory");
-                    break;
-                    }
-                 if (char **NewBuffer = (char **)realloc(fileNames, (numThemes + 1) * sizeof(char *))) {
-                    fileNames = NewBuffer;
-                    fileNames[numThemes] = strdup(*FileName);
-                    }
-                 else {
-                    esyslog("ERROR: out of memory");
-                    break;
-                    }
-                 if (char **NewBuffer = (char **)realloc(descriptions, (numThemes + 1) * sizeof(char *))) {
-                    descriptions = NewBuffer;
-                    descriptions[numThemes] = strdup(Theme.Description());
-                    }
-                 else {
-                    esyslog("ERROR: out of memory");
-                    break;
-                    }
-                 numThemes++;
-                 }
+              if (Theme.Load(FileName, true))
+                 Data.Append(strdup(cString::sprintf("%s\t%s\t%s", Theme.Description(), Theme.Name(), *FileName)));
               }
            }
+     Data.Sort();
+     for (int i = 0; i < Data.Size(); i++) {
+         char *s = Data[i];
+         char *t = strchr(s, '\t');
+         *t = 0;
+         if (descriptions.Find(s) >= 0)
+            esyslog("ERROR: duplicate themes '%s' in skin '%s'", s, SkinName);
+         descriptions.Append(strdup(s));
+         s = t + 1;
+         t = strchr(s, '\t');
+         *t = 0;
+         names.Append(strdup(s));
+         s = t + 1;
+         fileNames.Append(strdup(s));
+         numThemes++;
+         }
      return numThemes > 0;
      }
   return false;

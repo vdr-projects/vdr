@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.h 2.1 2012/10/07 11:11:43 kls Exp $
+ * $Id: themes.h 5.1 2026/01/16 10:49:49 kls Exp $
  */
 
 #ifndef __THEMES_H
@@ -61,9 +61,9 @@ public:
 class cThemes {
 private:
   int numThemes;
-  char **names;
-  char **fileNames;
-  char **descriptions;
+  cStringList names;
+  cStringList fileNames;
+  cStringList descriptions;
   static char *themesDirectory;
   void Clear(void);
 public:
@@ -73,7 +73,7 @@ public:
   int NumThemes(void) { return numThemes; }
   const char *Name(int Index) { return Index < numThemes ? names[Index] : NULL; }
   const char *FileName(int Index) { return Index < numThemes ? fileNames[Index] : NULL; }
-  const char * const *Descriptions(void) { return descriptions; }
+  const char * const *Descriptions(void) { return &descriptions[0]; }
   int GetThemeIndex(const char *Description);
   static void SetThemesDirectory(const char *ThemesDirectory);
   static void Load(const char *SkinName, const char *ThemeName, cTheme *Theme);
