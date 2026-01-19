@@ -4,30 +4,19 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 5.1 2026/01/16 10:49:49 kls Exp $
+ * $Id: themes.c 5.2 2026/01/19 11:09:43 kls Exp $
  */
 
 #include "themes.h"
 #include <dirent.h>
 #include <string.h>
 #include "config.h"
-#include "tools.h"
 
 // --- cTheme ----------------------------------------------------------------
 
 cTheme::cTheme(void)
 {
-  name = strdup("default");
-  memset(colorNames, 0, sizeof(colorNames));
-  memset(colorValues, 0, sizeof(colorValues));
-  descriptions[0] = strdup("Default");
-}
-
-cTheme::~cTheme()
-{
-  free(name);
-  for (int i = 0; i < MaxThemeColors; i++)
-      free(colorNames[i]);
+  name = "default";
 }
 
 bool cTheme::FileNameOk(const char *FileName, bool SetName)
@@ -45,10 +34,8 @@ bool cTheme::FileNameOk(const char *FileName, bool SetName)
               if (e && strcmp(e, ".theme") == 0) {
                  if (e - n >= 1) {
                     // FileName is ok
-                    if (SetName) {
-                       free(name);
-                       name = strndup(n, e - n);
-                       }
+                    if (SetName)
+                       name = cString(n, e);
                     }
                  else
                     error = "missing theme name";
@@ -77,7 +64,7 @@ const char *cTheme::Description(void)
   char *s = descriptions[I18nCurrentLanguage()];
   if (!s)
      s = descriptions[0];
-  return s ? s : name;
+  return s ? s : *name;
 }
 
 bool cTheme::Load(const char *FileName, bool OnlyDescriptions)
@@ -93,6 +80,7 @@ bool cTheme::Load(const char *FileName, bool OnlyDescriptions)
      result = true;
      char *s;
      const char *error = NULL;
+     descriptions.Clear();
      cReadLine ReadLine;
      while ((s = ReadLine.Read(f)) != NULL) {
            line++;
@@ -120,7 +108,7 @@ bool cTheme::Load(const char *FileName, bool OnlyDescriptions)
                        error = "invalid language code";
                     }
                  else if (!OnlyDescriptions) {
-                    for (int i = 0; i < MaxThemeColors; i++) {
+                    for (int i = 0; i < colorNames.Size(); i++) {
                         if (colorNames[i]) {
                            if (strcmp(n, colorNames[i]) == 0) {
                               char *p = NULL;
@@ -168,10 +156,8 @@ bool cTheme::Save(const char *FileName)
          if (descriptions[i])
             fprintf(f, "Description%s%.*s = %s\n", i ? "." : "", 3, i ? I18nLanguageCode(i) : "", descriptions[i]);
          }
-     for (int i = 0; i < MaxThemeColors; i++) {
-         if (colorNames[i])
-            fprintf(f, "%s = %08X\n", colorNames[i], colorValues[i]);
-         }
+     for (int i = 0; i < colorNames.Size(); i++)
+         fprintf(f, "%s = %08X\n", colorNames[i], colorValues[i]);
      if (!f.Close())
         result = false;
      }
@@ -182,30 +168,25 @@ bool cTheme::Save(const char *FileName)
 
 int cTheme::AddColor(const char *Name, tColor Color)
 {
-  for (int i = 0; i < MaxThemeColors; i++) {
-      if (colorNames[i]) {
-         if (strcmp(Name, colorNames[i]) == 0) {
-            colorValues[i] = Color;
-            return i;
-            }
-         }
-      else {
-         colorNames[i] = strdup(Name);
+  for (int i = 0; i < colorNames.Size(); i++) {
+      if (strcmp(Name, colorNames[i]) == 0) {
          colorValues[i] = Color;
          return i;
          }
       }
-  return -1;
+  colorNames.Append(strdup(Name));
+  colorValues.Append(Color);
+  return colorValues.Size() - 1;
 }
 
 tColor cTheme::Color(int Subject)
 {
-  return (Subject >= 0 && Subject < MaxThemeColors) ? colorValues[Subject] : 0;
+  return (Subject >= 0 && Subject < colorValues.Size()) ? colorValues[Subject] : 0;
 }
 
 // --- cThemes ---------------------------------------------------------------
 
-char *cThemes::themesDirectory = NULL;
+cString cThemes::themesDirectory;
 
 cThemes::cThemes(void)
 {
@@ -228,7 +209,7 @@ void cThemes::Clear(void)
 bool cThemes::Load(const char *SkinName)
 {
   Clear();
-  if (themesDirectory) {
+  if (*themesDirectory) {
      cStringList Data;
      cReadDir d(themesDirectory);
      struct dirent *e;
@@ -275,21 +256,20 @@ int cThemes::GetThemeIndex(const char *Description)
 
 void cThemes::SetThemesDirectory(const char *ThemesDirectory)
 {
-  free(themesDirectory);
-  themesDirectory = strdup(ThemesDirectory);
+  themesDirectory = ThemesDirectory;
   MakeDirs(themesDirectory, true);
 }
 
 void cThemes::Load(const char *SkinName, const char *ThemeName, cTheme *Theme)
 {
-  cString FileName = cString::sprintf("%s/%s-%s.theme", themesDirectory, SkinName, ThemeName);
+  cString FileName = cString::sprintf("%s/%s-%s.theme", *themesDirectory, SkinName, ThemeName);
   if (access(FileName, F_OK) == 0) // the file exists
      Theme->Load(FileName);
 }
 
 void cThemes::Save(const char *SkinName, cTheme *Theme)
 {
-  cString FileName = cString::sprintf("%s/%s-%s.theme", themesDirectory, SkinName, Theme->Name());
+  cString FileName = cString::sprintf("%s/%s-%s.theme", *themesDirectory, SkinName, Theme->Name());
   if (access(FileName, F_OK) != 0) // the file does not exist
      Theme->Save(FileName);
 }

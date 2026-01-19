@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.h 5.1 2026/01/16 10:49:49 kls Exp $
+ * $Id: themes.h 5.2 2026/01/19 11:09:43 kls Exp $
  */
 
 #ifndef __THEMES_H
@@ -16,17 +16,17 @@
 
 class cTheme {
 public:
-  enum { MaxThemeColors = 128 };
+  [[deprecated("there is no more limit to the number of theme colors")]]
+  static constexpr int MaxThemeColors = 128;
 private:
-  char *name;
+  cString name;
   cStringList descriptions;
-  char *colorNames[MaxThemeColors];
-  tColor colorValues[MaxThemeColors];
+  cStringList colorNames;
+  cVector<tColor> colorValues;
   bool FileNameOk(const char *FileName, bool SetName = false);
 public:
   cTheme(void);
        ///< Creates a new theme class.
-  ~cTheme();
   const char *Name(void) { return name; }
   const char *Description(void);
        ///< Returns a user visible, single line description of this theme.
@@ -64,7 +64,7 @@ private:
   cStringList names;
   cStringList fileNames;
   cStringList descriptions;
-  static char *themesDirectory;
+  static cString themesDirectory;
   void Clear(void);
 public:
   cThemes(void);

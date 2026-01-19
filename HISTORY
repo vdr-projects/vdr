@@ -10176,7 +10176,7 @@ Video Disk Recorder Revision History
 - Fixed an 'invalid lock sequence' when deleting the timeshift timer.
 - Added DeviceFreeze() when pausing at the last mark (reported by Andreas Baierl).
 
-2026-01-16:
+2026-01-19:
 
 - Fixed a memory leak in cMark::Parse() (thanks to Fabian Wolter).
 - Revised the German language texts (thanks to Stefan Hofmann).
@@ -10239,3 +10239,4 @@ Video Disk Recorder Revision History
   if no parameter is given (suggested by Stefan Hofmann).
 - Updated the Italian OSD texts (thanks to Diego Pierotto).
 - Themes are now sorted alphabetically in the Setup/OSD menu.
+- Fixed handling themes that don't contain a Description.
