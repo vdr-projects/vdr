@@ -10241,3 +10241,4 @@ Video Disk Recorder Revision History
 - Themes are now sorted alphabetically in the Setup/OSD menu.
 - Fixed handling themes that don't contain a Description.
 - Removed an outdated paragraph fom PLUGINS.html.
+- Updated version numbers and release dates of plugins' *.po files.
