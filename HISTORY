@@ -10242,3 +10242,4 @@ Video Disk Recorder Revision History
 - Fixed handling themes that don't contain a Description.
 - Removed an outdated paragraph fom PLUGINS.html.
 - Updated version numbers and release dates of plugins' *.po files.
+- Synced version numbers of plugins with their respective HISTORY files.

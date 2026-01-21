@@ -3,7 +3,7 @@
  *
  * See the README file for copyright information and how to reach the author.
  *
- * $Id: skincurses.c 5.3 2025/04/12 20:40:48 kls Exp $
+ * $Id: skincurses.c 5.4 2026/01/21 20:54:47 kls Exp $
  */
 
 #include <ncurses.h>
@@ -12,7 +12,7 @@
 #include <vdr/skins.h>
 #include <vdr/videodir.h>
 
-static const char *VERSION        = "2.4.3";
+static const char *VERSION        = "2.6.0";
 static const char *DESCRIPTION    = trNOOP("A text only skin");
 static const char *MAINMENUENTRY  = NULL;
 
