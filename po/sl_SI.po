@@ -1,12 +1,12 @@
 # VDR language source file.
-# Copyright (C) 2021 Klaus Schmidinger <vdr@tvdr.de>
+# Copyright (C) 2026 Klaus Schmidinger <vdr@tvdr.de>
 # This file is distributed under the same license as the VDR package.
 # Miha Setina <mihasetina@softhome.net>, 2000
 # Matjaz Thaler <matjaz.thaler@guest.arnes.si>, 2003, 2005, 2006, 2008, 2013
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: VDR 2.6.0\n"
+"Project-Id-Version: VDR 2.7.8\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2026-01-14 10:42+0100\n"
 "PO-Revision-Date: 2013-03-04 12:46+0100\n"
