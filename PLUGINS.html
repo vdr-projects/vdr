@@ -322,11 +322,6 @@ to make sure that the macros used here don't clash. How you do this is completel
 up to you. You could, for instance, prepend the macro with a <tt>'P'</tt>, as in
 <tt>P__I18N_H</tt>, or leave out the trailing <tt>_H</tt>, as in <tt>__I18N</tt>,
 or use a completely different way to make sure a header file is included only once.
-<p>
-The 'hello' example that comes with VDR makes use of <a href="#Internationalization">internationalization</a>
-and implements a file named <tt>i18n.h</tt>. To make sure it won't clash with VDR's
-<tt>i18n.h</tt> it uses the macro <tt>_I18N__H</tt> (one underline at the beginning
-and two replacing the dot).
 
 <hr><h2><a name="Construction and Destruction">Construction and Destruction</a></h2>
 
