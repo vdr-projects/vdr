@@ -10243,3 +10243,7 @@ Video Disk Recorder Revision History
 - Removed an outdated paragraph fom PLUGINS.html.
 - Updated version numbers and release dates of plugins' *.po files.
 - Synced version numbers of plugins with their respective HISTORY files.
+
+2026-01-23:
+
+- Fixed the latest change in the SVDRP command NEWT for pattern timers (reported by Jürgen Schneider).

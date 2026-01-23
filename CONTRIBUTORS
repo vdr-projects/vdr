@@ -3826,6 +3826,7 @@ Jürgen Schneider <jsffm@web.de>
  for reporting a problem with spawned timers jumping to the next event in case
  Setup.EPGLinger is very small
  for reporting a problem with H.265 recordings where the I-frames have no PTS
+ for reporting a bug in the SVDRP command NEWT for pattern timers
 
 Stefan Verse <Verse@amotronics.de>
  for fixing an occasional black screen when switching channels
