@@ -1170,7 +1170,7 @@ When accessing global data structures, proper locking is absolutely necessary.
 There are several macros that allow for easy locking and unlocking. They all
 follow the naming convention <tt>LOCK_*_READ|WRITE</tt>, where <tt>'*'</tt> is the name
 of the global data structure, which can be one of <tt>TIMERS</tt>, <tt>CHANNELS</tt>,
-<tt>RECORDINGS</tt> or <tt>SCHEDULES</tt>. To implicitly avoid deadlocks in case you
+<tt>RECORDINGS</tt>, <tt>DELETEDRECORDINGS</tt> or <tt>SCHEDULES</tt>. To implicitly avoid deadlocks in case you
 need to lock more than one structure, always make sure you use these macros in
 this sequence!
 <p>

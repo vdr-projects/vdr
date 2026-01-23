@@ -10247,3 +10247,5 @@ Video Disk Recorder Revision History
 2026-01-23:
 
 - Fixed the latest change in the SVDRP command NEWT for pattern timers (reported by Jürgen Schneider).
+- Added DELETEDRECORDINGS to the section about Locking in PLUGINS.html (suggested by Markus
+  Ehrnsperger).
