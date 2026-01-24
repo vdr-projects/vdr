@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.38 2026/01/14 09:42:35 kls Exp $
+ * $Id: menu.c 5.39 2026/01/24 15:58:31 kls Exp $
  */
 
 #include "menu.h"
@@ -3220,6 +3220,8 @@ void cMenuRecordings::Set(bool Refresh)
         SetCurrent(Get(current)); // last resort, in case the recording was deleted
      SetMenuSortMode(RecordingsSortMode == rsmName ? msmName : msmTime);
      recordingsStateKey.Remove(false); // sorting doesn't count as a real modification
+     AdjustTitle(Count() == 0 ? osUserRecEmpty : osContinue, false);
+     SetHelpKeys();
      if (Refresh)
         Display();
      }
@@ -3262,11 +3264,15 @@ bool cMenuRecordings::Open(bool OpenSubMenus)
   return false;
 }
 
-eOSState cMenuRecordings::AdjustTitle(eOSState State)
+eOSState cMenuRecordings::AdjustTitle(eOSState State, bool Redisplay)
 {
-  if (State == osUserRecEmpty && !base) {
-     SetTitle(delRecMenu ? tr("No deleted recordings") : tr("No recordings"));
-     Display();
+  if (!base) {
+     if (State == osUserRecEmpty)
+        SetTitle(delRecMenu ? tr("No deleted recordings") : tr("No recordings"));
+     else
+        SetTitle(delRecMenu ? tr("Deleted recordings") : tr("Recordings"));
+     if (Redisplay)
+        Display();
      }
   return State;
 }

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.8 2026/01/10 20:26:08 kls Exp $
+ * $Id: menu.h 5.9 2026/01/24 15:58:31 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -222,7 +222,7 @@ private:
   void SetHelpKeys(void);
   void Set(bool Refresh = false);
   bool Open(bool OpenSubMenus = false);
-  eOSState AdjustTitle(eOSState State);
+  eOSState AdjustTitle(eOSState State, bool Redisplay = true);
   eOSState Play(void);
   eOSState Rewind(void);
   eOSState Delete(void);
