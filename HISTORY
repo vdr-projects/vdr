@@ -10244,9 +10244,11 @@ Video Disk Recorder Revision History
 - Updated version numbers and release dates of plugins' *.po files.
 - Synced version numbers of plugins with their respective HISTORY files.
 
-2026-01-24:
+2026-01-29:
 
 - Fixed the latest change in the SVDRP command NEWT for pattern timers (reported by Jürgen Schneider).
 - Added DELETEDRECORDINGS to the section about Locking in PLUGINS.html (suggested by Markus
   Ehrnsperger).
 - Fixed setting the title of the "Recordings" menu in case it becomes empty or non-empty.
+- Fixed handling kPause, kPlayPause and kRecord in case they are pressed during replay while a menu
+  is open.

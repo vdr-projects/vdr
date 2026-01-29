@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.23 2026/01/21 21:19:59 kls Exp $
+ * $Id: vdr.c 5.24 2026/01/29 19:47:44 kls Exp $
  */
 
 #include <getopt.h>
@@ -1362,7 +1362,7 @@ int main(int argc, char *argv[])
           // Pausing live video:
           case kPlayPause:
           case kPause:
-               if (!Control) {
+               if (!cReplayControl::NowReplaying()) {
                   DELETE_MENU;
                   if (Setup.PauseKeyHandling) {
                      if (Setup.PauseKeyHandling > 1 || Interface->Confirm(tr("Pause live video?"))) {
@@ -1375,7 +1375,7 @@ int main(int argc, char *argv[])
                break;
           // Instant recording:
           case kRecord:
-               if (!Control) {
+               if (!cReplayControl::NowReplaying()) {
                   if (Setup.RecordKeyHandling) {
                      if (Setup.RecordKeyHandling > 1 || Interface->Confirm(tr("Start recording?"))) {
                         if (cRecordControls::Start())
