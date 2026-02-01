@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.9 2026/01/24 15:58:31 kls Exp $
+ * $Id: menu.h 5.10 2026/02/01 14:36:14 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -106,6 +106,7 @@ public:
 class cMenuMain : public cOsdMenu {
 private:
   bool replaying;
+  cOsdItem *deletedRecordingsItem;
   cOsdItem *stopReplayItem;
   cOsdItem *cancelEditingItem;
   cOsdItem *stopRecordingItem;

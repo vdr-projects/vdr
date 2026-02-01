@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.7.8\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-14 10:42+0100\n"
+"POT-Creation-Date: 2026-02-01 15:36+0100\n"
 "PO-Revision-Date: 2008-10-16 11:16-0400\n"
 "Last-Translator: Osama Alrawab <alrawab@hotmail.com>\n"
 "Language-Team: Arabic <ar@li.org>\n"
@@ -1506,6 +1506,10 @@ msgstr "هل حقا تريد اعادة التشغيل"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " ايقاف التسجيل "
+
+#. TRANSLATORS: note the leading blank!
+msgid " Deleted recordings"
+msgstr ""
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

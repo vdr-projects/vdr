@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.39 2026/01/24 15:58:31 kls Exp $
+ * $Id: menu.c 5.40 2026/02/01 14:36:14 kls Exp $
  */
 
 #include "menu.h"
@@ -4597,7 +4597,6 @@ void cMenuSetup::Set(void)
   if (cPluginManager::HasPlugins())
   Add(new cOsdItem(hk(tr("Plugins")),       osUser9));
   Add(new cOsdItem(hk(tr("Restart")),       osUser10));
-  SetHelp(tr("Button$Deleted recordings"));
 }
 
 eOSState cMenuSetup::Restart(void)
@@ -4625,13 +4624,7 @@ eOSState cMenuSetup::ProcessKey(eKeys Key)
     case osUser8: return AddSubMenu(new cMenuSetupMisc);
     case osUser9: return AddSubMenu(new cMenuSetupPlugins);
     case osUser10: return Restart();
-    default:
-      switch (Key) {
-        case kRed: if (!HasSubMenu())
-                      return osRecsDel;
-                   break;
-        default:   break;
-        }
+    default: ;
     }
   if (I18nCurrentLanguage() != osdLanguage) {
      Set();
@@ -4669,6 +4662,7 @@ cMenuMain::cMenuMain(eOSState State, bool OpenSubMenus)
 {
   SetMenuCategory(mcMain);
   replaying = false;
+  deletedRecordingsItem = NULL;
   stopReplayItem = NULL;
   cancelEditingItem = NULL;
   stopRecordingItem = NULL;
@@ -4736,6 +4730,20 @@ bool cMenuMain::Update(bool Force)
 {
   bool result = false;
 
+  // Deleted recordings:
+  {
+    LOCK_DELETEDRECORDINGS_READ;
+    bool HasDeletedRecordings = DeletedRecordings->Count();
+    if (HasDeletedRecordings && !deletedRecordingsItem)
+       // TRANSLATORS: note the leading blank!
+       Add(deletedRecordingsItem = new cOsdItem(tr(" Deleted recordings"), osRecsDel));
+    else if (deletedRecordingsItem && !HasDeletedRecordings) {
+       Del(deletedRecordingsItem->Index());
+       deletedRecordingsItem = NULL;
+       }
+  }
+
+  // Replay control:
   bool NewReplaying = false;
   {
     cMutexLock ControlMutexLock;

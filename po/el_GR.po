@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.7.8\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-14 10:42+0100\n"
+"POT-Creation-Date: 2026-02-01 15:36+0100\n"
 "PO-Revision-Date: 2007-08-12 14:17+0200\n"
 "Last-Translator: Dimitrios Dimitrakos <mail@dimitrios.de>\n"
 "Language-Team: Greek <vdr@linuxtv.org>\n"
@@ -1502,6 +1502,10 @@ msgstr "Nα γίνει σίγουρα επανεκκίνηση?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Τέλος εγγαφής "
+
+#. TRANSLATORS: note the leading blank!
+msgid " Deleted recordings"
+msgstr ""
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

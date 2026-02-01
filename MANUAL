@@ -328,8 +328,10 @@ Version 2.7.8
 
   If a recording has been deleted, it can be restored within the retention
   period defined in "Setup/Miscellaneous/Deleted recordings retention".
-  To enter the list of deleted recordings press the "Red" key in the "Setup"
-  menu and navigate to the recording you want to restore. Press the "Green"
+  If any such recordings exist, you can select "Deleted recordings" from the
+  main menu to enter the list of deleted recordings and navigate to the
+  recording you want to restore (by default the most recently deleted
+  recording will be selected automatically). Press the "Green"
   key to restore the recording. The "Yellow" key will permanently delete
   the selected recording by physically removing it from the disk (this
   operation can not be undone!).

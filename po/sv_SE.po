@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.7.8\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-14 10:42+0100\n"
+"POT-Creation-Date: 2026-02-01 15:36+0100\n"
 "PO-Revision-Date: 2015-02-12 21:58+0100\n"
 "Last-Translator: Magnus Sirviö <sirwio@hotmail.com>\n"
 "Language-Team: Swedish <vdr@linuxtv.org>\n"
@@ -1507,6 +1507,10 @@ msgstr "Vill du verkligen starta om?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Avsluta inspelning "
+
+#. TRANSLATORS: note the leading blank!
+msgid " Deleted recordings"
+msgstr ""
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

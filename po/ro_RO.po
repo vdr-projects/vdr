@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.7.8\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-14 10:42+0100\n"
+"POT-Creation-Date: 2026-02-01 15:36+0100\n"
 "PO-Revision-Date: 2015-02-11 22:26+0100\n"
 "Last-Translator: Lucian Muresan <lucianm@users.sourceforge.net>\n"
 "Language-Team: Romanian <vdr@linuxtv.org>\n"
@@ -1504,6 +1504,10 @@ msgstr "Sigur repornesc?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Opreşte înregistrarea "
+
+#. TRANSLATORS: note the leading blank!
+msgid " Deleted recordings"
+msgstr ""
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"

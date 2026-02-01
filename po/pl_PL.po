@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.7.8\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-01-16 21:28+0100\n"
+"POT-Creation-Date: 2026-02-01 15:36+0100\n"
 "PO-Revision-Date: 2026-01-15 23:47+0100\n"
 "Last-Translator: Tomasz Maciej Nowak <tmn505@gmail.com>\n"
 "Language-Team: Polish <vdr@linuxtv.org>\n"
@@ -1505,6 +1505,10 @@ msgstr "Na pewno zrestartować?"
 #. TRANSLATORS: note the leading and trailing blanks!
 msgid " Stop recording "
 msgstr " Zatrzymaj nagrywanie "
+
+#. TRANSLATORS: note the leading blank!
+msgid " Deleted recordings"
+msgstr " Skasowane nagrania"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
