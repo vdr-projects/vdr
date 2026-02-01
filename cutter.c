@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.7 2025/12/31 11:00:06 kls Exp $
+ * $Id: cutter.c 5.8 2026/02/01 21:37:31 kls Exp $
  */
 
 #include "cutter.h"
@@ -729,7 +729,6 @@ bool cCutter::Start(void)
   if (!cuttingThread) {
      error = false;
      if (*originalVersionName) {
-        cRecording Recording(originalVersionName);
         editedVersionName = EditedFileName(originalVersionName);
         if (*editedVersionName) {
            if (strcmp(originalVersionName, editedVersionName) != 0) { // names must be different!

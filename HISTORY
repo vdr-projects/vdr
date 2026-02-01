@@ -10256,3 +10256,4 @@ Video Disk Recorder Revision History
   replaces the "Red" key in the "Setup" menu.
   APIVERSNUM is now 30011.
 - Revised the German translation of "Number keys for characters" (thanks to Stefan Hofmann).
+- Removed an unused variable in cCutter::Start().
