@@ -3409,6 +3409,7 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  disk adjustable
  for suggesting to make the SVDRP command PLAY return the id and title of the currently
  replayed recording if no parameter is given
+ for revising the German translation of "Number keys for characters"
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a

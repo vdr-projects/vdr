@@ -10255,3 +10255,4 @@ Video Disk Recorder Revision History
 - The "Deleted recordings" menu can now be entered via a dynamic item in the main menu, which
   replaces the "Red" key in the "Setup" menu.
   APIVERSNUM is now 30011.
+- Revised the German translation of "Number keys for characters" (thanks to Stefan Hofmann).
