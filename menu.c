@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.40 2026/02/01 14:36:14 kls Exp $
+ * $Id: menu.c 5.41 2026/02/02 15:10:28 kls Exp $
  */
 
 #include "menu.h"
@@ -4734,12 +4734,15 @@ bool cMenuMain::Update(bool Force)
   {
     LOCK_DELETEDRECORDINGS_READ;
     bool HasDeletedRecordings = DeletedRecordings->Count();
-    if (HasDeletedRecordings && !deletedRecordingsItem)
+    if (HasDeletedRecordings && !deletedRecordingsItem) {
        // TRANSLATORS: note the leading blank!
        Add(deletedRecordingsItem = new cOsdItem(tr(" Deleted recordings"), osRecsDel));
+       result = true;
+       }
     else if (deletedRecordingsItem && !HasDeletedRecordings) {
        Del(deletedRecordingsItem->Index());
        deletedRecordingsItem = NULL;
+       result = true;
        }
   }
 
