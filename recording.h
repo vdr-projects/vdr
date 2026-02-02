@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.19 2026/01/04 10:18:40 kls Exp $
+ * $Id: recording.h 5.20 2026/02/02 14:48:04 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -229,15 +229,19 @@ public:
        ///< If the new name is the same as the old one, nothing happens.
        ///< Returns false in case of error.
   bool Delete(void);
-       ///< Changes the file name so that it will no longer be visible in the "Recordings" menu
-       ///< Returns false in case of error
+       ///< Changes the file name (both internally and on disk) to make this a "deleted" recording.
+       ///< The caller must explicitly move this object from the Recordings to the
+       ///< DeletedRecordings list.
+       ///< Returns false in case of error.
   bool Remove(void);
-       ///< Actually removes the file from the disk
-       ///< Returns false in case of error
+       ///< Actually removes the file from the disk.
+       ///< The caller must explicitly delete this object from the DeletedRecordings list.
+       ///< Returns false in case of error.
   bool Undelete(void);
-       ///< Changes the file name so that it will be visible in the "Recordings" menu again and
-       ///< not processed by cRemoveDeletedRecordingsThread.
-       ///< Returns false in case of error
+       ///< Changes the file name (both internally and on disk) to make this a "normal" recording.
+       ///< The caller must explicitly move this object from the DeletedRecordings to the
+       ///< Recordings list.
+       ///< Returns false in case of error.
   int IsInUse(void) const;
        ///< Checks whether this recording is currently in use and therefore shall not
        ///< be tampered with. Returns 0 (ruNone) if the recording is not in use.
