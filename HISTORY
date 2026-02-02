@@ -10258,3 +10258,4 @@ Video Disk Recorder Revision History
 - Revised the German translation of "Number keys for characters" (thanks to Stefan Hofmann).
 - Removed an unused variable in cCutter::Start().
 - Extended the descriptions of the Delete(), Remove() and Undelete() functions in cRecording.
+- Fixed deleting existing destinations in cRecordingsHandlerEntry (reported by Christoph Haubrich).
