@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.51 2026/02/03 11:40:56 kls Exp $
+ * $Id: recording.c 5.52 2026/02/03 15:25:54 kls Exp $
  */
 
 #include "recording.h"
@@ -1636,11 +1636,25 @@ void cVideoDirectoryScannerThread::ScanVideoDir(const char *DirName, int LinkLev
   if (!initial && DirLevel == 0) {
      cStateKey StateKey;
      recordings->Lock(StateKey, true);
+     recordings->SetExplicitModify();
      for (cRecording *Recording = recordings->First(); Recording; ) {
          cRecording *r = Recording;
          Recording = recordings->Next(Recording);
-         if (access(r->FileName(), F_OK) != 0)
+         if (access(r->FileName(), F_OK) != 0) {
             recordings->Del(r);
+            recordings->SetModified();
+            }
+         }
+     StateKey.Remove();
+     deletedRecordings->Lock(StateKey, true);
+     deletedRecordings->SetExplicitModify();
+     for (cRecording *Recording = deletedRecordings->First(); Recording; ) {
+         cRecording *r = Recording;
+         Recording = deletedRecordings->Next(Recording);
+         if (access(r->FileName(), F_OK) != 0) {
+            deletedRecordings->Del(r);
+            deletedRecordings->SetModified();
+            }
          }
      StateKey.Remove();
      }
