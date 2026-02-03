@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.50 2026/02/03 11:25:29 kls Exp $
+ * $Id: recording.c 5.51 2026/02/03 11:40:56 kls Exp $
  */
 
 #include "recording.h"
@@ -2123,13 +2123,15 @@ bool cRecordingsHandlerEntry::Active(cRecordings *Recordings)
      return true;
      }
   // We're done:
-  if (!error && (usage & (ruMove | ruCopy)) != 0)
-     cRecordingUserCommand::InvokeCommand(RUC_COPIEDRECORDING, FileNameDst(), FileNameSrc());
-  if (!error && (usage & ruMove) != 0) {
-     cRecording Recording(FileNameSrc());
-     if (Recording.Delete()) {
-        cRecordingUserCommand::InvokeCommand(RUC_MOVEDRECORDING, FileNameDst(), FileNameSrc());
-        Recordings->DelByName(Recording.FileName());
+  if (!error) {
+     if ((usage & (ruMove | ruCopy)) != 0)
+        cRecordingUserCommand::InvokeCommand(RUC_COPIEDRECORDING, FileNameDst(), FileNameSrc());
+     if ((usage & ruMove) != 0) {
+        if (cVideoDirectory::RemoveVideoFile(FileNameSrc())) {
+           cRecordingUserCommand::InvokeCommand(RUC_MOVEDRECORDING, FileNameDst(), FileNameSrc());
+           if (cRecording *Recording = Recordings->GetByName(FileNameSrc()))
+              Recordings->Del(Recording); // just to be sure
+           }
         }
      }
   Recordings->SetModified(); // to trigger a state change
@@ -2146,10 +2148,11 @@ void cRecordingsHandlerEntry::Cleanup(cRecordings *Recordings)
            delete cutter;
            cutter = NULL;
            }
-        if (cRecording *Recording = Recordings->GetByName(fileNameDst))
+        if (cRecording *Recording = Recordings->GetByName(fileNameDst)) {
            cVideoDirectory::RemoveVideoFile(Recording->FileName());
-        Recordings->DelByName(fileNameDst);
-        Recordings->SetModified();
+           Recordings->Del(Recording);
+           Recordings->SetModified();
+           }
         }
      }
   if ((usage & (ruMove | ruCopy)) // this was a move/copy operation...
@@ -2160,11 +2163,12 @@ void cRecordingsHandlerEntry::Cleanup(cRecordings *Recordings)
         delete copier;
         copier = NULL;
         }
-     if (cRecording *Recording = Recordings->GetByName(fileNameDst))
+     if (cRecording *Recording = Recordings->GetByName(fileNameDst)) {
         cVideoDirectory::RemoveVideoFile(Recording->FileName());
+        Recordings->Del(Recording);
+        }
      if ((usage & ruMove) != 0)
         Recordings->AddByName(fileNameSrc);
-     Recordings->DelByName(fileNameDst);
      Recordings->SetModified();
      }
 }

@@ -10261,3 +10261,4 @@ Video Disk Recorder Revision History
 - Fixed deleting existing destinations in cRecordingsHandlerEntry (reported by Christoph Haubrich).
 - Fixed cRecordings::DelByName() to work with file names that have '.del' as extension (reported
   by Stefan Herdler).
+- cRecordings::DelByName() is now deprecated because every caller has different requirements.

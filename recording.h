@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.20 2026/02/02 14:48:04 kls Exp $
+ * $Id: recording.h 5.21 2026/02/03 11:40:56 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -295,7 +295,7 @@ public:
   cRecording *GetByName(const char *FileName) { return const_cast<cRecording *>(static_cast<const cRecordings *>(this)->GetByName(FileName)); }
   void Add(cRecording *Recording);
   void AddByName(const char *FileName, bool TriggerUpdate = true);
-  void DelByName(const char *FileName);
+  [[deprecated("use explicit locking, deleting etc.")]] void DelByName(const char *FileName);
   void UpdateByName(const char *FileName);
   int TotalFileSizeMB(void) const;
   double MBperMinute(void) const;

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.41 2026/02/02 15:10:28 kls Exp $
+ * $Id: menu.c 5.42 2026/02/03 11:40:56 kls Exp $
  */
 
 #include "menu.h"
@@ -5972,7 +5972,9 @@ void cReplayControl::Stop(void)
                 Recordings->SetExplicitModify();
                 if (cRecording *Recording = Recordings->GetByName(fileName)) {
                    if (Recording->Delete()) {
-                      Recordings->DelByName(fileName);
+                      LOCK_DELETEDRECORDINGS_WRITE;
+                      Recordings->Del(Recording, false);
+                      DeletedRecordings->Add(Recording);
                       ClearLastReplayed(fileName);
                       Recordings->SetModified();
                       }

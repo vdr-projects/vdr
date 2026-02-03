@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.16 2026/01/23 10:35:23 kls Exp $
+ * $Id: svdrp.c 5.17 2026/02/03 11:40:56 kls Exp $
  */
 
 #include "svdrp.h"
@@ -1520,7 +1520,9 @@ void cSVDRPServer::CmdDELR(const char *Option)
               Reply(550, "%s", *RecordingInUseMessage(RecordingInUse, Option, Recording));
            else {
               if (Recording->Delete()) {
-                 Recordings->DelByName(Recording->FileName());
+                 LOCK_DELETEDRECORDINGS_WRITE;
+                 Recordings->Del(Recording, false);
+                 DeletedRecordings->Add(Recording);
                  Recordings->SetModified();
                  isyslog("SVDRP %s < %s deleted recording %s", Setup.SVDRPHostName, *clientName, Option);
                  Reply(250, "Recording \"%s\" deleted", Option);
