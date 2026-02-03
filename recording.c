@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.49 2026/02/02 15:01:50 kls Exp $
+ * $Id: recording.c 5.50 2026/02/03 11:25:29 kls Exp $
  */
 
 #include "recording.h"
@@ -1741,10 +1741,23 @@ void cRecordings::AddByName(const char *FileName, bool TriggerUpdate)
 
 void cRecordings::DelByName(const char *FileName)
 {
-  cRecording *Recording = GetByName(FileName);
+  if (this != &recordings) {
+     esyslog("ERROR: cRecordings::DelByName() called with '%s' on a list other than Recordings - ignored", FileName);
+     return;
+     }
+  char *DelRecFileName = strdup(FileName);
+  if (char *ext = strrchr(DelRecFileName, '.')) {
+     if (strcmp(ext, DELEXT)) {
+        esyslog("ERROR: cRecordings::DelByName() called with '%s', using '.rec' instead", DelRecFileName);
+        strncpy(ext, RECEXT, strlen(ext));
+        }
+     }
   cRecording *dummy = NULL;
-  if (!Recording)
+  cRecording *Recording = GetByName(DelRecFileName);
+  if (!Recording) {
+     esyslog("ERROR: cRecordings::DelByName(): '%s' not found in Recordings - using dummy", DelRecFileName);
      Recording = dummy = new cRecording(FileName); // allows us to use a FileName that is not in the Recordings list
+     }
   LOCK_DELETEDRECORDINGS_WRITE;
   if (!dummy)
      Del(Recording, false);
@@ -1758,6 +1771,7 @@ void cRecordings::DelByName(const char *FileName)
         }
      }
   delete Recording;
+  free(DelRecFileName);
   TouchUpdate();
 }
 

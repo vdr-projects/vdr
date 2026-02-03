@@ -10244,7 +10244,7 @@ Video Disk Recorder Revision History
 - Updated version numbers and release dates of plugins' *.po files.
 - Synced version numbers of plugins with their respective HISTORY files.
 
-2026-02-02:
+2026-02-03:
 
 - Fixed the latest change in the SVDRP command NEWT for pattern timers (reported by Jürgen Schneider).
 - Added DELETEDRECORDINGS to the section about Locking in PLUGINS.html (suggested by Markus
@@ -10259,3 +10259,5 @@ Video Disk Recorder Revision History
 - Removed an unused variable in cCutter::Start().
 - Extended the descriptions of the Delete(), Remove() and Undelete() functions in cRecording.
 - Fixed deleting existing destinations in cRecordingsHandlerEntry (reported by Christoph Haubrich).
+- Fixed cRecordings::DelByName() to work with file names that have '.del' as extension (reported
+  by Stefan Herdler).
