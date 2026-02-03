@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.30 2025/12/31 14:37:25 kls Exp $
+ * $Id: timers.c 5.31 2026/02/03 16:00:28 kls Exp $
  */
 
 #include "timers.h"
@@ -658,7 +658,7 @@ bool cTimer::Matches(time_t t, int Margin) const
      IsNow = Margin == 0;
      }
   else if (!TimeDiffReported && abs(t - time(NULL)) > 10) {
-     esyslog("ERROR: cTimer::Matches() called with invalid time - use cTimer::CalcStartStopTime() instead");
+     esyslog("ERROR: cTimer::Matches() called with invalid time %lld, diff %d, Margin %d - use cTimer::CalcStartStopTime() instead", (long long)t, (int)abs(t - time(NULL)), Margin);
      cBackTrace::BackTrace();
      TimeDiffReported = true;
      }

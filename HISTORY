@@ -10263,3 +10263,5 @@ Video Disk Recorder Revision History
   by Stefan Herdler).
 - cRecordings::DelByName() is now deprecated because every caller has different requirements.
 - cVideoDirectoryScannerThread::ScanVideoDir() now also checks for vanished deleted recordings.
+- Added some debug output to the error message in cTimer::Matches(time_t t, int Margin) (thanks
+  to Markus Ehrnsperger).
