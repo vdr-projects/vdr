@@ -2611,6 +2611,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  direction needs to be closed
  for suggesting to add DELETEDRECORDINGS to the section about Locking in PLUGINS.html
  for adding some debug output to the error message in cTimer::Matches(time_t t, int Margin)
+ for storing language of title and short text of EPG events in cEvent
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing

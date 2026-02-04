@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.c 5.15 2025/03/04 16:27:49 kls Exp $
+ * $Id: epg.c 5.16 2026/02/04 10:06:06 kls Exp $
  */
 
 #include "epg.h"
@@ -120,6 +120,7 @@ cEvent::cEvent(tEventID EventID)
   tableID = 0xFF; // actual table ids are 0x4E..0x60
   version = 0xFF; // actual version numbers are 0..31
   runningStatus = SI::RunningStatusUndefined;
+  memset(language, 0, sizeof(language));
   title = NULL;
   shortText = NULL;
   description = NULL;
@@ -182,6 +183,11 @@ void cEvent::SetRunningStatus(int RunningStatus, const cChannel *Channel)
   if (Channel && runningStatus != RunningStatus && (RunningStatus > SI::RunningStatusNotRunning || runningStatus > SI::RunningStatusUndefined) && schedule && schedule->HasTimer())
      isyslog("channel %d (%s) event %s status %d->%d", Channel->Number(), Channel->Name(), *ToDescr(), runningStatus, RunningStatus);
   runningStatus = RunningStatus;
+}
+
+void cEvent::SetLanguage(const char *Language)
+{
+  strn0cpy(language, Language, sizeof(language)); // incoming Language may be something like "deu,ger", but we take only the first part
 }
 
 void cEvent::SetTitle(const char *Title)
@@ -472,6 +478,8 @@ void cEvent::Dump(FILE *f, const char *Prefix, bool InfoOnly) const
         }
      if (parentalRating)
         fprintf(f, "%sR %d\n", Prefix, parentalRating);
+     if (*language)
+        fprintf(f, "%sX 0 00 %s\n", Prefix, language);
      if (components) {
         for (int i = 0; i < components->NumComponents(); i++) {
             tComponent *p = components->Component(i);
@@ -517,9 +525,16 @@ bool cEvent::Parse(char *s)
               break;
     case 'R': SetParentalRating(atoi(t));
               break;
-    case 'X': if (!components)
-                 components = new cComponents;
-              components->SetComponent(components->NumComponents(), t);
+    case 'X': {
+                char l[MAXLANGCODE1];
+                if (1 == sscanf(t, "0 00 %3s", l))
+                   SetLanguage(l);
+                else {
+                   if (!components)
+                      components = new cComponents;
+                   components->SetComponent(components->NumComponents(), t);
+                   }
+              }
               break;
     case 'V': SetVps(atol(t));
               break;
@@ -1493,6 +1508,15 @@ void cEpgHandlers::SetTitle(cEvent *Event, const char *Title)
          return;
       }
   Event->SetTitle(Title);
+}
+
+void cEpgHandlers::SetLanguage(cEvent *Event, const char *Language)
+{
+  for (cEpgHandler *eh = First(); eh; eh = Next(eh)) {
+      if (eh->SetLanguage(Event, Language))
+         return;
+      }
+  Event->SetLanguage(Language);
 }
 
 void cEpgHandlers::SetShortText(cEvent *Event, const char *ShortText)

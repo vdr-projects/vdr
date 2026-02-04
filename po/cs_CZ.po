@@ -344,7 +344,7 @@ msgstr "Česky"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
-msgstr "cze"
+msgstr "ces"
 
 msgid "LanguageName$original language (qaa)"
 msgstr ""

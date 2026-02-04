@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.5 5.14 2026/01/21 21:19:59 kls Exp $
+.\" $Id: vdr.5 5.15 2026/02/04 10:06:06 kls Exp $
 .\"
 .TH vdr 5 "21 Jan 2026" "2.7.8" "Video Disk Recorder Files"
 .SH NAME
@@ -932,10 +932,12 @@ l l.
 <stream>       @is the stream content (1 = MPEG2 video, 2 = MP2 audio, 3 = subtitles, 4 = AC3 audio, 5 = H.264 video, 6 = HEAAC audio, 0x09=H.265 video, 0x19 = AC4 audio)
 <type>         @is the stream type according to ETSI EN 300 468
 <language>     @is the three letter language code (optionally two codes, separated by '+')
-<descr>        @is the description of this stream component
+<descr>        @is the description of this stream component (if any)
 <vps time>     @is the Video Programming Service time of this event
 <auxiliary data>@is an arbitrary string that can be used by external applications to store data; newline characters will be replaced with '|' when writing the \fIepg.data\fR file.
 .TE
+
+The special "<stream> <type>" string of "0 00" is used to encode the language of title and short text.
 
 This file will be read at program startup in order to restore the results of
 previous EPG scans.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: i18n.c 5.2 2022/12/01 20:57:12 kls Exp $
+ * $Id: i18n.c 5.3 2026/02/04 10:06:06 kls Exp $
  */
 
 /*
@@ -33,19 +33,24 @@ const char *LanguageCode = trNOOP("LanguageCode$eng");
 // Actually we could list all codes from http://www.loc.gov/standards/iso639-2
 // here, but that would be several hundreds - and for most of them it's unlikely
 // they're ever going to be used...
+// Still, we added all codes where (T) and (B) differs, so I18nNormalizeLanguageCode()
+// can convert all (B) codes to (T) codes.
+// The first 3 letters must be the iso639-2 (T) code.
+// If the iso639-2 (B) code differs from the (T) code, the 3 letters after the first ',' must be the iso639-2 (B) code.
+// If stations send anything else (non-standard), add more 3 letter codes, whatever stations send to indicate this language.
 
 const char *LanguageCodeList[] = {
   "eng,dos",
   "deu,ger",
-  "alb,sqi",
+  "sqi,alb",
   "ara",
   "bos",
   "bul",
   "cat,cln",
-  "chi,zho",
-  "cze,ces",
+  "zho,chi",
+  "ces,cze",
   "dan",
-  "dut,nla,nld",
+  "nld,dut,nla",
   "ell,gre",
   "esl,spa",
   "est",
@@ -60,12 +65,12 @@ const char *LanguageCodeList[] = {
   "lav",
   "lit",
   "ltz",
-  "mac,mkd",
+  "mkd,mac",
   "mlt",
   "nor",
   "pol",
   "por",
-  "rom,rum",
+  "ron,rum",
   "rus",
   "slk,slo",
   "slv",
@@ -74,6 +79,15 @@ const char *LanguageCodeList[] = {
   "sve,swe",
   "tur",
   "ukr",
+  "hye,arm",
+  "bod,tib",
+  "mya,bur",
+  "cym,wel",
+  "fas,per",
+  "kat,geo",
+  "isl,ice",
+  "mri,mao",
+  "msa,may",
   NULL
   };
 

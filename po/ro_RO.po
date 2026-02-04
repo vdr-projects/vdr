@@ -343,7 +343,7 @@ msgstr "Română"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
-msgstr "rom"
+msgstr "ron"
 
 msgid "LanguageName$original language (qaa)"
 msgstr ""

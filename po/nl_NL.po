@@ -347,7 +347,7 @@ msgstr "Nederlands"
 
 #. TRANSLATORS: The 3-letter code of the language
 msgid "LanguageCode$eng"
-msgstr "dut"
+msgstr "nld"
 
 msgid "LanguageName$original language (qaa)"
 msgstr ""

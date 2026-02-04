@@ -10244,7 +10244,7 @@ Video Disk Recorder Revision History
 - Updated version numbers and release dates of plugins' *.po files.
 - Synced version numbers of plugins with their respective HISTORY files.
 
-2026-02-03:
+2026-02-04:
 
 - Fixed the latest change in the SVDRP command NEWT for pattern timers (reported by Jürgen Schneider).
 - Added DELETEDRECORDINGS to the section about Locking in PLUGINS.html (suggested by Markus
@@ -10265,3 +10265,9 @@ Video Disk Recorder Revision History
 - cVideoDirectoryScannerThread::ScanVideoDir() now also checks for vanished deleted recordings.
 - Added some debug output to the error message in cTimer::Matches(time_t t, int Margin) (thanks
   to Markus Ehrnsperger).
+- The language of title and short text of EPG events is now stored in cEvent (thanks to Markus
+  Ehrnsperger). The 'X' tag in epg.data now uses the special "<stream> <type>" string of "0 00"
+  to encode the language of title and short text. The three letter language codes in i18n.c have
+  been adjusted to conform to iso639-2 (T/B). Users may want to check whether their preferred
+  audio and subtitle language settings are still correct (this applies to the language codes "alb"
+  "chi", "cze", "dut", "mac" and "rom").

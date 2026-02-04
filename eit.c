@@ -8,7 +8,7 @@
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  * Adapted to 'libsi' for VDR 1.3.0 by Marcel Wiesweg <marcel.wiesweg@gmx.de>.
  *
- * $Id: eit.c 5.6 2022/12/23 09:47:23 kls Exp $
+ * $Id: eit.c 5.7 2026/02/04 10:06:06 kls Exp $
  */
 
 // The various ways in which broadcasters handle (or screw up) their EPG:
@@ -391,6 +391,7 @@ cEIT::cEIT(cEitTablesHash &EitTablesHash, int Source, u_char Tid, const u_char *
             char buffer[Utf8BufSize(256)];
             EpgHandlers.SetTitle(pEvent, ShortEventDescriptor->name.getText(buffer, sizeof(buffer)));
             EpgHandlers.SetShortText(pEvent, ShortEventDescriptor->text.getText(buffer, sizeof(buffer)));
+            EpgHandlers.SetLanguage(pEvent, I18nNormalizeLanguageCode(ShortEventDescriptor->languageCode));
             }
          else {
             EpgHandlers.SetTitle(pEvent, NULL);

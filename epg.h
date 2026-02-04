@@ -7,7 +7,7 @@
  * Original version (as used in VDR before 1.3.0) written by
  * Robert Schneider <Robert.Schneider@web.de> and Rolf Hakenes <hakenes@hippomi.de>.
  *
- * $Id: epg.h 5.10 2025/03/04 15:54:07 kls Exp $
+ * $Id: epg.h 5.11 2026/02/04 10:06:06 kls Exp $
  */
 
 #ifndef __EPG_H
@@ -82,6 +82,7 @@ private:
   uchar version;           // Version number of section this event came from
   uchar runningStatus;     // 0=undefined, 1=not running, 2=starts in a few seconds, 3=pausing, 4=running
   uchar parentalRating;    // Parental rating of this event
+  char language[MAXLANGCODE1]; // ISO 639-2/T three character language code of the language of title and shortText, 0 terminated!//XXX description?
   char *title;             // Title of this event
   char *shortText;         // Short description of this event (typically the episode name in case of a series)
   char *description;       // Description of this event
@@ -102,6 +103,7 @@ public:
   uchar TableID(void) const { return tableID; }
   uchar Version(void) const { return version; }
   int RunningStatus(void) const { return runningStatus; }
+  const char *Language(void) const { return language; }
   const char *Title(void) const { return title ? title : ""; }
   const char *ShortText(void) const { return shortText; }
   const char *Description(void) const { return description; }
@@ -129,6 +131,7 @@ public:
   void SetTableID(uchar TableID);
   void SetVersion(uchar Version);
   void SetRunningStatus(int RunningStatus, const cChannel *Channel = NULL);
+  void SetLanguage(const char *Language);
   void SetTitle(const char *Title);
   void SetShortText(const char *ShortText);
   void SetDescription(const char *Description);
@@ -270,6 +273,8 @@ public:
           ///< non-updates will waste a lot of resources.
   virtual bool SetEventID(cEvent *Event, tEventID EventID) { return false; }
           ///< Important note: if you want VPS to work, do not mess with the event ids!
+  virtual bool SetLanguage(cEvent *Event, const char *Language) { return false; }
+          ///< ISO 639-2/T three character language code of the language of title and shortText.
   virtual bool SetTitle(cEvent *Event, const char *Title) { return false; }
   virtual bool SetShortText(cEvent *Event, const char *ShortText) { return false; }
   virtual bool SetDescription(cEvent *Event, const char *Description) { return false; }
@@ -309,6 +314,7 @@ public:
   bool HandledExternally(const cChannel *Channel);
   bool IsUpdate(tEventID EventID, time_t StartTime, uchar TableID, uchar Version);
   void SetEventID(cEvent *Event, tEventID EventID);
+  void SetLanguage(cEvent *Event, const char *Language);
   void SetTitle(cEvent *Event, const char *Title);
   void SetShortText(cEvent *Event, const char *ShortText);
   void SetDescription(cEvent *Event, const char *Description);
