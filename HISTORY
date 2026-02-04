@@ -10272,3 +10272,4 @@ Video Disk Recorder Revision History
   audio and subtitle language settings are still correct (this applies to the language codes "alb"
   "chi", "cze", "dut", "mac" and "rom").
 - Updated the Finnish OSD texts (thanks to Marko Mäkelä).
+- Commented out unused parameters in cSdtFilter::Process() (reported by Christoph Haubrich).

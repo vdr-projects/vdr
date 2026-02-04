@@ -2480,6 +2480,7 @@ Christoph Haubrich <christoph1.haubrich@arcor.de>
  which needs to be taken into account when regenerating the index of a recording
  for reporting that shutdown needs to take into account the VPS margin
  for reporting a problem with deleting existing destinations in cRecordingsHandlerEntry
+ for reporting unused parameters in cSdtFilter::Process()
 
 Pekka Mauno <pekka.mauno@iki.fi>
  for fixing cSchedule::GetFollowingEvent() in case there is currently no present

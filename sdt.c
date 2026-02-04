@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: sdt.c 5.2 2021/06/21 20:13:55 kls Exp $
+ * $Id: sdt.c 5.3 2026/02/04 10:28:16 kls Exp $
  */
 
 #include "sdt.h"
@@ -48,7 +48,7 @@ void cSdtFilter::Trigger(int Source)
   source = Source;
 }
 
-void cSdtFilter::Process(u_short Pid, u_char Tid, const u_char *Data, int Length)
+void cSdtFilter::Process(u_short /*Pid*/, u_char /*Tid*/, const u_char *Data, int /*Length*/)
 {
   cMutexLock MutexLock(&mutex);
   SI::SDT sdt(Data, false);
