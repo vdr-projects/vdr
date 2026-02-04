@@ -6,6 +6,7 @@
 # Niko Tarnanen <niko.tarnanen@hut.fi>, 2003
 # Rolf Ahrenberg <Rolf.Ahrenberg@sci.fi>, 2003-2008, 2010-2013, 2015
 # Matti Lehtimäki <matti.lehtimaki@gmail.com>, 2013
+# Marko Mäkelä <marko.makela@iki.fi>, 2026
 #
 msgid ""
 msgstr ""
@@ -13,7 +14,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
 "POT-Creation-Date: 2026-02-01 15:36+0100\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
-"Last-Translator: Matti Lehtimäki <matti.lehtimaki@gmail.com>\n"
+"Last-Translator: Marko Mäkelä <marko.makela@iki.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
 "Language: fi\n"
 "MIME-Version: 1.0\n"
@@ -348,28 +349,28 @@ msgid "LanguageCode$eng"
 msgstr "fin"
 
 msgid "LanguageName$original language (qaa)"
-msgstr ""
+msgstr "alkuperäinen kieli (qaa)"
 
 msgid "LanguageName$audio description (qad)"
-msgstr ""
+msgstr "äänikuvaus (qad)"
 
 msgid "LanguageName$clear speech (qks)"
-msgstr ""
+msgstr "selkeä puhe (qks)"
 
 msgid "LanguageName$uncoded languages (mis)"
-msgstr ""
+msgstr "koodaamattomat kielet (mis)"
 
 msgid "LanguageName$multiple languages (mul)"
-msgstr ""
+msgstr "monikielinen (mis)"
 
 msgid "LanguageName$narrative (nar)"
-msgstr ""
+msgstr "kuvaava (nar)"
 
 msgid "LanguageName$undetermined (und)"
-msgstr ""
+msgstr "tuntematon (und)"
 
 msgid "LanguageName$no linguistic content (zxx)"
-msgstr ""
+msgstr "kieletön (zxx)"
 
 msgid "Phase 1: Detecting RC code type"
 msgstr "Vaihe 1: Koodauksen tunnistaminen"
@@ -698,19 +699,19 @@ msgid "Button$Repeating"
 msgstr "Toistuva"
 
 msgid "Button$Regular"
-msgstr ""
+msgstr "Säännöllinen"
 
 msgid "Button$Pattern"
-msgstr ""
+msgstr "Hahmo"
 
 msgid "First day"
 msgstr "1. päivä"
 
 msgid "Timer is recording!"
-msgstr ""
+msgstr "Ajastin tallentaa!"
 
 msgid "Pattern"
-msgstr ""
+msgstr "Hahmo"
 
 msgid "Error while accessing remote timer"
 msgstr "Etäajastimen hakeminen epäonnistui"
@@ -870,13 +871,13 @@ msgid "Recording info"
 msgstr "Tallenteen tiedot"
 
 msgid "Button$Recordings"
-msgstr ""
+msgstr "Tallenteet"
 
 msgid "Button$Restore"
-msgstr ""
+msgstr "Palauta"
 
 msgid "Button$Permanently delete"
-msgstr ""
+msgstr "Poista pysyvästi"
 
 msgid "Button$Play"
 msgstr "Toista"
@@ -886,39 +887,39 @@ msgstr "Alkuun"
 
 #, c-format
 msgid "Deleted recording (%d days left)"
-msgstr ""
+msgstr "Poistettu tallenne (%d päivää jäljellä)"
 
 #, c-format
 msgid "Deleted recording (%d hours left)"
-msgstr ""
+msgstr "Poistettu tallenne (%d tuntia jäljellä)"
 
 #, c-format
 msgid "Deleted recording (%d minutes left)"
-msgstr ""
+msgstr "Poistettu tallenne (%d minuuttia jäljellä)"
 
 msgid "Deleted recording (expired)"
-msgstr ""
+msgstr "Poistettu tallenne (erääntynyt)"
 
 msgid "Deleted in"
-msgstr ""
+msgstr "Poistettu hakemistosta"
 
 msgid "Deleted recordings"
-msgstr ""
+msgstr "Poistetut tallenteet"
 
 msgid "Recordings"
 msgstr "Tallenteet"
 
 msgid "Button$Deleted recordings"
-msgstr ""
+msgstr "Poistetut"
 
 msgid "Button$Commands"
 msgstr "Komennot"
 
 msgid "No deleted recordings"
-msgstr ""
+msgstr "Ei poistettuja tallenteita"
 
 msgid "No recordings"
-msgstr ""
+msgstr "Ei tallenteita"
 
 msgid "Delete recording?"
 msgstr "Poistetaanko tallenne?"
@@ -930,19 +931,19 @@ msgid "Error while deleting recording!"
 msgstr "Tallenteen poistaminen epäonnistui!"
 
 msgid "Restore recording?"
-msgstr ""
+msgstr "Palautetaanko tallenne?"
 
 msgid "Error while restoring recording!"
-msgstr ""
+msgstr "Virhe palautettaessa tallennetta!"
 
 msgid "Permanently delete recording?"
-msgstr ""
+msgstr "Poistetaanko tallenne pysyvästi?"
 
 msgid "Are you sure? This can't be undone!"
-msgstr ""
+msgstr "Oletko varma? Tätä ei voi perua!"
 
 msgid "Error while permanently deleting recording!"
-msgstr ""
+msgstr "Virhe poistettaessa tallennetta pysyvästi!"
 
 msgid "Recording commands"
 msgstr "Tallennekomennot"
@@ -1086,10 +1087,10 @@ msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "Ohjelmaoppaan taustapäivitys (h)"
 
 msgid "Setup.EPG$EPG scan max. channel number (0=all)"
-msgstr ""
+msgstr "Ohjelmaoppaan päivityksen suurin kanavanumero (0=kaikki)"
 
 msgid "Setup.EPG$EPG pause after scan"
-msgstr ""
+msgstr "Ohjelmaoppaan päivityksen jälkeinen tauko"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "Ohjelmaoppaan korjaustaso"
@@ -1139,7 +1140,7 @@ msgid "add new transponders"
 msgstr "uudet transponderit"
 
 msgid "after rewind"
-msgstr ""
+msgstr "kelauksen jälkeen"
 
 msgid "DVB"
 msgstr "DVB"
@@ -1462,7 +1463,7 @@ msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Kaukosäätimen toistoväli (ms)"
 
 msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
-msgstr ""
+msgstr "Poistettujen tallenteiden säilytysaika (d)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Kanava käynnistettäessä"

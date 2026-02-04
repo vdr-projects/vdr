@@ -10271,3 +10271,4 @@ Video Disk Recorder Revision History
   been adjusted to conform to iso639-2 (T/B). Users may want to check whether their preferred
   audio and subtitle language settings are still correct (this applies to the language codes "alb"
   "chi", "cze", "dut", "mac" and "rom").
+- Updated the Finnish OSD texts (thanks to Marko Mäkelä).

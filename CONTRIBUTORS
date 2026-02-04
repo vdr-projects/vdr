@@ -2212,6 +2212,7 @@ Marko Mäkelä <marko.makela@iki.fi>
  for avoiding a zero sized array in cDevice::GetDevice()
  for reporting a crash when deleting a recording that is currently being edited, and
  then immediately deleting the edited version, too
+ for updating the Finnish OSD texts
 
 Patrick Rother <krd-vdr@gulu.net>
  for reporting a bug in defining timers that only differ in the day of week
