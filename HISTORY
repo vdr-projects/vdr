@@ -10244,7 +10244,7 @@ Video Disk Recorder Revision History
 - Updated version numbers and release dates of plugins' *.po files.
 - Synced version numbers of plugins with their respective HISTORY files.
 
-2026-02-04:
+2026-02-05:
 
 - Fixed the latest change in the SVDRP command NEWT for pattern timers (reported by Jürgen Schneider).
 - Added DELETEDRECORDINGS to the section about Locking in PLUGINS.html (suggested by Markus
@@ -10273,3 +10273,5 @@ Video Disk Recorder Revision History
   "chi", "cze", "dut", "mac" and "rom").
 - Updated the Finnish OSD texts (thanks to Marko Mäkelä).
 - Commented out unused parameters in cSdtFilter::Process() (reported by Christoph Haubrich).
+- When a replay ends by reaching the end of the recording, it automatically opens the "Recordings"
+  menu at the location of that recording (suggested by Markus Ehrnsperger).

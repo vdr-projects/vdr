@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.42 2026/02/03 11:40:56 kls Exp $
+ * $Id: menu.c 5.43 2026/02/05 15:55:07 kls Exp $
  */
 
 #include "menu.h"
@@ -6411,7 +6411,7 @@ const cRecording *cReplayControl::GetRecording(void)
 eOSState cReplayControl::ProcessKey(eKeys Key)
 {
   if (!Active())
-     return osEnd;
+     return osRecordings;
   if (Key == kNone && !marksModified)
      marks.Update();
   if (visible) {
