@@ -10349,9 +10349,9 @@ Video Disk Recorder Revision History
 - Made LastSignal in vdr.c 'volatile sig_atomic_t' (thanks to Dirk Nehring).
 - Added missing calls to Close() in cSocket (thanks to Dirk Nehring).
 - Increased ERROR_HANDLING_DELTA to 5 in cutter.c (suggested by Matthias Senzel).
-- Improved handling repeated keys in cRemote (thanks to Stefan Hofmann).
+- Improved handling repeated keys in cRemote (thanks to Stefan Herdler).
 - Added an upper limit of 2000 to "Setup/Miscellaneous/Remote control repeat delay" and
-  "Setup/Miscellaneous/Remote control repeat delta" (thanks to Stefan Hofmann).
+  "Setup/Miscellaneous/Remote control repeat delta" (thanks to Stefan Herdler).
 - Changed incrementing PanicLevel, since '++' in this place is deprecated in C++20 (thanks to
   Dirk Nehring).
 - Extended the "Channel selection" section in PLUGINS.html (thanks to Winfried Köhler).
@@ -10364,3 +10364,7 @@ Video Disk Recorder Revision History
   (reported by Stefan Hofmann).
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
+
+2026-06-05:
+
+- Fixed wrong credits in HISTORY and CONTRIBUTORS.

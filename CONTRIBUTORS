@@ -3437,9 +3437,6 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for suggesting to implement automatically updating items in the Recordings menu for ongoing
  recordings
  for suggesting to allow modifying the parental rating in the "Edit recording" menu
- for improving handling repeated keys in cRemote
- for adding an upper limit of 2000 to "Setup/Miscellaneous/Remote control repeat delay" and
- "Setup/Miscellaneous/Remote control repeat delta"
  for reporting that after a crash while recording, stale .timer files may be left on the disk
  for reporting a wrong total error count in case of several edited sequences that contain errors
 
@@ -3726,6 +3723,9 @@ Stefan Herdler <herdler@gmx.de>
  for reporting that cEITScanner::Process() calls Skins.Message(), which may cause an
  invalid lock sequence in case the skin's SetMessage() function sets locks
  for improving lirc.c
+ for improving handling repeated keys in cRemote
+ for adding an upper limit of 2000 to "Setup/Miscellaneous/Remote control repeat delay" and
+ "Setup/Miscellaneous/Remote control repeat delta"
 
 Tobias Faust <tobias.faust@gmx.de>
  for the original "jumpingseconds" patch
