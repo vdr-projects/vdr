@@ -1386,7 +1386,7 @@ Video Disk Recorder Revision History
 - Changed the VFAT handling to allow users who normally use it but have forgotten
   to set it when compiling a new version of VDR to at least see their recordings
   made with VFAT enabled (thanks to Christian Rienecker).
-- Added some missing teletext PIDs (thanks to Joerg Riechardt).
+- Added some missing teletext PIDs (thanks to Jörg Riechardt).
 - Fixed PID handling for cReceiver.
 - Added a missing #include to ringbuffer.c (thanks to Martin Hammerschmid).
 - Now using CC, CFLAGS, CXX and CXXFLAGS in Makefile.
@@ -4740,7 +4740,7 @@ Video Disk Recorder Revision History
   Christian Wieninger).
 - Avoiding a compiler warning in libsi's TypeLoop::operator[].
 - Now processing the "frequency list descriptor" (based on a patch from Anssi Hannula).
-- Improved the repeat function for LIRC remote controls (thanks to Joerg Riechardt).
+- Improved the repeat function for LIRC remote controls (thanks to Jörg Riechardt).
 - Fixed moving channels, which sometimes stopped the current replay session
   (reported by Mirko Dölle).
 - Fixed deleting channels in case the current channel's number changes (reported

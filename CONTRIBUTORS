@@ -574,9 +574,10 @@ Istvan Koenigsberger <istvnko@hotmail.com> and Guido Josten <guido.josten@t-onli
 Christian Rienecker <C.Rienecker@gmx.net>
  for making the VFAT handling more tolerant for users who forget to turn it on
 
-Joerg Riechardt <J.Riechardt@gmx.de>
+Jörg Riechardt <J.Riechardt@gmx.de>
  for filling in some missing teletext PIDs
  for improving the repeat function for LIRC remote controls
+ for improving lirc.c
 
 Holger Wächtler <holger@qanu.de>
  for some valuable advice during adapting to the NEWSTRUCT driver
@@ -3911,6 +3912,3 @@ Dirk Nehring <dnehring@gmx.net>
  for making LastSignal in vdr.c 'volatile sig_atomic_t'
  for adding missing calls to Close() in cSocket
  for changing incrementing PanicLevel, since '++' in this place is deprecated in C++20
-
-Jörg Riechardt <J.Riechardt@gmx.de>
- for improving lirc.c
