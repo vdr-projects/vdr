@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.16 2026/05/15 19:50:00 kls Exp $
+ * $Id: tools.h 5.17 2026/07/19 16:26:12 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -765,6 +765,7 @@ public:
     return -1;
   }
   int Size(void) const { return size; }
+  const T *Data(void) const { return data; } // only valid as long as the data has not been modified
   virtual void Insert(T Data, int Before = 0)
   {
     if (Before < size) {

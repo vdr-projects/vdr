@@ -10373,3 +10373,4 @@ Video Disk Recorder Revision History
 - Workaround for MPEG2 video where only I-frames have PTS.
 - Tolerating missing frames in the last GOP.
 - Fixed cPatPmtGenerator::MakeAC3Descriptor().
+- Enabled access to the data array in cVector.
