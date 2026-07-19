@@ -10372,3 +10372,4 @@ Video Disk Recorder Revision History
 - Fixed frame detection in MPEG2 video.
 - Workaround for MPEG2 video where only I-frames have PTS.
 - Tolerating missing frames in the last GOP.
+- Fixed cPatPmtGenerator::MakeAC3Descriptor().

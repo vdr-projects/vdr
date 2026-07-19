@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.25 2026/07/19 15:10:23 kls Exp $
+ * $Id: remux.c 5.26 2026/07/19 16:12:02 kls Exp $
  */
 
 #include "remux.h"
@@ -410,7 +410,6 @@ int cPatPmtGenerator::MakeAC3Descriptor(uchar *Target, uchar Type)
 {
   int i = 0;
   Target[i++] = Type;
-  Target[i++] = 0x01; // length
   Target[i++] = 0x00;
   IncEsInfoLength(i);
   return i;
