@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.58 2026/05/28 13:31:42 kls Exp $
+ * $Id: recording.c 5.59 2026/07/19 15:18:15 kls Exp $
  */
 
 #include "recording.h"
@@ -2816,10 +2816,9 @@ void cIndexFileGenerator::Action(void)
         // Recording has been processed:
         else {
            bool PreviousErrors = false;
-           bool MissingFrames = false;
-           Errors = FrameDetector.Errors(&PreviousErrors, &MissingFrames);
+           Errors = FrameDetector.Errors(&PreviousErrors); // missing frames in the last GOP are tolerated
            if (pendNumber > 0)
-              IndexFile.Write(pendIndependentFrame, pendNumber, pendFileSize, PreviousErrors, pendMissing || MissingFrames);
+              IndexFile.Write(pendIndependentFrame, pendNumber, pendFileSize, PreviousErrors, pendMissing);
            IndexFileComplete = true;
            break;
            }
