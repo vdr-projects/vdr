@@ -3440,6 +3440,7 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for suggesting to allow modifying the parental rating in the "Edit recording" menu
  for reporting that after a crash while recording, stale .timer files may be left on the disk
  for reporting a wrong total error count in case of several edited sequences that contain errors
+ for unifying the German translations of 'folder'
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a

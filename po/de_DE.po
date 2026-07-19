@@ -633,26 +633,26 @@ msgid "Delete channel?"
 msgstr "Kanal löschen?"
 
 msgid "Edit folder"
-msgstr "Verzeichnis bearbeiten"
+msgstr "Ordner bearbeiten"
 
 msgid "New folder"
-msgstr "Neues Verzeichnis"
+msgstr "Neuer Ordner"
 
 msgid "Folder name already exists!"
-msgstr "Verzeichnisname existiert bereits!"
+msgstr "Ordnername existiert bereits!"
 
 #, c-format
 msgid "Folder name must not contain '%c'!"
-msgstr "Verzeichnisname darf kein '%c' enthalten!"
+msgstr "Ordnername darf kein '%c' enthalten!"
 
 msgid "Button$Open"
 msgstr "Öffnen"
 
 msgid "Delete folder and all sub folders?"
-msgstr "Verzeichnis und alle Unterverzeichnisse löschen?"
+msgstr "Ordner und alle Unterordner löschen?"
 
 msgid "Delete folder?"
-msgstr "Verzeichnis löschen?"
+msgstr "Ordner löschen?"
 
 msgid "Edit timer"
 msgstr "Timer bearbeiten"
@@ -688,7 +688,7 @@ msgid "Record on"
 msgstr "Aufnehmen auf"
 
 msgid "Button$Folder"
-msgstr "Verzeichnis"
+msgstr "Ordnerauswahl"
 
 msgid "Button$Single"
 msgstr "Einmalig"
@@ -718,7 +718,7 @@ msgid "Timer has been deleted!"
 msgstr "Timer wurde gelöscht!"
 
 msgid "Select folder"
-msgstr "Verzeichnis wählen"
+msgstr "Ordner wählen"
 
 msgid "Timers"
 msgstr "Timer"
@@ -1052,13 +1052,13 @@ msgid "Setup.OSD$Menu key closes"
 msgstr "Menü-Taste schließt"
 
 msgid "Setup.OSD$Recording directories"
-msgstr "Aufnahmeverzeichnisse"
+msgstr "Ordner mit Aufnahmen"
 
 msgid "Setup.OSD$Folders in timer menu"
-msgstr "Verzeichnisse im Timer-Menü"
+msgstr "Ordner im Timer-Menü"
 
 msgid "Setup.OSD$Always sort folders first"
-msgstr "Verzeichnisse immer zuerst einsortieren"
+msgstr "Ordner immer zuerst einsortieren"
 
 msgid "Setup.OSD$Default sort mode for recordings"
 msgstr "Standard-Sortierung für Aufzeichnungen"
