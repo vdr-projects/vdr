@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.59 2026/05/30 12:27:12 kls Exp $
+ * $Id: menu.c 5.60 2026/07/19 17:20:25 kls Exp $
  */
 
 #include "menu.h"
@@ -5974,7 +5974,7 @@ cReplayControl::cReplayControl(bool PauseLive)
   marks.Load(fileName, Recording.FramesPerSecond(), Recording.IsPesRecording());
   SetMarks(&marks);
   adaptiveSkipper.Initialize(&Setup.AdaptiveSkipInitial, Recording.FramesPerSecond());
-  SetTrackDescriptions(false);
+  SetTrackDescriptions(0);
   if (Setup.ProgressDisplayTime)
      ShowTimed(Setup.ProgressDisplayTime);
 }
