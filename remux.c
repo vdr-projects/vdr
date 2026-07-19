@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.24 2026/07/19 15:02:07 kls Exp $
+ * $Id: remux.c 5.25 2026/07/19 15:10:23 kls Exp $
  */
 
 #include "remux.h"
@@ -2109,6 +2109,12 @@ void cPtsChecker::AddPts(int64_t Pts, bool IndependentFrame)
      // handle this, please let me know). This is a workaround for such cases:
      if (Pts < 0)
         iFrameNoPts = true;
+     }
+  else if (Pts < 0) {
+     // In MPEG 2 it is possible that only I-frames have PTS. As a workaround for
+     // such cases we generate the intermediate PTS values:
+     if (pts.Size() > 0)
+        Pts = PtsAdd(pts[pts.Size() - 1], frameDelta);
      }
   if (Pts >= 0)
      pts.Append(Pts);
