@@ -10374,3 +10374,4 @@ Video Disk Recorder Revision History
 - Tolerating missing frames in the last GOP.
 - Fixed cPatPmtGenerator::MakeAC3Descriptor().
 - Enabled access to the data array in cVector.
+- Added some access functions to cChannel.

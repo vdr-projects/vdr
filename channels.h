@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.h 5.3 2024/03/02 16:21:16 kls Exp $
+ * $Id: channels.h 5.4 2026/07/19 16:41:47 kls Exp $
  */
 
 #ifndef __CHANNELS_H
@@ -160,14 +160,22 @@ public:
   int Apid(int i) const { return (0 <= i && i < MAXAPIDS) ? apids[i] : 0; }
   int Dpid(int i) const { return (0 <= i && i < MAXDPIDS) ? dpids[i] : 0; }
   int Spid(int i) const { return (0 <= i && i < MAXSPIDS) ? spids[i] : 0; }
+  const char (*Alangs() const)[MAXLANGCODE2] { return alangs; }
+  const char (*Dlangs() const)[MAXLANGCODE2] { return dlangs; }
+  const char (*Slangs() const)[MAXLANGCODE2] { return slangs; }
   const char *Alang(int i) const { return (0 <= i && i < MAXAPIDS) ? alangs[i] : ""; }
   const char *Dlang(int i) const { return (0 <= i && i < MAXDPIDS) ? dlangs[i] : ""; }
   const char *Slang(int i) const { return (0 <= i && i < MAXSPIDS) ? slangs[i] : ""; }
+  const int *Atypes(void) const { return atypes; }
+  const int *Dtypes(void) const { return dtypes; }
+  const uchar *Stypes(void) const { return subtitlingTypes; }
   int Atype(int i) const { return (0 <= i && i < MAXAPIDS) ? atypes[i] : 0; }
   int Dtype(int i) const { return (0 <= i && i < MAXDPIDS) ? dtypes[i] : 0; }
   uchar SubtitlingType(int i) const { return (0 <= i && i < MAXSPIDS) ? subtitlingTypes[i] : uchar(0); }
   uint16_t CompositionPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? compositionPageIds[i] : uint16_t(0); }
   uint16_t AncillaryPageId(int i) const { return (0 <= i && i < MAXSPIDS) ? ancillaryPageIds[i] : uint16_t(0); }
+  const uint16_t *CompositionPageIds(void) const { return compositionPageIds; }
+  const uint16_t *AncillaryPageIds(void) const { return ancillaryPageIds; }
   int Tpid(void) const { return tpid; }
   const int *Caids(void) const { return caids; }
   int Ca(int Index = 0) const { return Index < MAXCAIDS ? caids[Index] : 0; }
