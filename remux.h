@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.h 5.12 2026/05/05 14:41:31 kls Exp $
+ * $Id: remux.h 5.13 2026/07/19 16:54:12 kls Exp $
  */
 
 #ifndef __REMUX_H
@@ -315,14 +315,10 @@ protected:
   int MakeSubtitlingDescriptor(uchar *Target, const char *Language, uchar SubtitlingType, uint16_t CompositionPageId, uint16_t AncillaryPageId);
   int MakeLanguageDescriptor(uchar *Target, const char *Language);
   int MakeCRC(uchar *Target, const uchar *Data, int Length);
-  void GeneratePmtPid(const cChannel *Channel);
-       ///< Generates a PMT pid that doesn't collide with any of the actual
-       ///< pids of the Channel.
+  void GeneratePmtPid(int Vpid, int Ppid, int Tpid, const int *Apids, const int *Dpids, const int *Spids);
+       ///< Generates a PMT pid that doesn't collide with any of the given pids.
   void GeneratePat(void);
        ///< Generates a PAT section for later use with GetPat().
-  void GeneratePmt(const cChannel *Channel);
-       ///< Generates a PMT section for the given Channel, for later use
-       ///< with GetPmt().
 public:
   cPatPmtGenerator(const cChannel *Channel = NULL);
   void SetVersions(int PatVersion, int PmtVersion);
@@ -334,6 +330,8 @@ public:
        ///< higher bits will automatically be cleared.
        ///< SetVersions() needs to be called before SetChannel() in order to
        ///< have an effect from the very start.
+  void SetPids(int Vpid, int Vtype, int Ppid, int Tpid, const int *Apids, const int *Atypes, const char Alangs[][MAXLANGCODE2], const int *Dpids, const int *Dtypes, const char Dlangs[][MAXLANGCODE2], const int *Spids, const uchar *Stypes, const char Slangs[][MAXLANGCODE2], const uint16_t *CompositionPageIds, const uint16_t *AncillaryPageIds);
+       ///< Sets the PIDs this PAT/PMT shall contain.
   void SetChannel(const cChannel *Channel);
        ///< Sets the Channel for which the PAT/PMT shall be generated.
   uchar *GetPat(void);
@@ -344,6 +342,12 @@ public:
        ///< Index must be initialized to 0 and will be incremented by each
        ///< call to GetPmt(). Returns NULL if all packets of the PMT section
        ///< have been fetched.
+  int GetPatPmtSize(void);
+       ///< Returns the combined size of PAT and all PMT packets.
+  int GetPatPmt(uchar *Dest, int Size);
+       ///< Writes the PAT and all PMT packets to Dest. Size must be the size of
+       ///< the memory available at Dest, and must be greater than GetPatPmtSize().
+       ///< Returns the number of bytes written to Dest.
   };
 
 // PAT/PMT Parser:

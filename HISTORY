@@ -10375,3 +10375,4 @@ Video Disk Recorder Revision History
 - Fixed cPatPmtGenerator::MakeAC3Descriptor().
 - Enabled access to the data array in cVector.
 - Added some access functions to cChannel.
+- Rearranged PAT/PMT handling.

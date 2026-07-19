@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.26 2026/07/19 16:12:02 kls Exp $
+ * $Id: remux.c 5.27 2026/07/19 16:54:12 kls Exp $
  */
 
 #include "remux.h"
@@ -466,17 +466,17 @@ int cPatPmtGenerator::MakeCRC(uchar *Target, const uchar *Data, int Length)
 #define P_PMT_PID 0x0084 // pseudo PMT pid
 #define MAXPID    0x2000 // the maximum possible number of pids
 
-void cPatPmtGenerator::GeneratePmtPid(const cChannel *Channel)
+void cPatPmtGenerator::GeneratePmtPid(int Vpid, int Ppid, int Tpid, const int *Apids, const int *Dpids, const int *Spids)
 {
   bool Used[MAXPID] = { false };
 #define SETPID(p) { if ((p) >= 0 && (p) < MAXPID) Used[p] = true; }
 #define SETPIDS(l) { const int *p = l; while (*p) { SETPID(*p); p++; } }
-  SETPID(Channel->Vpid());
-  SETPID(Channel->Ppid());
-  SETPID(Channel->Tpid());
-  SETPIDS(Channel->Apids());
-  SETPIDS(Channel->Dpids());
-  SETPIDS(Channel->Spids());
+  SETPID(Vpid);
+  SETPID(Ppid);
+  SETPID(Tpid);
+  SETPIDS(Apids);
+  SETPIDS(Dpids);
+  SETPIDS(Spids);
   for (pmtPid = P_PMT_PID; Used[pmtPid]; pmtPid++)
       ;
 }
@@ -510,73 +510,70 @@ void cPatPmtGenerator::GeneratePat(void)
   IncVersion(patVersion);
 }
 
-void cPatPmtGenerator::GeneratePmt(const cChannel *Channel)
+void cPatPmtGenerator::SetPids(int Vpid, int Vtype, int Ppid, int Tpid, const int *Apids, const int *Atypes, const char Alangs[][MAXLANGCODE2], const int *Dpids, const int *Dtypes, const char Dlangs[][MAXLANGCODE2], const int *Spids, const uchar *Stypes, const char Slangs[][MAXLANGCODE2], const uint16_t *CompositionPageIds, const uint16_t *AncillaryPageIds)
 {
+  GeneratePmtPid(Vpid, Ppid, Tpid, Apids, Dpids, Spids);
+  GeneratePat();
   // generate the complete PMT section:
   uchar buf[MAX_SECTION_SIZE];
   memset(buf, 0xFF, sizeof(buf));
   numPmtPackets = 0;
-  if (Channel) {
-     int Vpid = Channel->Vpid();
-     int Ppid = Channel->Ppid();
-     uchar *p = buf;
-     int i = 0;
-     p[i++] = 0x02; // table id
-     int SectionLength = i;
-     p[i++] = 0xB0; // section syntax indicator (1), dummy (3), section length hi (4)
-     p[i++] = 0x00; // section length lo (filled in later)
-     p[i++] = pmtPid >> 8;   // program number hi
-     p[i++] = pmtPid & 0xFF; // program number lo
-     p[i++] = 0xC1 | (pmtVersion << 1); // dummy (2), version number (5), current/next indicator (1)
-     p[i++] = 0x00; // section number
-     p[i++] = 0x00; // last section number
-     p[i++] = 0xE0 | (Ppid >> 8); // dummy (3), PCR pid hi (5)
-     p[i++] = Ppid; // PCR pid lo
-     p[i++] = 0xF0; // dummy (4), program info length hi (4)
-     p[i++] = 0x00; // program info length lo
+  uchar *p = buf;
+  int i = 0;
+  p[i++] = 0x02; // table id
+  int SectionLength = i;
+  p[i++] = 0xB0; // section syntax indicator (1), dummy (3), section length hi (4)
+  p[i++] = 0x00; // section length lo (filled in later)
+  p[i++] = pmtPid >> 8;   // program number hi
+  p[i++] = pmtPid & 0xFF; // program number lo
+  p[i++] = 0xC1 | (pmtVersion << 1); // dummy (2), version number (5), current/next indicator (1)
+  p[i++] = 0x00; // section number
+  p[i++] = 0x00; // last section number
+  p[i++] = 0xE0 | (Ppid >> 8); // dummy (3), PCR pid hi (5)
+  p[i++] = Ppid; // PCR pid lo
+  p[i++] = 0xF0; // dummy (4), program info length hi (4)
+  p[i++] = 0x00; // program info length lo
 
-     if (Vpid)
-        i += MakeStream(buf + i, Channel->Vtype(), Vpid);
-     for (int n = 0; Channel->Apid(n); n++) {
-         i += MakeStream(buf + i, Channel->Atype(n), Channel->Apid(n));
-         const char *Alang = Channel->Alang(n);
-         i += MakeLanguageDescriptor(buf + i, Alang);
-         }
-     for (int n = 0; Channel->Dpid(n); n++) {
-         i += MakeStream(buf + i, 0x06, Channel->Dpid(n));
-         i += MakeAC3Descriptor(buf + i, Channel->Dtype(n));
-         i += MakeLanguageDescriptor(buf + i, Channel->Dlang(n));
-         }
-     for (int n = 0; Channel->Spid(n); n++) {
-         i += MakeStream(buf + i, 0x06, Channel->Spid(n));
-         i += MakeSubtitlingDescriptor(buf + i, Channel->Slang(n), Channel->SubtitlingType(n), Channel->CompositionPageId(n), Channel->AncillaryPageId(n));
-         }
+  if (Vpid)
+     i += MakeStream(buf + i, Vtype, Vpid);
+  for (int n = 0; Apids[n]; n++) {
+      i += MakeStream(buf + i, Atypes[n], Apids[n]);
+      i += MakeLanguageDescriptor(buf + i, Alangs[n]);
+      }
+  for (int n = 0; Dpids[n]; n++) {
+      i += MakeStream(buf + i, 0x06, Dpids[n]);
+      i += MakeAC3Descriptor(buf + i, Dtypes[n]);
+      i += MakeLanguageDescriptor(buf + i, Dlangs[n]);
+      }
+  for (int n = 0; Spids[n]; n++) {
+      i += MakeStream(buf + i, 0x06, Spids[n]);
+      i += MakeSubtitlingDescriptor(buf + i, Slangs[n], Stypes[n], CompositionPageIds[n], AncillaryPageIds[n]);
+      }
 
-     int sl = i - SectionLength - 2 + 4; // -2 = SectionLength storage, +4 = length of CRC
-     buf[SectionLength] |= (sl >> 8) & 0x0F;
-     buf[SectionLength + 1] = sl;
-     MakeCRC(buf + i, buf, i);
-     // split the PMT section into several TS packets:
-     uchar *q = buf;
-     bool pusi = true;
-     while (i > 0) {
-           uchar *p = pmt[numPmtPackets++];
-           int j = 0;
-           p[j++] = TS_SYNC_BYTE; // TS indicator
-           p[j++] = (pusi ? TS_PAYLOAD_START : 0x00) | (pmtPid >> 8); // flags (3), pid hi (5)
-           p[j++] = pmtPid & 0xFF; // pid lo
-           p[j++] = 0x10; // flags (4), continuity counter (4)
-           if (pusi) {
-              p[j++] = 0x00; // pointer field (payload unit start indicator is set)
-              pusi = false;
-              }
-           int l = TS_SIZE - j;
-           memcpy(p + j, q, l);
-           q += l;
-           i -= l;
+  int sl = i - SectionLength - 2 + 4; // -2 = SectionLength storage, +4 = length of CRC
+  buf[SectionLength] |= (sl >> 8) & 0x0F;
+  buf[SectionLength + 1] = sl;
+  MakeCRC(buf + i, buf, i);
+  // split the PMT section into several TS packets:
+  uchar *q = buf;
+  bool pusi = true;
+  while (i > 0) {
+        uchar *p = pmt[numPmtPackets++];
+        int j = 0;
+        p[j++] = TS_SYNC_BYTE; // TS indicator
+        p[j++] = (pusi ? TS_PAYLOAD_START : 0x00) | (pmtPid >> 8); // flags (3), pid hi (5)
+        p[j++] = pmtPid & 0xFF; // pid lo
+        p[j++] = 0x10; // flags (4), continuity counter (4)
+        if (pusi) {
+           p[j++] = 0x00; // pointer field (payload unit start indicator is set)
+           pusi = false;
            }
-     IncVersion(pmtVersion);
-     }
+        int l = TS_SIZE - j;
+        memcpy(p + j, q, l);
+        q += l;
+        i -= l;
+        }
+  IncVersion(pmtVersion);
 }
 
 void cPatPmtGenerator::SetVersions(int PatVersion, int PmtVersion)
@@ -587,11 +584,8 @@ void cPatPmtGenerator::SetVersions(int PatVersion, int PmtVersion)
 
 void cPatPmtGenerator::SetChannel(const cChannel *Channel)
 {
-  if (Channel) {
-     GeneratePmtPid(Channel);
-     GeneratePat();
-     GeneratePmt(Channel);
-     }
+  if (Channel)
+     SetPids(Channel->Vpid(), Channel->Vtype(), Channel->Ppid(), Channel->Tpid(), Channel->Apids(), Channel->Atypes(), Channel->Alangs(), Channel->Dpids(), Channel->Dtypes(), Channel->Dlangs(), Channel->Spids(), Channel->Stypes(), Channel->Slangs(), Channel->CompositionPageIds(), Channel->AncillaryPageIds());
 }
 
 uchar *cPatPmtGenerator::GetPat(void)
@@ -607,6 +601,28 @@ uchar *cPatPmtGenerator::GetPmt(int &Index)
      return pmt[Index++];
      }
   return NULL;
+}
+
+int cPatPmtGenerator::GetPatPmtSize(void)
+{
+  return numPmtPackets ? (numPmtPackets + 1) * TS_SIZE : 0;
+}
+
+int cPatPmtGenerator::GetPatPmt(uchar *Dest, int Size)
+{
+  if (numPmtPackets > 0) {
+     int PatPmtSize = GetPatPmtSize();
+     if (PatPmtSize <= Size) {
+        IncCounter(patCounter, pat);
+        memcpy(Dest, pat, TS_SIZE);
+        Dest += TS_SIZE;
+        for (int i = 0; i < numPmtPackets; i++)
+            IncCounter(pmtCounter, pmt[i]);
+        memcpy(Dest, pmt, TS_SIZE * numPmtPackets);
+        return PatPmtSize;
+        }
+     }
+  return 0;
 }
 
 // --- cPatPmtParser ---------------------------------------------------------
