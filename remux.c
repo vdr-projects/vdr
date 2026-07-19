@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.23 2026/05/05 14:41:31 kls Exp $
+ * $Id: remux.c 5.24 2026/07/19 15:02:07 kls Exp $
  */
 
 #include "remux.h"
@@ -1307,6 +1307,8 @@ int cMpeg2Parser::Parse(const uchar *Data, int Length, int Pid)
                   break;
                }
             }
+         else
+            break;
          newFrame = true;
          independentFrame = FrameType == 1; // I-Frame
          if (independentFrame) {

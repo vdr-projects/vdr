@@ -10369,3 +10369,4 @@ Video Disk Recorder Revision History
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
+- Fixed frame detection in MPEG2 video.
