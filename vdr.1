@@ -8,7 +8,7 @@
 .\" License as specified in the file COPYING that comes with the
 .\" vdr distribution.
 .\"
-.\" $Id: vdr.1 5.9 2026/06/01 18:53:25 kls Exp $
+.\" $Id: vdr.1 5.10 2026/07/20 08:25:33 kls Exp $
 .\"
 .TH vdr 1 "01 Jun 2026" "2.8.2" "Video Disk Recorder"
 .SH NAME
@@ -153,6 +153,10 @@ Mute audio of the primary DVB device at startup.
 .TP
 .B \-\-no\-kbd
 Don't use the keyboard as an input device.
+.TP
+.B \-\-pes2ts
+Convert a PES recording to TS. Must be followed by the names of the PES and
+the TS recording ("*.rec"). The files in the TS directory will be overwritten.
 .TP
 .BI \-p\  port ,\ \-\-port= port
 Use \fIport\fR for SVDRP. A value of \fB0\fR turns off SVDRP.

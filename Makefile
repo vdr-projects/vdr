@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 5.5 2025/03/02 14:24:24 kls Exp $
+# $Id: Makefile 5.6 2026/07/20 08:25:33 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -90,7 +90,7 @@ SILIB    = $(LSIDIR)/libsi.a
 
 OBJS = args.o audio.o channels.o ci.o config.o cutter.o device.o diseqc.o dvbdevice.o dvbci.o\
        dvbplayer.o dvbspu.o dvbsubtitle.o eit.o eitscan.o epg.o filter.o font.o i18n.o interface.o keys.o\
-       lirc.o menu.o menuitems.o mtd.o nit.o osdbase.o osd.o pat.o player.o plugin.o positioner.o\
+       lirc.o menu.o menuitems.o mtd.o nit.o osdbase.o osd.o pat.o pes2ts.o player.o plugin.o positioner.o\
        receiver.o recorder.o recording.o remote.o remux.o ringbuffer.o sdt.o sections.o shutdown.o\
        skinclassic.o skinlcars.o skins.o skinsttng.o sourceparams.o sources.o spu.o status.o svdrp.o themes.o thread.o\
        timers.o tools.o transfer.o vdr.o videodir.o

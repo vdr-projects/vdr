@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.30 2026/05/24 20:32:35 kls Exp $
+ * $Id: vdr.c 5.31 2026/07/20 08:25:33 kls Exp $
  */
 
 #include <getopt.h>
@@ -57,6 +57,7 @@
 #include "lirc.h"
 #include "menu.h"
 #include "osdbase.h"
+#include "pes2ts.h"
 #include "plugin.h"
 #include "recording.h"
 #include "shutdown.h"
@@ -304,6 +305,7 @@ int main(int argc, char *argv[])
       { "log",      required_argument, NULL, 'l' },
       { "mute",     no_argument,       NULL, 'm' },
       { "no-kbd",   no_argument,       NULL, 'n' | 0x100 },
+      { "pes2ts",   no_argument,       NULL, 'p' | 0x100 },
       { "plugin",   required_argument, NULL, 'P' },
       { "port",     required_argument, NULL, 'p' },
       { "record",   required_argument, NULL, 'r' },
@@ -478,6 +480,14 @@ int main(int argc, char *argv[])
                        return 2;
                        }
                     break;
+          case 'p' | 0x100:
+                    if (argc - optind >= 2)
+                       return Pes2Ts(argv[optind], argv[optind + 1]) ? 0 : 2;
+                    else {
+                       fprintf(stderr, "vdr: --pes2ts requires two arguments\n");
+                       return 2;
+                       }
+                    break;
           case 'P': PluginManager.AddPlugin(optarg);
                     break;
           case 'r': cRecordingUserCommand::SetCommand(optarg);
@@ -601,6 +611,7 @@ int main(int argc, char *argv[])
                "                           %s)\n"
                "  -m,       --mute         mute audio of the primary DVB device at startup\n"
                "            --no-kbd       don't use the keyboard as an input device\n"
+               "            --pes2ts       convert a PES recording to TS\n"
                "  -p PORT,  --port=PORT    use PORT for SVDRP (default: %d)\n"
                "                           0 turns off SVDRP\n"
                "  -P OPT,   --plugin=OPT   load a plugin defined by the given options\n"

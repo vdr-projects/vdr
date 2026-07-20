@@ -1,0 +1,90 @@
+#!/usr/bin/perl
+
+# Convert PES recordings to TS
+#
+# Converts all PES recordings in the video directory to the
+# TS format as used from VDR version 1.7.3 upward.
+#
+# Usage: pes2ts [options] /video
+#
+# See the main source file 'vdr.c' for copyright information and
+# how to reach the author.
+#
+# $Id: pes2ts 1.1 2026/07/20 08:25:33 kls Exp $
+
+use Cwd;
+use Getopt::Std;
+
+$Usage = qq{
+Usage: $0 [options] directory
+
+Options: -f       force overwriting existing TS recordings
+         -h       print this help and exit
+         -i       ignore failed vdr calls and continue
+         -l LEVEL set log level (0...3)
+         -n       dry-run (no call to vdr)
+         -p PATH  path to VDR executable (if not in \$PATH)
+         -s       skip existing TS recordings
+         -v       print recording names
+         -V       print recording names and actions
+};
+
+getopts("fhil:np:svV") || die $Usage;
+
+$Force       = $opt_f // 0;
+$Help        = $opt_h // 0;
+$Ignore      = $opt_i // 0;
+$LogLevel    = $opt_l // 3;
+$DryRun      = $opt_n // 0;
+$VDR         = $opt_p // "vdr";
+$Skip        = $opt_s // 0;
+$Verbose     = $opt_v || $opt_V // 0;
+$Verboser    = $opt_V // 0;
+
+die "$Usage" if ($Help);
+
+$VideoDir = $ARGV[0] || die "please provide the name of the video directory\n";
+
+die "$VideoDir: $!" unless (-d $VideoDir);
+
+if (!$DryRun) {
+   die "$VDR: file not found" unless `which '$VDR'`;
+   }
+
+@Recordings = `find "$VideoDir" -name 001.vdr -follow | sed 's/\\/[0-9]*\.vdr\$//' | sort`;
+chomp(@Recordings);
+
+die "no PES recordings found in $VideoDir\n" unless (@Recordings);
+
+for $Recording (@Recordings) {
+    my ($Name, $PesDir, $Date, $Priority, $Lifetime) = $Recording =~ /(.*)\/((.*)\.([0-9]*)\.([0-9]*)\.rec)$/;
+    die "no recording name found in '$Recording'" unless ($Name);
+    my $Cwd = getcwd();
+    print("$Name\n") if ($Verbose);
+    chdir($Name) || die "$Name:  $!";
+    die "$PesDir: no such directory" unless (-d $PesDir);
+    $Date =~ s/:/./g;
+    my $TsDir = "$Date.0-0.rec";
+    if (-d $TsDir) {
+       if ($Skip) {
+          print "skipped\n";
+          chdir($Cwd);
+          next;
+          }
+       die "$TsDir: directory exists" unless ($DryRun || $Force);
+       }
+    ConvertRecording($PesDir, $TsDir);
+    chdir($Cwd);
+    }
+
+sub ConvertRecording
+{
+  my ($PesDir, $TsDir) = @_;
+  (mkdir($TsDir) || die "$TsDir: $!") if (!-d $TsDir && !$DryRun);
+  my $cmd = "$VDR -l $LogLevel --pes2ts $PesDir $TsDir";
+  print("  $cmd\n") if ($Verboser);
+  return if ($DryRun);
+  if (system($cmd) != 0) {
+     die unless ($Ignore);
+     }
+}

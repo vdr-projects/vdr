@@ -10376,3 +10376,5 @@ Video Disk Recorder Revision History
 - Enabled access to the data array in cVector.
 - Added some access functions to cChannel.
 - Rearranged PAT/PMT handling.
+- Added the --pes2ts option and the pes2ts script to convert legacy PES recordings to the
+  TS format as used from VDR version 1.7.3 upward.
