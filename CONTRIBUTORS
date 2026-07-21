@@ -3916,3 +3916,4 @@ Dirk Nehring <dnehring@gmx.net>
  for changing incrementing PanicLevel, since '++' in this place is deprecated in C++20
  for removing an unused variable from cResumeFile::Read()
  for caching the thread id in cThread::ThreadId()
+ for moving locking mutexReceiver outside the loop in cDevice::Action()

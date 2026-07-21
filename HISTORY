@@ -10386,3 +10386,4 @@ Video Disk Recorder Revision History
 - Fixed the description of reccmds.conf (reported by Markus Ehrnsperger).
 - Removed an unused variable from cResumeFile::Read() (thanks to Dirk Nehring).
 - Now caching the thread id in cThread::ThreadId() (thanks to Dirk Nehring).
+- Moved locking mutexReceiver outside the loop in cDevice::Action() (thanks to Dirk Nehring).

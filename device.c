@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.17 2025/04/18 09:48:11 kls Exp $
+ * $Id: device.c 5.18 2026/07/21 17:24:13 kls Exp $
  */
 
 #include "device.h"
@@ -1760,8 +1760,8 @@ void cDevice::Action(void)
                     cs->TsPostProcess(b);
                  int Pid = TsPid(b);
                  bool IsScrambled = TsIsScrambled(b);
+                 cMutexLock MutexLock(&mutexReceiver);
                  for (int i = 0; i < MAXRECEIVERS; i++) {
-                     cMutexLock MutexLock(&mutexReceiver);
                      cReceiver *Receiver = receiver[i];
                      if (Receiver && Receiver->WantsPid(Pid)) {
                         Receiver->Receive(b, TS_SIZE);
