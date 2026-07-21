@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-07-19:
+2026-07-21:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10378,3 +10378,4 @@ Video Disk Recorder Revision History
 - Rearranged PAT/PMT handling.
 - Added the --pes2ts option and the pes2ts script to convert legacy PES recordings to the
   TS format as used from VDR version 1.7.3 upward.
+- APIVERSNUM is now 30014.
