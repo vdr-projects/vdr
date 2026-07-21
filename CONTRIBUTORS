@@ -2625,6 +2625,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for fixing handling calls to cRecordings::DelByName() with extensions other than '.rec'
  for suggesting to log an error if the format string in a call to one of the *syslog()
  macros is too long
+ for reporting that the description of reccmds.conf mentioned the wrong type of quotes
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
