@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.27 2026/07/19 16:54:12 kls Exp $
+ * $Id: remux.c 5.28 2026/07/21 10:12:21 kls Exp $
  */
 
 #include "remux.h"
@@ -356,6 +356,8 @@ void cTsPayload::Statistics(void) const
 {
   if (numPacketsPid + numPacketsOther > WRN_TS_PACKETS_FOR_FRAME_DETECTOR)
      dsyslog("WARNING: required (%d+%d) TS packets to determine frame type", numPacketsOther, numPacketsPid);
+  if (numPacketsPid > MAX_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION)
+     dsyslog("WARNING: could not determine frame type within %d video TS packets", MAX_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION);
   if (numPacketsPid > WRN_TS_PACKETS_FOR_VIDEO_FRAME_DETECTION)
      dsyslog("WARNING: required %d video TS packets to determine frame type", numPacketsPid);
 }

@@ -10379,3 +10379,5 @@ Video Disk Recorder Revision History
 - Added the --pes2ts option and the pes2ts script to convert legacy PES recordings to the
   TS format as used from VDR version 1.7.3 upward.
 - APIVERSNUM is now 30014.
+- Fixed the warning in case the frame type was not detected within the expected number of
+  TS packets.
