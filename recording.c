@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.59 2026/07/19 15:18:15 kls Exp $
+ * $Id: recording.c 5.60 2026/07/21 16:54:39 kls Exp $
  */
 
 #include "recording.h"
@@ -310,9 +310,7 @@ int cResumeFile::Read(void)
         if (f) {
            cReadLine ReadLine;
            char *s;
-           int line = 0;
            while ((s = ReadLine.Read(f)) != NULL) {
-                 ++line;
                  char *t = skipspace(s + 1);
                  switch (*s) {
                    case 'I': resume = atoi(t);

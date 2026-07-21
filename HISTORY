@@ -10384,3 +10384,4 @@ Video Disk Recorder Revision History
 - Fixed calling the --record script when a recording has ended because the timer has been
   deleted or otherwise stopped before its end time.
 - Fixed the description of reccmds.conf (reported by Markus Ehrnsperger).
+- Removed an unused variable from cResumeFile::Read() (thanks to Dirk Nehring).
