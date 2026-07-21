@@ -10381,3 +10381,5 @@ Video Disk Recorder Revision History
 - APIVERSNUM is now 30014.
 - Fixed the warning in case the frame type was not detected within the expected number of
   TS packets.
+- Fixed calling the --record script when a recording has ended because the timer has been
+  deleted or otherwise stopped before its end time.

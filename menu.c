@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.60 2026/07/19 17:20:25 kls Exp $
+ * $Id: menu.c 5.61 2026/07/21 16:03:34 kls Exp $
  */
 
 #include "menu.h"
@@ -5693,7 +5693,7 @@ void cRecordControl::Stop(bool ExecuteUserCommand)
      timer = NULL;
      SetRecordingTimerId(fileName, NULL);
      cStatus::MsgRecording(device, NULL, fileName, false);
-     if (ExecuteUserCommand && Finished)
+     if (ExecuteUserCommand)
         cRecordingUserCommand::InvokeCommand(RUC_AFTERRECORDING, fileName);
      }
 }

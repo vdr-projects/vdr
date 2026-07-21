@@ -271,7 +271,7 @@ The first parameter is one of
 
   before      if this is *before* a recording starts
   started     if this is after a recording has *started*
-  after       if this is *after* a recording has finished
+  after       if this is *after* a recording has ended
   editing     if this is before *editing* a recording
   edited      if this is after a recording has been *edited*
   deleted     if this is after a recording has been *deleted*
