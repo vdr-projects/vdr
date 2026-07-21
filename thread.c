@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 5.7 2026/05/23 21:03:38 kls Exp $
+ * $Id: thread.c 5.8 2026/07/21 17:15:57 kls Exp $
  */
 
 #include "thread.h"
@@ -388,7 +388,15 @@ void cThread::Cancel(int WaitSeconds)
 
 tThreadId cThread::ThreadId(void)
 {
-  return syscall(__NR_gettid);
+  // Cache the result in thread-local storage. This is called on every
+  // cMutex::Lock() and every cRwLock operation; the bare syscall costs
+  // ~70ns whereas a TLS read costs ~1.5ns. A thread's id is fixed for its
+  // lifetime, so caching is always safe. Each thread starts with 0 and
+  // fetches its own id on first use.
+  static thread_local tThreadId threadId = 0;
+  if (threadId == 0)
+     threadId = syscall(__NR_gettid);
+  return threadId;
 }
 
 void cThread::SetMainThreadId(void)
