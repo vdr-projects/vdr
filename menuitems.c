@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 5.6 2026/05/20 09:43:03 kls Exp $
+ * $Id: menuitems.c 5.7 2026/07/22 10:49:14 kls Exp $
  */
 
 #include "menuitems.h"
@@ -1247,8 +1247,8 @@ void cMenuSetupPage::Display(void)
      SubMenu()->Display();
      return;
      }
-  int t = 0;
   if (const cFont *Font = dynamic_cast<cSkinDisplayMenu *>(cSkinDisplay::Current())->GetTextAreaFont(false)) {
+     int t = 0;
      for (cOsdItem *item = First(); item; item = Next(item)) {
          if (const char *Tab = strchr(item->Text(), '\t')) {
             int l = Font->Width(cString(item->Text(), Tab));
@@ -1261,8 +1261,8 @@ void cMenuSetupPage::Display(void)
         if (Font->Width("M") > 1)
            t = -t;
         }
+     SetCols(t);
      }
-  SetCols(t);
   cOsdMenu::Display();
 }
 

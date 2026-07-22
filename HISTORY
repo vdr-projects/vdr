@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-07-21:
+2026-07-22:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10387,3 +10387,5 @@ Video Disk Recorder Revision History
 - Removed an unused variable from cResumeFile::Read() (thanks to Dirk Nehring).
 - Now caching the thread id in cThread::ThreadId() (thanks to Dirk Nehring).
 - Moved locking mutexReceiver outside the loop in cDevice::Action() (thanks to Dirk Nehring).
+- The first column in the Setup menus now uses a width of 36 characters (as before version
+  2.8.2) in case no text area font is available (suggested by Matthias Senzel).
