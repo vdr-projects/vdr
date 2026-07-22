@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.61 2026/07/21 16:03:34 kls Exp $
+ * $Id: menu.c 5.62 2026/07/22 19:21:00 kls Exp $
  */
 
 #include "menu.h"
@@ -4492,6 +4492,8 @@ void cMenuSetupMisc::Set(void)
         svdrpServerNames.Insert(strdup(""));
         Add(new cMenuEditStrlItem(Indent(2, tr("Setup.Miscellaneous$SVDRP default host")), data.SVDRPDefaultHost, sizeof(data.SVDRPDefaultHost), &svdrpServerNames));
         }
+     else
+        Add(new cMenuEditStrItem(Indent(2, tr("Setup.Miscellaneous$SVDRP default host")), data.SVDRPDefaultHost, sizeof(data.SVDRPHostName)));
      }
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Zap timeout (s)"),            &data.ZapTimeout));
   Add(new cMenuEditIntItem( tr("Setup.Miscellaneous$Channel entry timeout (ms)"), &data.ChannelEntryTimeout, 0));

@@ -2626,6 +2626,9 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  for suggesting to log an error if the format string in a call to one of the *syslog()
  macros is too long
  for reporting that the description of reccmds.conf mentioned the wrong type of quotes
+ for reporting that if an SVDRP default host has been defined, but there are currently
+ no other VDRs running, "Setup/Miscellaneous/SVDRP default host" is not shown and thus
+ the SVDRP default host can't be deleted
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
