@@ -4,7 +4,7 @@
 # Arnold Niessen <niessen@iae.nl> <arnold.niessen@philips.com>, 2001
 # Hans Dingemans <hans.dingemans@tacticalops.nl>, 2003, 2005
 # Maarten Wisse <Maarten.Wisse@urz.uni-hd.de>, 2005
-# Carel Willemse <carel@nekanali.nl>, 2008, 2013
+# Carel Willemse <carel@nekanali.nl>, 2008, 2013, 2026
 # Johan Schuring <johan.schuring@vetteblei.nl>, 2008
 # Cedric Dewijs <cedric.dewijs@telfort.nl>, 2013
 # Erik Oomen <oomen.e@gmail.com>, 2015
@@ -13,9 +13,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.8.2\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-06-01 20:54+0200\n"
-"PO-Revision-Date: 2015-02-10 19:43+0100\n"
-"Last-Translator: Erik Oomen <oomen.e@gmail.com>\n"
+"POT-Creation-Date: 2026-07-22 21:33+0200\n"
+"PO-Revision-Date: 2026-07-22 11:43+0100\n"
+"Last-Translator: Carel Willemse <carel@nekanali.nl>\n"
 "Language-Team: Dutch <vdr@linuxtv.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
@@ -350,40 +350,40 @@ msgid "LanguageCode$eng"
 msgstr "nld"
 
 msgid "LanguageName$original language (qaa)"
-msgstr ""
+msgstr "originale taal (qaa)"
 
 msgid "LanguageName$audio description (qad)"
-msgstr ""
+msgstr "audioomschrijving (qad)"
 
 msgid "LanguageName$clear speech (qks)"
-msgstr ""
+msgstr "duidelijke taal (qks)"
 
 msgid "LanguageName$uncoded languages (mis)"
-msgstr ""
+msgstr "enkele andere talen (mis)"
 
 msgid "LanguageName$multiple languages (mul)"
-msgstr ""
+msgstr "verschillende talen (mul)"
 
 msgid "LanguageName$narrative (nar)"
-msgstr ""
+msgstr "audioomschrijving (nar)"
 
 msgid "LanguageName$undetermined (und)"
-msgstr ""
+msgstr "onbekend(und)"
 
 msgid "LanguageName$no linguistic content (zxx)"
-msgstr ""
+msgstr "geen taalkundige inhoud (xxx)"
 
 msgid "Phase 1: Detecting RC code type"
 msgstr "Fase 1: detecteren type afstandsbediening"
 
 msgid "Press any key on the RC unit"
-msgstr "Druk op een willekeurige knop"
+msgstr "Druk op een willekeurige toets"
 
 msgid "RC code detected!"
 msgstr "Afstandsbediening code herkend!"
 
 msgid "Do not press any key..."
-msgstr "Druk niet op een knop..."
+msgstr "Druk niet op een toets..."
 
 msgid "Phase 2: Learning specific key codes"
 msgstr "Fase 2: Leren specifieke toets-codes"
@@ -688,7 +688,7 @@ msgid "File"
 msgstr "Bestandnaam"
 
 msgid "Record on"
-msgstr ""
+msgstr "Opnemen op"
 
 msgid "Button$Folder"
 msgstr "Map"
@@ -700,25 +700,25 @@ msgid "Button$Repeating"
 msgstr "Herhalen"
 
 msgid "Button$Regular"
-msgstr ""
+msgstr "Normaal"
 
 msgid "Button$Pattern"
-msgstr ""
+msgstr "Patroon"
 
 msgid "First day"
 msgstr "Eerste dag"
 
 msgid "Timer is recording!"
-msgstr ""
+msgstr "Tmer neemt op!"
 
 msgid "Pattern"
-msgstr ""
+msgstr "Patroon"
 
 msgid "Error while accessing remote timer"
-msgstr ""
+msgstr "Fout bij toegang tot externe timer"
 
 msgid "Timer has been deleted!"
-msgstr ""
+msgstr "Timer is verwijderd"
 
 msgid "Select folder"
 msgstr "Kies map"
@@ -799,7 +799,7 @@ msgid "Folder"
 msgstr "Map"
 
 msgid "Size"
-msgstr ""
+msgstr "Grootte"
 
 msgid "This folder is currently in use - no changes are possible!"
 msgstr "Deze map is momenteel in gebruik - geen wijzigingen zijn mogelijk!"
@@ -815,10 +815,10 @@ msgid "Edit recording"
 msgstr "Opname bewerken"
 
 msgid "Parental rating"
-msgstr ""
+msgstr "Leeftijdsclassificatie"
 
 msgid "This recording is currently in use - no changes are possible!"
-msgstr "Deze opname is momenteel in gebruik - geen wijzigingen zijn mogelijk!"
+msgstr "Deze opname is momenteel in gebruik - er zijn geen wijzigingen mogelijk!"
 
 msgid "Button$Cancel cutting"
 msgstr "Knippen afbreken"
@@ -851,7 +851,7 @@ msgid "Edited version already exists - overwrite?"
 msgstr "Bewerkte versie bestaat al - overschrijven?"
 
 msgid "Not enough free disk space to start editing process!"
-msgstr ""
+msgstr "Onvoldoende vrije schijfruimte om het bewerkingsproces te starten"
 
 msgid "Error while queueing recording for cutting!"
 msgstr "Kan opname voor knippen niet in wachtrij plaatsen!"
@@ -869,7 +869,7 @@ msgid "Error while changing priority/lifetime!"
 msgstr "Fout tijdens het wijzigen prioriteit / duur!"
 
 msgid "Error while changing parental rating!"
-msgstr ""
+msgstr "Fout bij het wijzigen van de leeftijdsclassificatie!"
 
 msgid "Error while changing folder/name!"
 msgstr "Fout tijdens het wijzigen map / naam!"
@@ -878,13 +878,13 @@ msgid "Recording info"
 msgstr "Opname info"
 
 msgid "Button$Recordings"
-msgstr ""
+msgstr "Opnamen"
 
 msgid "Button$Restore"
-msgstr ""
+msgstr "Herstellen"
 
 msgid "Button$Permanently delete"
-msgstr ""
+msgstr "Permanent verwijderen"
 
 msgid "Button$Play"
 msgstr "Afspelen"
@@ -894,39 +894,39 @@ msgstr "Naar begin"
 
 #, c-format
 msgid "Deleted recording (%d days left)"
-msgstr ""
+msgstr "Verwijderde opname (nog %d dagen)"
 
 #, c-format
 msgid "Deleted recording (%d hours left)"
-msgstr ""
+msgstr "Verwijderde opname (nog %d uur)"
 
 #, c-format
 msgid "Deleted recording (%d minutes left)"
-msgstr ""
+msgstr "Verwijderde opname (nog %d minuten)"
 
 msgid "Deleted recording (expired)"
-msgstr ""
+msgstr "Verwijderde opname (verlopen)"
 
 msgid "Deleted in"
-msgstr ""
+msgstr "Verwijderd in"
 
 msgid "Deleted recordings"
-msgstr ""
+msgstr "Verwijderde opnamen"
 
 msgid "Recordings"
-msgstr "Opnames"
+msgstr "Opnamen"
 
 msgid "Button$Deleted recordings"
-msgstr ""
+msgstr "Verwijderde Opnamen"
 
 msgid "Button$Commands"
 msgstr "Commando's"
 
 msgid "No deleted recordings"
-msgstr ""
+msgstr "Geen verwijderde opnamen"
 
 msgid "No recordings"
-msgstr ""
+msgstr "Geen opnamen"
 
 msgid "Delete recording?"
 msgstr "Opname verwijderen?"
@@ -938,19 +938,19 @@ msgid "Error while deleting recording!"
 msgstr "Fout bij verwijderen opname!"
 
 msgid "Restore recording?"
-msgstr ""
+msgstr "Herstel opname?"
 
 msgid "Error while restoring recording!"
-msgstr ""
+msgstr "Fout bij het herstellen van de opname!"
 
 msgid "Permanently delete recording?"
-msgstr ""
+msgstr "Opname definitief verwijderen?"
 
 msgid "Are you sure? This can't be undone!"
-msgstr ""
+msgstr "Weet u het zeker? Dit kan niet ongedaan worden gemaakt."
 
 msgid "Error while permanently deleting recording!"
-msgstr ""
+msgstr "Fout bij het definitief verwijderen van de opname!"
 
 msgid "Recording commands"
 msgstr "Opname commando's"
@@ -965,16 +965,16 @@ msgid "always"
 msgstr "altijd"
 
 msgid "by name"
-msgstr ""
+msgstr "op naam"
 
 msgid "by time"
-msgstr ""
+msgstr "optijd"
 
 msgid "ascending"
-msgstr ""
+msgstr "oplopend"
 
 msgid "descending"
-msgstr ""
+msgstr "aflopend"
 
 msgid "OSD"
 msgstr "OSD"
@@ -1064,10 +1064,10 @@ msgid "Setup.OSD$Always sort folders first"
 msgstr "Altijd mappen eerst sorteren"
 
 msgid "Setup.OSD$Default sort mode for recordings"
-msgstr ""
+msgstr "Standaard sorteermodus voor opnames"
 
 msgid "Setup.OSD$Sorting direction for recordings"
-msgstr ""
+msgstr "Sorteervolgorde voor opnames"
 
 msgid "Setup.OSD$Number keys for characters"
 msgstr "Nummertoetsen voor karakters"
@@ -1094,10 +1094,10 @@ msgid "Setup.EPG$EPG scan timeout (h)"
 msgstr "EPG-scan Timeout (h)"
 
 msgid "Setup.EPG$EPG scan max. channel number (0=all)"
-msgstr ""
+msgstr "Maximaal aantal kanalen voor EPG scan (0=allemaal)"
 
 msgid "Setup.EPG$EPG pause after scan"
-msgstr ""
+msgstr "Pauze na EPG scan"
 
 msgid "Setup.EPG$EPG bugfix level"
 msgstr "EPG foutcorrectieniveau"
@@ -1147,7 +1147,7 @@ msgid "add new transponders"
 msgstr "nieuwe transponders toevoegen"
 
 msgid "after rewind"
-msgstr ""
+msgstr "na terugspoelen"
 
 msgid "DVB"
 msgstr "DVB"
@@ -1263,7 +1263,7 @@ msgid " (activating)"
 msgstr " (Activeren)"
 
 msgid "@ device"
-msgstr ""
+msgstr "@ ontvanger"
 
 msgid "CAM"
 msgstr "CAM"
@@ -1296,13 +1296,13 @@ msgid "Can't reset CAM!"
 msgstr "Kan CAM niet herstarten!"
 
 msgid "no instant recording"
-msgstr ""
+msgstr "geen directe opname"
 
 msgid "confirm instant recording"
-msgstr ""
+msgstr "directe opname bevestigen"
 
 msgid "record instantly"
-msgstr ""
+msgstr "direct opnemen"
 
 msgid "do not pause live video"
 msgstr "live video niet pauzeren"
@@ -1335,10 +1335,10 @@ msgid "Setup.Recording$Default lifetime (d)"
 msgstr "Standaard levensduur (d)"
 
 msgid "Setup.Recording$Record key handling"
-msgstr ""
+msgstr "Functie van opnametoets"
 
 msgid "Setup.Recording$Pause key handling"
-msgstr "Gedrag pauze toets"
+msgstr "Functie van de pauzetoets"
 
 msgid "Setup.Recording$Pause priority"
 msgstr "Pauze prioriteit"
@@ -1347,7 +1347,7 @@ msgid "Setup.Recording$Pause lifetime (d)"
 msgstr "Pauze levensduur (d)"
 
 msgid "Setup.Recording$Use episode name"
-msgstr "Gebruik episode naam"
+msgstr "Gebruik naam van de aflevering"
 
 msgid "Setup.Recording$Use VPS"
 msgstr "VPS gebruiken"
@@ -1425,19 +1425,19 @@ msgid "Setup.Replay$Resume ID"
 msgstr "Hervattings ID"
 
 msgid "any hosts"
-msgstr ""
+msgstr "iedere host"
 
 msgid "only default host"
-msgstr ""
+msgstr "alleen standaardhost"
 
 msgid "type"
-msgstr ""
+msgstr "type"
 
 msgid "full"
-msgstr ""
+msgstr "alles"
 
 msgid "Miscellaneous"
-msgstr "Overig"
+msgstr "Overige"
 
 msgid "Setup.Miscellaneous$Min. event timeout (min)"
 msgstr "Minimale event time-out (min)"
@@ -1449,13 +1449,13 @@ msgid "Setup.Miscellaneous$SVDRP timeout (s)"
 msgstr "SVDRP Timeout (s)"
 
 msgid "Setup.Miscellaneous$SVDRP peering"
-msgstr ""
+msgstr "SVDRP-peering"
 
 msgid "Setup.Miscellaneous$SVDRP host name"
-msgstr ""
+msgstr "SVDRP-hostnaam"
 
 msgid "Setup.Miscellaneous$SVDRP default host"
-msgstr ""
+msgstr "SVDRP-standaardhost"
 
 msgid "Setup.Miscellaneous$Zap timeout (s)"
 msgstr "Zap timeout (s)"
@@ -1470,13 +1470,13 @@ msgid "Setup.Miscellaneous$Remote control repeat delta (ms)"
 msgstr "Afstandbediening herhalingsinterval (ms)"
 
 msgid "Setup.Miscellaneous$Deleted recordings retention (d)"
-msgstr ""
+msgstr "Bewaartermijn voor verwijderde opnamen (d)"
 
 msgid "Setup.Miscellaneous$Initial channel"
 msgstr "Opstartkanaal"
 
 msgid "Setup.Miscellaneous$as before"
-msgstr "zoals eerder"
+msgstr "zoals voorheen"
 
 msgid "Setup.Miscellaneous$Initial volume"
 msgstr "Opstartvolume"
@@ -1494,7 +1494,7 @@ msgid "Setup.Miscellaneous$Show channel names with source"
 msgstr "Toon kanaalnamen met bron"
 
 msgid "Setup.Miscellaneous$Open Recordings menu at last replayed"
-msgstr ""
+msgstr "Open het menu Opnamen bij de laatst afgespeelde opname"
 
 msgid "Setup.Miscellaneous$Emergency exit"
 msgstr "Nooduitgang"
@@ -1520,7 +1520,7 @@ msgstr " Stop opnemen "
 
 #. TRANSLATORS: note the leading blank!
 msgid " Deleted recordings"
-msgstr ""
+msgstr " Verwijderde opnamen"
 
 #. TRANSLATORS: note the leading blank!
 msgid " Stop replaying"
@@ -1530,7 +1530,7 @@ msgid "Button$Pause"
 msgstr "Pauze"
 
 msgid "Button$Stop"
-msgstr "Eindigen"
+msgstr "Stop"
 
 msgid "Button$Resume"
 msgstr "Hervat"
@@ -1601,7 +1601,7 @@ msgid "Button$Insert"
 msgstr "Invoegen"
 
 msgid "Button$Macro"
-msgstr ""
+msgstr "Makro"
 
 msgid "Plugin"
 msgstr "Plugin"
@@ -1610,10 +1610,10 @@ msgid "Up/Dn for new location - OK to move"
 msgstr "Gebruik Omhoog/Omlaag - daarna Ok"
 
 msgid "Primary device has no MPEG decoder, can't attach player!"
-msgstr ""
+msgstr "Primair apparaat heeft geen MPEG-decoder; speler kan niet worden gekoppeld!"
 
 msgid "Low disk space!"
-msgstr "Hardeschijf bijna vol!"
+msgstr "Weinig schijfruimte!"
 
 msgid "Regenerating index file"
 msgstr "Indexbestand wordt geregenereerd"
@@ -1655,10 +1655,10 @@ msgstr "toch opnieuw starten?"
 
 #. TRANSLATORS: note the plural/singular!
 msgid "errors"
-msgstr ""
+msgstr "fouten"
 
 msgid "error"
-msgstr ""
+msgstr "fout"
 
 #. TRANSLATORS: note the trailing blank!
 msgid "Volume "
@@ -1728,7 +1728,7 @@ msgid "Pause live video?"
 msgstr "Pauzeer live video?"
 
 msgid "Start recording?"
-msgstr ""
+msgstr "Opname starten?"
 
 msgid "Recording started"
 msgstr "Opname is gestart!"

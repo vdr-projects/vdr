@@ -10392,3 +10392,4 @@ Video Disk Recorder Revision History
 - If an SVDRP default host has been defined, but there are currently no other VDRs running,
   "Setup/Miscellaneous/SVDRP default host" now shows a string item instead of the usual list
   (reported by Markus Ehrnsperger).
+- Updated the Dutch OSD texts (thanks to Carel Willemse).
