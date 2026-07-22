@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skins.h 5.13 2026/05/30 12:27:12 kls Exp $
+ * $Id: skins.h 5.14 2026/07/22 10:56:34 kls Exp $
  */
 
 #ifndef __SKINS_H
@@ -309,7 +309,7 @@ public:
        ///< Returns a pointer to the font which is used to display text with SetText().
        ///< The parameter FixedFont has the same meaning as in SetText(). The default
        ///< implementation returns the font defined in the setup.
-       ///< The returned pointer is valid a long as the instance of cSkinDisplayMenu
+       ///< The returned pointer is valid as long as the instance of cSkinDisplayMenu
        ///< exists.
   };
 
