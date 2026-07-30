@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 5.7 2026/07/22 10:49:14 kls Exp $
+ * $Id: menuitems.c 5.8 2026/07/30 09:00:52 kls Exp $
  */
 
 #include "menuitems.h"
@@ -444,7 +444,7 @@ void cMenuEditStrItem::LeaveEditMode(bool SaveValue)
      if (SaveValue) {
         Utf8FromArray(valueUtf8, value, length);
         if (!keepSpace)
-           stripspace(value);
+           strtrim(value, true);
         }
      lengthUtf8 = 0;
      delete[] valueUtf8;

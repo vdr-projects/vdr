@@ -3446,6 +3446,7 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for reporting a wrong total error count in case of several edited sequences that contain errors
  for unifying the German translations of 'folder'
  for reporting missing 'folders.conf' in vdr.1
+ for suggesting to remove leading blanks from folder names
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a
