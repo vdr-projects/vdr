@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.21 2026/05/25 11:28:07 kls Exp $
+ * $Id: tools.c 5.22 2026/07/30 08:53:18 kls Exp $
  */
 
 #include "tools.h"
@@ -236,6 +236,41 @@ char *stripspace(char *s)
             break;
          *p = 0;
          }
+     }
+  return s;
+}
+
+char *strtrim(char *s, bool Shift)
+{
+  if (s && *s) {
+     char *b = NULL;
+     char *e = NULL;
+     char *p = s;
+     while (true) {
+           if (!*p) {
+              if (e)
+                 *e = 0;
+              else
+                 e = p;
+              if (b && b != s) {
+                 if (Shift)
+                    memmove(s, b, e - b + 1);
+                 else
+                    s = b;
+                 }
+              break;
+              }
+           else if ((uchar)*p > ' ') {
+              if (!b)
+                 b = p;
+              e = NULL;
+              }
+           else {
+              if (!e)
+                 e = p;
+              }
+           p++;
+           }
      }
   return s;
 }

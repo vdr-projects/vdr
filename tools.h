@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.17 2026/07/19 16:26:12 kls Exp $
+ * $Id: tools.h 5.18 2026/07/30 08:53:18 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -250,6 +250,10 @@ inline char *skipspace(const char *s)
   return (char *)s;
 }
 char *stripspace(char *s);
+char *strtrim(char *s, bool Shift = false);
+     ///< Returns a pointer to the first non white space character in s.
+     ///< If s contains trailing white space, it is stripped by inserting a null character.
+     ///< If Shift is true and there is leading white space, the result is shifted towards s.
 char *compactspace(char *s);
 char *compactchars(char *s, char c); ///< removes all occurrences of 'c' from the beginning an end of 's' and replaces sequences of multiple 'c's with a single 'c'.
 cString strescape(const char *s, const char *chars);

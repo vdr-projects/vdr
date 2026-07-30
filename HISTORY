@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-07-24:
+2026-07-30:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10394,3 +10394,4 @@ Video Disk Recorder Revision History
   (reported by Markus Ehrnsperger).
 - Updated the Dutch OSD texts (thanks to Carel Willemse).
 - Added missing 'folders.conf' to vdr.1 (reported by Stefan Hofmann).
+- Added the new function strtrim().
