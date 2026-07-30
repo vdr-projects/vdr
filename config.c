@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 5.4 2026/02/09 22:30:51 kls Exp $
+ * $Id: config.c 5.5 2026/07/30 09:10:11 kls Exp $
  */
 
 #include "config.h"
@@ -190,7 +190,7 @@ bool cNestedItemList::Parse(FILE *f, cList<cNestedItem> *List, int &Line)
         char *p = strchr(s, '#');
         if (p)
            *p = 0;
-        s = skipspace(stripspace(s));
+        s = strtrim(s);
         if (!isempty(s)) {
            p = s + strlen(s) - 1;
            if (*p == '{') {

@@ -10397,3 +10397,4 @@ Video Disk Recorder Revision History
 - Added the new function strtrim().
 - Now removing leading and trailing blanks from all string input fields (except the pattern
   in pattern timers) (following a suggestion by Stefan Hofmann).
+- Replaced all occurrences of stripspace(skipspace()) (and vice versa) with strtrim().

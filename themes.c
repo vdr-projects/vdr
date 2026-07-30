@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: themes.c 5.2 2026/01/19 11:09:43 kls Exp $
+ * $Id: themes.c 5.3 2026/07/30 09:10:11 kls Exp $
  */
 
 #include "themes.h"
@@ -87,14 +87,14 @@ bool cTheme::Load(const char *FileName, bool OnlyDescriptions)
            char *p = strchr(s, '#');
            if (p)
               *p = 0;
-           s = stripspace(skipspace(s));
+           s = strtrim(s);
            if (!isempty(s)) {
               char *n = s;
               char *v = strchr(s, '=');
               if (v) {
                  *v++ = 0;
-                 n = stripspace(skipspace(n));
-                 v = stripspace(skipspace(v));
+                 n = strtrim(n);
+                 v = strtrim(v);
                  if (strstr(n, "Description") == n) {
                     int lang = 0;
                     char *l = strchr(n, '.');

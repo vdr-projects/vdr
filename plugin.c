@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 5.1 2025/02/12 22:22:20 kls Exp $
+ * $Id: plugin.c 5.2 2026/07/30 09:10:11 kls Exp $
  */
 
 #define MUTE_DEPRECATED_MAINTHREADHOOK
@@ -245,7 +245,7 @@ bool cDll::Load(bool Log)
      if (plugin && args) {
         int argc = 0;
         char *argv[MAXPLUGINARGS];
-        char *p = skipspace(stripspace(args));
+        char *p = strtrim(args);
         char *q = NULL;
         bool done = false;
         while (!done) {

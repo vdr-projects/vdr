@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.22 2026/07/30 08:53:18 kls Exp $
+ * $Id: tools.c 5.23 2026/07/30 09:10:11 kls Exp $
  */
 
 #include "tools.h"
@@ -278,7 +278,7 @@ char *strtrim(char *s, bool Shift)
 char *compactspace(char *s)
 {
   if (s && *s) {
-     char *t = stripspace(skipspace(s));
+     char *t = strtrim(s, true);
      char *p = t;
      while (p && *p) {
            char *q = skipspace(p);
@@ -286,8 +286,6 @@ char *compactspace(char *s)
               memmove(p + 1, q, strlen(q) + 1);
            p++;
            }
-     if (t != s)
-        memmove(s, t, strlen(t) + 1);
      }
   return s;
 }

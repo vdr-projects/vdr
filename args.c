@@ -6,7 +6,7 @@
  *
  * Original version written by Lars Hanisch <dvb@flensrocker.de>.
  *
- * $Id: args.c 1.1 2014/04/14 12:02:38 kls Exp $
+ * $Id: args.c 5.1 2026/07/30 09:10:11 kls Exp $
  */
 
 #include "args.h"
@@ -64,7 +64,7 @@ bool cArgs::ReadDirectory(const char *Directory)
          cReadLine ReadLine;
          while ((s = ReadLine.Read(f)) != NULL) {
                line++;
-               s = stripspace(skipspace(s));
+               s = strtrim(s);
                if (!isempty(s) && (s[0] != '#')) {
                   if (startswith(s, "[") && endswith(s, "]")) {
                      s[strlen(s) - 1] = 0;
