@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-07-30:
+2026-07-31:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10398,3 +10398,4 @@ Video Disk Recorder Revision History
 - Now removing leading and trailing blanks from all string input fields (except the pattern
   in pattern timers) (following a suggestion by Stefan Hofmann).
 - Replaced all occurrences of stripspace(skipspace()) (and vice versa) with strtrim().
+- Removed the fixed buffer length in syslog_with_tid().

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.23 2026/07/30 09:10:11 kls Exp $
+ * $Id: tools.c 5.24 2026/07/31 08:50:19 kls Exp $
  */
 
 #include "tools.h"
@@ -30,20 +30,13 @@ extern "C" {
 
 int SysLogLevel = 3;
 
-#define MAXSYSLOGBUF 256
-
 void syslog_with_tid(int priority, const char *format, ...)
 {
   va_list ap;
-  char fmt[MAXSYSLOGBUF];
-  int len = snprintf(fmt, sizeof(fmt), "[%d] %s", cThread::ThreadId(), format);
   va_start(ap, format);
-  if (len > 0 && len < int(sizeof(fmt)))
-     format = fmt;
-  else
-     syslog(priority, "ERROR: the following VDR message has no thread id! Format string too long, use a shorter one (max is %d)", MAXSYSLOGBUF - 14); // 10 (max int) + 4 (brackets, blank and terminating 0)
-  vsyslog(priority, format, ap);
+  cString msg = cString::vsprintf(format, ap);
   va_end(ap);
+  syslog(priority, "[%d] %s", cThread::ThreadId(), *msg);
 }
 
 int BCD2INT(int x)
