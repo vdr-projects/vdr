@@ -4,9 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.18 2026/07/21 17:24:13 kls Exp $
+ * $Id: device.c 5.19 2026/08/16 09:45:03 kls Exp $
  */
 
+#define MUTE_DEPRECATED_FLUSH
 #include "device.h"
 #include <errno.h>
 #include <math.h>
@@ -1447,7 +1448,12 @@ bool cDevice::Poll(cPoller &Poller, int TimeoutMs)
 
 bool cDevice::Flush(int TimeoutMs)
 {
-  return true;
+  return false;
+}
+
+bool cDevice::Drain(void)
+{
+  return Flush(10);
 }
 
 int cDevice::PlayVideo(const uchar *Data, int Length)

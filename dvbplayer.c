@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.16 2026/05/30 12:27:12 kls Exp $
+ * $Id: dvbplayer.c 5.17 2026/08/16 09:45:03 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -263,7 +263,6 @@ private:
   bool readIndependent;
   cFrame *readFrame;
   cFrame *playFrame;
-  cFrame *dropFrame;
   bool resyncAfterPause;
   void TrickSpeed(int Increment);
   void Empty(void);
@@ -319,7 +318,6 @@ cDvbPlayer::cDvbPlayer(const char *FileName, bool PauseLive)
   readIndependent = false;
   readFrame = NULL;
   playFrame = NULL;
-  dropFrame = NULL;
   resyncAfterPause = false;
   isyslog("replay %s", FileName);
   fileName = new cFileName(FileName, false, false, isPesRecording);
@@ -385,7 +383,6 @@ void cDvbPlayer::Empty(void)
   delete readFrame; // might not have been stored in the buffer in Action()
   readFrame = NULL;
   playFrame = NULL;
-  dropFrame = NULL;
   ringBuffer->Clear();
   ptsIndex.Clear();
   DeviceClear();
@@ -500,7 +497,7 @@ void cDvbPlayer::Action(void)
            cPoller Poller;
            DevicePoll(Poller, 10);
            Sleep = false;
-           if (playMode == pmStill || playMode == pmPause)
+           if (playMode == pmStill || playMode == pmPause || eof)
               cCondWait::SleepMs(3);
            }
         {
@@ -630,13 +627,6 @@ void cDvbPlayer::Action(void)
              continue;
              }
 
-          if (dropFrame) {
-             if (!eof || (playDir != pdForward && dropFrame->Index() > 0) || (playDir == pdForward && dropFrame->Index() < readIndex)) {
-                ringBuffer->Drop(dropFrame); // the very first and last frame are continuously repeated to flush data through the device
-                dropFrame = NULL;
-                }
-             }
-
           // Get the next frame from the buffer:
 
           if (!playFrame) {
@@ -648,6 +638,7 @@ void cDvbPlayer::Action(void)
           // Play the frame:
 
           if (playFrame) {
+             eof = false;
              if (!p) {
                 p = playFrame->Data();
                 pc = playFrame->Count();
@@ -667,7 +658,7 @@ void cDvbPlayer::Action(void)
                 }
              if (p) {
                 int w;
-                bool VideoOnly = (dropFrame || playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward)) && DeviceIsPlayingVideo();
+                bool VideoOnly = playMode != pmPlay && !(playMode == pmSlow && playDir == pdForward) && DeviceIsPlayingVideo();
                 if (isPesRecording)
                    w = PlayPes(p, pc, VideoOnly);
                 else
@@ -682,7 +673,7 @@ void cDvbPlayer::Action(void)
                    Sleep = true;
                 }
              if (pc <= 0) {
-                dropFrame = playFrame;
+                ringBuffer->Drop(playFrame);
                 playFrame = NULL;
                 p = NULL;
                 }
@@ -706,15 +697,17 @@ void cDvbPlayer::Action(void)
           if (eof || SwitchToPlayFrame) {
              bool SwitchToPlay = false;
              uint32_t Stc = DeviceGetSTC();
-             if (Stc != LastStc || playMode == pmPause)
+             if (playMode == pmPause)
                 StuckAtEof = 0;
-             else if (!StuckAtEof)
-                StuckAtEof = time(NULL);
-             else if (time(NULL) - StuckAtEof > MAXSTUCKATEOF) {
+             else if (eof && DeviceDrain() || StuckAtEof && time(NULL) - StuckAtEof > MAXSTUCKATEOF) {
                 if (playDir == pdForward)
                    break; // automatically stop at end of recording
                 SwitchToPlay = true;
                 }
+             else if (Stc != LastStc)
+                StuckAtEof = 0;
+             else if (!StuckAtEof)
+                StuckAtEof = time(NULL);
              LastStc = Stc;
              int Index = ptsIndex.FindIndex(Stc, playMode == pmStill);
              if (playDir == pdForward && !SwitchToPlayFrame) {
@@ -724,8 +717,10 @@ void cDvbPlayer::Action(void)
              else if (Index <= 0 || SwitchToPlayFrame && Index >= SwitchToPlayFrame)
                 SwitchToPlay = true;
              if (SwitchToPlay) {
-                if (!SwitchToPlayFrame)
+                if (!SwitchToPlayFrame) {
                    Empty();
+                   StuckAtEof = 0;
+                   }
                 DevicePlay();
                 playMode = pmPlay;
                 playDir = pdForward;

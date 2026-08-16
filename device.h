@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 5.10 2026/05/30 12:27:12 kls Exp $
+ * $Id: device.h 5.11 2026/08/16 09:45:03 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -798,12 +798,25 @@ public:
        ///< Poller is ready for further action.
        ///< If TimeoutMs is not zero, the device will wait up to the given number
        ///< of milliseconds before returning in case it can't accept any data.
+#ifndef MUTE_DEPRECATED_FLUSH
+  [[deprecated("use Drain() instead")]]
+#endif
   virtual bool Flush(int TimeoutMs = 0);
-       ///< Returns true if the device's output buffers are empty, i. e. any
-       ///< data which was buffered so far has been processed.
-       ///< If TimeoutMs is not zero, the device will wait up to the given
-       ///< number of milliseconds before returning in case there is still
-       ///< data in the buffers.
+  virtual bool Drain(void);
+       ///< Tells the device that the last data of the current stream has been
+       ///< delivered and no more will follow, and asks whether it has finished
+       ///< playing. A player calls this function repeatedly once its buffer has
+       ///< run empty at the end of the stream. The device shall play out all data
+       ///< it still holds in its buffers and decoders (data may be held back, for
+       ///< instance, because of frame reordering), without repeating or discarding
+       ///< anything, and shall keep GetSTC() advancing until the last frame has
+       ///< actually been played out.
+       ///< Returns true once everything has been played out and replay can be ended.
+       ///< The first call puts the device into "draining" state, calls to Clear()
+       ///< and SetPlayMode() cancel it.
+       ///< The default implementation returns false, so that a device which
+       ///< doesn't implement this function still gets a chance to play out its
+       ///< buffers until the player's timeout expires.
   virtual int PlayPes(const uchar *Data, int Length, bool VideoOnly = false);
        ///< Plays all valid PES packets in Data with the given Length.
        ///< If Data is NULL any leftover data from a previous call will be

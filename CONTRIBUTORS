@@ -3912,6 +3912,8 @@ Andreas Baierl <post@andreasbaierl.de>
  for fixing a possible loss of audio packets when switching from Pause to Play
  for reporting that pausing replay at the last editing mark doesn't actually reach
  the mark
+ for helping to make cDvbPlayer no longer repeat the last frame when hitting the
+ beginning or end of a recording
 
 Fabian Wolter <vdr-ml@fabian-wolter.de>
  for fixing a memory leak in cMark::Parse()
@@ -3924,3 +3926,5 @@ Dirk Nehring <dnehring@gmx.net>
  for removing an unused variable from cResumeFile::Read()
  for caching the thread id in cThread::ThreadId()
  for moving locking mutexReceiver outside the loop in cDevice::Action()
+ for helping to make cDvbPlayer no longer repeat the last frame when hitting the
+ beginning or end of a recording

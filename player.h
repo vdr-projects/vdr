@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 5.8 2025/03/28 22:49:17 kls Exp $
+ * $Id: player.h 5.9 2026/08/16 09:45:03 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -24,7 +24,9 @@ protected:
   bool DeviceSetCurrentAudioTrack(eTrackType Type) { return device ? device->SetCurrentAudioTrack(Type) : false; }
   bool DeviceSetCurrentSubtitleTrack(eTrackType Type) { return device ? device->SetCurrentSubtitleTrack(Type) : false; }
   bool DevicePoll(cPoller &Poller, int TimeoutMs = 0) { return device ? device->Poll(Poller, TimeoutMs) : false; }
-  bool DeviceFlush(int TimeoutMs = 0) { return device ? device->Flush(TimeoutMs) : true; }
+  [[deprecated("use DeviceDrain() instead")]]
+  bool DeviceFlush(int TimeoutMs = 0) { return DeviceDrain(); }
+  bool DeviceDrain(void) { return device ? device->Drain() : false; }
   bool DeviceHasIBPTrickSpeed(void) { return device ? device->HasIBPTrickSpeed() : false; }
   bool DeviceIsPlayingVideo(void) { return device ? device->IsPlayingVideo() : false; }
   void DeviceTrickSpeed(int Speed, bool Forward) { if (device) device->TrickSpeed(Speed, Forward); }
