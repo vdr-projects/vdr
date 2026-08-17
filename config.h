@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.h 5.46 2026/07/21 10:05:10 kls Exp $
+ * $Id: config.h 5.47 2026/08/17 11:15:30 kls Exp $
  */
 
 #ifndef __CONFIG_H
@@ -331,7 +331,10 @@ public:
   int VideoDisplayFormat;
   int VideoFormat;
   int UpdateChannels;
-  int UseDolbyDigital;
+#ifndef MUTE_DEPRECATED_USEDOLBYDIGITAL
+  [[deprecated("always true, don't use anymore")]]
+#endif
+  int UseDolbyDigital = 1;
   int ChannelInfoPos;
   int ChannelInfoTime;
   double OSDLeftP, OSDTopP, OSDWidthP, OSDHeightP;

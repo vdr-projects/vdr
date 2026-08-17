@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.8.2\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-06-01 20:54+0200\n"
+"POT-Creation-Date: 2026-08-17 13:07+0200\n"
 "PO-Revision-Date: 2013-03-04 14:52+0800\n"
 "Last-Translator: NFVDR <nfvdr@live.com>\n"
 "Language-Team: Chinese (simplified) <nfvdr@live.com>\n"
@@ -1165,9 +1165,6 @@ msgstr "视频格式"
 
 msgid "Setup.DVB$Video display format"
 msgstr "视频显示格式"
-
-msgid "Setup.DVB$Use Dolby Digital"
-msgstr "杜比-数码-使用"
 
 msgid "Setup.DVB$Update channels"
 msgstr "更新频道"

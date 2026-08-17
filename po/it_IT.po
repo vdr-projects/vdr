@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.8.2\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-06-01 20:54+0200\n"
+"POT-Creation-Date: 2026-08-17 13:07+0200\n"
 "PO-Revision-Date: 2026-03-21 18:00+0100\n"
 "Last-Translator: Diego Pierotto <vdr-italian@tiscali.it>\n"
 "Language-Team: Italian <vdr@linuxtv.org>\n"
@@ -1169,9 +1169,6 @@ msgstr "Formato video"
 
 msgid "Setup.DVB$Video display format"
 msgstr "Formato visualizzazione video"
-
-msgid "Setup.DVB$Use Dolby Digital"
-msgstr "Dolby Digital"
 
 msgid "Setup.DVB$Update channels"
 msgstr "Aggiornamento canali"

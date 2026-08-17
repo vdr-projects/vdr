@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-08-16:
+2026-08-17:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10408,3 +10408,5 @@ Video Disk Recorder Revision History
     timeout to kick in. Therefore the default return value of cDevice::Flush() has also been
     changed  to false.
   (with help from Andreas Baierl and Dirk Nehring).
+- Removed the option "Setup/DVB/Use Dolby Digital" (suggested by Markus Ehrnsperger). Dolby Digital
+  tracks now always appear in the "Audio" menu.

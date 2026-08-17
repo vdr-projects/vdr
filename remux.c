@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.28 2026/07/21 10:12:21 kls Exp $
+ * $Id: remux.c 5.29 2026/08/17 11:15:30 kls Exp $
  */
 
 #include "remux.h"
@@ -850,7 +850,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                             dpids[NumDpids] = dpid;
                             dtypes[NumDpids] = dtype;
                             strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
-                            if (updatePrimaryDevice && Setup.UseDolbyDigital)
+                            if (updatePrimaryDevice)
                                cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, dpid, lang);
                             NumDpids++;
                             dpids[NumDpids] = 0;
@@ -884,7 +884,7 @@ void cPatPmtParser::ParsePmt(const uchar *Data, int Length)
                          dpids[NumDpids] = stream.getPid();
                          dtypes[NumDpids] = SI::AC3DescriptorTag;
                          strn0cpy(dlangs[NumDpids], lang, sizeof(dlangs[NumDpids]));
-                         if (updatePrimaryDevice && Setup.UseDolbyDigital)
+                         if (updatePrimaryDevice)
                             cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, NumDpids, stream.getPid(), lang);
                          NumDpids++;
                          dpids[NumDpids] = 0;

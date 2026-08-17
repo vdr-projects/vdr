@@ -4,9 +4,10 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 5.5 2026/07/30 09:10:11 kls Exp $
+ * $Id: config.c 5.6 2026/08/17 11:15:30 kls Exp $
  */
 
+#define MUTE_DEPRECATED_USEDOLBYDIGITAL
 #include "config.h"
 #include <ctype.h>
 #include <stdlib.h>
@@ -444,7 +445,6 @@ cSetup::cSetup(void)
   VideoDisplayFormat = 1;
   VideoFormat = 0;
   UpdateChannels = 5;
-  UseDolbyDigital = 1;
   ChannelInfoPos = 0;
   ChannelInfoTime = 5;
   OSDLeftP = 0.08;
@@ -676,7 +676,7 @@ bool cSetup::Parse(const char *Name, const char *Value)
   else if (!strcasecmp(Name, "VideoDisplayFormat"))  VideoDisplayFormat = atoi(Value);
   else if (!strcasecmp(Name, "VideoFormat"))         VideoFormat        = atoi(Value);
   else if (!strcasecmp(Name, "UpdateChannels"))      UpdateChannels     = atoi(Value);
-  else if (!strcasecmp(Name, "UseDolbyDigital"))     UseDolbyDigital    = atoi(Value);
+  else if (!strcasecmp(Name, "UseDolbyDigital"))     ; // removed
   else if (!strcasecmp(Name, "ChannelInfoPos"))      ChannelInfoPos     = atoi(Value);
   else if (!strcasecmp(Name, "ChannelInfoTime"))     ChannelInfoTime    = atoi(Value);
   else if (!strcasecmp(Name, "OSDLeftP"))            OSDLeftP           = atod(Value);
@@ -812,7 +812,6 @@ bool cSetup::Save(void)
   Store("VideoDisplayFormat", VideoDisplayFormat);
   Store("VideoFormat",        VideoFormat);
   Store("UpdateChannels",     UpdateChannels);
-  Store("UseDolbyDigital",    UseDolbyDigital);
   Store("ChannelInfoPos",     ChannelInfoPos);
   Store("ChannelInfoTime",    ChannelInfoTime);
   Store("OSDLeftP",           OSDLeftP);

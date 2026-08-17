@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.19 2026/08/16 09:45:03 kls Exp $
+ * $Id: device.c 5.20 2026/08/17 11:15:30 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -953,10 +953,8 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            ClrAvailableTracks();
            for (int i = 0; i < MAXAPIDS; i++)
                SetAvailableTrack(ttAudio, i, Channel->Apid(i), Channel->Alang(i));
-           if (Setup.UseDolbyDigital) {
-              for (int i = 0; i < MAXDPIDS; i++)
-                  SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
-              }
+           for (int i = 0; i < MAXDPIDS; i++)
+               SetAvailableTrack(ttDolby, i, Channel->Dpid(i), Channel->Dlang(i));
            for (int i = 0; i < MAXSPIDS; i++)
                SetAvailableTrack(ttSubtitle, i, Channel->Spid(i), Channel->Slang(i));
            if (!NeedsTransferMode)
@@ -1527,13 +1525,11 @@ pre_1_3_19_PrivateStreamDetected:
                          w = PlaySubtitle(Start, d);
                       break;
                  case 0x80: // AC3 & DTS
-                      if (Setup.UseDolbyDigital) {
-                         SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
-                         if ((!VideoOnly || HasIBPTrickSpeed()) && SubStreamId == availableTracks[currentAudioTrack].id) {
-                            w = PlayAudio(Start, d, SubStreamId);
-                            if (FirstLoop)
-                               Audios.PlayAudio(Data, Length, SubStreamId);
-                            }
+                      SetAvailableTrack(ttDolby, SubStreamIndex, SubStreamId);
+                      if ((!VideoOnly || HasIBPTrickSpeed()) && SubStreamId == availableTracks[currentAudioTrack].id) {
+                         w = PlayAudio(Start, d, SubStreamId);
+                         if (FirstLoop)
+                            Audios.PlayAudio(Data, Length, SubStreamId);
                          }
                       break;
                  case 0xA0: // LPCM

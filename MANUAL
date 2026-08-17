@@ -947,11 +947,6 @@ VDR version 2.6.6 added '/' to this list.
                          This option is only available if "Video format" is set to
                          4:3. Applies only to SD output devices.
 
-  Use Dolby Digital = yes
-                         Controls whether Dolby Digital tracks appear in the "Audio"
-                         menu. This is useful if you don't have the equipment to
-                         replay Dolby Digital audio.
-
   Update channels = 5    Controls the automatic channel update function. '0' means
                          no update, '1' will only update channel names, '2' will
                          only update PIDs, '3' will update channel names and PIDs,

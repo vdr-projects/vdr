@@ -12,7 +12,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VDR 2.8.2\n"
 "Report-Msgid-Bugs-To: <vdr-bugs@tvdr.de>\n"
-"POT-Creation-Date: 2026-06-01 20:54+0200\n"
+"POT-Creation-Date: 2026-08-17 13:07+0200\n"
 "PO-Revision-Date: 2007-08-15 15:52+0200\n"
 "Last-Translator: Marko Mäkelä <marko.makela@iki.fi>\n"
 "Language-Team: Finnish <vdr@linuxtv.org>\n"
@@ -1168,9 +1168,6 @@ msgstr "Kuvasuhde"
 
 msgid "Setup.DVB$Video display format"
 msgstr "Näyttömuoto"
-
-msgid "Setup.DVB$Use Dolby Digital"
-msgstr "Käytä Dolby Digital -ääntä"
 
 msgid "Setup.DVB$Update channels"
 msgstr "Päivitä kanavat"
