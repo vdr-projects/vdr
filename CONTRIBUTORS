@@ -3931,3 +3931,4 @@ Dirk Nehring <dnehring@gmx.net>
  beginning or end of a recording
  for reporting non-ASCII characters in UPDATE-1.4.0 and channels.conf.*
  for fixing checking whether the character table is known and "single byte"
+ for fixing the charset setting in PLUGINS/src/hello/po/fr_FR.po

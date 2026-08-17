@@ -103,3 +103,7 @@ VDR Plugin 'hello' Revision History
 2021-12-27: Version 2.6.0
 
 - Official release.
+
+2026-08-17:
+
+- Fixed the charset setting in po/fr_FR.po (thanks to Dirk Nehring).
