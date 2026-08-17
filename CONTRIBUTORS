@@ -3929,3 +3929,4 @@ Dirk Nehring <dnehring@gmx.net>
  for moving locking mutexReceiver outside the loop in cDevice::Action()
  for helping to make cDvbPlayer no longer repeat the last frame when hitting the
  beginning or end of a recording
+ for reporting non-ASCII characters in UPDATE-1.4.0 and channels.conf.*

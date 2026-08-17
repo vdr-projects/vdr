@@ -54,7 +54,7 @@ Skins:
 Remote control:
 
 - Pressing the "Play" key in live viewing mode now resumes a previous replay
-  session (thanks to Mirko Dölle).
+  session.
 - The new "Info" key brings up information on the currently viewed programme
   or recording.
 - In string entry fields (like, e.g., the file name of a recording) the characters

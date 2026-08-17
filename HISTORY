@@ -10410,3 +10410,4 @@ Video Disk Recorder Revision History
   (with help from Andreas Baierl and Dirk Nehring).
 - Removed the option "Setup/DVB/Use Dolby Digital" (suggested by Markus Ehrnsperger). Dolby Digital
   tracks now always appear in the "Audio" menu.
+- Removed non-ASCII characters from UPDATE-1.4.0 and channels.conf.* (reported by Dirk Nehring).
