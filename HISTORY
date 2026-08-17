@@ -10413,3 +10413,4 @@ Video Disk Recorder Revision History
 - Removed non-ASCII characters from UPDATE-1.4.0 and channels.conf.* (reported by Dirk Nehring).
 - Fixed checking whether the character table is known and "single byte" (thanks to Dirk Nehring).
 - Fixed the charset setting in PLUGINS/src/hello/po/fr_FR.po (thanks to Dirk Nehring).
+- Replaced non-ASCII characters in libsi/gendescr with their hex codes (reported by Dirk Nehring).
