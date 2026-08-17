@@ -6,7 +6,7 @@
  *   the Free Software Foundation; either version 2 of the License, or     *
  *   (at your option) any later version.                                   *
  *                                                                         *
- *   $Id: si.c 4.3 2020/12/19 14:41:41 kls Exp $
+ *   $Id: si.c 5.1 2026/08/17 12:31:52 kls Exp $
  *                                                                         *
  ***************************************************************************/
 
@@ -342,7 +342,7 @@ bool SetSystemCharacterTable(const char *CharacterTable) {
    SystemCharacterTableIsSingleByte = true;
    if (SystemCharacterTable) {
       // Check whether the character table is known and "single byte":
-      char a[] = "ä";
+      char a[] = "\xE4"; // "a umlaut" (Latin Small Letter A with Diaeresis) as a single ISO-8859-1 byte, independent of this file's encoding
       char *pa = a;
       char b[10];
       char *pb = b;

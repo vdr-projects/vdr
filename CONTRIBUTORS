@@ -3930,3 +3930,4 @@ Dirk Nehring <dnehring@gmx.net>
  for helping to make cDvbPlayer no longer repeat the last frame when hitting the
  beginning or end of a recording
  for reporting non-ASCII characters in UPDATE-1.4.0 and channels.conf.*
+ for fixing checking whether the character table is known and "single byte"
