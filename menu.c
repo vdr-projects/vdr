@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.63 2026/08/17 11:15:30 kls Exp $
+ * $Id: menu.c 5.64 2026/08/18 09:19:51 kls Exp $
  */
 
 #include "menu.h"
@@ -2750,15 +2750,17 @@ void cMenuRecordingEdit::SetHelpKeys(void)
   buttonDeleteMarks = NULL;
   actionCancel = NULL;
   doCut = NULL;
-  if ((recordingIsInUse & ruCut) != 0)
-     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel cutting") : tr("Button$Stop cutting");
-  else if ((recordingIsInUse & ruMove) != 0)
-     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel moving") : tr("Button$Stop moving");
-  else if ((recordingIsInUse & ruCopy) != 0)
-     buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel copying") : tr("Button$Stop copying");
-  else if (recording->HasMarks()) {
-     buttonAction = doCut = tr("Button$Cut");
-     buttonDeleteMarks = tr("Button$Delete marks");
+  if ((recordingIsInUse & ruDst) == 0) {
+     if ((recordingIsInUse & ruCut) != 0)
+        buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel cutting") : tr("Button$Stop cutting");
+     else if ((recordingIsInUse & ruMove) != 0)
+        buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel moving") : tr("Button$Stop moving");
+     else if ((recordingIsInUse & ruCopy) != 0)
+        buttonAction = actionCancel = ((recordingIsInUse & ruPending) != 0) ? tr("Button$Cancel copying") : tr("Button$Stop copying");
+     else if (recording->HasMarks()) {
+        buttonAction = doCut = tr("Button$Cut");
+        buttonDeleteMarks = tr("Button$Delete marks");
+        }
      }
   SetHelp(buttonFolder, buttonAction, buttonDeleteMarks);
 }

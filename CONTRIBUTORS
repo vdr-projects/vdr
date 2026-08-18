@@ -3448,6 +3448,8 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  for unifying the German translations of 'folder'
  for reporting missing 'folders.conf' in vdr.1
  for suggesting to remove leading blanks from folder names
+ for suggesting to make the "Edit recording" menu no longer show actions if this is the
+ destination of an ongoing cut, move or copy process
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a
