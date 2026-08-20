@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.31 2026/07/20 08:25:33 kls Exp $
+ * $Id: vdr.c 5.32 2026/08/20 19:51:41 kls Exp $
  */
 
 #include <getopt.h>
@@ -210,6 +210,44 @@ static void Watchdog(int signum)
     default: _exit(1); // no more mister nice guy
     }
 }
+
+// --- cSpinUpDisk -----------------------------------------------------------
+
+class cSpinUpDisk : public cThread {
+private:
+  static time_t lastSpinUpDiskCheck;
+  static cSpinUpDisk spinUpDisk;
+  virtual void Action(void) override { SpinUpDisk(cVideoDirectory::Name()); }
+  cSpinUpDisk(void): cThread("spin up disk") {}
+public:
+  static void Check(time_t Now);
+  };
+
+time_t cSpinUpDisk::lastSpinUpDiskCheck = 0;
+cSpinUpDisk cSpinUpDisk::spinUpDisk;
+
+#define SPINUPDISK_TIME 60 // seconds between checks
+
+void cSpinUpDisk::Check(time_t Now)
+{
+  if (Now - lastSpinUpDiskCheck >= SPINUPDISK_TIME) {
+     lastSpinUpDiskCheck = Now;
+     if (!spinUpDisk.Active()) {
+        int Delta = -1;
+        {
+          LOCK_TIMERS_READ;
+          if (const cTimer *Timer = Timers->GetNextActiveTimer())
+             Delta = Timer->StartTime() - Now;
+        }
+        if (Delta > 0 && Delta <= 2 * SPINUPDISK_TIME) { // 2* to make sure we check at least SPINUPDISK_TIME before timer start
+           spinUpDisk.Start();
+           lastSpinUpDiskCheck += Delta; // to avoid double checks for the same timer start
+           }
+        }
+     }
+}
+
+// ---
 
 int main(int argc, char *argv[])
 {
@@ -1112,6 +1150,8 @@ int main(int argc, char *argv[])
            }
         if (Now - LastChannelChanged >= Setup.ZapTimeout && LastChannel != PreviousChannel[PreviousChannelIndex])
            PreviousChannel[PreviousChannelIndex ^= 1] = LastChannel;
+        // Spin up disk:
+        cSpinUpDisk::Check(Now);
         {
           // Timers and Recordings:
           static cStateKey TimersStateKey;
