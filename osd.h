@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 5.4 2026/03/12 10:44:34 kls Exp $
+ * $Id: osd.h 5.5 2026/08/21 07:25:58 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -837,7 +837,7 @@ public:
        ///< This may be useful for plugins that determine the scaling of the
        ///< video image and need to scale the OSD accordingly to fit on the
        ///< screen.
-  static int IsOpen(void) { return Osds.Size() && Osds[0]->level == OSD_LEVEL_DEFAULT; }
+  static int IsOpen(void);
        ///< Returns true if there is currently a level 0 OSD open.
   bool IsTrueColor(void) const { return isTrueColor; }
        ///< Returns 'true' if this is a true color OSD (providing full 32 bit color

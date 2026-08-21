@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-08-20:
+2026-08-21:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10417,3 +10417,4 @@ Video Disk Recorder Revision History
 - The "Edit recording" menu no longer shows actions if this is the destination of an ongoing cut,
   move or copy process (suggested by Stefan Hofmann).
 - The disk now spins up about 60 seconds before a timer starts (requested by Markus Ehrnsperger).
+- Added missing locking to cOsd::IsOpen() (thanks to Dirk Nehring).

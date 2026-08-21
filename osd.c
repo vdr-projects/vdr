@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 5.2 2024/01/18 12:04:57 kls Exp $
+ * $Id: osd.c 5.3 2026/08/21 07:25:58 kls Exp $
  */
 
 #include "osd.h"
@@ -1954,6 +1954,14 @@ void cOsd::SetOsdPosition(int Left, int Top, int Width, int Height)
   osdTop = Top;
   osdWidth = constrain(Width, MINOSDWIDTH, MAXOSDWIDTH);
   osdHeight = constrain(Height, MINOSDHEIGHT, MAXOSDHEIGHT);
+}
+
+int cOsd::IsOpen(void)
+{
+  // Must hold the mutex: subtitle converters create and delete OSDs from their
+  // own threads, so an unlocked Osds[0] here can dereference a deleted cOsd.
+  cMutexLock MutexLock(&mutex);
+  return Osds.Size() && Osds[0]->level == OSD_LEVEL_DEFAULT;
 }
 
 void cOsd::SetAntiAliasGranularity(uint FixedColors, uint BlendColors)
