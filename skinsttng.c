@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: skinsttng.c 5.9 2026/08/21 09:28:14 kls Exp $
+ * $Id: skinsttng.c 5.10 2026/08/21 09:41:51 kls Exp $
  */
 
 // "Star Trek: The Next Generation"(R) is a registered trademark of Paramount Pictures
@@ -381,7 +381,7 @@ void cSkinSTTNGDisplayChannel::Flush(void)
      if (present) {
         LOCK_SCHEDULES_READ;
         time_t t = time(NULL);
-        if (t > present->StartTime())
+        if (t > present->StartTime() && present->Duration() > 0)
            seen = min(y4 - y3 - 1, int((y4 - y3) * double(t - present->StartTime()) / present->Duration()));
         }
      if (seen != lastSeen) {

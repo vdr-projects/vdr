@@ -3939,3 +3939,4 @@ Dirk Nehring <dnehring@gmx.net>
  for adding missing locking to cOsd::IsOpen()
  for reporting missing locking in cSkinLCARSDisplayChannel::Flush() andi
  cSkinSTTNGDisplayChannel::Flush()
+ for reporting a possible division by zero in cSkinSTTNGDisplayChannel::Flush()
