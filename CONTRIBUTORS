@@ -3937,3 +3937,5 @@ Dirk Nehring <dnehring@gmx.net>
  for fixing the charset setting in PLUGINS/src/hello/po/fr_FR.po
  for reporting non-ASCII characters in libsi/gendescr
  for adding missing locking to cOsd::IsOpen()
+ for reporting missing locking in cSkinLCARSDisplayChannel::Flush() andi
+ cSkinSTTNGDisplayChannel::Flush()

@@ -10418,3 +10418,5 @@ Video Disk Recorder Revision History
   move or copy process (suggested by Stefan Hofmann).
 - The disk now spins up about 60 seconds before a timer starts (requested by Markus Ehrnsperger).
 - Added missing locking to cOsd::IsOpen() (thanks to Dirk Nehring).
+- Added missing locking to cSkinLCARSDisplayChannel::Flush() and cSkinSTTNGDisplayChannel::Flush()
+  (reported by Dirk Nehring).
