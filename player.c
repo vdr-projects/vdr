@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.c 5.3 2026/03/12 15:53:35 kls Exp $
+ * $Id: player.c 5.4 2026/08/22 11:23:08 kls Exp $
  */
 
 #include "player.h"
@@ -70,10 +70,16 @@ cString cControl::GetHeader(void)
   return "";
 }
 
-cControl *cControl::Control(cMutexLock &MutexLock, bool Hidden)
+#define CONTROL_LOCK_TIMEOUT 100 // ms
+
+cControl *cControl::Control(cMutexLock &MutexLock, bool Hidden, bool *LockedOtherwise)
 {
-  MutexLock.Lock(&mutex);
-  return (control && (!control->hidden || Hidden)) ? control : NULL;
+  int Timeout = cThread::IsMainThread() ? 0 : CONTROL_LOCK_TIMEOUT;
+  if (LockedOtherwise)
+     *LockedOtherwise = false;
+  if (MutexLock.Lock(&mutex, Timeout, LockedOtherwise))
+     return (control && (!control->hidden || Hidden)) ? control : NULL;
+  return NULL;
 }
 
 void cControl::Launch(cControl *Control)

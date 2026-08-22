@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: player.h 5.9 2026/08/16 09:45:03 kls Exp $
+ * $Id: player.h 5.10 2026/08/22 11:23:08 kls Exp $
  */
 
 #ifndef __PLAYER_H
@@ -120,12 +120,16 @@ public:
   static void Launch(cControl *Control);
   static void Attach(void);
   static void Shutdown(void);
-  static cControl *Control(cMutexLock &MutexLock, bool Hidden = false);
+  static cControl *Control(cMutexLock &MutexLock, bool Hidden = false, bool *LockedOtherwise = NULL);
          ///< Returns the current replay control (if any) in case it is currently
          ///< visible. If Hidden is true, the control will be returned even if it is
          ///< currently hidden.
          ///< The given MutexLock must live as long as the replay control is accessed,
          ///< and must go out of scope as soon as the control is no longer accessed.
+         ///< If called from a thread other than the main thread, waits for up to 100 milliseconds
+         ///< before giving up if the control is locked otherwise. The optional pointer to the
+         ///< boolean LockedOtherwise can be used to detect this case (only valid if the
+         ///< function returns NULL).
   };
 
 #endif //__PLAYER_H

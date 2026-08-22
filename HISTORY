@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-08-21:
+2026-08-22:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10421,3 +10421,6 @@ Video Disk Recorder Revision History
 - Added missing locking to cSkinLCARSDisplayChannel::Flush() and cSkinSTTNGDisplayChannel::Flush()
   (reported by Dirk Nehring).
 - Fixed a possible division by zero in cSkinSTTNGDisplayChannel::Flush() (reported by Dirk Nehring).
+- Fixed a problem if a thread calls cControl::Control() while the main program holds the lock
+  (reported by Stefan Hofmann). If cControl::Control() is called from a thread it now waits up
+  to 100ms before giving up.

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 5.8 2026/07/21 17:15:57 kls Exp $
+ * $Id: thread.c 5.9 2026/08/22 11:23:08 kls Exp $
  */
 
 #include "thread.h"
@@ -225,18 +225,28 @@ cMutex::~cMutex()
   pthread_mutex_destroy(&mutex);
 }
 
-void cMutex::Lock(void)
+bool cMutex::Lock(int TimeoutMs, bool *TimedOut)
 {
   // PTHREAD_MUTEX_ERRORCHECK_NP rejects recursive entry from the same thread; handle the
   // nested cMutexLock case (documented in thread.h) here, like cRwLock does below:
   tThreadId ThisThreadId = cThread::ThreadId();
   if (lockThreadId == ThisThreadId && locked) {
      locked++;
-     return;
+     return true;
      }
-  pthread_mutex_lock(&mutex);
+  if (TimeoutMs > 0) {
+     struct timespec abstime;
+     if (!GetAbsTime(&abstime, TimeoutMs) || pthread_mutex_timedlock(&mutex, &abstime) != 0) {
+        if (TimedOut)
+           *TimedOut = true;
+        return false;
+        }
+     }
+  else
+     pthread_mutex_lock(&mutex);
   lockThreadId = ThisThreadId;
   locked++;
+  return true;
 }
 
 void cMutex::Unlock(void)
@@ -422,11 +432,12 @@ cMutexLock::~cMutexLock()
      mutex->Unlock();
 }
 
-bool cMutexLock::Lock(cMutex *Mutex)
+bool cMutexLock::Lock(cMutex *Mutex, int TimeoutMs, bool *TimedOut)
 {
   if (Mutex && !mutex) {
+     if (!Mutex->Lock(TimeoutMs, TimedOut))
+        return false;
      mutex = Mutex;
-     Mutex->Lock();
      locked = true;
      return true;
      }

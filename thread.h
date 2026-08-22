@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.h 5.1 2026/05/23 21:03:38 kls Exp $
+ * $Id: thread.h 5.2 2026/08/22 11:23:08 kls Exp $
  */
 
 #ifndef __THREAD_H
@@ -73,7 +73,12 @@ private:
 public:
   cMutex(void);
   ~cMutex();
-  void Lock(void);
+  bool Lock(int TimeoutMs = 0, bool * TimedOut = NULL);
+       ///< Returns true if the mutex was successfully locked.
+       ///< If TimeoutMs is greater than 0, waits up to the given number of milliseconds before
+       ///< giving up and returning false. If TimeoutMs is 0, waits indefinitely.
+       ///< If TimedOut is given, it will be set to true if the function returns false because
+       ///< of a timeout.
   void Unlock(void);
   };
 
@@ -146,7 +151,12 @@ private:
 public:
   cMutexLock(cMutex *Mutex = NULL);
   ~cMutexLock();
-  bool Lock(cMutex *Mutex);
+  bool Lock(cMutex *Mutex, int TimeoutMs = 0, bool *TimedOut = NULL);
+       ///< Returns true if the mutex was successfully locked.
+       ///< If TimeoutMs is greater than 0, waits up to the given number of milliseconds before
+       ///< giving up and returning false. If TimeoutMs is 0, waits indefinitely.
+       ///< If TimedOut is given, it will be set to true if the returns false because
+       ///< of a timeout.
   };
 
 // cThreadLock can be used to easily set a lock in a thread and make absolutely
