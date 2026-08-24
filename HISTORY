@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-08-22:
+2026-08-24:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10424,3 +10424,5 @@ Video Disk Recorder Revision History
 - Fixed a problem if a thread calls cControl::Control() while the main program holds the lock
   (reported by Stefan Hofmann). If cControl::Control() is called from a thread it now waits up
   to 100ms before giving up.
+- Changed cOsd::savedPixmap to cPixmap*, so that derived classes work with Save/RestoreRegion()
+  (reported by Andreas Baierl).

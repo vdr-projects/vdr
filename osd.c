@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 5.3 2026/08/21 07:25:58 kls Exp $
+ * $Id: osd.c 5.4 2026/08/24 12:15:32 kls Exp $
  */
 
 #include "osd.h"
@@ -1935,7 +1935,8 @@ cOsd::~cOsd()
   for (int i = 0; i < numBitmaps; i++)
       delete bitmaps[i];
   delete savedBitmap;
-  delete savedPixmap;
+  if (savedPixmap)
+     DestroyPixmap(savedPixmap);
   for (int i = 0; i < pixmaps.Size(); i++)
       delete pixmaps[i];
   for (int i = 0; i < Osds.Size(); i++) {
@@ -2135,10 +2136,12 @@ eOsdError cOsd::SetAreas(const tArea *Areas, int NumAreas)
 void cOsd::SaveRegion(int x1, int y1, int x2, int y2)
 {
   if (isTrueColor) {
-     delete savedPixmap;
+     if (savedPixmap)
+        DestroyPixmap(savedPixmap);
      cRect r(x1, y1, x2 - x1 + 1, y2 - y1 + 1);
-     savedPixmap = new cPixmapMemory(0, r);
-     savedPixmap->Copy(pixmaps[0], r, cPoint(0, 0));
+     savedPixmap = CreatePixmap(-1, r);
+     if (savedPixmap)
+        savedPixmap->Copy(pixmaps[0], r, cPoint(0, 0));
      }
   else {
      delete savedBitmap;
@@ -2153,7 +2156,7 @@ void cOsd::RestoreRegion(void)
   if (isTrueColor) {
      if (savedPixmap) {
         pixmaps[0]->Copy(savedPixmap, savedPixmap->DrawPort(), savedPixmap->ViewPort().Point());
-        delete savedPixmap;
+        DestroyPixmap(savedPixmap);
         savedPixmap = NULL;
         }
      }

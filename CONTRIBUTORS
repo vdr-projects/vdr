@@ -3920,6 +3920,8 @@ Andreas Baierl <post@andreasbaierl.de>
  the mark
  for helping to make cDvbPlayer no longer repeat the last frame when hitting the
  beginning or end of a recording
+ for reporting that cOsd::savedPixmap was cPixmapMemory* instead of the abstract
+ cPixmap*
 
 Fabian Wolter <vdr-ml@fabian-wolter.de>
  for fixing a memory leak in cMark::Parse()

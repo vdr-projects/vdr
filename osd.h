@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 5.5 2026/08/21 07:25:58 kls Exp $
+ * $Id: osd.h 5.6 2026/08/24 12:15:32 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -764,7 +764,7 @@ private:
   cBitmap *savedBitmap;
   cBitmap *bitmaps[MAXOSDAREAS];
   int numBitmaps;
-  cPixmapMemory *savedPixmap;
+  cPixmap *savedPixmap;
   cVector<cPixmap *> pixmaps;
   int left, top, width, height;
   uint level;
