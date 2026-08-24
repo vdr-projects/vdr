@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.c 5.4 2026/08/24 12:15:32 kls Exp $
+ * $Id: osd.c 5.5 2026/08/24 20:01:32 kls Exp $
  */
 
 #include "osd.h"
@@ -2158,6 +2158,7 @@ void cOsd::RestoreRegion(void)
         pixmaps[0]->Copy(savedPixmap, savedPixmap->DrawPort(), savedPixmap->ViewPort().Point());
         DestroyPixmap(savedPixmap);
         savedPixmap = NULL;
+        Flush();
         }
      }
   else {
@@ -2165,6 +2166,7 @@ void cOsd::RestoreRegion(void)
         DrawBitmap(savedBitmap->X0(), savedBitmap->Y0(), *savedBitmap);
         delete savedBitmap;
         savedBitmap = NULL;
+        Flush();
         }
      }
 }
