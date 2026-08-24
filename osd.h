@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osd.h 5.6 2026/08/24 12:15:32 kls Exp $
+ * $Id: osd.h 5.7 2026/08/24 12:25:56 kls Exp $
  */
 
 #ifndef __OSD_H
@@ -924,6 +924,9 @@ public:
   virtual void RestoreRegion(void);
        ///< Restores the region previously saved by a call to SaveRegion().
        ///< If SaveRegion() has not been called before, nothing will happen.
+       ///< Only the first call to this function after a call to SaveRegion()
+       ///< actually restores the saved region. Further calls without intermediate
+       ///< calls to SaveRegion() have no effect.
   virtual eOsdError SetPalette(const cPalette &Palette, int Area);
        ///< Sets the Palette for the given Area (the first area is numbered 0).
        ///< If this is a true color OSD, nothing happens and oeOk is returned.

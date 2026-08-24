@@ -10426,3 +10426,4 @@ Video Disk Recorder Revision History
   to 100ms before giving up.
 - Changed cOsd::savedPixmap to cPixmap*, so that derived classes work with Save/RestoreRegion()
   (reported by Andreas Baierl).
+- Enhanced the comment for cOsd::RestoreRegion() (suggested by Andreas Baierl).

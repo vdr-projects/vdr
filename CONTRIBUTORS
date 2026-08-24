@@ -3922,6 +3922,7 @@ Andreas Baierl <post@andreasbaierl.de>
  beginning or end of a recording
  for reporting that cOsd::savedPixmap was cPixmapMemory* instead of the abstract
  cPixmap*
+ for suggesting to enhance the comment for cOsd::RestoreRegion()
 
 Fabian Wolter <vdr-ml@fabian-wolter.de>
  for fixing a memory leak in cMark::Parse()
