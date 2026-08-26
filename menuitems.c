@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menuitems.c 5.8 2026/07/30 09:00:52 kls Exp $
+ * $Id: menuitems.c 5.9 2026/08/26 08:56:34 kls Exp $
  */
 
 #include "menuitems.h"
@@ -995,6 +995,14 @@ void cMenuEditDateItem::Set(void)
   SetValue(buf);
 }
 
+void cMenuEditDateItem::SetDate(time_t Time)
+{
+  if (!weekdays || !*weekdays) {
+     *value = Time;
+     Set();
+     }
+}
+
 void cMenuEditDateItem::ToggleRepeating(void)
 {
   if (weekdays) {
@@ -1108,6 +1116,16 @@ void cMenuEditTimeItem::Set(void)
     case 3:  SetValue(cString::sprintf("%02d:%01d-", hh, mm / 10)); break;
     default: SetValue(cString::sprintf("%02d:%02d", hh, mm));
     }
+}
+
+void cMenuEditTimeItem::SetTime(time_t Time)
+{
+  struct tm tm_r;
+  tm *tm = localtime_r(&Time, &tm_r);
+  hh = tm->tm_hour;
+  mm = tm->tm_min;
+  *value = hh * 100 + mm;
+  Set();
 }
 
 eOSState cMenuEditTimeItem::ProcessKey(eKeys Key)

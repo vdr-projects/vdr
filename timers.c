@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.c 5.31 2026/02/03 16:00:28 kls Exp $
+ * $Id: timers.c 5.32 2026/08/26 08:56:34 kls Exp $
  */
 
 #include "timers.h"
@@ -280,7 +280,7 @@ cTimer& cTimer::operator= (const cTimer &Timer)
   return *this;
 }
 
-void cTimer::CalcMargins(int &MarginStart, int &MarginStop, const cEvent *Event)
+void cTimer::CalcMargins(int &MarginStart, int &MarginStop, const cEvent *Event) const
 {
   MarginStart = Setup.MarginStart * 60;
   MarginStop  = Setup.MarginStop * 60;
@@ -1161,6 +1161,29 @@ void cTimer::OnOff(void)
   if (HasFlags(tfActive))
      TriggerRespawn(); // have pattern timers spawn if necessary
   Matches(); // refresh start and end time
+}
+
+bool cTimer::CalcNewStartStopTime(bool ToVps, time_t &NewStartTime, time_t &NewStopTime) const
+{
+  if (const cEvent *e = Event()) {
+     LOCK_SCHEDULES_READ;
+     if (ToVps) {
+        if (e->Vps()) {
+           NewStartTime = e->Vps();
+           NewStopTime  = e->EndTime();
+           return true;
+           }
+        }
+     else {
+        int MarginStart = 0;
+        int MarginStop  = 0;
+        CalcMargins(MarginStart, MarginStop, e);
+        NewStartTime = e->StartTime() - MarginStart;
+        NewStopTime = e->EndTime() + MarginStop;
+        return true;
+        }
+     }
+  return false;
 }
 
 // --- cTimers ---------------------------------------------------------------

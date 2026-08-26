@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: timers.h 5.14 2025/07/10 19:12:24 kls Exp $
+ * $Id: timers.h 5.15 2026/08/26 08:56:34 kls Exp $
  */
 
 #ifndef __TIMERS_H
@@ -60,7 +60,7 @@ public:
   cTimer(const cTimer &Timer);
   virtual ~cTimer() override;
   cTimer& operator= (const cTimer &Timer);
-  void CalcMargins(int &MarginStart, int &MarginStop, const cEvent *Event);
+  void CalcMargins(int &MarginStart, int &MarginStop, const cEvent *Event) const;
   virtual int Compare(const cListObject &ListObject) const override;
   int Id(void) const { return id; }
   bool Recording(void) const { return HasFlags(tfRecording); }
@@ -100,6 +100,8 @@ public:
        ///< Calculates the raw start and stop time of this timer, as given by the user in the timer definition.
        ///< If t is given, and this is a repeating timer, the start and stop times on that day are returned
        ///< (default is "today"). t can be any time_t value on the given day.
+  bool CalcNewStartStopTime(bool ToVps, time_t &NewStartTime, time_t &NewStopTime) const;
+       ///< Calculates new start and stop time of this timer, when switching VPS control on/off.
   time_t VpsTime(time_t t = 0) const;
        ///< Returns the VPS time of this timer. This is a shortcut for calling CalcStartStopTime() and using the
        ///< result given in the startTime parameter. The parameter t is handed to CalcStartStopTime().

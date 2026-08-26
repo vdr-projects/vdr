@@ -3453,6 +3453,8 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  destination of an ongoing cut, move or copy process
  for reporting a problem if a thread calls cControl::Control() while the main program holds
  the lock
+ for reporting that switching the VPS option in the "Edit timer" menu to "yes" for a timer
+ with margins doesn't set the start time to the event's VPS time.
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a

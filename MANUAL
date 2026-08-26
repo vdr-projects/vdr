@@ -480,6 +480,12 @@ Version 2.8.2
              stop time of the programme, just in case there is no real VPS data
              available at the time of recording, so VDR has to fall back to
              normal timer recording.
+             If "Setup/Recording/Use VPS" is set to no and the timer has been
+             created from an event that has a VPS time, turning this option on
+             here will automatically set the start/stop times from the event's
+             VPS time. Turning this option off again (without closing the menu)
+             will restore the previous start/stop times (which may have margins
+             at the beginning and end).
   Priority:  The Priority (0..99) is used to decide which timer shall be
              started in case there are two or more timers with the exact same
              start time. The first timer in the list with the highest Priority

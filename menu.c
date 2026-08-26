@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.64 2026/08/18 09:19:51 kls Exp $
+ * $Id: menu.c 5.65 2026/08/26 08:56:34 kls Exp $
  */
 
 #include "menu.h"
@@ -1022,8 +1022,10 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
   pattern = NULL;
   file = NULL;
   day = firstday = NULL;
+  start = stop = NULL;
   timer = Timer;
   addIfConfirmed = New;
+  oldStartTime = oldStopTime = 0;
   if (timer) {
      data = *timer;
      if (New)
@@ -1032,8 +1034,8 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
      Add(new cMenuEditBitItem( tr("Active"),       &data.flags, tfActive));
      Add(new cMenuEditChanItem(tr("Channel"),      &channel));
      Add(day = new cMenuEditDateItem(tr("Day"),    &data.day, &data.weekdays));
-     Add(new cMenuEditTimeItem(tr("Start"),        &data.start));
-     Add(new cMenuEditTimeItem(tr("Stop"),         &data.stop));
+     Add(start = new cMenuEditTimeItem(tr("Start"),&data.start));
+     Add(stop = new cMenuEditTimeItem(tr("Stop"),  &data.stop));
      Add(new cMenuEditBitItem( tr("VPS"),          &data.flags, tfVps));
      Add(new cMenuEditIntItem( tr("Priority"),     &data.priority, 0, MAXPRIORITY));
      Add(new cMenuEditIntItem( tr("Lifetime"),     &data.lifetime, 0, MAXLIFETIME));
@@ -1048,6 +1050,10 @@ cMenuEditTimer::cMenuEditTimer(cTimer *Timer, bool New)
         svdrpServerNames.Sort(true);
         svdrpServerNames.Insert(strdup(""));
         Add(new cMenuEditStrlItem(tr("Record on"), remote, sizeof(remote), &svdrpServerNames));
+        }
+     if (!data.HasFlags(tfVps)) {
+        oldStartTime = data.StartTime();
+        oldStopTime = data.StopTime();
         }
      }
   SetHelpKeys();
@@ -1147,7 +1153,33 @@ static bool HandleRemoteModifications(cTimer *NewTimer, cTimer *OldTimer = NULL)
 
 eOSState cMenuEditTimer::ProcessKey(eKeys Key)
 {
+  bool WasVps = data.HasFlags(tfVps);
   eOSState state = cOsdMenu::ProcessKey(Key);
+  bool IsVps = data.HasFlags(tfVps);
+
+  if (IsVps != WasVps) {
+     time_t NewStartTime = 0;
+     time_t NewStopTime = 0;
+     if (WasVps) {
+        if (oldStartTime && oldStopTime) {
+           NewStartTime = oldStartTime;
+           NewStopTime = oldStopTime;
+           oldStartTime = oldStopTime = 0;
+           }
+        else
+           data.CalcNewStartStopTime(false, NewStartTime, NewStopTime);
+        }
+     else
+        data.CalcNewStartStopTime(true, NewStartTime, NewStopTime);
+     if (NewStartTime && NewStopTime) {
+        day->SetDate(NewStartTime);
+        start->SetTime(NewStartTime);
+        stop->SetTime(NewStopTime);
+        DisplayItem(day);
+        DisplayItem(start);
+        DisplayItem(stop);
+        }
+     }
 
   if (state == osUnknown) {
      switch (Key) {
