@@ -10429,3 +10429,5 @@ Video Disk Recorder Revision History
 - Enhanced the comment for cOsd::RestoreRegion() (suggested by Andreas Baierl).
 - Changing the VPS option in the "Edit timer" menu now adjusts the start/stop times as necessary
   (reported by Stefan Hofmann).
+- Fixed cOsdMenu::DisplayItem() to call cStatus::MsgOsdItem() for items that are not the current
+  one.

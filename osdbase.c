@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: osdbase.c 5.11 2026/03/05 19:41:55 kls Exp $
+ * $Id: osdbase.c 5.12 2026/08/26 16:23:01 kls Exp $
  */
 
 #include "osdbase.h"
@@ -353,8 +353,12 @@ void cOsdMenu::DisplayItem(cOsdItem *Item)
      if (Offset >= 0 && Offset < first + displayMenuItems) {
         bool Current = Index == current;
         Item->SetMenuItem(displayMenu, Offset, Current && Item->Selectable(), Item->Selectable());
-        if (Current && Item->Selectable())
-           cStatus::MsgOsdCurrentItem(Item->Text(), Index);
+        if (Item->Selectable()) {
+           if (Current)
+              cStatus::MsgOsdCurrentItem(Item->Text(), Index);
+           else
+              cStatus::MsgOsdItem(Item->Text(), Index);
+           }
         }
      }
 }
