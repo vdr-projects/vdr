@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.60 2026/07/21 16:54:39 kls Exp $
+ * $Id: recording.c 5.61 2026/08/28 19:44:51 kls Exp $
  */
 
 #include "recording.h"
@@ -1461,8 +1461,11 @@ bool cRecording::Delete(void)
      isyslog("deleting recording '%s'", FileName());
      if (access(FileName(), F_OK) == 0) {
         result = cVideoDirectory::RenameVideoFile(FileName(), NewName);
-        if (result)
+        if (result) {
+           info->SetFileName(NewName);
+           resume->SetFileName(NewName);
            TouchFile(NewName);
+           }
         cRecordingUserCommand::InvokeCommand(RUC_DELETERECORDING, NewName);
         }
      else {
@@ -1505,6 +1508,10 @@ bool cRecording::Undelete(void)
         isyslog("restoring recording '%s'", FileName());
         if (access(FileName(), F_OK) == 0) {
            result = cVideoDirectory::RenameVideoFile(FileName(), NewName);
+           if (result) {
+              info->SetFileName(NewName);
+              resume->SetFileName(NewName);
+              }
            deleted = 0;
            }
         else {

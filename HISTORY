@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-08-26:
+2026-08-28:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10431,3 +10431,5 @@ Video Disk Recorder Revision History
   (reported by Stefan Hofmann).
 - Fixed cOsdMenu::DisplayItem() to call cStatus::MsgOsdItem() for items that are not the current
   one.
+- Fixed setting the file names of the info and resume file after (un)deleting a recording
+  (reported by Stefan Hofmann).

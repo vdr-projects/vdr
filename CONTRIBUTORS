@@ -3455,6 +3455,7 @@ Stefan Hofmann <stefan.hofmann@t-online.de>
  the lock
  for reporting that switching the VPS option in the "Edit timer" menu to "yes" for a timer
  with margins doesn't set the start time to the event's VPS time.
+ for reporting that the resume position was not set correctly after (un)deleting a recording
 
 Stefan Blochberger <Stefan.Blochberger@gmx.de>
  for suggesting to automatically display the progress display whenever replay of a
