@@ -3952,3 +3952,5 @@ Dirk Nehring <dnehring@gmx.net>
  for fixing cDevice::SetChannel() to have it launch transfer mode only after the channel
  switch is complete
  for fixing StopSVDRPHandler() to have it delete SVDRPServerHandler before SVDRPClientHandler
+ for fixing SetTrackDescriptions() to have it use the components while the respective list
+ is still locked

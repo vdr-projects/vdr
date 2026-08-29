@@ -10439,3 +10439,5 @@ Video Disk Recorder Revision History
   complete (thanks to Dirk Nehring).
 - Fixed StopSVDRPHandler() to have it delete SVDRPServerHandler before SVDRPClientHandler (thanks
   to Dirk Nehring).
+- Fixed SetTrackDescriptions() to have it use the components while the respective list is still
+  locked (thanks to Dirk Nehring).

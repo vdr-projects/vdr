@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.65 2026/08/26 08:56:34 kls Exp $
+ * $Id: menu.c 5.66 2026/08/29 18:54:14 kls Exp $
  */
 
 #include "menu.h"
@@ -4963,26 +4963,8 @@ eOSState cMenuMain::ProcessKey(eKeys Key)
 
 // --- SetTrackDescriptions --------------------------------------------------
 
-void SetTrackDescriptions(int LiveChannel)
+static void SetTracksFromComponents(const cComponents *Components, bool Live)
 {
-  cDevice::PrimaryDevice()->ClrAvailableTracks(true);
-  const cComponents *Components = NULL;
-  if (LiveChannel) {
-     LOCK_CHANNELS_READ;
-     if (const cChannel *Channel = Channels->GetByNumber(LiveChannel)) {
-        LOCK_SCHEDULES_READ;
-        if (const cSchedule *Schedule = Schedules->GetSchedule(Channel)) {
-           const cEvent *Present = Schedule->GetPresentEvent();
-           if (Present)
-              Components = Present->Components();
-           }
-        }
-     }
-  else if (cReplayControl::NowReplaying()) {
-     LOCK_RECORDINGS_READ;
-     if (const cRecording *Recording = Recordings->GetByName(cReplayControl::NowReplaying()))
-        Components = Recording->Info()->Components();
-     }
   if (Components) {
      int indexAudio = 0;
      int indexDolby = 0;
@@ -4991,17 +4973,40 @@ void SetTrackDescriptions(int LiveChannel)
          const tComponent *p = Components->Component(i);
          switch (p->stream) {
            case 2: if (p->type == 0x05)
-                      cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, LiveChannel ? NULL : p->language, p->description);
+                      cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, Live ? NULL : p->language, p->description);
                    else
-                      cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, LiveChannel ? NULL : p->language, p->description);
+                      cDevice::PrimaryDevice()->SetAvailableTrack(ttAudio, indexAudio++, 0, Live ? NULL : p->language, p->description);
                    break;
-           case 3: cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, indexSubtitle++, 0, LiveChannel ? NULL : p->language, p->description);
+           case 3: cDevice::PrimaryDevice()->SetAvailableTrack(ttSubtitle, indexSubtitle++, 0, Live ? NULL : p->language, p->description);
                    break;
-           case 4: cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, LiveChannel ? NULL : p->language, p->description);
+           case 4: cDevice::PrimaryDevice()->SetAvailableTrack(ttDolby, indexDolby++, 0, Live ? NULL : p->language, p->description);
                    break;
            default: ;
            }
          }
+     }
+}
+
+void SetTrackDescriptions(int LiveChannel)
+{
+  cDevice::PrimaryDevice()->ClrAvailableTracks(true);
+  // The components must be used while the respective list is locked - the EIT
+  // section handler thread replaces and deletes an event's components at any
+  // time, so letting the pointer escape the lock reads freed memory:
+  if (LiveChannel) {
+     LOCK_CHANNELS_READ;
+     if (const cChannel *Channel = Channels->GetByNumber(LiveChannel)) {
+        LOCK_SCHEDULES_READ;
+        if (const cSchedule *Schedule = Schedules->GetSchedule(Channel)) {
+           if (const cEvent *Present = Schedule->GetPresentEvent())
+              SetTracksFromComponents(Present->Components(), true);
+           }
+        }
+     }
+  else if (cReplayControl::NowReplaying()) {
+     LOCK_RECORDINGS_READ;
+     if (const cRecording *Recording = Recordings->GetByName(cReplayControl::NowReplaying()))
+        SetTracksFromComponents(Recording->Info()->Components(), false);
      }
 }
 
