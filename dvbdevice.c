@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.9 2025/03/02 11:03:35 kls Exp $
+ * $Id: dvbdevice.c 5.10 2026/08/29 11:46:58 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -1905,6 +1905,11 @@ cDvbDevice::cDvbDevice(int Adapter, int Frontend)
 
 cDvbDevice::~cDvbDevice()
 {
+  // Stop the device thread while the vptr still points to cDvbDevice. Its last
+  // loop iteration calls the virtual CloseDvr(), and members are destroyed below.
+  // Leaving this to ~cDevice() would be too late - the vptr is demoted by then:
+  DetachAllReceivers();
+  Cancel(3);
   delete dvbTuner;
   delete ciAdapter;
   StopSectionHandler();

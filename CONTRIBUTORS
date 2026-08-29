@@ -3948,3 +3948,4 @@ Dirk Nehring <dnehring@gmx.net>
  for reporting missing locking in cSkinLCARSDisplayChannel::Flush() andi
  cSkinSTTNGDisplayChannel::Flush()
  for reporting a possible division by zero in cSkinSTTNGDisplayChannel::Flush()
+ for fixing cDvbDevice::~cDvbDevice() to have it stop its thread before destruction
