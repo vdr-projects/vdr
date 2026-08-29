@@ -10437,3 +10437,5 @@ Video Disk Recorder Revision History
   Nehring).
 - Fixed cDevice::SetChannel() to have it launch transfer mode only after the channel switch is
   complete (thanks to Dirk Nehring).
+- Fixed StopSVDRPHandler() to have it delete SVDRPServerHandler before SVDRPClientHandler (thanks
+  to Dirk Nehring).

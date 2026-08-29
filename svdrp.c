@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.19 2026/05/24 11:40:29 kls Exp $
+ * $Id: svdrp.c 5.20 2026/08/29 12:23:12 kls Exp $
  */
 
 #include "svdrp.h"
@@ -2876,10 +2876,12 @@ void StartSVDRPHandler(void)
 void StopSVDRPHandler(void)
 {
   cMutexLock MutexLock(&SVDRPHandlerMutex);
-  delete SVDRPClientHandler;
-  SVDRPClientHandler = NULL;
+  // The server handler's thread uses SVDRPClientHandler (ProcessConnections()
+  // calls its CloseClient()), so it must be stopped first:
   delete SVDRPServerHandler;
   SVDRPServerHandler = NULL;
+  delete SVDRPClientHandler;
+  SVDRPClientHandler = NULL;
 }
 
 bool GetSVDRPServerNames(cStringList *ServerNames)
