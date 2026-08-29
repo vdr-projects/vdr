@@ -10435,3 +10435,5 @@ Video Disk Recorder Revision History
   (reported by Stefan Hofmann).
 - Fixed cDvbDevice::~cDvbDevice() to have it stop its thread before destruction (thanks to Dirk
   Nehring).
+- Fixed cDevice::SetChannel() to have it launch transfer mode only after the channel switch is
+  complete (thanks to Dirk Nehring).

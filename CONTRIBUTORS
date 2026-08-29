@@ -3949,3 +3949,5 @@ Dirk Nehring <dnehring@gmx.net>
  cSkinSTTNGDisplayChannel::Flush()
  for reporting a possible division by zero in cSkinSTTNGDisplayChannel::Flush()
  for fixing cDvbDevice::~cDvbDevice() to have it stop its thread before destruction
+ for fixing cDevice::SetChannel() to have it launch transfer mode only after the channel
+ switch is complete

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.20 2026/08/17 11:15:30 kls Exp $
+ * $Id: device.c 5.21 2026/08/29 12:00:21 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -909,9 +909,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
 
   if (NeedsTransferMode) {
      if (Device && PrimaryDevice()->CanReplay()) {
-        if (Device->SetChannel(Channel, false) == scrOk) // calling SetChannel() directly, not SwitchChannel()!
-           cControl::Launch(new cTransferControl(Device, Channel));
-        else
+        if (Device->SetChannel(Channel, false) != scrOk) // calling SetChannel() directly, not SwitchChannel()!
            Result = scrNoTransfer;
         }
      else
@@ -962,6 +960,13 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            EnsureSubtitleTrack();
            }
         }
+     // Launch the transfer control only after the channel switch is complete.
+     // Launch() makes the control visible to the main loop, which attaches it and
+     // starts feeding TS data into the primary device - if that happens while this
+     // function is still setting up the track state above, the two threads race
+     // on availableTracks et al. (SwitchChannel() may run in the SVDRP thread):
+     if (NeedsTransferMode)
+        cControl::Launch(new cTransferControl(Device, Channel));
      cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successful
      }
 
