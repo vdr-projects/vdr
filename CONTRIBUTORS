@@ -3954,3 +3954,5 @@ Dirk Nehring <dnehring@gmx.net>
  for fixing StopSVDRPHandler() to have it delete SVDRPServerHandler before SVDRPClientHandler
  for fixing SetTrackDescriptions() to have it use the components while the respective list
  is still locked
+ for limiting the lifetime of the ControlMutexLock in cSkinLCARSDisplayMenu::Flush() to
+ the necessary scope
