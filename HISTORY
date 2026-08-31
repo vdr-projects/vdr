@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-08-30:
+2026-08-31:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10443,3 +10443,4 @@ Video Disk Recorder Revision History
   locked (thanks to Dirk Nehring).
 - Limited the lifetime of the ControlMutexLock in cSkinLCARSDisplayMenu::Flush() to the necessary
   scope (thanks to Dirk Nehring).
+- Improved locking in subtitle handling (thanks to Dirk Nehring).

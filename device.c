@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.21 2026/08/29 12:00:21 kls Exp $
+ * $Id: device.c 5.22 2026/08/31 10:44:53 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -187,6 +187,7 @@ cString cDevice::DeviceName(void) const
 void cDevice::MakePrimaryDevice(bool On)
 {
   if (!On) {
+     cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
      DELETENULL(liveSubtitle);
      DELETENULL(dvbSubtitleConverter);
      }
@@ -891,6 +892,7 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            }
         }
      StopReplay();
+     cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
      DELETENULL(liveSubtitle);
      DELETENULL(dvbSubtitleConverter);
      }
@@ -1192,15 +1194,14 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
   if (Type == ttNone || IS_SUBTITLE_TRACK(Type)) {
      currentSubtitleTrack = Type;
      autoSelectPreferredSubtitleLanguage = !Manual;
+     cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
      if (dvbSubtitleConverter) {
         dvbSubtitleConverter->Reset();
         if (Type == ttNone) {
            if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND)
               dvbSubtitleConverter->SetVisible(false);
-           else {
-              cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+           else
               DELETENULL(dvbSubtitleConverter);
-              }
            }
         else if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND && Manual)
            dvbSubtitleConverter->SetVisible(true);
@@ -1224,6 +1225,7 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
 
 void cDevice::SetTempSubtitles(void)
 {
+  cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
   if (dvbSubtitleConverter)
      dvbSubtitleConverter->SetTempVisible();
 }
@@ -1305,6 +1307,7 @@ void cDevice::TrickSpeed(int Speed, bool Forward)
 void cDevice::Clear(void)
 {
   Audios.ClearAudio();
+  cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
   if (dvbSubtitleConverter)
      dvbSubtitleConverter->Reset();
 }
@@ -1312,6 +1315,7 @@ void cDevice::Clear(void)
 void cDevice::Play(void)
 {
   Audios.MuteAudio(mute);
+  cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
   if (dvbSubtitleConverter)
      dvbSubtitleConverter->Freeze(false);
 }
@@ -1319,6 +1323,7 @@ void cDevice::Play(void)
 void cDevice::Freeze(void)
 {
   Audios.MuteAudio(true);
+  cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
   if (dvbSubtitleConverter)
      dvbSubtitleConverter->Freeze(true);
 }
@@ -1402,8 +1407,11 @@ bool cDevice::AttachPlayer(cPlayer *Player)
   if (CanReplay()) {
      if (player)
         Detach(player);
-     DELETENULL(liveSubtitle);
-     DELETENULL(dvbSubtitleConverter);
+     {
+        cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+        DELETENULL(liveSubtitle);
+        DELETENULL(dvbSubtitleConverter);
+     }
      patPmtParser.Reset();
      player = Player;
      if (!Transferring())
@@ -1424,8 +1432,7 @@ void cDevice::Detach(cPlayer *Player)
      p->Activate(false);
      p->device = NULL;
      cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
-     delete dvbSubtitleConverter;
-     dvbSubtitleConverter = NULL;
+     DELETENULL(dvbSubtitleConverter);
      SetPlayMode(pmNone);
      SetVideoDisplayFormat(eVideoDisplayFormat(Setup.VideoDisplayFormat));
      PlayTs(NULL, 0);
@@ -1471,6 +1478,7 @@ int cDevice::PlayAudio(const uchar *Data, int Length, uchar Id)
 
 int cDevice::PlaySubtitle(const uchar *Data, int Length)
 {
+  cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
   if (!dvbSubtitleConverter) {
      dvbSubtitleConverter = new cDvbSubtitleConverter;
      if (Replaying() && !Transferring())
@@ -1578,6 +1586,7 @@ pre_1_3_19_PrivateStreamDetected:
 int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
 {
   if (!Data) {
+     cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
      if (dvbSubtitleConverter)
         dvbSubtitleConverter->Reset();
      return 0;
@@ -1641,6 +1650,7 @@ int cDevice::PlayTsAudio(const uchar *Data, int Length)
 
 int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
 {
+  cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
   if (!dvbSubtitleConverter) {
      dvbSubtitleConverter = new cDvbSubtitleConverter;
      if (Replaying() && !Transferring())
