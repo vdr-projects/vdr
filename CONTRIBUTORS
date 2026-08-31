@@ -3957,3 +3957,4 @@ Dirk Nehring <dnehring@gmx.net>
  for limiting the lifetime of the ControlMutexLock in cSkinLCARSDisplayMenu::Flush() to
  the necessary scope
  for improving locking in subtitle handling
+ for improving locking in cIoThrottle

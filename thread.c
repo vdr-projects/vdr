@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: thread.c 5.9 2026/08/22 11:23:08 kls Exp $
+ * $Id: thread.c 5.10 2026/08/31 10:48:15 kls Exp $
  */
 
 #include "thread.h"
@@ -940,24 +940,24 @@ cIoThrottle::~cIoThrottle()
 
 void cIoThrottle::Activate(void)
 {
+  mutex.Lock();
   if (!active) {
-     mutex.Lock();
      count++;
      active = true;
      dsyslog("i/o throttle activated, count = %d (tid=%d)", count, cThread::ThreadId());
-     mutex.Unlock();
      }
+  mutex.Unlock();
 }
 
 void cIoThrottle::Release(void)
 {
+  mutex.Lock();
   if (active) {
-     mutex.Lock();
      count--;
      active = false;
      dsyslog("i/o throttle released, count = %d (tid=%d)", count, cThread::ThreadId());
-     mutex.Unlock();
      }
+  mutex.Unlock();
 }
 
 bool cIoThrottle::Engaged(void)

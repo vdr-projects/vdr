@@ -10444,3 +10444,4 @@ Video Disk Recorder Revision History
 - Limited the lifetime of the ControlMutexLock in cSkinLCARSDisplayMenu::Flush() to the necessary
   scope (thanks to Dirk Nehring).
 - Improved locking in subtitle handling (thanks to Dirk Nehring).
+- Improved locking in cIoThrottle (thanks to Dirk Nehring).
