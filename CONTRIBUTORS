@@ -3958,3 +3958,4 @@ Dirk Nehring <dnehring@gmx.net>
  the necessary scope
  for improving locking in subtitle handling
  for improving locking in cIoThrottle
+ for adding missing locking to cDevice::ClrAvailableTracks) and cDevice::SetAvailableTrack()

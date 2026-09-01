@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.22 2026/08/31 10:44:53 kls Exp $
+ * $Id: device.c 5.23 2026/09/01 09:56:59 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -1098,6 +1098,7 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly, bool IdsOnly)
 {
   if (keepTracks)
      return;
+  cMutexLock MutexLock(&mutexCurrentAudioTrack);
   if (DescriptionsOnly) {
      for (int i = ttNone; i < ttMaxTrackTypes; i++)
          *availableTracks[i].description = 0;
@@ -1119,6 +1120,7 @@ void cDevice::ClrAvailableTracks(bool DescriptionsOnly, bool IdsOnly)
 
 bool cDevice::SetAvailableTrack(eTrackType Type, int Index, uint16_t Id, const char *Language, const char *Description)
 {
+  cMutexLock MutexLock(&mutexCurrentAudioTrack);
   eTrackType t = eTrackType(Type + Index);
   if (Type == ttAudio && IS_AUDIO_TRACK(t) ||
       Type == ttDolby && IS_DOLBY_TRACK(t) ||
