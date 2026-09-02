@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 5.1 2022/12/05 14:45:51 kls Exp $
+ * $Id: transfer.c 5.2 2026/09/02 09:20:35 kls Exp $
  */
 
 #include "transfer.h"
@@ -14,6 +14,7 @@
 cTransfer::cTransfer(const cChannel *Channel)
 :cReceiver(Channel, TRANSFERPRIORITY)
 {
+  activated = false;
   lastErrorReport = 0;
   numLostPackets = 0;
   patPmtGenerator.SetChannel(Channel);
@@ -28,13 +29,18 @@ cTransfer::~cTransfer()
 void cTransfer::Activate(bool On)
 {
   if (On) {
-     PlayTs(patPmtGenerator.GetPat(), TS_SIZE);
-     int Index = 0;
-     while (uchar *pmt = patPmtGenerator.GetPmt(Index))
-           PlayTs(pmt, TS_SIZE);
+     if (cPlayer::IsAttached()) {
+        PlayTs(patPmtGenerator.GetPat(), TS_SIZE);
+        int Index = 0;
+        while (uchar *pmt = patPmtGenerator.GetPmt(Index))
+              PlayTs(pmt, TS_SIZE);
+        activated = true;
+        }
      }
-  else
+  else {
+     activated = false;
      cPlayer::Detach();
+     }
 }
 
 #define MAXRETRIES    20 // max. number of retries for a single TS packet
@@ -43,7 +49,7 @@ void cTransfer::Activate(bool On)
 
 void cTransfer::Receive(const uchar *Data, int Length)
 {
-  if (cPlayer::IsAttached()) {
+  if (activated) {
      // Transfer Mode means "live tv", so there's no point in doing any additional
      // buffering here. The TS packets *must* get through here! However, every
      // now and then there may be conditions where the packet just can't be

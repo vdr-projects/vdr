@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-09-01:
+2026-09-02:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10447,3 +10447,5 @@ Video Disk Recorder Revision History
 - Improved locking in cIoThrottle (thanks to Dirk Nehring).
 - Added missing locking to cDevice::ClrAvailableTracks) and cDevice::SetAvailableTrack() (thanks
   to Dirk Nehring).
+- Fixed cTransfer to make sure Receive() doesn't call PlayTs() before Activate() does (reported
+  by Dirk Nehring).
