@@ -4,12 +4,13 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: ringbuffer.h 5.2 2025/03/03 13:12:16 kls Exp $
+ * $Id: ringbuffer.h 5.3 2026/09/03 13:44:36 kls Exp $
  */
 
 #ifndef __RINGBUFFER_H
 #define __RINGBUFFER_H
 
+#include <atomic>
 #include "thread.h"
 #include "tools.h"
 
@@ -58,7 +59,8 @@ public:
   static void PrintDebugRBL(void);
 #endif
 private:
-  int margin, head, tail;
+  int margin;
+  std::atomic<int> head, tail;
   int gotten;
   uchar *buffer;
   char *description;

@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-09-02:
+2026-09-03:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10449,3 +10449,5 @@ Video Disk Recorder Revision History
   to Dirk Nehring).
 - Fixed cTransfer to make sure Receive() doesn't call PlayTs() before Activate() does (reported
   by Dirk Nehring).
+- Added atomic to cRingBufferLinear to avoid possible data races on ARM CPUs (thanks to Dirk
+  Nehring).

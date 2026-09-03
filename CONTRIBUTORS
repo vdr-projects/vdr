@@ -3961,3 +3961,4 @@ Dirk Nehring <dnehring@gmx.net>
  for adding missing locking to cDevice::ClrAvailableTracks) and cDevice::SetAvailableTrack()
  for reporting that in cTransfer it could happen that Receive() called PlayTs() before
  Activate() does
+ for adding atomic to cRingBufferLinear to avoid possible data races on ARM CPUs
