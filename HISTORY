@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-09-03:
+2026-09-04:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10451,3 +10451,5 @@ Video Disk Recorder Revision History
   by Dirk Nehring).
 - Added atomic to cRingBufferLinear to avoid possible data races on ARM CPUs (thanks to Dirk
   Nehring).
+- Fixed PAT/PMT handling in cCuttingThread, which caused edited recordings to sometimes have
+  errors, while the original had none.

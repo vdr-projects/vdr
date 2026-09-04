@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.11 2026/05/29 10:10:01 kls Exp $
+ * $Id: cutter.c 5.12 2026/09/04 20:17:28 kls Exp $
  */
 
 #include "cutter.h"
@@ -564,7 +564,6 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
      error = "malloc";
      return false;
      }
-  cPatPmtParser PatPmtParser;
   cFrameChecker FrameChecker;
   for (int Index = BeginIndex; Running() && Index < EndIndex; Index++) {
       bool Independent;
@@ -574,11 +573,11 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
          bool Missing = false;
          if (!isPesRecording) {
             int OldPatVersion, OldPmtVersion;
-            PatPmtParser.GetVersions(OldPatVersion, OldPmtVersion);
-            if (PatPmtParser.ParsePatPmt(Buffer, Length)) {
+            patPmtParser.GetVersions(OldPatVersion, OldPmtVersion);
+            if (patPmtParser.ParsePatPmt(Buffer, Length)) {
                if (OldPatVersion >= 0 && OldPmtVersion >= 0) {
                   int NewPatVersion, NewPmtVersion;
-                  if (PatPmtParser.GetVersions(NewPatVersion, NewPmtVersion)) {
+                  if (patPmtParser.GetVersions(NewPatVersion, NewPmtVersion)) {
                      if (NewPatVersion != OldPatVersion || NewPmtVersion != OldPmtVersion) {
                         dsyslog("PAT/PMT version change while cutting");
                         FrameChecker.Reset();
