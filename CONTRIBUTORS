@@ -3962,3 +3962,4 @@ Dirk Nehring <dnehring@gmx.net>
  for reporting that in cTransfer it could happen that Receive() called PlayTs() before
  Activate() does
  for adding atomic to cRingBufferLinear to avoid possible data races on ARM CPUs
+ for fixing locking in cDevice::DetachAll() and cDevice::DetachAllReceivers()

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.23 2026/09/01 09:56:59 kls Exp $
+ * $Id: device.c 5.24 2026/09/05 12:15:12 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -1937,21 +1937,30 @@ void cDevice::Detach(cReceiver *Receiver, bool ReleaseCam)
 void cDevice::DetachAll(int Pid)
 {
   if (Pid) {
-     cMutexLock MutexLock(&mutexReceiver);
-     for (int i = 0; i < MAXRECEIVERS; i++) {
-         cReceiver *Receiver = receiver[i];
-         if (Receiver && Receiver->WantsPid(Pid))
-            Detach(Receiver, false);
-         }
+     {
+       cMutexLock MutexLock(&mutexReceiver);
+       for (int i = 0; i < MAXRECEIVERS; i++) {
+           cReceiver *Receiver = receiver[i];
+           if (Receiver && Receiver->WantsPid(Pid))
+              Detach(Receiver, false);
+           }
+     }
+     // Outside of mutexReceiver - see DetachAllReceivers():
      ReleaseCamSlot();
      }
 }
 
 void cDevice::DetachAllReceivers(void)
 {
-  cMutexLock MutexLock(&mutexReceiver);
-  for (int i = 0; i < MAXRECEIVERS; i++)
-      Detach(receiver[i], false);
+  {
+    cMutexLock MutexLock(&mutexReceiver);
+    for (int i = 0; i < MAXRECEIVERS; i++)
+        Detach(receiver[i], false);
+  }
+  // Outside of mutexReceiver: ReleaseCamSlot() -> cCamSlot::Assign() takes the
+  // CAM assign mutex, under which Assign() calls AttachReceiver() and
+  // SetCamSlot() (mutexReceiver, thread lock) - holding mutexReceiver here
+  // inverts that order:
   ReleaseCamSlot();
 }
 
