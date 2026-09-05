@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-09-04:
+2026-09-05:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10453,3 +10453,5 @@ Video Disk Recorder Revision History
   Nehring).
 - Fixed PAT/PMT handling in cCuttingThread, which caused edited recordings to sometimes have
   errors, while the original had none.
+- The Recordings menu now marks recordings that are currently in the cutting queue with a
+  percentage sign ('%').
