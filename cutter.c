@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: cutter.c 5.12 2026/09/04 20:17:28 kls Exp $
+ * $Id: cutter.c 5.13 2026/09/05 19:44:40 kls Exp $
  */
 
 #include "cutter.h"
@@ -564,6 +564,7 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
      error = "malloc";
      return false;
      }
+  int LastTotalErrors = 0;
   cFrameChecker FrameChecker;
   for (int Index = BeginIndex; Running() && Index < EndIndex; Index++) {
       bool Independent;
@@ -612,7 +613,11 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
             error = "toIndex";
             return false;
             }
-         HandleErrors();
+         if (FrameChecker.TotalErrors() > LastTotalErrors) {
+            frameErrors += FrameChecker.TotalErrors() - LastTotalErrors;
+            HandleErrors(LastTotalErrors == 0);
+            LastTotalErrors = FrameChecker.TotalErrors();
+            }
          // Write data:
          if (toFile->Write(Buffer, Length) < 0) {
             error = "safe_write";
@@ -630,7 +635,6 @@ bool cCuttingThread::ProcessSequence(int LastEndIndex, int BeginIndex, int EndIn
       else
          return false;
       }
-  frameErrors += FrameChecker.TotalErrors();
   return true;
 }
 

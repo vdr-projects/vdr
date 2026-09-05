@@ -10456,3 +10456,4 @@ Video Disk Recorder Revision History
 - The Recordings menu now marks recordings that are currently in the cutting queue with a
   percentage sign ('%').
 - Fixed locking in cDevice::DetachAll() and cDevice::DetachAllReceivers() (thanks to Dirk Nehring).
+- Fixed displaying errors while cutting a recording (reported by by Stefan Hofmann).
