@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.62 2026/09/05 12:07:20 kls Exp $
+ * $Id: recording.c 5.63 2026/09/06 20:43:00 kls Exp $
  */
 
 #include "recording.h"
@@ -2372,6 +2372,7 @@ int cRecordingsHandler::GetUsage(const char *FileName)
 
 int cRecordingsHandler::GetRequiredDiskSpaceMB(const char *FileName)
 {
+  cMutexLock MutexLock(&mutex);
   int RequiredDiskSpaceMB = 0;
   for (cRecordingsHandlerEntry *r = operations.First(); r; r = operations.Next(r)) {
       if ((r->Usage() & ruCanceled) != 0)

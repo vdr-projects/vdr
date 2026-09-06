@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-09-05:
+2026-09-06:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10457,3 +10457,4 @@ Video Disk Recorder Revision History
   percentage sign ('%').
 - Fixed locking in cDevice::DetachAll() and cDevice::DetachAllReceivers() (thanks to Dirk Nehring).
 - Fixed displaying errors while cutting a recording (reported by by Stefan Hofmann).
+- Added a missing lock to cRecordingsHandler::GetRequiredDiskSpaceMB().
