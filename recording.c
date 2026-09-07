@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.63 2026/09/06 20:43:00 kls Exp $
+ * $Id: recording.c 5.64 2026/09/07 18:48:24 kls Exp $
  */
 
 #include "recording.h"
@@ -2272,6 +2272,7 @@ cRecordingsHandler::cRecordingsHandler(void)
 {
   finished = true;
   error = false;
+  state = 0;
 }
 
 cRecordingsHandler::~cRecordingsHandler()
@@ -2292,6 +2293,7 @@ void cRecordingsHandler::Action(void)
                 error |= r->Error();
                 r->Cleanup(Recordings);
                 operations.Del(r);
+                state++;
                 }
              else
                 Sleep = true;
@@ -2332,6 +2334,7 @@ bool cRecordingsHandler::Add(int Usage, const char *FileNameSrc, const char *Fil
               operations.Add(new cRecordingsHandlerEntry(Usage, FileNameSrc, FileNameDst));
               finished = false;
               Start();
+              state++;
               return true;
               }
            else
@@ -2351,15 +2354,19 @@ bool cRecordingsHandler::Add(int Usage, const char *FileNameSrc, const char *Fil
 void cRecordingsHandler::Del(const char *FileName)
 {
   cMutexLock MutexLock(&mutex);
-  if (cRecordingsHandlerEntry *r = Get(FileName))
+  if (cRecordingsHandlerEntry *r = Get(FileName)) {
      r->SetCanceled();
+     state++;
+     }
 }
 
 void cRecordingsHandler::DelAll(void)
 {
   cMutexLock MutexLock(&mutex);
-  for (cRecordingsHandlerEntry *r = operations.First(); r; r = operations.Next(r))
+  for (cRecordingsHandlerEntry *r = operations.First(); r; r = operations.Next(r)) {
       r->SetCanceled();
+      state++;
+      }
 }
 
 int cRecordingsHandler::GetUsage(const char *FileName)
@@ -2387,6 +2394,16 @@ int cRecordingsHandler::GetRequiredDiskSpaceMB(const char *FileName)
          }
       }
   return RequiredDiskSpaceMB;
+}
+
+bool cRecordingsHandler::StateChanged(int &OldState)
+{
+  cMutexLock MutexLock(&mutex);
+  if (state != OldState) {
+     OldState = state;
+     return true;
+     }
+  return false;
 }
 
 bool cRecordingsHandler::Finished(bool &Error)

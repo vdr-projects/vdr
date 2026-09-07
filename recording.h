@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.h 5.28 2026/05/28 13:31:42 kls Exp $
+ * $Id: recording.h 5.29 2026/09/07 18:48:24 kls Exp $
  */
 
 #ifndef __RECORDING_H
@@ -362,6 +362,7 @@ private:
   cList<cRecordingsHandlerEntry> operations;
   bool finished;
   bool error;
+  int state;
   cRecordingsHandlerEntry *Get(const char *FileName);
 protected:
   virtual void Action(void) override;
@@ -389,6 +390,12 @@ public:
        ///< Returns the total disk space required to process all actions.
        ///< If FileName is given, only the drive that contains that file is taken
        ///< into account.
+  bool StateChanged(int &OldState);
+       ///< Returns true if the state if this recordings handler has changed since
+       ///< the last call with the given OldState variable. The caller shall
+       ///< initialize OldState with 0 before the first call, and this variable
+       ///< shall live as long as the caller intends to observe this handler's
+       ///< state.
   bool Finished(bool &Error);
        ///< Returns true if all operations in the list have been finished.
        ///< If there have been any errors, Errors will be set to true.

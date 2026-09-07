@@ -10458,3 +10458,6 @@ Video Disk Recorder Revision History
 - Fixed locking in cDevice::DetachAll() and cDevice::DetachAllReceivers() (thanks to Dirk Nehring).
 - Fixed displaying errors while cutting a recording (reported by by Stefan Hofmann).
 - Added a missing lock to cRecordingsHandler::GetRequiredDiskSpaceMB().
+- Added cRecordingsHandler::StateChanged() to allow the Recordings menu to update items after
+  entering a cutting jon into the queue via the SVDRP comannd EDIT or by pressing the green
+  button in the "Edit recording" menu.

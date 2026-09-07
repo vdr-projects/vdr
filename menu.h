@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.h 5.14 2026/08/26 08:56:34 kls Exp $
+ * $Id: menu.h 5.15 2026/09/07 18:48:24 kls Exp $
  */
 
 #ifndef __MENU_H
@@ -217,6 +217,7 @@ private:
   char *base;
   int level;
   cStateKey recordingsStateKey;
+  int recordingsHandlerState;
   int helpKeys;
   bool delRecMenu;
   bool autoRefresh;

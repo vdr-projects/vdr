@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.67 2026/09/05 12:07:20 kls Exp $
+ * $Id: menu.c 5.68 2026/09/07 18:48:24 kls Exp $
  */
 
 #include "menu.h"
@@ -3156,6 +3156,7 @@ cMenuRecordings::cMenuRecordings(const char *Base, int Level, bool OpenSubMenus,
   SetMenuCategory(DelRecMenu ? mcRecordingDel : mcRecording);
   base = Base ? strdup(Base) : NULL;
   level = Setup.RecordingDirs ? Level : -1;
+  recordingsHandlerState = 0;
   filter = Filter;
   helpKeys = -1;
   delRecMenu = DelRecMenu;
@@ -3219,6 +3220,8 @@ void cMenuRecordings::SetHelpKeys(void)
 
 void cMenuRecordings::Set(bool Refresh)
 {
+  if (RecordingsHandler.StateChanged(recordingsHandlerState))
+     recordingsStateKey.Reset();
   if (delRecMenu ? cRecordings::GetDeletedRecordingsRead(recordingsStateKey) : cRecordings::GetRecordingsRead(recordingsStateKey)) {
      recordingsStateKey.Remove();
      cRecordings *Recordings = delRecMenu ? cRecordings::GetDeletedRecordingsWrite(recordingsStateKey) : cRecordings::GetRecordingsWrite(recordingsStateKey); // write access is necessary for sorting!
