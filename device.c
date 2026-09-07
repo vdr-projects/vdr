@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.24 2026/09/05 12:15:12 kls Exp $
+ * $Id: device.c 5.25 2026/09/07 19:08:22 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -187,9 +187,14 @@ cString cDevice::DeviceName(void) const
 void cDevice::MakePrimaryDevice(bool On)
 {
   if (!On) {
-     cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
-     DELETENULL(liveSubtitle);
-     DELETENULL(dvbSubtitleConverter);
+     cLiveSubtitle *ls;
+     {
+       cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+       ls = liveSubtitle; // deleted outside the mutex, see SetCurrentSubtitleTrack()
+       liveSubtitle = NULL;
+       DELETENULL(dvbSubtitleConverter);
+     }
+     delete ls;
      }
 }
 
@@ -892,9 +897,14 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
            }
         }
      StopReplay();
-     cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
-     DELETENULL(liveSubtitle);
-     DELETENULL(dvbSubtitleConverter);
+     cLiveSubtitle *ls;
+     {
+       cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+       ls = liveSubtitle; // deleted outside the mutex, see SetCurrentSubtitleTrack()
+       liveSubtitle = NULL;
+       DELETENULL(dvbSubtitleConverter);
+     }
+     delete ls;
      }
 
   cDevice *Device = (LiveView && IsPrimaryDevice(false)) ? GetDevice(Channel, LIVEPRIORITY, true) : this;
@@ -1196,19 +1206,32 @@ bool cDevice::SetCurrentSubtitleTrack(eTrackType Type, bool Manual)
   if (Type == ttNone || IS_SUBTITLE_TRACK(Type)) {
      currentSubtitleTrack = Type;
      autoSelectPreferredSubtitleLanguage = !Manual;
-     cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
-     if (dvbSubtitleConverter) {
-        dvbSubtitleConverter->Reset();
-        if (Type == ttNone) {
-           if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND)
-              dvbSubtitleConverter->SetVisible(false);
-           else
-              DELETENULL(dvbSubtitleConverter);
-           }
-        else if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND && Manual)
-           dvbSubtitleConverter->SetVisible(true);
-        }
-     DELETENULL(liveSubtitle);
+     cLiveSubtitle *ls;
+     {
+       // mutexCurrentSubtitleTrack guards dvbSubtitleConverter and liveSubtitle
+       // against the play/receiver thread and other control paths. liveSubtitle
+       // is only unlinked under the mutex and deleted after releasing it:
+       // ~cLiveSubtitle() detaches the receiver, which takes mutexReceiver - and
+       // the receiver thread holds mutexReceiver while it delivers data through
+       // cLiveSubtitle::Receive() -> PlayTs() -> PlayTsSubtitle(), where it
+       // waits for mutexCurrentSubtitleTrack. Deleting under the mutex would
+       // deadlock the two:
+       cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+       if (dvbSubtitleConverter) {
+          dvbSubtitleConverter->Reset();
+          if (Type == ttNone) {
+             if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND)
+                dvbSubtitleConverter->SetVisible(false);
+             else
+                DELETENULL(dvbSubtitleConverter);
+             }
+          else if (Replaying() && !Transferring() && Setup.DisplaySubtitles == SUBTITLES_REWIND && Manual)
+             dvbSubtitleConverter->SetVisible(true);
+          }
+       ls = liveSubtitle;
+       liveSubtitle = NULL;
+     }
+     delete ls;
      if (player)
         player->SetSubtitleTrack(currentSubtitleTrack, GetTrack(currentSubtitleTrack));
      else
@@ -1409,11 +1432,14 @@ bool cDevice::AttachPlayer(cPlayer *Player)
   if (CanReplay()) {
      if (player)
         Detach(player);
+     cLiveSubtitle *ls;
      {
-        cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
-        DELETENULL(liveSubtitle);
-        DELETENULL(dvbSubtitleConverter);
+       cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+       ls = liveSubtitle; // deleted outside the mutex, see SetCurrentSubtitleTrack()
+       liveSubtitle = NULL;
+       DELETENULL(dvbSubtitleConverter);
      }
+     delete ls;
      patPmtParser.Reset();
      player = Player;
      if (!Transferring())
@@ -1652,6 +1678,9 @@ int cDevice::PlayTsAudio(const uchar *Data, int Length)
 
 int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
 {
+  // The converter is created here in the play/receiver thread but reset and
+  // deleted from control paths in other threads; mutexCurrentSubtitleTrack
+  // (which already guarded two of the delete sites) now guards all access:
   cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
   if (!dvbSubtitleConverter) {
      dvbSubtitleConverter = new cDvbSubtitleConverter;
