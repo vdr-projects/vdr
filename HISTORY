@@ -10365,7 +10365,7 @@ Video Disk Recorder Revision History
 - Fixed a precedence problem in cLircDevRemote::Action().
 - Added missing 'override' keywords.
 
-2026-09-06:
+2026-09-14:
 
 - Fixed wrong credits in HISTORY and CONTRIBUTORS.
 - Unified the German translations of 'folder' (thanks to Stefan Hofmann).
@@ -10461,3 +10461,4 @@ Video Disk Recorder Revision History
 - Added cRecordingsHandler::StateChanged() to allow the Recordings menu to update items after
   entering a cutting jon into the queue via the SVDRP comannd EDIT or by pressing the green
   button in the "Edit recording" menu.
+- Fixed closing the socket in cSVDRPServer and cSVDRPClient (reported by Dirk Nehring).

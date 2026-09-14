@@ -3964,3 +3964,5 @@ Dirk Nehring <dnehring@gmx.net>
  Activate() does
  for adding atomic to cRingBufferLinear to avoid possible data races on ARM CPUs
  for fixing locking in cDevice::DetachAll() and cDevice::DetachAllReceivers()
+ for fixing closing the socket in cSVDRPServer::~cSVDRPServer()
+ for reporting multiple closing of the same socket in cSVDRPServer and cSVDRPClient

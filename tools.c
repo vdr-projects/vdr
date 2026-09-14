@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.24 2026/07/31 08:50:19 kls Exp $
+ * $Id: tools.c 5.25 2026/09/14 13:54:58 kls Exp $
  */
 
 #include "tools.h"
@@ -1731,6 +1731,7 @@ bool cFileNameList::Load(const char *Directory, bool DirsOnly)
 cFile::cFile(void)
 {
   f = -1;
+  owner = true;
 }
 
 cFile::~cFile()
@@ -1746,11 +1747,13 @@ bool cFile::Open(const char *FileName, int Flags, mode_t Mode)
   return false;
 }
 
-bool cFile::Open(int FileDes)
+bool cFile::Open(int FileDes, bool Owner)
 {
   if (FileDes >= 0) {
-     if (!IsOpen())
+     if (!IsOpen()) {
         f = FileDes;
+        owner = Owner;
+        }
      else
         esyslog("ERROR: attempt to re-open file descriptor %d", FileDes);
      }
@@ -1760,7 +1763,8 @@ bool cFile::Open(int FileDes)
 void cFile::Close(void)
 {
   if (f >= 0) {
-     close(f);
+     if (owner)
+        close(f);
      f = -1;
      }
 }

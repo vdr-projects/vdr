@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.20 2026/08/29 12:23:12 kls Exp $
+ * $Id: svdrp.c 5.21 2026/09/14 13:54:58 kls Exp $
  */
 
 #include "svdrp.h"
@@ -358,7 +358,7 @@ cSVDRPClient::cSVDRPClient(const char *Address, int Port, const char *ServerName
   fetchFlags = sffNone;
   connected = false;
   if (socket.Connect(Address)) {
-     if (file.Open(socket.Socket())) {
+     if (file.Open(socket.Socket(), false)) {
         SVDRPClientPoller.Add(file, false);
         dsyslog("SVDRP %s > %s client created for '%s'", Setup.SVDRPHostName, serverIpAddress.Connection(), *serverName);
         return;
@@ -1092,7 +1092,6 @@ static cString grabImageDir;
 
 class cSVDRPServer {
 private:
-  int socket;
   cIpAddress clientIpAddress;
   cString clientName;
   cFile file;
@@ -1154,7 +1153,6 @@ static cPoller SVDRPServerPoller;
 
 cSVDRPServer::cSVDRPServer(int Socket, const cIpAddress *ClientIpAddress)
 {
-  socket = Socket;
   clientIpAddress = *ClientIpAddress;
   clientName = clientIpAddress.Connection(); // will be set to actual name by a CONN command
   PUTEhandler = NULL;
@@ -1162,7 +1160,7 @@ cSVDRPServer::cSVDRPServer(int Socket, const cIpAddress *ClientIpAddress)
   length = BUFSIZ;
   cmdLine = MALLOC(char, length);
   lastActivity = time(NULL);
-  if (file.Open(socket)) {
+  if (file.Open(Socket)) {
      time_t now = time(NULL);
      Reply(220, "%s SVDRP VideoDiskRecorder %s; %s; %s", Setup.SVDRPHostName, VDRVERSION, *TimeToString(now), cCharSetConv::SystemCharacterTable() ? cCharSetConv::SystemCharacterTable() : "UTF-8");
      SVDRPServerPoller.Add(file, false);
@@ -1188,7 +1186,6 @@ void cSVDRPServer::Close(bool SendReply, bool Timeout)
      file.Close();
      DELETENULL(PUTEhandler);
      }
-  close(socket);
 }
 
 bool cSVDRPServer::Send(const char *s)

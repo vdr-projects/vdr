@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.h 5.18 2026/07/30 08:53:18 kls Exp $
+ * $Id: tools.h 5.19 2026/09/14 13:54:58 kls Exp $
  */
 
 #ifndef __TOOLS_H
@@ -480,12 +480,14 @@ public:
 class cFile {
 private:
   int f;
+  bool owner;
 public:
   cFile(void);
   ~cFile();
   operator int () { return f; }
   bool Open(const char *FileName, int Flags, mode_t Mode = DEFFILEMODE);
-  bool Open(int FileDes);
+  bool Open(int FileDes, bool Owner = true);
+       ///< Set Owner to false if FileDes shall not be closed by this cFile.
   void Close(void);
   bool IsOpen(void) { return f >= 0; }
   bool Ready(bool Wait = true);
