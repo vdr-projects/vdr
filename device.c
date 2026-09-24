@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.25 2026/09/07 19:08:22 kls Exp $
+ * $Id: device.c 5.26 2026/09/24 20:28:19 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -1491,6 +1491,17 @@ bool cDevice::Flush(int TimeoutMs)
 
 bool cDevice::Drain(void)
 {
+  // At the end of a stream no further TS packet comes that could complete the
+  // PES packets the converters still hold, so they are played out here. The
+  // cDevice implementations are called explicitly, because a device that
+  // overrides them buffers on its own and plays that data out in DrainDevice():
+  if (cDevice::PlayTsVideo(NULL, 0) <= 0 || cDevice::PlayTsAudio(NULL, 0) <= 0 || cDevice::PlayTsSubtitle(NULL, 0) <= 0)
+     return false; // backpressure, the player will call again
+  return DrainDevice();
+}
+
+bool cDevice::DrainDevice(void)
+{
   return Flush(10);
 }
 
@@ -1644,8 +1655,9 @@ int cDevice::PlayPes(const uchar *Data, int Length, bool VideoOnly)
 int cDevice::PlayTsVideo(const uchar *Data, int Length)
 {
   // Video PES has no explicit length, so we can only determine the end of
-  // a PES packet when the next TS packet that starts a payload comes in:
-  if (TsPayloadStart(Data)) {
+  // a PES packet when the next TS packet that starts a payload comes in
+  // (Data == NULL means that no such packet will come any more):
+  if (!Data || TsPayloadStart(Data)) {
      int l;
      while (const uchar *p = tsToPesVideo.GetPes(l)) {
            int w = PlayVideo(p, l);
@@ -1656,6 +1668,8 @@ int cDevice::PlayTsVideo(const uchar *Data, int Length)
            }
      tsToPesVideo.Reset();
      }
+  if (!Data)
+     return 1; // nothing taken, but the converter is empty now
   tsToPesVideo.PutTs(Data, Length);
   return Length;
 }
@@ -1672,6 +1686,8 @@ int cDevice::PlayTsAudio(const uchar *Data, int Length)
         }
      tsToPesAudio.Reset();
      }
+  if (!Data)
+     return 1; // nothing taken, but the converter is empty now
   tsToPesAudio.PutTs(Data, Length);
   return Length;
 }
@@ -1682,18 +1698,21 @@ int cDevice::PlayTsSubtitle(const uchar *Data, int Length)
   // deleted from control paths in other threads; mutexCurrentSubtitleTrack
   // (which already guarded two of the delete sites) now guards all access:
   cMutexLock MutexLock(&mutexCurrentSubtitleTrack);
+  if (!Data && !dvbSubtitleConverter)
+     return 1; // no subtitles have been played, so there is nothing to play out
   if (!dvbSubtitleConverter) {
      dvbSubtitleConverter = new cDvbSubtitleConverter;
      if (Replaying() && !Transferring())
         dvbSubtitleConverter->SetVisible(Setup.DisplaySubtitles != SUBTITLES_REWIND);
      }
-  tsToPesSubtitle.PutTs(Data, Length);
+  if (Data)
+     tsToPesSubtitle.PutTs(Data, Length);
   int l;
   if (const uchar *p = tsToPesSubtitle.GetPes(l)) {
      dvbSubtitleConverter->Convert(p, l);
      tsToPesSubtitle.Reset();
      }
-  return Length;
+  return Data ? Length : 1; // nothing taken if Data is NULL, but the converter is empty now
 }
 
 int cDevice::PlayTs(const uchar *Data, int Length, bool VideoOnly)

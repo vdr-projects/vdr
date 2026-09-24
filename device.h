@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.h 5.11 2026/08/16 09:45:03 kls Exp $
+ * $Id: device.h 5.12 2026/09/24 20:28:19 kls Exp $
  */
 
 #ifndef __DEVICE_H
@@ -700,6 +700,11 @@ protected:
        ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< The default implementation collects all incoming TS payload belonging
        ///< to one PES packet and calls PlayVideo() with the resulting packet.
+       ///< If Data is NULL, the PES packet the converter still holds is played
+       ///< out, and a value greater than zero is returned once it is empty.
+       ///< Drain() does this at the end of a stream, where the next TS packet
+       ///< with a payload start, which would complete that PES packet, never
+       ///< comes.
   virtual int PlayTsAudio(const uchar *Data, int Length);
        ///< Plays the given data block as audio.
        ///< Data points to exactly one complete TS packet of the given Length
@@ -708,6 +713,8 @@ protected:
        ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< The default implementation collects all incoming TS payload belonging
        ///< to one PES packet and calls PlayAudio() with the resulting packet.
+       ///< If Data is NULL, the PES packet the converter still holds is played
+       ///< out, as with PlayTsVideo().
   virtual int PlayTsSubtitle(const uchar *Data, int Length);
        ///< Plays the given data block as a subtitle.
        ///< Data points to exactly one complete TS packet of the given Length
@@ -716,6 +723,23 @@ protected:
        ///< Length) or not at all (returning 0 or -1 and setting 'errno' accordingly).
        ///< The default implementation collects all incoming TS payload belonging
        ///< to one PES packet and displays the resulting subtitle via the OSD.
+       ///< If Data is NULL, the PES packet the converter still holds is played
+       ///< out, as with PlayTsVideo().
+  virtual bool DrainDevice(void);
+       ///< Tells the device to play out all data it still holds in its buffers
+       ///< and decoders (data may be held back, for instance, because of frame
+       ///< reordering), without repeating or discarding anything, and to keep
+       ///< GetSTC() advancing until the last frame has actually been played out.
+       ///< Returns true once everything has been played out and replay can be
+       ///< ended. The first call puts the device into "draining" state, calls
+       ///< to Clear() and SetPlayMode() cancel it.
+       ///< Called by Drain(), which has already delivered the PES data that
+       ///< PlayTs() held back. A device that does its own buffering in an
+       ///< overridden PlayTsVideo(), PlayTsAudio() or PlayTsSubtitle() shall
+       ///< play out that data here, too.
+       ///< The default implementation returns false, so that a device which
+       ///< doesn't implement this function still gets a chance to play out its
+       ///< buffers until the player's timeout expires.
 public:
   virtual int64_t GetSTC(void);
        ///< Gets the current System Time Counter, which can be used to
@@ -802,21 +826,14 @@ public:
   [[deprecated("use Drain() instead")]]
 #endif
   virtual bool Flush(int TimeoutMs = 0);
-  virtual bool Drain(void);
+  bool Drain(void);
        ///< Tells the device that the last data of the current stream has been
        ///< delivered and no more will follow, and asks whether it has finished
        ///< playing. A player calls this function repeatedly once its buffer has
-       ///< run empty at the end of the stream. The device shall play out all data
-       ///< it still holds in its buffers and decoders (data may be held back, for
-       ///< instance, because of frame reordering), without repeating or discarding
-       ///< anything, and shall keep GetSTC() advancing until the last frame has
-       ///< actually been played out.
+       ///< run empty at the end of the stream. First plays out the PES data that
+       ///< PlayTs() still holds back, then calls DrainDevice().
        ///< Returns true once everything has been played out and replay can be ended.
-       ///< The first call puts the device into "draining" state, calls to Clear()
-       ///< and SetPlayMode() cancel it.
-       ///< The default implementation returns false, so that a device which
-       ///< doesn't implement this function still gets a chance to play out its
-       ///< buffers until the player's timeout expires.
+       ///< A device implements DrainDevice(), not this function.
   virtual int PlayPes(const uchar *Data, int Length, bool VideoOnly = false);
        ///< Plays all valid PES packets in Data with the given Length.
        ///< If Data is NULL any leftover data from a previous call will be

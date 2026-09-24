@@ -10401,10 +10401,10 @@ Video Disk Recorder Revision History
 - Removed the fixed buffer length in syslog_with_tid().
 - cDvbPlayer no longer repeats the last frame when hitting the beginning or end of a recording.
   + cDevice::Flush() is now deprecated and may be removed in a future version. Output devices
-    should implement Drain() instead.
+    should implement DrainDevice() instead.
   + cPlayer::DeviceFlush() is now deprecated and may be removed in a future version. Players
     should use DeviceDrain() instead.
-  + The default implementation of cDevice::Drain() returns false, in order to allow the player's
+  + The default implementation of cDevice::DrainDevice() returns false, in order to allow the player's
     timeout to kick in. Therefore the default return value of cDevice::Flush() has also been
     changed  to false.
   (with help from Andreas Baierl and Dirk Nehring).
