@@ -1962,6 +1962,24 @@ virtual void SetVideoFormat(bool VideoFormat16_9);
 virtual void SetVolumeDevice(int Volume);
 </pre></td></tr></table><p>
 
+<b>End of stream</b>
+<p>
+When a player has delivered the last data of a stream, it calls <tt>Drain()</tt>
+repeatedly until it returns <tt>true</tt>. <tt>Drain()</tt> first plays out the PES
+data that <tt>PlayTs()</tt> still holds back, and then calls
+
+<p><table><tr><td class="code"><pre>
+virtual bool DrainDevice(void);
+</pre></td></tr></table><p>
+
+which a device implements to play out all data it still holds in its buffers and
+decoders, without repeating or discarding anything. It must not block, shall return
+<tt>true</tt> once the last frame has actually been played out, and <tt>GetSTC()</tt>
+must keep advancing until then. <tt>Clear()</tt> and <tt>SetPlayMode()</tt> cancel
+the draining. A device that buffers data in its own <tt>PlayTsVideo()</tt>,
+<tt>PlayTsAudio()</tt> or <tt>PlayTsSubtitle()</tt> plays out that data here, too.
+The default implementation calls the deprecated <tt>Flush()</tt>.
+
 <p>
 <b>Section Filtering</b>
 <p>

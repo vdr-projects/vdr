@@ -10466,3 +10466,4 @@ Video Disk Recorder Revision History
 2026-09-27:
 
 - Added a missing 'StuckAtEof = 0' in cDvbPlayer::Action() (thanks to Dirk Nehring).
+- Added a section about DrainDevice() to PLUGINS.html (thanks to Dirk Nehring).
