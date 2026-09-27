@@ -3966,3 +3966,4 @@ Dirk Nehring <dnehring@gmx.net>
  for fixing locking in cDevice::DetachAll() and cDevice::DetachAllReceivers()
  for fixing closing the socket in cSVDRPServer::~cSVDRPServer()
  for reporting multiple closing of the same socket in cSVDRPServer and cSVDRPClient
+ for adding a missing 'StuckAtEof = 0' in cDvbPlayer::Action()

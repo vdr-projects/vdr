@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.17 2026/08/16 09:45:03 kls Exp $
+ * $Id: dvbplayer.c 5.18 2026/09/27 09:48:06 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -623,6 +623,7 @@ void cDvbPlayer::Action(void)
                 }
              }
           else {
+             StuckAtEof = 0; // the STC doesn't advance while paused, so this is no stall
              Sleep = true;
              continue;
              }

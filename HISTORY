@@ -10462,3 +10462,7 @@ Video Disk Recorder Revision History
   entering a cutting jon into the queue via the SVDRP comannd EDIT or by pressing the green
   button in the "Edit recording" menu.
 - Fixed closing the socket in cSVDRPServer and cSVDRPClient (reported by Dirk Nehring).
+
+2026-09-27:
+
+- Added a missing 'StuckAtEof = 0' in cDvbPlayer::Action() (thanks to Dirk Nehring).
