@@ -831,8 +831,6 @@ VDR version 2.6.6 added '/' to this list.
                          When recordings are sorted "by time", they appear in ascending
                          order (i.e. "oldest" to "newest"). If this parameter is set to
                          "descending", they will be presented "newest" to "oldest.
-                         Note that in the latter case, if "Always sort folders first"
-                         is "yes", folders will appear in reverse alphabetical order.
 
   Number keys for characters = yes
                          Controls whether the number keys can be used to enter

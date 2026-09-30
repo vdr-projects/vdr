@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.64 2026/09/07 18:48:24 kls Exp $
+ * $Id: recording.c 5.65 2026/09/30 20:02:10 kls Exp $
  */
 
 #include "recording.h"
@@ -1135,8 +1135,8 @@ char *cRecording::StripEpisodeName(char *s, bool Strip)
      // To have folders sorted before plain recordings, the '/' s1 points to
      // is replaced by the character '1'. All other slashes will be replaced
      // by '0' in SortName() (see below), which will result in the desired
-     // sequence ('0' and '1' are reversed in case of rsdDescending):
-     *s1 = (Setup.RecSortingDirection == rsdAscending) ? '1' : '0';
+     // sequence.
+     *s1 = '1';
      if (Strip) {
         s1++;
         memmove(s1, s2, t - s2 + 1);
@@ -1157,9 +1157,9 @@ char *cRecording::SortName(void) const
         }
      else {
         char *s = strdup(FileName() + strlen(cVideoDirectory::Name()));
-        if (RecordingsSortMode != rsmName || Setup.AlwaysSortFoldersFirst)
+        if (RecordingsSortMode != rsmName || Setup.RecordingDirs && Setup.AlwaysSortFoldersFirst)
            s = StripEpisodeName(s, RecordingsSortMode != rsmName);
-        strreplace(s, '/', (Setup.RecSortingDirection == rsdAscending) ? '0' : '1'); // some locales ignore '/' when sorting
+        strreplace(s, '/', '0'); // some locales ignore '/' when sorting
         int l = strxfrm(NULL, s, 0) + 1;
         *sb = MALLOC(char, l);
         strxfrm(*sb, s, l);
@@ -1208,10 +1208,7 @@ void cRecording::SetDeleted(void)
 int cRecording::Compare(const cListObject &ListObject) const
 {
   cRecording *r = (cRecording *)&ListObject;
-  if (Setup.RecSortingDirection == rsdAscending)
-     return strcmp(SortName(), r->SortName());
-  else
-     return strcmp(r->SortName(), SortName());
+  return strcmp(SortName(), r->SortName());
 }
 
 bool cRecording::IsInPath(const char *Path) const

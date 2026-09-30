@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.68 2026/09/07 18:48:24 kls Exp $
+ * $Id: menu.c 5.69 2026/09/30 20:02:10 kls Exp $
  */
 
 #include "menu.h"
@@ -3259,7 +3259,16 @@ void cMenuRecordings::Set(bool Refresh)
                }
             if (*Item->Text() && !LastDir) {
                autoRefresh |= Item->Usage();
-               Add(Item);
+               if (Setup.RecSortingDirection == rsdDescending && RecordingsSortMode == rsmTime) {
+                  if (!Setup.RecordingDirs)
+                     Ins(Item, false, First());
+                  else if (!Item->IsDirectory() && LastItem && !LastItem->IsDirectory())
+                     Ins(Item, false, LastItem);
+                  else
+                     Add(Item);
+                  }
+               else
+                  Add(Item);
                LastItem = Item;
                if (Item->IsDirectory())
                   LastDir = Item;
