@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.26 2026/09/24 20:28:19 kls Exp $
+ * $Id: device.c 5.27 2026/10/03 20:02:44 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -976,9 +976,14 @@ eSetChannelResult cDevice::SetChannel(const cChannel *Channel, bool LiveView)
      // Launch() makes the control visible to the main loop, which attaches it and
      // starts feeding TS data into the primary device - if that happens while this
      // function is still setting up the track state above, the two threads race
-     // on availableTracks et al. (SwitchChannel() may run in the SVDRP thread):
-     if (NeedsTransferMode)
+     // on availableTracks et al. (SwitchChannel() may run in the SVDRP thread).
+     // Attach it right here instead of waiting for the main loop: until then
+     // cTransfer drops all TS data, and HasProgramme() reports no programme, which
+     // can make the main loop switch to the channel a second time:
+     if (NeedsTransferMode) {
         cControl::Launch(new cTransferControl(Device, Channel));
+        cControl::Attach();
+        }
      cStatus::MsgChannelSwitch(this, Channel->Number(), LiveView); // only report status if channel switch successful
      }
 
@@ -2021,7 +2026,7 @@ cTSBuffer::cTSBuffer(int File, int Size, int DeviceNumber)
   deviceNumber = DeviceNumber;
   delivered = 0;
   ringBuffer = new cRingBufferLinear(Size, TS_SIZE, true, "TS");
-  ringBuffer->SetTimeouts(100, 100);
+  ringBuffer->SetTimeouts(100, 10);
   ringBuffer->SetIoThrottle();
   Start();
 }

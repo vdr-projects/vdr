@@ -3968,3 +3968,4 @@ Dirk Nehring <dnehring@gmx.net>
  for reporting multiple closing of the same socket in cSVDRPServer and cSVDRPClient
  for adding a missing 'StuckAtEof = 0' in cDvbPlayer::Action()
  for adding a section about DrainDevice() to PLUGINS.html
+ for improving live channel switching in 'Transfer Mode'
