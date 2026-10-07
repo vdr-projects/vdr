@@ -10463,10 +10463,11 @@ Video Disk Recorder Revision History
   button in the "Edit recording" menu.
 - Fixed closing the socket in cSVDRPServer and cSVDRPClient (reported by Dirk Nehring).
 
-2026-10-03:
+2026-10-07:
 
 - Added a missing 'StuckAtEof = 0' in cDvbPlayer::Action() (thanks to Dirk Nehring).
 - Added a section about DrainDevice() to PLUGINS.html (thanks to Dirk Nehring).
 - Folders are now always sorted alphabetically in the "Recordings" menu, even if
   "Setup/OSD/Sorting direction for recordings" is set to "descending".
 - Improved live channel switching in 'Transfer Mode' (thanks to Dirk Nehring).
+- Added a missing 'StuckAtEof = 0' in cDvbPlayer::Action() (thanks to Andreas Baierl).

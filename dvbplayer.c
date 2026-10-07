@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.18 2026/09/27 09:48:06 kls Exp $
+ * $Id: dvbplayer.c 5.19 2026/10/07 08:27:54 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -640,6 +640,7 @@ void cDvbPlayer::Action(void)
 
           if (playFrame) {
              eof = false;
+             StuckAtEof = 0;
              if (!p) {
                 p = playFrame->Data();
                 pc = playFrame->Count();

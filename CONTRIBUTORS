@@ -3927,6 +3927,7 @@ Andreas Baierl <post@andreasbaierl.de>
  for reporting that cOsd::savedPixmap was cPixmapMemory* instead of the abstract
  cPixmap*
  for suggesting to enhance the comment for cOsd::RestoreRegion()
+ for adding a missing 'StuckAtEof = 0' in cDvbPlayer::Action()
 
 Fabian Wolter <vdr-ml@fabian-wolter.de>
  for fixing a memory leak in cMark::Parse()
