@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.65 2026/09/30 20:02:10 kls Exp $
+ * $Id: recording.c 5.66 2026/10/10 20:21:47 kls Exp $
  */
 
 #include "recording.h"
@@ -1254,6 +1254,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
   const char *New = NewIndicator && IsNew() ? "*" : "";
   const char *Err = NewIndicator && (info->Errors() > 0) ? "!" : "";
   const char *Cut = NewIndicator && ((IsInUse() & (ruCut | ruSrc)) == (ruCut | ruSrc)) ? "%" : "";
+  const char *Pes = NewIndicator && IsPesRecording() ? "&" : "";
   free(titleBuffer);
   titleBuffer = NULL;
   if (Level < 0 || Level == HierarchyLevels()) {
@@ -1273,7 +1274,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
                    Minutes % 60
                    );
         }
-     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%s%s%s%s%c%s",
+     titleBuffer = strdup(cString::sprintf("%02d.%02d.%02d%c%02d:%02d%s%s%s%s%s%c%s",
                             t->tm_mday,
                             t->tm_mon + 1,
                             t->tm_year % 100,
@@ -1284,6 +1285,7 @@ const char *cRecording::Title(char Delimiter, bool NewIndicator, int Level) cons
                             New,
                             Err,
                             Cut,
+                            Pes,
                             Delimiter,
                             s));
      // let's not display a trailing FOLDERDELIMCHAR:
