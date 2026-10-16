@@ -10463,7 +10463,7 @@ Video Disk Recorder Revision History
   button in the "Edit recording" menu.
 - Fixed closing the socket in cSVDRPServer and cSVDRPClient (reported by Dirk Nehring).
 
-2026-10-10:
+2026-10-16:
 
 - Added a missing 'StuckAtEof = 0' in cDvbPlayer::Action() (thanks to Dirk Nehring).
 - Added a section about DrainDevice() to PLUGINS.html (thanks to Dirk Nehring).
@@ -10472,3 +10472,5 @@ Video Disk Recorder Revision History
 - Improved live channel switching in 'Transfer Mode' (thanks to Dirk Nehring).
 - Added a missing 'StuckAtEof = 0' in cDvbPlayer::Action() (thanks to Andreas Baierl).
 - The Recordings menu now marks PES recordings with an ampersand sign ('&').
+- Revoked the fix for displaying subtitles with the same PTS as the previous ones (sometimes caused
+  flicker when displaying subtitles after fast rewind).

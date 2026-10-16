@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 5.7 2026/05/22 14:04:19 kls Exp $
+ * $Id: dvbsubtitle.c 5.8 2026/10/16 14:23:05 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1808,7 +1808,9 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
   cDvbSubtitleBitmaps *After = NULL;
   for (cDvbSubtitleBitmaps *sb = bitmaps->Last(); sb; sb = bitmaps->Prev(sb)) {
       int64_t Delta = PtsDeltaMs(sb->Pts(), Page->Pts());
-      if (Delta <= 0) {
+      if (Delta == 0)
+         return; // we already have this one
+      if (Delta < 0) {
          After = sb;
          break;
          }
