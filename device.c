@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.27 2026/10/03 20:02:44 kls Exp $
+ * $Id: device.c 5.28 2026/10/18 20:08:18 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -566,98 +566,111 @@ bool cDevice::HasPid(int Pid) const
 
 bool cDevice::AddPid(int Pid, ePidType PidType, int StreamType)
 {
-  cMutexLock MutexLock(&mutexPids);
-  if (Pid || PidType == ptPcr) {
-     int n = -1;
-     int a = -1;
-     if (PidType != ptPcr) { // PPID always has to be explicit
-        for (int i = 0; i < MAXPIDHANDLES; i++) {
-            if (i != ptPcr) {
-               if (pidHandles[i].pid == Pid)
-                  n = i;
-               else if (a < 0 && i >= ptOther && !pidHandles[i].used)
-                  a = i;
-               }
-            }
-        }
-     if (n >= 0) {
-        // The Pid is already in use
-        if (++pidHandles[n].used == 2 && n <= ptTeletext) {
-           // It's a special PID that may have to be switched into "tap" mode
-           PRINTPIDS("A");
-           if (!SetPid(&pidHandles[n], n, true)) {
-              esyslog("ERROR: can't set PID %d on device %d", Pid, DeviceNumber() + 1);
-              if (PidType <= ptTeletext)
-                 DetachAll(Pid);
-              DelPid(Pid, PidType);
-              return false;
+  // cCamSlot::SetPid() and DetachAll() are called after releasing mutexPids.
+  // The locks they take are held while calling AddPid() elsewhere (the CAM
+  // slot's and cCaPidReceiver's mutexes when adding ECM/EMM PIDs, mutexReceiver
+  // in AttachReceiver()):
+  cCamSlot *NotifyCamSlot = NULL;
+  bool Failed = false;
+  {
+    cMutexLock MutexLock(&mutexPids);
+    if (Pid || PidType == ptPcr) {
+       int n = -1;
+       int a = -1;
+       if (PidType != ptPcr) { // PPID always has to be explicit
+          for (int i = 0; i < MAXPIDHANDLES; i++) {
+              if (i != ptPcr) {
+                 if (pidHandles[i].pid == Pid)
+                    n = i;
+                 else if (a < 0 && i >= ptOther && !pidHandles[i].used)
+                    a = i;
+                 }
               }
-           if (camSlot)
-              camSlot->SetPid(Pid, true);
-           }
-        PRINTPIDS("a");
-        return true;
-        }
-     else if (PidType < ptOther) {
-        // The Pid is not yet in use and it is a special one
-        n = PidType;
-        }
-     else if (a >= 0) {
-        // The Pid is not yet in use and we have a free slot
-        n = a;
-        }
-     else {
-        esyslog("ERROR: no free slot for PID %d on device %d", Pid, DeviceNumber() + 1);
-        return false;
-        }
-     if (n >= 0) {
-        pidHandles[n].pid = Pid;
-        pidHandles[n].streamType = StreamType;
-        pidHandles[n].used = 1;
-        PRINTPIDS("C");
-        if (!SetPid(&pidHandles[n], n, true)) {
-           esyslog("ERROR: can't set PID %d on device %d", Pid, DeviceNumber() + 1);
-           if (PidType <= ptTeletext)
-              DetachAll(Pid);
-           DelPid(Pid, PidType);
-           return false;
-           }
-        if (camSlot)
-           camSlot->SetPid(Pid, true);
-        }
+          }
+       if (n >= 0) {
+          // The Pid is already in use
+          if (++pidHandles[n].used == 2 && n <= ptTeletext) {
+             // It's a special PID that may have to be switched into "tap" mode
+             PRINTPIDS("A");
+             if (!SetPid(&pidHandles[n], n, true)) {
+                esyslog("ERROR: can't set PID %d on device %d", Pid, DeviceNumber() + 1);
+                Failed = true;
+                }
+             else
+                NotifyCamSlot = camSlot;
+             }
+          PRINTPIDS("a");
+          }
+       else {
+          if (PidType < ptOther) {
+             // The Pid is not yet in use and it is a special one
+             n = PidType;
+             }
+          else if (a >= 0) {
+             // The Pid is not yet in use and we have a free slot
+             n = a;
+             }
+          else {
+             esyslog("ERROR: no free slot for PID %d on device %d", Pid, DeviceNumber() + 1);
+             return false;
+             }
+          pidHandles[n].pid = Pid;
+          pidHandles[n].streamType = StreamType;
+          pidHandles[n].used = 1;
+          PRINTPIDS("C");
+          if (!SetPid(&pidHandles[n], n, true)) {
+             esyslog("ERROR: can't set PID %d on device %d", Pid, DeviceNumber() + 1);
+             Failed = true;
+             }
+          else
+             NotifyCamSlot = camSlot;
+          }
+       }
+  }
+  if (Failed) {
+     if (PidType <= ptTeletext)
+        DetachAll(Pid);
+     DelPid(Pid, PidType);
+     return false;
      }
+  if (NotifyCamSlot)
+     NotifyCamSlot->SetPid(Pid, true);
   return true;
 }
 
 void cDevice::DelPid(int Pid, ePidType PidType)
 {
-  cMutexLock MutexLock(&mutexPids);
-  if (Pid || PidType == ptPcr) {
-     int n = -1;
-     if (PidType == ptPcr)
-        n = PidType; // PPID always has to be explicit
-     else {
-        for (int i = 0; i < MAXPIDHANDLES; i++) {
-            if (pidHandles[i].pid == Pid) {
-               n = i;
-               break;
-               }
-            }
-        }
-     if (n >= 0 && pidHandles[n].used) {
-        PRINTPIDS("D");
-        if (--pidHandles[n].used < 2) {
-           SetPid(&pidHandles[n], n, false);
-           if (pidHandles[n].used == 0) {
-              pidHandles[n].handle = -1;
-              pidHandles[n].pid = 0;
-              if (camSlot)
-                 camSlot->SetPid(Pid, false);
+  cCamSlot *NotifyCamSlot = NULL; // notified after releasing mutexPids, see AddPid()
+  {
+    cMutexLock MutexLock(&mutexPids);
+    if (Pid || PidType == ptPcr) {
+       int n = -1;
+       if (PidType == ptPcr)
+          n = PidType; // PPID always has to be explicit
+       else {
+          for (int i = 0; i < MAXPIDHANDLES; i++) {
+              if (pidHandles[i].pid == Pid) {
+                 n = i;
+                 break;
+                 }
               }
-           }
-        PRINTPIDS("E");
-        }
-     }
+          }
+       if (n >= 0 && pidHandles[n].used) {
+          PRINTPIDS("D");
+          if (--pidHandles[n].used < 2) {
+             SetPid(&pidHandles[n], n, false);
+             if (pidHandles[n].used == 0) {
+                pidHandles[n].handle = -1;
+                pidHandles[n].pid = 0;
+                NotifyCamSlot = camSlot;
+                }
+             }
+          PRINTPIDS("E");
+          }
+       }
+  }
+  if (NotifyCamSlot)
+     NotifyCamSlot->SetPid(Pid, false);
 }
 
 bool cDevice::SetPid(cPidHandle *Handle, int Type, bool On)

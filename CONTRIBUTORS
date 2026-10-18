@@ -3972,3 +3972,4 @@ Dirk Nehring <dnehring@gmx.net>
  for improving live channel switching in 'Transfer Mode'
  for adding missing locking to cDevice::IsTunedTo(), cDevice::GetSignalStrength() and
  cDevice::GetSignalQuality()
+ for improving locking in cDevice::AddPid()/DelPid()

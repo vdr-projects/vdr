@@ -10478,3 +10478,4 @@ Video Disk Recorder Revision History
   into account.
 - Added missing locking to cDevice::IsTunedTo(), cDevice::GetSignalStrength() and
   cDevice::GetSignalQuality() (thanks to Dirk Nehring).
+- Improved locking in cDevice::AddPid()/DelPid() (thanks to Dirk Nehring).
