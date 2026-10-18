@@ -3960,7 +3960,7 @@ Dirk Nehring <dnehring@gmx.net>
  the necessary scope
  for improving locking in subtitle handling
  for improving locking in cIoThrottle
- for adding missing locking to cDevice::ClrAvailableTracks) and cDevice::SetAvailableTrack()
+ for adding missing locking to cDevice::ClrAvailableTracks() and cDevice::SetAvailableTrack()
  for reporting that in cTransfer it could happen that Receive() called PlayTs() before
  Activate() does
  for adding atomic to cRingBufferLinear to avoid possible data races on ARM CPUs
@@ -3970,3 +3970,5 @@ Dirk Nehring <dnehring@gmx.net>
  for adding a missing 'StuckAtEof = 0' in cDvbPlayer::Action()
  for adding a section about DrainDevice() to PLUGINS.html
  for improving live channel switching in 'Transfer Mode'
+ for adding missing locking to cDevice::IsTunedTo(), cDevice::GetSignalStrength() and
+ cDevice::GetSignalQuality()

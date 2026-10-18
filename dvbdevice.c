@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbdevice.c 5.10 2026/08/29 11:46:58 kls Exp $
+ * $Id: dvbdevice.c 5.11 2026/10/18 19:15:24 kls Exp $
  */
 
 #include "dvbdevice.h"
@@ -798,6 +798,7 @@ cDvbTuner *cDvbTuner::GetBondedMaster(void)
 
 bool cDvbTuner::IsTunedTo(const cChannel *Channel) const
 {
+  cMutexLock MutexLock(&mutex); // SetChannel() reassigns 'channel', freeing its strings
   if (tunerStatus == tsIdle)
      return false; // not tuned to
   if (channel.Source() != Channel->Source() || channel.Transponder() != Channel->Transponder() || channel.Srate() != Channel->Srate())
@@ -1258,7 +1259,10 @@ int cDvbTuner::GetSignalStrength(void) const
       int Signal = 0;
       if (Props[0].u.st.len > 0) {
          switch (Props[0].u.st.stat[0].scale) {
-           case FE_SCALE_DECIBEL:  Signal = StrengthToSSI(&channel, Props[0].u.st.stat[0].svalue, FeMod, FeCod, FeFec);
+           case FE_SCALE_DECIBEL:  {
+                                     cMutexLock MutexLock(&mutex); // for 'channel' (see IsTunedTo()), but not across the slow ioctls above, which would stall the tuner thread
+                                     Signal = StrengthToSSI(&channel, Props[0].u.st.stat[0].svalue, FeMod, FeCod, FeFec);
+                                   }
                                    break;
            case FE_SCALE_RELATIVE: Signal = 100 * Props[0].u.st.stat[0].uvalue / 0xFFFF;
                                    break;
@@ -1336,7 +1340,10 @@ int cDvbTuner::GetSignalQuality(void) const
       int Cnr = 0;
       if (Props[0].u.st.len > 0) {
          switch (Props[0].u.st.stat[0].scale) {
-           case FE_SCALE_DECIBEL:  Cnr = SignalToSQI(&channel, Props[0].u.st.stat[0].svalue, Ber, FeMod, FeCod, FeFec);
+           case FE_SCALE_DECIBEL:  {
+                                     cMutexLock MutexLock(&mutex); // for 'channel', see GetSignalStrength()
+                                     Cnr = SignalToSQI(&channel, Props[0].u.st.stat[0].svalue, Ber, FeMod, FeCod, FeFec);
+                                   }
                                    break;
            case FE_SCALE_RELATIVE: Cnr = 100 * Props[0].u.st.stat[0].uvalue / 0xFFFF;
                                    break;

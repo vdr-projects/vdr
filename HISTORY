@@ -10445,7 +10445,7 @@ Video Disk Recorder Revision History
   scope (thanks to Dirk Nehring).
 - Improved locking in subtitle handling (thanks to Dirk Nehring).
 - Improved locking in cIoThrottle (thanks to Dirk Nehring).
-- Added missing locking to cDevice::ClrAvailableTracks) and cDevice::SetAvailableTrack() (thanks
+- Added missing locking to cDevice::ClrAvailableTracks() and cDevice::SetAvailableTrack() (thanks
   to Dirk Nehring).
 - Fixed cTransfer to make sure Receive() doesn't call PlayTs() before Activate() does (reported
   by Dirk Nehring).
@@ -10463,7 +10463,7 @@ Video Disk Recorder Revision History
   button in the "Edit recording" menu.
 - Fixed closing the socket in cSVDRPServer and cSVDRPClient (reported by Dirk Nehring).
 
-2026-10-17:
+2026-10-18:
 
 - Added a missing 'StuckAtEof = 0' in cDvbPlayer::Action() (thanks to Dirk Nehring).
 - Added a section about DrainDevice() to PLUGINS.html (thanks to Dirk Nehring).
@@ -10476,3 +10476,5 @@ Video Disk Recorder Revision History
   flicker when displaying subtitles after fast rewind).
 - Fixed displaying subtitles with the same PTS as the previous ones, taking the page version
   into account.
+- Added missing locking to cDevice::IsTunedTo(), cDevice::GetSignalStrength() and
+  cDevice::GetSignalQuality() (thanks to Dirk Nehring).
