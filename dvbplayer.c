@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.19 2026/10/07 08:27:54 kls Exp $
+ * $Id: dvbplayer.c 5.20 2026/10/19 13:13:49 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -482,7 +482,6 @@ void cDvbPlayer::Action(void)
   bool WaitingForData = false;
   time_t StuckAtEof = 0;
   uint32_t LastStc = 0;
-  int LastReadFrame = -1;
   int SwitchToPlayFrame = 0;
   bool CutIn = false;
   bool AtLastMark = false;
@@ -587,7 +586,6 @@ void cDvbPlayer::Action(void)
                    int r = nonBlockingFileReader->Result(&b);
                    if (r > 0) {
                       WaitingForData = false;
-                      LastReadFrame = readIndex;
                       int64_t Pts = isPesRecording ? (PesHasPts(b) ? PesGetPts(b) : -1) : TsGetPts(b, r);
                       readFrame = new cFrame(b, -r, ftUnknown, readIndex, Pts, readIndependent); // hands over b to the ringBuffer
                       if (AtLastMark) {
@@ -712,11 +710,7 @@ void cDvbPlayer::Action(void)
                 StuckAtEof = time(NULL);
              LastStc = Stc;
              int Index = ptsIndex.FindIndex(Stc, playMode == pmStill);
-             if (playDir == pdForward && !SwitchToPlayFrame) {
-                if (Index >= LastReadFrame)
-                   break; // automatically stop at end of recording
-                }
-             else if (Index <= 0 || SwitchToPlayFrame && Index >= SwitchToPlayFrame)
+             if ((playDir != pdForward || SwitchToPlayFrame) && (Index <= 0 || SwitchToPlayFrame && Index >= SwitchToPlayFrame))
                 SwitchToPlay = true;
              if (SwitchToPlay) {
                 if (!SwitchToPlayFrame) {

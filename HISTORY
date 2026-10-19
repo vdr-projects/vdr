@@ -10481,3 +10481,4 @@ Video Disk Recorder Revision History
 - Improved locking in cDevice::AddPid()/DelPid() (thanks to Dirk Nehring).
 - cControl::Control() now locks the MutexLock only if there actually is a control (thanks to Dirk
   Nehring).
+- Fixed playing out the very last frames of a recording (thanks to Dirk Nehring).

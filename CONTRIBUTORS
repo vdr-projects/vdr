@@ -3974,3 +3974,4 @@ Dirk Nehring <dnehring@gmx.net>
  cDevice::GetSignalQuality()
  for improving locking in cDevice::AddPid()/DelPid()
  for making cControl::Control() lock the MutexLock only if there actually is a control
+ for fixing playing out the very last frames of a recording
