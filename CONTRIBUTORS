@@ -3975,3 +3975,4 @@ Dirk Nehring <dnehring@gmx.net>
  for improving locking in cDevice::AddPid()/DelPid()
  for making cControl::Control() lock the MutexLock only if there actually is a control
  for fixing playing out the very last frames of a recording
+ for improving locking in cDevice::SetCurrentAudioTrack()

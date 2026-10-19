@@ -10482,3 +10482,4 @@ Video Disk Recorder Revision History
 - cControl::Control() now locks the MutexLock only if there actually is a control (thanks to Dirk
   Nehring).
 - Fixed playing out the very last frames of a recording (thanks to Dirk Nehring).
+- Improved locking in cDevice::SetCurrentAudioTrack() (thanks to Dirk Nehring).

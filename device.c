@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: device.c 5.28 2026/10/18 20:08:18 kls Exp $
+ * $Id: device.c 5.29 2026/10/19 18:40:13 kls Exp $
  */
 
 #define MUTE_DEPRECATED_FLUSH
@@ -1204,14 +1204,20 @@ int cDevice::NumSubtitleTracks(void) const
 bool cDevice::SetCurrentAudioTrack(eTrackType Type)
 {
   if (ttNone < Type && Type <= ttDolbyLast) {
-     cMutexLock MutexLock(&mutexCurrentAudioTrack);
-     if (IS_DOLBY_TRACK(Type))
-        SetDigitalAudioDevice(true);
-     currentAudioTrack = Type;
-     if (player)
-        player->SetAudioTrack(currentAudioTrack, GetTrack(currentAudioTrack));
-     else
-        SetAudioTrackDevice(currentAudioTrack);
+     cPlayer *p;
+     {
+       cMutexLock MutexLock(&mutexCurrentAudioTrack);
+       if (IS_DOLBY_TRACK(Type))
+          SetDigitalAudioDevice(true);
+       currentAudioTrack = Type;
+       p = player;
+       if (!p)
+          SetAudioTrackDevice(currentAudioTrack);
+     }
+     // Not under the mutex - the player resyncs under its thread lock, which its thread holds
+     // while PlayTs() -> ParsePmt() -> ClrAvailableTracks() waits for the mutex:
+     if (p)
+        p->SetAudioTrack(Type, GetTrack(Type));
      if (IS_AUDIO_TRACK(Type))
         SetDigitalAudioDevice(false);
      return true;
