@@ -10489,3 +10489,4 @@ Video Disk Recorder Revision History
 - Added checking Length in cDynamicBuffer::Append() (thanks to Dirk Nehring).
 - Fixed a memory leak in cRecorder (thanks to Dirk Nehring).
 - Fixed a memory leak in cFrameDetector (thanks to Dirk Nehring).
+- Fixed a memory leak in tChannelID::FromString() (thanks to Dirk Nehring).

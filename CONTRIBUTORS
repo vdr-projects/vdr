@@ -3982,3 +3982,4 @@ Dirk Nehring <dnehring@gmx.net>
  for adding checking Length in cDynamicBuffer::Append()
  for fixing a memory leak in cRecorder
  for fixing a memory leak in cFrameDetector
+ for fixing a memory leak in tChannelID::FromString()

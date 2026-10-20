@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: channels.c 5.4 2025/03/02 11:03:35 kls Exp $
+ * $Id: channels.c 5.5 2026/10/20 20:31:01 kls Exp $
  */
 
 #include "channels.h"
@@ -28,12 +28,10 @@ tChannelID tChannelID::FromString(const char *s)
   int sid;
   int rid = 0;
   int fields = sscanf(s, "%m[^-]-%d-%d-%d-%d", &sourcebuf, &nid, &tid, &sid, &rid);
-  if (fields == 4 || fields == 5) {
-     int source = cSource::FromString(sourcebuf);
-     free(sourcebuf);
-     if (source >= 0)
-        return tChannelID(source, nid, tid, sid, rid);
-     }
+  int source = (fields == 4 || fields == 5) ? cSource::FromString(sourcebuf) : -1;
+  free(sourcebuf); // allocated as soon as the first field matched, also when the rest didn't
+  if (source >= 0)
+     return tChannelID(source, nid, tid, sid, rid);
   return tChannelID::InvalidID;
 }
 
