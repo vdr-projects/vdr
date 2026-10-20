@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.69 2026/09/30 20:02:10 kls Exp $
+ * $Id: menu.c 5.70 2026/10/20 19:09:33 kls Exp $
  */
 
 #include "menu.h"
@@ -5952,6 +5952,7 @@ bool cRecordControls::Active(void)
 
 void cRecordControls::Shutdown(void)
 {
+  LOCK_TIMERS_WRITE; // must get the lock here, because cRecordControl::Stop() is also called from other places that already hold it
   for (int i = 0; i < MAXRECORDCONTROLS; i++)
       DELETENULL(RecordControls[i]);
   ChangeState();

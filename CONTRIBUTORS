@@ -3976,3 +3976,4 @@ Dirk Nehring <dnehring@gmx.net>
  for making cControl::Control() lock the MutexLock only if there actually is a control
  for fixing playing out the very last frames of a recording
  for improving locking in cDevice::SetCurrentAudioTrack()
+ for adding missing locking to cRecordControls::Shutdown()
