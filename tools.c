@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: tools.c 5.25 2026/09/14 13:54:58 kls Exp $
+ * $Id: tools.c 5.26 2026/10/20 20:12:24 kls Exp $
  */
 
 #include "tools.h"
@@ -2403,7 +2403,7 @@ bool cDynamicBuffer::Realloc(int NewSize)
 
 void cDynamicBuffer::Append(const uchar *Data, int Length)
 {
-  if (Assert(used + Length)) {
+  if (Length > 0 && Assert(used + Length)) {
      memcpy(buffer + used, Data, Length);
      used += Length;
      }

@@ -10486,3 +10486,4 @@ Video Disk Recorder Revision History
 - Added missing locking to cRecordControls::Shutdown() (thanks to Dirk Nehring).
 - Moved cControl::Shutdown() further up in the shutdown sequence (thanks to Dirk Nehring).
 - Fixed error handling in cDll::Load() (thanks to Dirk Nehring).
+- Added checking Length in cDynamicBuffer::Append() (thanks to Dirk Nehring).

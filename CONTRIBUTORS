@@ -3979,3 +3979,4 @@ Dirk Nehring <dnehring@gmx.net>
  for adding missing locking to cRecordControls::Shutdown()
  for moving cControl::Shutdown() further up in the shutdown sequence
  for fixing error handling in cDll::Load()
+ for adding checking Length in cDynamicBuffer::Append()
