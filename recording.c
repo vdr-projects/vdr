@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.66 2026/10/10 20:21:47 kls Exp $
+ * $Id: recording.c 5.67 2026/10/20 20:45:22 kls Exp $
  */
 
 #include "recording.h"
@@ -888,7 +888,7 @@ char *LimitNameLengths(char *s, int PathMax, int NameMax)
                     l += a[i];
                     if (NameLength - l <= NameMax) {
                        memmove(s + i, s + n, Length - n + 1);
-                       memmove(a + i, a + n, Length - n + 1);
+                       memmove(a + i, a + n, Length - n); // 'a' has no terminating byte
                        Length -= n - i;
                        PathLength -= l;
                        break;
