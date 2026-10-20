@@ -3977,3 +3977,4 @@ Dirk Nehring <dnehring@gmx.net>
  for fixing playing out the very last frames of a recording
  for improving locking in cDevice::SetCurrentAudioTrack()
  for adding missing locking to cRecordControls::Shutdown()
+ for moving cControl::Shutdown() further up in the shutdown sequence

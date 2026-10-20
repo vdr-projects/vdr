@@ -22,7 +22,7 @@
  *
  * The project's page is at https://www.tvdr.de
  *
- * $Id: vdr.c 5.32 2026/08/20 19:51:41 kls Exp $
+ * $Id: vdr.c 5.33 2026/10/20 19:19:24 kls Exp $
  */
 
 #include <getopt.h>
@@ -1688,10 +1688,10 @@ Exit:
   StopSVDRPHandler();
   ChannelCamRelations.Save();
   cRecordControls::Shutdown();
+  cControl::Shutdown();
   PluginManager.StopPlugins();
   RecordingsHandler.DelAll();
   delete Menu;
-  cControl::Shutdown();
   delete Interface;
   cOsdProvider::Shutdown();
   Remotes.Clear();
