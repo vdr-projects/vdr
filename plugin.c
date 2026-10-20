@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: plugin.c 5.2 2026/07/30 09:10:11 kls Exp $
+ * $Id: plugin.c 5.3 2026/10/20 20:06:21 kls Exp $
  */
 
 #define MUTE_DEPRECATED_MAINTHREADHOOK
@@ -226,20 +226,18 @@ bool cDll::Load(bool Log)
      return false;
      }
   handle = dlopen(fileName, RTLD_NOW);
-  const char *error = dlerror();
+  const char *error = handle ? NULL : dlerror();
   if (!error) {
      typedef cPlugin *create_t(void);
      create_t *create = (create_t *)dlsym(handle, "VDRPluginCreator");
-     error = dlerror();
-     if (!error && create) {
+     if (create) {
         plugin = create();
         destroy = (destroy_t *)dlsym(handle, "VDRPluginDestroyer");
-        error = dlerror();
-        if (error) {
-           error = NULL;
+        if (!destroy)
            isyslog("plugin %s: missing symbol VDRPluginDestroyer(), please rebuild", fileName);
-           }
         }
+     else
+        error = dlerror();
      }
   if (!error) {
      if (plugin && args) {

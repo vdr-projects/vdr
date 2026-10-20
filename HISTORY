@@ -10485,3 +10485,4 @@ Video Disk Recorder Revision History
 - Improved locking in cDevice::SetCurrentAudioTrack() (thanks to Dirk Nehring).
 - Added missing locking to cRecordControls::Shutdown() (thanks to Dirk Nehring).
 - Moved cControl::Shutdown() further up in the shutdown sequence (thanks to Dirk Nehring).
+- Fixed error handling in cDll::Load() (thanks to Dirk Nehring).
