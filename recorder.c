@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recorder.c 5.14 2026/02/16 10:33:00 kls Exp $
+ * $Id: recorder.c 5.15 2026/10/20 20:18:47 kls Exp $
  */
 
 #include "recorder.h"
@@ -82,6 +82,7 @@ cRecorder::~cRecorder()
   delete fileName;
   delete frameDetector;
   delete ringBuffer;
+  delete recordingInfo;
   free(recordingName);
 }
 
