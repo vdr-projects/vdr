@@ -3984,3 +3984,4 @@ Dirk Nehring <dnehring@gmx.net>
  for fixing a memory leak in cFrameDetector
  for fixing a memory leak in tChannelID::FromString()
  for fixing a possible out-of-bounds memory access in LimitNameLengths()
+ for fixing deleting spu in cDvbSpuDecoder::~cDvbSpuDecoder()

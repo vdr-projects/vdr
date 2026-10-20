@@ -10491,3 +10491,4 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in cFrameDetector (thanks to Dirk Nehring).
 - Fixed a memory leak in tChannelID::FromString() (thanks to Dirk Nehring).
 - Fixed a possible out-of-bounds memory access in LimitNameLengths() (thanks to Dirk Nehring).
+- Fixed deleting spu in cDvbSpuDecoder::~cDvbSpuDecoder() (thanks to Dirk Nehring).
