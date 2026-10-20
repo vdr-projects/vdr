@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 5.3 2026/10/20 20:49:32 kls Exp $
+ * $Id: dvbspu.c 5.4 2026/10/20 20:55:01 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -567,7 +567,7 @@ int cDvbSpuDecoder::setTime(uint32_t pts)
         state = spNONE;
 
         uint32_t exec_time = spupts + spuU32(i) * 1024;
-        if ((pts != 0) && (exec_time > pts))
+        if ((pts != 0) && (int32_t(exec_time - pts) > 0)) // PTS values wrap around
             return 0;
         DEBUG("offs = %d, rel = %d, time = %d, pts = %d, diff = %d\n",
               i, spuU32(i) * 1024, exec_time, pts, exec_time - pts);
