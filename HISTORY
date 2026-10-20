@@ -10488,3 +10488,4 @@ Video Disk Recorder Revision History
 - Fixed error handling in cDll::Load() (thanks to Dirk Nehring).
 - Added checking Length in cDynamicBuffer::Append() (thanks to Dirk Nehring).
 - Fixed a memory leak in cRecorder (thanks to Dirk Nehring).
+- Fixed a memory leak in cFrameDetector (thanks to Dirk Nehring).

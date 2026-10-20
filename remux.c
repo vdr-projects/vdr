@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: remux.c 5.29 2026/08/17 11:15:30 kls Exp $
+ * $Id: remux.c 5.30 2026/10/20 20:23:25 kls Exp $
  */
 
 #include "remux.h"
@@ -2220,6 +2220,7 @@ cFrameDetector::cFrameDetector(int Pid, int Type)
 
 cFrameDetector::~cFrameDetector()
 {
+  delete parser;
   delete ptsChecker;
   delete tsChecker;
 }
