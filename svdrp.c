@@ -10,7 +10,7 @@
  * and interact with the Video Disk Recorder - or write a full featured
  * graphical interface that sits on top of an SVDRP connection.
  *
- * $Id: svdrp.c 5.21 2026/09/14 13:54:58 kls Exp $
+ * $Id: svdrp.c 5.22 2026/10/21 19:44:58 kls Exp $
  */
 
 #include "svdrp.h"
@@ -91,7 +91,8 @@ void cIpAddress::Set(const char *Address, int Port)
 void cIpAddress::Set(const sockaddr *SockAddr)
 {
   const sockaddr_in *Addr = (sockaddr_in *)SockAddr;
-  Set(inet_ntoa(Addr->sin_addr), ntohs(Addr->sin_port));
+  char buf[INET_ADDRSTRLEN];
+  Set(inet_ntop(AF_INET, &Addr->sin_addr, buf, sizeof(buf)), ntohs(Addr->sin_port));
 }
 
 // --- cSocket ---------------------------------------------------------------
@@ -202,7 +203,11 @@ bool cSocket::Connect(const char *Address)
      memset(&Addr, 0, sizeof(Addr));
      Addr.sin_family = AF_INET;
      Addr.sin_port = htons(port);
-     Addr.sin_addr.s_addr = inet_addr(Address);
+     if (inet_pton(AF_INET, Address, &Addr.sin_addr) != 1) {
+        esyslog("ERROR: invalid IP address '%s'", Address);
+        Close();
+        return false;
+        }
      if (connect(sock, (sockaddr *)&Addr, sizeof(Addr)) < 0) {
         LOG_ERROR;
         Close();
@@ -250,7 +255,8 @@ bool cSocket::SendDgram(const char *Dgram, int Port)
   Addr.sin_addr.s_addr = htonl(INADDR_BROADCAST);
   Addr.sin_port = htons(Port);
   // Send datagram:
-  dbgsvdrp("> %s:%d %s\n", inet_ntoa(Addr.sin_addr), Port, Dgram);
+  char buf[INET_ADDRSTRLEN];
+  dbgsvdrp("> %s:%d %s\n", inet_ntop(AF_INET, &Addr.sin_addr, buf, sizeof(buf)), Port, Dgram);
   int Length = strlen(Dgram);
   int Sent = sendto(Socket, Dgram, Length, 0, (sockaddr *)&Addr, sizeof(Addr));
   if (Sent < 0)

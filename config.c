@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: config.c 5.6 2026/08/17 11:15:30 kls Exp $
+ * $Id: config.c 5.7 2026/10/21 19:44:58 kls Exp $
  */
 
 #define MUTE_DEPRECATED_USEDOLBYDIGITAL
@@ -49,7 +49,7 @@ bool cSVDRPhost::Parse(const char *s)
         mask = htonl(mask);
         }
      }
-  int result = inet_aton(s, &addr);
+  int result = inet_pton(AF_INET, s, &addr);
   if (p)
      *(char *)p = '/'; // there it is again
   return result != 0 && (mask != 0 || addr.s_addr == 0);

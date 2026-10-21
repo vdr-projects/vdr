@@ -10494,3 +10494,4 @@ Video Disk Recorder Revision History
 - Fixed deleting spu in cDvbSpuDecoder::~cDvbSpuDecoder() (thanks to Dirk Nehring).
 - Fixed handling PTS wrap around in cDvbSpuDecoder::setTime() (thanks to Dirk Nehring).
 - Fixed initializing members in cDvbSpuDecoder (thanks to Dirk Nehring).
+- Revised/fixed IP address handling (thanks to Dirk Nehring).
