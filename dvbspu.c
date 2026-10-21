@@ -8,7 +8,7 @@
  *
  * parts of this file are derived from the OMS program.
  *
- * $Id: dvbspu.c 5.4 2026/10/20 20:55:01 kls Exp $
+ * $Id: dvbspu.c 5.5 2026/10/21 13:58:44 kls Exp $
  */
 
 #include "dvbspu.h"
@@ -237,6 +237,8 @@ cDvbSpuDecoder::cDvbSpuDecoder(void)
     osd = NULL;
     spubmp = NULL;
     allowedShow = false;
+    highlight = false;
+    memset(hlpDescr, 0, sizeof(hlpDescr));
 }
 
 cDvbSpuDecoder::~cDvbSpuDecoder()
