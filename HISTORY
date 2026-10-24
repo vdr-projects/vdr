@@ -10463,7 +10463,7 @@ Video Disk Recorder Revision History
   button in the "Edit recording" menu.
 - Fixed closing the socket in cSVDRPServer and cSVDRPClient (reported by Dirk Nehring).
 
-2026-10-21:
+2026-10-24:
 
 - Added a missing 'StuckAtEof = 0' in cDvbPlayer::Action() (thanks to Dirk Nehring).
 - Added a section about DrainDevice() to PLUGINS.html (thanks to Dirk Nehring).
@@ -10496,3 +10496,4 @@ Video Disk Recorder Revision History
 - Fixed initializing members in cDvbSpuDecoder (thanks to Dirk Nehring).
 - Revised/fixed IP address handling (thanks to Dirk Nehring).
 - Updated the COPYING file (thanks to Dirk Nehring).
+- Fixed replaying an ongoing recording close to the end (thanks to Dirk Nehring).

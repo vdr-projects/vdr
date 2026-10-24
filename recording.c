@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.67 2026/10/20 20:45:22 kls Exp $
+ * $Id: recording.c 5.68 2026/10/24 09:32:41 kls Exp $
  */
 
 #include "recording.h"
@@ -3043,11 +3043,13 @@ void cIndexFile::ConvertToPes(tIndexTs *IndexTs, int Count)
 bool cIndexFile::CatchUp(int Index)
 {
   // returns true unless something really goes wrong, so that 'index' becomes NULL
+  cMutexLock MutexLock(&mutex); // 'f' may be closed by another thread's CatchUp(), even while this one waits below
   if (index && f >= 0) {
-     cMutexLock MutexLock(&mutex);
      // Note that CatchUp() is triggered even if Index is 'last' (and thus valid).
      // This is done to make absolutely sure we don't miss any data at the very end.
-     for (int i = 0; i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
+     for (int i = 0; f >= 0 && i <= MAXINDEXCATCHUP && (Index < 0 || Index >= last); i++) {
+         // Checked before reading: the timer file is removed after the last index entry has been written.
+         bool Ended = !StillRecording(*cString(*fileName, strrchr(*fileName, '/')));
          struct stat buf;
          if (fstat(f, &buf) == 0) {
             int newLast = int(buf.st_size / sizeof(tIndexTs) - 1);
@@ -3089,6 +3091,12 @@ bool cIndexFile::CatchUp(int Index)
             LOG_ERROR_STR(*fileName);
          if (Index < last)
             break;
+         if (Ended) {
+            // nothing more will come, so don't wait for it on every read past the end
+            close(f);
+            f = -1;
+            break;
+            }
          cCondVar CondVar;
          CondVar.TimedWait(mutex, INDEXCATCHUPWAIT);
          }
@@ -3236,6 +3244,7 @@ int cIndexFile::Get(uint16_t FileNumber, off_t FileOffset)
 
 bool cIndexFile::IsStillRecording(void)
 {
+  cMutexLock MutexLock(&mutex); // CatchUp() closes 'f' once the recording has ended
   return f >= 0;
 }
 

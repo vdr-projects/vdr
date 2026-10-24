@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: dvbplayer.c 5.20 2026/10/19 13:13:49 kls Exp $
+ * $Id: dvbplayer.c 5.21 2026/10/24 09:32:41 kls Exp $
  */
 
 #include "dvbplayer.h"
@@ -696,10 +696,12 @@ void cDvbPlayer::Action(void)
 
           if (eof || SwitchToPlayFrame) {
              bool SwitchToPlay = false;
+             // In a recording that is still being written, eof in forward play is only a stall:
+             bool Ended = eof && (!index || !index->IsStillRecording() || playDir != pdForward);
              uint32_t Stc = DeviceGetSTC();
              if (playMode == pmPause)
                 StuckAtEof = 0;
-             else if (eof && DeviceDrain() || StuckAtEof && time(NULL) - StuckAtEof > MAXSTUCKATEOF) {
+             else if (Ended && DeviceDrain() || (!eof || Ended) && StuckAtEof && time(NULL) - StuckAtEof > MAXSTUCKATEOF) {
                 if (playDir == pdForward)
                    break; // automatically stop at end of recording
                 SwitchToPlay = true;
