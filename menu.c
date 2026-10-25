@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.70 2026/10/20 19:09:33 kls Exp $
+ * $Id: menu.c 5.71 2026/10/25 20:41:11 kls Exp $
  */
 
 #include "menu.h"
@@ -6006,6 +6006,10 @@ int cAdaptiveSkipper::GetValue(eKeys Key)
 
 cTimer *cReplayControl::timeshiftTimer = NULL;
 cReplayControl *cReplayControl::currentReplayControl = NULL;
+// The OSD belongs to the main thread, but an SVDRP PLAY constructs the replay
+// control on the SVDRP thread; then the first ProcessKey() shows the progress
+// display. There is only one replay control at a time:
+static cReplayControl *ShowPending = NULL;
 cString cReplayControl::fileName;
 
 cReplayControl::cReplayControl(bool PauseLive)
@@ -6028,12 +6032,16 @@ cReplayControl::cReplayControl(bool PauseLive)
   SetMarks(&marks);
   adaptiveSkipper.Initialize(&Setup.AdaptiveSkipInitial, Recording.FramesPerSecond());
   SetTrackDescriptions(0);
-  if (Setup.ProgressDisplayTime)
-     ShowTimed(Setup.ProgressDisplayTime);
+  if (Setup.ProgressDisplayTime) {
+     ShowPending = this;
+     SetNeedsFastResponse(true);
+     }
 }
 
 cReplayControl::~cReplayControl()
 {
+  if (ShowPending == this)
+     ShowPending = NULL;
   cDevice::PrimaryDevice()->SetKeepTracks(false);
   Stop();
   if (currentReplayControl == this)
@@ -6516,6 +6524,12 @@ eOSState cReplayControl::ProcessKey(eKeys Key)
 {
   if (!Active())
      return osRecordings;
+  if (ShowPending == this) {
+     ShowPending = NULL;
+     ShowTimed(Setup.ProgressDisplayTime);
+     if (!visible)
+        SetNeedsFastResponse(false); // in case nothing was shown
+     }
   if (Key == kNone && !marksModified)
      marks.Update();
   if (visible) {

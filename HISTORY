@@ -10502,3 +10502,5 @@ Video Disk Recorder Revision History
 - Fixed a memory leak in cDvbSubtitleConverter::FinishPage() (thanks to Dirk Nehring).
 - Fixed a possible race condition in cStatus (thanks to Dirk Nehring).
 - Added missing locking to cIndexFile (thanks to Dirk Nehring).
+- Fixed automatically showing the progress display when it was created from a thread (thanks
+  to Dirk Nehring).

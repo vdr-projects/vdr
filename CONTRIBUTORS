@@ -3994,3 +3994,4 @@ Dirk Nehring <dnehring@gmx.net>
  for fixing a memory leak in cDvbSubtitleConverter::FinishPage()
  for fixing a possible race condition in cStatus
  for adding missing locking to cIndexFile
+ for fixing automatically showing the progress display when it was created from a thread
