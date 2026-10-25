@@ -6,7 +6,7 @@
  *
  * LIRC support added by Carsten Koch <Carsten.Koch@icem.de>  2000-06-16.
  *
- * $Id: lirc.c 5.5 2026/05/30 11:59:32 kls Exp $
+ * $Id: lirc.c 5.6 2026/10/25 20:49:18 kls Exp $
  */
 
 #include "lirc.h"
@@ -33,6 +33,7 @@ private:
   virtual void Action(void) override;
 public:
   cLircUsrRemote(const char *DeviceName);
+  virtual ~cLircUsrRemote() override;
   };
 
 #if HAVE_KERNEL_LIRC
@@ -41,6 +42,7 @@ private:
   virtual void Action(void) override;
 public:
   cLircDevRemote(void);
+  virtual ~cLircDevRemote() override;
   bool Connect(const char *DeviceName);
   };
 #endif
@@ -102,6 +104,11 @@ bool cLircRemote::Ready(void)
   return f >= 0;
 }
 
+cLircUsrRemote::~cLircUsrRemote()
+{
+  Cancel(3); // Action() uses this object, so stop it before the object goes away
+}
+
 void cLircUsrRemote::Action(void)
 {
   cTimeMs FirstTime;
@@ -113,7 +120,7 @@ void cLircUsrRemote::Action(void)
 
   while (Running()) {
 
-        bool ready = f >= 0 && cFile::FileReady(f, timeout);
+        bool ready = f >= 0 && cFile::FileReady(f, timeout >= 0 ? timeout : 100); // check Running() at least every 100 ms
         int ret = ready ? safe_read(f, buf, sizeof(buf)) : -1;
 
         if (f < 0 || ready && ret <= 0) {
@@ -198,6 +205,11 @@ cLircDevRemote::cLircDevRemote(void)
 {
 }
 
+cLircDevRemote::~cLircDevRemote()
+{
+  Cancel(3); // see ~cLircUsrRemote()
+}
+
 void cLircDevRemote::Action(void)
 {
   if (f < 0)
@@ -209,6 +221,8 @@ void cLircDevRemote::Action(void)
   bool repeat = false;
 
   while (Running()) {
+        if (!cFile::FileReady(f, 100))
+           continue; // check Running() at least every 100 ms
         lirc_scancode sc;
         ssize_t ret = read(f, &sc, sizeof sc);
 

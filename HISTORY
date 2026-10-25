@@ -10504,3 +10504,4 @@ Video Disk Recorder Revision History
 - Added missing locking to cIndexFile (thanks to Dirk Nehring).
 - Fixed automatically showing the progress display when it was created from a thread (thanks
   to Dirk Nehring).
+- Fixed shutting down LIRC threads (thanks to Dirk Nehring).
