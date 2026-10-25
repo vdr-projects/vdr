@@ -10501,3 +10501,4 @@ Video Disk Recorder Revision History
   to Dirk Nehring).
 - Fixed a memory leak in cDvbSubtitleConverter::FinishPage() (thanks to Dirk Nehring).
 - Fixed a possible race condition in cStatus (thanks to Dirk Nehring).
+- Added missing locking to cIndexFile (thanks to Dirk Nehring).

@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.69 2026/10/25 10:56:02 kls Exp $
+ * $Id: recording.c 5.70 2026/10/25 15:02:36 kls Exp $
  */
 
 #include "recording.h"
@@ -3123,6 +3123,7 @@ bool cIndexFile::Write(bool Independent, uint16_t FileNumber, off_t FileOffset, 
 
 bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *Independent, int *Length, bool *Errors, bool *Missing)
 {
+  cMutexLock MutexLock(&mutex); // CatchUp() reallocates 'index' under the mutex, so the entries must be read under it, too
   if (CatchUp(Index)) {
      if (Index >= 0 && Index <= last) {
         *FileNumber = index[Index].number;
@@ -3153,6 +3154,7 @@ bool cIndexFile::Get(int Index, uint16_t *FileNumber, off_t *FileOffset, bool *I
 
 const cErrors *cIndexFile::GetErrors(void)
 {
+  cMutexLock MutexLock(&mutex);
   for (int Index = lastErrorIndex + 1; Index <= last; Index++) {
       tIndexTs *p = &index[Index];
       if (p->errors || p->missing)
@@ -3164,6 +3166,7 @@ const cErrors *cIndexFile::GetErrors(void)
 
 int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off_t *FileOffset, int *Length)
 {
+  cMutexLock MutexLock(&mutex);
   if (CatchUp()) {
      int d = Forward ? 1 : -1;
      for (;;) {
@@ -3202,6 +3205,7 @@ int cIndexFile::GetNextIFrame(int Index, bool Forward, uint16_t *FileNumber, off
 
 int cIndexFile::GetClosestIFrame(int Index)
 {
+  cMutexLock MutexLock(&mutex);
   if (index && last > 0) {
      Index = constrain(Index, 0, last);
      if (index[Index].independent)
@@ -3230,6 +3234,7 @@ int cIndexFile::GetClosestIFrame(int Index)
 
 int cIndexFile::Get(uint16_t FileNumber, off_t FileOffset)
 {
+  cMutexLock MutexLock(&mutex);
   if (CatchUp()) {
      //TODO implement binary search!
      int i;

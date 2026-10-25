@@ -3993,3 +3993,4 @@ Dirk Nehring <dnehring@gmx.net>
  for fixing sorting recordings by time in case "Setup/OSD/Recording directories" is "no"
  for fixing a memory leak in cDvbSubtitleConverter::FinishPage()
  for fixing a possible race condition in cStatus
+ for adding missing locking to cIndexFile
