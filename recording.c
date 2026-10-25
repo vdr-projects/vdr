@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: recording.c 5.68 2026/10/24 09:32:41 kls Exp $
+ * $Id: recording.c 5.69 2026/10/25 10:56:02 kls Exp $
  */
 
 #include "recording.h"
@@ -1152,7 +1152,7 @@ char *cRecording::SortName(void) const
      if (RecordingsSortMode == rsmTime && !Setup.RecordingDirs) {
         char buf[32];
         struct tm tm_r;
-        strftime(buf, sizeof(buf), "%Y%m%d%H%I", localtime_r(&start, &tm_r));
+        strftime(buf, sizeof(buf), "%Y%m%d%H%M", localtime_r(&start, &tm_r));
         *sb = strdup(buf);
         }
      else {

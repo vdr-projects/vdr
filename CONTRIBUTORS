@@ -3990,3 +3990,4 @@ Dirk Nehring <dnehring@gmx.net>
  for revising/fixing IP address handling
  for updating the COPYING file
  for fixing replaying an ongoing recording close to the end
+ for fixing sorting recordings by time in case "Setup/OSD/Recording directories" is "no"
