@@ -7,7 +7,7 @@
  * Original author: Marco Schluessler <marco@lordzodiac.de>
  * With some input from the "subtitles plugin" by Pekka Virtanen <pekka.virtanen@sci.fi>
  *
- * $Id: dvbsubtitle.c 5.9 2026/10/17 18:40:50 kls Exp $
+ * $Id: dvbsubtitle.c 5.10 2026/10/25 11:05:55 kls Exp $
  */
 
 #include "dvbsubtitle.h"
@@ -1805,9 +1805,6 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
 {
   if (!AssertOsd())
      return;
-  int NumAreas;
-  tArea *Areas = Page->GetAreas(NumAreas);
-  tArea AreaCombined = Page->CombineAreas(NumAreas, Areas);
   cDvbSubtitleBitmaps *After = NULL;
   for (cDvbSubtitleBitmaps *sb = bitmaps->Last(); sb; sb = bitmaps->Prev(sb)) {
       int64_t Delta = PtsDeltaMs(sb->Pts(), Page->Pts());
@@ -1818,6 +1815,9 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
       else if (Delta == 0)
          return; // we already have this one
       }
+  int NumAreas;
+  tArea *Areas = Page->GetAreas(NumAreas);
+  tArea AreaCombined = Page->CombineAreas(NumAreas, Areas);
   tArea AreaOsd = Page->ScaleArea(AreaCombined, osdFactorX, osdFactorY);
   int Bpp = 8;
   bool Reduced = false;
@@ -1832,8 +1832,10 @@ void cDvbSubtitleConverter::FinishPage(cDvbSubtitlePage *Page)
                   }
               Bpp = HalfBpp;
               }
-           else
+           else {
+              delete[] Areas;
               return; // unable to draw bitmaps
+              }
            }
      }
   cDvbSubtitleBitmaps *Bitmaps = new cDvbSubtitleBitmaps(Page->PageState(), Page->Pts(), Page->PageTimeout(), Page->PageVersionNumber(), Areas, NumAreas, osdFactorX, osdFactorY, AreaCombined, AreaOsd);

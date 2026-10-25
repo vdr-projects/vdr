@@ -10499,3 +10499,4 @@ Video Disk Recorder Revision History
 - Fixed replaying an ongoing recording close to the end (thanks to Dirk Nehring).
 - Fixed sorting recordings by time in case "Setup/OSD/Recording directories" is "no" (thanks
   to Dirk Nehring).
+- Fixed a memory leak in cDvbSubtitleConverter::FinishPage() (thanks to Dirk Nehring).
