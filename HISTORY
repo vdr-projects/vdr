@@ -10506,3 +10506,4 @@ Video Disk Recorder Revision History
   to Dirk Nehring).
 - Fixed shutting down LIRC threads (thanks to Dirk Nehring).
 - Added missing locking to cTransfer (thanks to Dirk Nehring).
+- Fixed flickering of the OSD when closing a setup page with OK (reported by Andreas Baierl).

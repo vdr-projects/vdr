@@ -3928,6 +3928,7 @@ Andreas Baierl <post@andreasbaierl.de>
  cPixmap*
  for suggesting to enhance the comment for cOsd::RestoreRegion()
  for adding a missing 'StuckAtEof = 0' in cDvbPlayer::Action()
+ for reporting flickering of the OSD when closing a setup page with OK
 
 Fabian Wolter <vdr-ml@fabian-wolter.de>
  for fixing a memory leak in cMark::Parse()

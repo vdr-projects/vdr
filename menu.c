@@ -4,7 +4,7 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: menu.c 5.71 2026/10/25 20:41:11 kls Exp $
+ * $Id: menu.c 5.72 2026/10/26 19:35:08 kls Exp $
  */
 
 #include "menu.h"
@@ -3713,8 +3713,11 @@ cMenuSetupBase::cMenuSetupBase(void)
 
 void cMenuSetupBase::Store(void)
 {
+  // UpdateOsdSize() may have changed the OSD size while this menu was open:
+  bool OsdSizeChanged = data.OSDWidth != Setup.OSDWidth || data.OSDHeight != Setup.OSDHeight || !DoubleEqual(data.OSDAspect, Setup.OSDAspect);
   Setup = data;
-  cOsdProvider::UpdateOsdSize(true);
+  if (OsdSizeChanged)
+     cOsdProvider::UpdateOsdSize(true);
   Setup.Save();
 }
 
@@ -4644,12 +4647,8 @@ eOSState cMenuSetupPlugins::ProcessKey(eKeys Key)
               }
            }
         }
-     else if (state == osContinue) {
+     else if (state == osContinue)
         Store();
-        // Reinitialize OSD and skin, in case any plugin setup change has an influence on these:
-        cOsdProvider::UpdateOsdSize(true);
-        Display();
-        }
      }
   return state;
 }
