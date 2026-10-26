@@ -4,7 +4,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Makefile 5.6 2026/07/20 08:25:33 kls Exp $
+# $Id: Makefile 5.7 2026/10/26 20:00:22 kls Exp $
 
 .DELETE_ON_ERROR:
 
@@ -37,6 +37,7 @@ DESTDIR   ?= $(CWD)
 LOCDIR    ?= $(CWD)/locale
 HDRDIR    ?= $(CWD)/include
 LIBDIR    ?= $(PLUGINDIR)/lib
+RESDIR    ?= $(CWD)/resources
 endif
 
 DESTDIR   ?=
@@ -263,6 +264,10 @@ plugins: include-dir vdr.pc
 	          for l in `ls $(PLUGINDIR)/src/$$i/po/*.mo`; do\
 	              install -D -m644 $$l $(LOCDIR)/`basename $$l | cut -d. -f1`/LC_MESSAGES/vdr-$$i.mo;\
 	              done;\
+	          fi;\
+	       if [ -d $(PLUGINDIR)/src/$$i/resources ]; then\
+	          mkdir -p $(RESDIR)/plugins/$$i;\
+	          cp -r -f $(PLUGINDIR)/src/$$i/resources/* $(RESDIR)/plugins/$$i;\
 	          fi;\
 	       fi;\
 	    done;\

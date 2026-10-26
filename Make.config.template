@@ -6,7 +6,7 @@
 # See the main source file 'vdr.c' for copyright information and
 # how to reach the author.
 #
-# $Id: Make.config.template 5.3 2025/03/02 14:24:24 kls Exp $
+# $Id: Make.config.template 5.4 2026/10/26 20:00:22 kls Exp $
 
 ### The C compiler and options:
 
@@ -58,6 +58,7 @@ ifndef PLUGIN # don't overwrite for plugins with old makefiles
 LIBDIR       = $(PLUGINDIR)/lib
 endif
 HDRDIR       = $(CWD)/include
+RESDIR       = $(CWD)/resources
 endif
 
 # Use 'make ONEDIR=1' to have all data in one single directory:

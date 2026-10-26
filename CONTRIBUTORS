@@ -2631,6 +2631,7 @@ Markus Ehrnsperger <markus.ehrnsperger@googlemail.com>
  the SVDRP default host can't be deleted
  for suggesting to remove the option "Setup/DVB/Use Dolby Digital"
  for suggesting that the disk should spin up about 60 seconds before a timer starts
+ for extending the Makefile to copy a plugin's "resources" directory if LCLBLD is defined
 
 Werner Färber <w.faerber@gmx.de>
  for reporting a bug in handling the cPluginManager::Active() result when pressing
