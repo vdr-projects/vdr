@@ -4,12 +4,14 @@
  * See the main source file 'vdr.c' for copyright information and
  * how to reach the author.
  *
- * $Id: transfer.c 5.2 2026/09/02 09:20:35 kls Exp $
+ * $Id: transfer.c 5.3 2026/10/26 19:25:55 kls Exp $
  */
 
 #include "transfer.h"
 
 // --- cTransfer -------------------------------------------------------------
+
+static cMutex TransferMutex;
 
 cTransfer::cTransfer(const cChannel *Channel)
 :cReceiver(Channel, TRANSFERPRIORITY)
@@ -28,6 +30,7 @@ cTransfer::~cTransfer()
 
 void cTransfer::Activate(bool On)
 {
+  cMutexLock MutexLock(&TransferMutex);
   if (On) {
      if (cPlayer::IsAttached()) {
         PlayTs(patPmtGenerator.GetPat(), TS_SIZE);
@@ -49,6 +52,7 @@ void cTransfer::Activate(bool On)
 
 void cTransfer::Receive(const uchar *Data, int Length)
 {
+  cMutexLock MutexLock(&TransferMutex);
   if (activated) {
      // Transfer Mode means "live tv", so there's no point in doing any additional
      // buffering here. The TS packets *must* get through here! However, every

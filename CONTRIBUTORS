@@ -3996,3 +3996,4 @@ Dirk Nehring <dnehring@gmx.net>
  for adding missing locking to cIndexFile
  for fixing automatically showing the progress display when it was created from a thread
  for fixing shutting down LIRC threads
+ for adding missing locking to cTransfer
